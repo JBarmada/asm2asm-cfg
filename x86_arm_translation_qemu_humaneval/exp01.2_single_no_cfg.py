@@ -19,7 +19,7 @@ input_s_dir = BASE_DIR.parent / "Compiledown_HumanEval_O2" / "x86" / "asm"
 input_test_dir = BASE_DIR.parent / "HumanEval_source"
 # cfg_dir = BASE_DIR.parent / "Compiledown_HumanEval_O2" / "x86" / "cfg"
 
-output_dir = BASE_DIR / "results" / "exp01.1"
+output_dir = BASE_DIR / "results" / "exp01.2"
 
 prompt_dir = output_dir / "prompts"
 raw_output_dir = output_dir / "raw_model_output"
@@ -42,7 +42,7 @@ x86 Assembly:
 
 MODEL_NAME="gemini-3.1-pro-preview"
 # Controls how many model calls can happen simultaneously.
-MAX_CONCURRENCY = 80
+MAX_CONCURRENCY = 10
 # Total attempts for transient failures (initial try + retries).
 MAX_RETRIES = 3
 # Base retry delay for exponential backoff.
