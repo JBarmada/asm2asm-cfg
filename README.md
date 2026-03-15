@@ -11,6 +11,49 @@ The core pipeline scripts live in the folder below:
 
 - `x86_arm_translation_qemu_humaneval`
 
+## Quick Tutorial
+
+Run commands from workspace root (`ASMwork`).
+
+1. Run one translation experiment (example: parallel with CFG).
+
+```bash
+python x86_arm_translation_qemu_humaneval/exp02.1_gemini_single_prompt_cfg.py
+```
+
+2. Run ARM compile+test evaluation on that experiment output. (Do in Docker)
+
+```bash
+python x86_arm_translation_qemu_humaneval/run_arm_translation_results.py \
+  x86_arm_translation_qemu_humaneval/results/exp02.1/arm_asm
+```
+
+3. Choose one analysis path:
+
+- Bucketize a single verbose report:
+
+```bash
+python x86_arm_translation_qemu_humaneval/bucketize_verbose_report.py \
+  x86_arm_translation_qemu_humaneval/results/exp02.1/txts/<timestamp>_verbose.txt
+```
+
+- Compare two experiment runs:
+
+```bash
+python x86_arm_translation_qemu_humaneval/compare_bucket_runs.py \
+  x86_arm_translation_qemu_humaneval/results/exp01/txts/<old_timestamp>_verbose.txt \
+  x86_arm_translation_qemu_humaneval/results/exp02.1/txts/<new_timestamp>_verbose.txt \
+  --label-old exp01 --label-new exp02.1
+```
+
+Optional: summarize only the regressions from the latest comparison.
+
+```bash
+python x86_arm_translation_qemu_humaneval/summarize_regressions.py
+```
+
+Note: `run_arm_translation_results.py` must run in Docker or on a host with working `clang`/`clang-17` and `qemu-aarch64` in PATH.
+
 ## 1) What Each Script Does
 
 ### Translation experiments
@@ -36,6 +79,7 @@ The core pipeline scripts live in the folder below:
 ### Build/run evaluation
 
 - `x86_arm_translation_qemu_humaneval/run_arm_translation_results.py`
+  - Must be run either inside the configured Docker environment or on a machine where `clang`/`clang-17` and `qemu-aarch64` are installed and available on PATH.
   - Compiles each translated `.s` file for `aarch64-linux-gnu`.
   - Links with the corresponding HumanEval `test.c`.
   - Runs with `qemu-aarch64`.
@@ -98,6 +142,8 @@ See details in:
 
 - `crosscompiling-manual.md`
 - `x86_arm_translation_qemu_humaneval/README_run_arm_translation_results.md`
+
+Important: `run_arm_translation_results.py` requires a usable cross-compile/runtime toolchain. Use Docker as the default recommendation, or run natively only if `clang` (or `clang-17`) and `qemu-aarch64` are installed and discoverable.
 
 ## 4) End-to-End Pipeline (Typical)
 
