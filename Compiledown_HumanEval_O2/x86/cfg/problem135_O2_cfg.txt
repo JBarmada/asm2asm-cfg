@@ -1,0 +1,77 @@
+Function: func0
+Basic blocks: 5
+
+============================================================
+BLOCK 0
+- Instructions:
+  pushq	%rbp
+  pushq	%r15
+  pushq	%r14
+  pushq	%r12
+  pushq	%rbx
+  movq	%rdi, %r14
+  callq	strlen@PLT
+  movq	%rax, %rbx
+  xorl	%r15d, %r15d
+  testl	%ebx, %ebx
+  je	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 44
+  JUMP -> 124
+
+============================================================
+BLOCK 44
+- Instructions:
+  movl	%ebx, %ebp
+  shlq	$32, %rbx
+  movabsq	$-4294967296, %rax
+  addq	%rbx, %rax
+  sarq	$32, %rax
+  movzbl	(%r14,%rax), %r12d
+  callq	__ctype_b_loc@PLT
+  movq	(%rax), %rax
+  testb	$4, 1(%rax,%r12,2)
+  je	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 84
+  JUMP -> 124
+
+============================================================
+BLOCK 84
+- Instructions:
+  movl	$1, %r15d
+  cmpl	$1, %ebp
+  je	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 96
+  JUMP -> 124
+
+============================================================
+BLOCK 96
+- Instructions:
+  movabsq	$-8589934592, %rcx
+  addq	%rcx, %rbx
+  sarq	$32, %rbx
+  movzbl	(%r14,%rbx), %ecx
+  xorl	%r15d, %r15d
+  testb	$4, 1(%rax,%rcx,2)
+  sete	%r15b
+
+- Edges:
+  NO_JUMP -> 124
+
+============================================================
+BLOCK 124
+- Instructions:
+  movl	%r15d, %eax
+  popq	%rbx
+  popq	%r12
+  popq	%r14
+  popq	%r15
+  popq	%rbp
+  retq
+
+- Edges: (none)

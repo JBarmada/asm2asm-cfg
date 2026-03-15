@@ -1,0 +1,117 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 0
+- Instructions:
+  addi	sp, sp, -1104
+  sd	ra, 1096(sp)
+  sd	s0, 1088(sp)
+  sd	s1, 1080(sp)
+  sd	s2, 1072(sp)
+  sd	s3, 1064(sp)
+  sd	s4, 1056(sp)
+  sd	s5, 1048(sp)
+  sd	s6, 1040(sp)
+  mv	s2, a0
+  addi	a0, sp, 16
+  li	a2, 1024
+  addi	s3, sp, 16
+  li	a1, 0
+  call	memset@plt
+  lbu	s1, 0(s2)
+  beqz	s1, .LBB0_6
+
+- Edges:
+  NO_JUMP -> 68
+  JUMP -> 176
+
+============================================================
+BLOCK 68
+- Instructions:
+  call	__ctype_tolower_loc@plt
+  ld	s5, 0(a0)
+  li	s4, 0
+  addi	s0, s2, 1
+  li	s2, 1
+  j	.LBB0_3
+
+- Edges:
+  JUMP -> 104
+
+============================================================
+BLOCK 92
+- Instructions:
+  lbu	s1, 0(s0)
+  addi	s0, s0, 1
+  beqz	s1, .LBB0_7
+
+- Edges:
+  NO_JUMP -> 104
+  JUMP -> 180
+
+============================================================
+BLOCK 104
+- Instructions:
+  andi	a0, s1, 255
+  slli	a0, a0, 2
+  add	a0, a0, s5
+  lbu	s1, 0(a0)
+  slli	a0, s1, 2
+  add	s6, s3, a0
+  lw	a0, 0(s6)
+  bnez	a0, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 136
+  JUMP -> 92
+
+============================================================
+BLOCK 136
+- Instructions:
+  call	__ctype_b_loc@plt
+  ld	a0, 0(a0)
+  slli	a1, s1, 1
+  add	a0, a0, a1
+  lbu	a0, 1(a0)
+  andi	a0, a0, 4
+  beqz	a0, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 164
+  JUMP -> 92
+
+============================================================
+BLOCK 164
+- Instructions:
+  sw	s2, 0(s6)
+  addiw	s4, s4, 1
+  j	.LBB0_2
+
+- Edges:
+  JUMP -> 92
+
+============================================================
+BLOCK 176
+- Instructions:
+  li	s4, 0
+
+- Edges:
+  NO_JUMP -> 180
+
+============================================================
+BLOCK 180
+- Instructions:
+  mv	a0, s4
+  ld	ra, 1096(sp)
+  ld	s0, 1088(sp)
+  ld	s1, 1080(sp)
+  ld	s2, 1072(sp)
+  ld	s3, 1064(sp)
+  ld	s4, 1056(sp)
+  ld	s5, 1048(sp)
+  ld	s6, 1040(sp)
+  addi	sp, sp, 1104
+  ret
+
+- Edges: (none)

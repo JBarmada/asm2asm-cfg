@@ -1,0 +1,117 @@
+Function: func0
+Basic blocks: 11
+
+============================================================
+BLOCK 0
+- Instructions:
+  xorl	%r9d, %r9d
+  movl	$2, %eax
+  movl	$1, %r8d
+  jmp	.LBB0_1
+
+- Edges:
+  JUMP -> 52
+
+============================================================
+BLOCK 16
+- Instructions:
+  testl	%edx, %edx
+  setne	%dl
+
+- Edges:
+  NO_JUMP -> 24
+
+============================================================
+BLOCK 24
+- Instructions:
+  movl	%r8d, %eax
+  addl	%ecx, %eax
+  movzbl	%dl, %edx
+  addl	%edx, %r9d
+  movl	%ecx, %r8d
+  cmpl	%edi, %r9d
+  je	.LBB0_9
+
+- Edges:
+  NO_JUMP -> 52
+  JUMP -> 124
+
+============================================================
+BLOCK 52
+- Instructions:
+  cmpl	%edi, %r9d
+  jge	.LBB0_2
+
+- Edges:
+  NO_JUMP -> 60
+  JUMP -> 132
+
+============================================================
+BLOCK 60
+- Instructions:
+  movl	%eax, %ecx
+  movb	$1, %dl
+  cmpl	$4, %eax
+  jl	.LBB0_8
+
+- Edges:
+  NO_JUMP -> 76
+  JUMP -> 24
+
+============================================================
+BLOCK 76
+- Instructions:
+  movl	$2, %esi
+
+- Edges:
+  NO_JUMP -> 80
+
+============================================================
+BLOCK 80
+- Instructions:
+  movl	%ecx, %eax
+  cltd
+  idivl	%esi
+  testl	%edx, %edx
+  je	.LBB0_7
+
+- Edges:
+  NO_JUMP -> 100
+  JUMP -> 16
+
+============================================================
+BLOCK 100
+- Instructions:
+  incl	%esi
+  movl	%esi, %eax
+  imull	%esi, %eax
+  cmpl	%ecx, %eax
+  jle	.LBB0_6
+
+- Edges:
+  NO_JUMP -> 120
+  JUMP -> 80
+
+============================================================
+BLOCK 120
+- Instructions:
+  jmp	.LBB0_7
+
+- Edges:
+  JUMP -> 16
+
+============================================================
+BLOCK 124
+- Instructions:
+  movl	%ecx, %eax
+  retq
+
+- Edges: (none)
+
+============================================================
+BLOCK 132
+- Instructions:
+  xorl	%eax, %eax
+  retq
+
+- Edges: (none)

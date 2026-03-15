@@ -1,0 +1,54 @@
+Function: func0
+Basic blocks: 4
+
+============================================================
+BLOCK 5024
+- Instructions:
+  mov    %edx,%r8d
+  mov    %esi,%r9d
+  xor    %ecx,%ecx
+  cmp    $0x2,%edi
+  setge  %cl
+  cmp    $0x4,%edi
+  jl     13d5 <func0+0x35>
+
+- Edges:
+  NO_JUMP -> 5043
+  JUMP -> 5077
+
+============================================================
+BLOCK 5043
+- Instructions:
+  mov    $0x2,%esi
+  nopl   0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5056
+
+============================================================
+BLOCK 5056
+- Instructions:
+  mov    %edi,%eax
+  cltd
+  idiv   %esi
+  test   %edx,%edx
+  cmove  %edx,%ecx
+  inc    %esi
+  mov    %esi,%eax
+  imul   %esi,%eax
+  cmp    %edi,%eax
+  jle    13c0 <func0+0x20>
+
+- Edges:
+  NO_JUMP -> 5077
+  JUMP -> 5056
+
+============================================================
+BLOCK 5077
+- Instructions:
+  test   %ecx,%ecx
+  cmove  %r8d,%r9d
+  mov    %r9d,%eax
+  ret
+
+- Edges: (none)

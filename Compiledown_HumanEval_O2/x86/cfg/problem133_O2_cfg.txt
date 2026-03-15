@@ -1,0 +1,103 @@
+Function: func0
+Basic blocks: 7
+
+============================================================
+BLOCK 0
+- Instructions:
+  pushq	%r14
+  pushq	%rbx
+  pushq	%rax
+  movq	%rdi, %r14
+  callq	strlen@PLT
+  testq	%rax, %rax
+  je	.LBB0_1
+
+- Edges:
+  NO_JUMP -> 28
+  JUMP -> 176
+
+============================================================
+BLOCK 28
+- Instructions:
+  movzbl	(%r14), %edx
+  xorl	%ecx, %ecx
+  cmpb	$91, %dl
+  sete	%cl
+  xorl	%esi, %esi
+  cmpb	$93, %dl
+  sete	%sil
+  subl	%esi, %ecx
+  xorl	%r8d, %r8d
+  testl	%ecx, %ecx
+  cmovlel	%r8d, %ecx
+  movl	$1, %edi
+  movl	%ecx, %esi
+
+- Edges:
+  NO_JUMP -> 80
+
+============================================================
+BLOCK 80
+- Instructions:
+  movq	%rdi, %rdx
+  cmpq	%rdi, %rax
+  je	.LBB0_5
+
+- Edges:
+  NO_JUMP -> 92
+  JUMP -> 160
+
+============================================================
+BLOCK 92
+- Instructions:
+  movzbl	(%r14,%rdx), %ebx
+  xorl	%edi, %edi
+  cmpb	$91, %bl
+  sete	%dil
+  addl	%edi, %esi
+  xorl	%edi, %edi
+  cmpb	$93, %bl
+  sete	%dil
+  subl	%edi, %esi
+  testl	%esi, %esi
+  cmovlel	%r8d, %esi
+  cmpl	%ecx, %esi
+  cmovgl	%esi, %ecx
+  leal	-2(%rcx), %ebx
+  leaq	1(%rdx), %rdi
+  cmpl	%ebx, %esi
+  jg	.LBB0_3
+
+- Edges:
+  NO_JUMP -> 160
+  JUMP -> 80
+
+============================================================
+BLOCK 160
+- Instructions:
+  xorl	%ecx, %ecx
+  cmpq	%rdx, %rax
+  seta	%cl
+  jmp	.LBB0_6
+
+- Edges:
+  JUMP -> 180
+
+============================================================
+BLOCK 176
+- Instructions:
+  xorl	%ecx, %ecx
+
+- Edges:
+  NO_JUMP -> 180
+
+============================================================
+BLOCK 180
+- Instructions:
+  movl	%ecx, %eax
+  addq	$8, %rsp
+  popq	%rbx
+  popq	%r14
+  retq
+
+- Edges: (none)

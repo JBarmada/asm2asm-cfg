@@ -1,0 +1,23 @@
+Function: _func0
+Basic blocks: 1
+
+============================================================
+BLOCK 4294968608
+- Instructions:
+  cmp	w0, #0x0
+  cneg	w8, w0, mi
+  mov	w9, #0xcccd             ; =52429
+  movk	w9, #0xcccc, lsl #16
+  umull	x10, w8, w9
+  lsr	x10, x10, #35
+  mov	w11, #0xa               ; =10
+  msub	w8, w10, w11, w8
+  cmp	w1, #0x0
+  cneg	w10, w1, mi
+  umull	x9, w10, w9
+  lsr	x9, x9, #35
+  msub	w9, w9, w11, w10
+  mul	w0, w9, w8
+  ret
+
+- Edges: (none)

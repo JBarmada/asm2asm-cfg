@@ -1,0 +1,91 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 2224
+- Instructions:
+  add	sp,sp,-48
+  sd	ra,40(sp)
+  sd	s0,32(sp)
+  sd	s1,24(sp)
+  sd	s2,16(sp)
+  sd	s3,8(sp)
+  mv	s2,a0
+  jal	670 <strlen@plt>
+
+- Edges:
+  JUMP -> 1648
+
+============================================================
+BLOCK 2242
+- Instructions:
+  beqz	a0,8ea <func0+0x3a>
+
+- Edges:
+  NO_JUMP -> 2244
+  JUMP -> 2282
+
+============================================================
+BLOCK 2244
+- Instructions:
+  mv	s1,a0
+  li	s0,0
+  auipc	s3,0x0
+  add	s3,s3,330 # a12 <_IO_stdin_used+0x116>
+
+- Edges:
+  NO_JUMP -> 2256
+
+============================================================
+BLOCK 2256
+- Instructions:
+  lbu	a1,0(s2)
+  li	a2,7
+  mv	a0,s3
+  jal	680 <memchr@plt>
+
+- Edges:
+  JUMP -> 1664
+
+============================================================
+BLOCK 2268
+- Instructions:
+  snez	a0,a0
+  addw	s0,s0,a0
+  add	s1,s1,-1
+  add	s2,s2,1
+  bnez	s1,8d0 <func0+0x20>
+
+- Edges:
+  NO_JUMP -> 2280
+  JUMP -> 2256
+
+============================================================
+BLOCK 2280
+- Instructions:
+  j	8ec <func0+0x3c>
+
+- Edges:
+  JUMP -> 2284
+
+============================================================
+BLOCK 2282
+- Instructions:
+  li	s0,0
+
+- Edges:
+  NO_JUMP -> 2284
+
+============================================================
+BLOCK 2284
+- Instructions:
+  mv	a0,s0
+  ld	ra,40(sp)
+  ld	s0,32(sp)
+  ld	s1,24(sp)
+  ld	s2,16(sp)
+  ld	s3,8(sp)
+  add	sp,sp,48
+  ret
+
+- Edges: (none)

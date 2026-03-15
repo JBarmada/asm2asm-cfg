@@ -1,0 +1,93 @@
+Function: _func0
+Basic blocks: 7
+
+============================================================
+BLOCK 4294969476
+- Instructions:
+  sub	sp, sp, #0x20
+  stp	x29, x30, [sp, #0x10]
+  add	x29, sp, #0x10
+  cmp	w2, #0x1
+  b.lt	0x100000904 <_func0+0x80>
+
+- Edges:
+  NO_JUMP -> 4294969496
+  JUMP -> 4294969604
+
+============================================================
+BLOCK 4294969496
+- Instructions:
+  mov	x9, #0x0                ; =0
+  mov	x8, #0x0                ; =0
+  mov	w10, #-0x3e8            ; =-1000
+  mov	w11, w2
+  b	0x1000008c8 <_func0+0x44>
+
+- Edges:
+  JUMP -> 4294969544
+
+============================================================
+BLOCK 4294969516
+- Instructions:
+  mov	w13, #0x0               ; =0
+
+- Edges:
+  NO_JUMP -> 4294969520
+
+============================================================
+BLOCK 4294969520
+- Instructions:
+  cmp	w13, w10
+  csel	w10, w13, w10, gt
+  csel	x8, x12, x8, gt
+  add	x9, x9, #0x1
+  cmp	x9, x11
+  b.eq	0x100000908 <_func0+0x84>
+
+- Edges:
+  NO_JUMP -> 4294969544
+  JUMP -> 4294969608
+
+============================================================
+BLOCK 4294969544
+- Instructions:
+  ldr	x12, [x1, x9, lsl #3]
+  ldrb	w15, [x12]
+  cbz	w15, 0x1000008ac <_func0+0x28>
+  mov	w13, #0x0               ; =0
+  add	x14, x12, #0x1
+  sub	w16, w15, #0x41
+  cmp	w16, #0x1a
+  cinc	w13, w13, lo
+  sub	w15, w15, #0x61
+  cmp	w15, #0x1a
+  cset	w15, lo
+  sub	w13, w13, w15
+  ldrb	w15, [x14], #0x1
+  cbnz	w15, 0x1000008dc <_func0+0x58>
+  b	0x1000008b0 <_func0+0x2c>
+
+- Edges:
+  JUMP -> 4294969520
+
+============================================================
+BLOCK 4294969604
+- Instructions:
+  mov	x8, #0x0                ; =0
+
+- Edges:
+  NO_JUMP -> 4294969608
+
+============================================================
+BLOCK 4294969608
+- Instructions:
+  stp	x0, x8, [sp]
+  adrp	x1, 0x100000000 <_sprintf+0x100000000>
+  add	x1, x1, #0xd8d
+  mov	x0, x3
+  bl	0x100000aa8 <_sprintf+0x100000aa8>
+  ldp	x29, x30, [sp, #0x10]
+  add	sp, sp, #0x20
+  ret
+
+- Edges: (none)

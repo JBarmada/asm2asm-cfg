@@ -1,0 +1,126 @@
+Function: _func0
+Basic blocks: 8
+
+============================================================
+BLOCK 0
+- Instructions:
+  sub	sp, sp, #112
+  stp	x28, x27, [sp, #16]
+  stp	x26, x25, [sp, #32]
+  stp	x24, x23, [sp, #48]
+  stp	x22, x21, [sp, #64]
+  stp	x20, x19, [sp, #80]
+  stp	x29, x30, [sp, #96]
+  add	x29, sp, #96
+  mov	x19, x1
+  mov	x20, x0
+  bl	_strlen
+  mov	x21, x0
+  cmp	w21, #1
+  b.lt	LBB0_7
+
+- Edges:
+  NO_JUMP -> 56
+  JUMP -> 228
+
+============================================================
+BLOCK 56
+- Instructions:
+  add	w8, w21, #2
+  mov	w9, #43691
+  movk	w9, #43690, lsl #16
+  umull	x8, w8, w9
+  lsr	x23, x8, #33
+  and	x24, x21, #0x7fffffff
+  mov	w25, #3
+  add	x26, sp, #12
+  mov	w27, #3
+  b	LBB0_4
+
+- Edges:
+  JUMP -> 152
+
+============================================================
+BLOCK 96
+- Instructions:
+  ldrb	w9, [sp, #12]
+  strb	w8, [sp, #12]
+  ldrb	w8, [sp, #14]
+  strb	w8, [sp, #13]
+  strb	w9, [sp, #14]
+
+- Edges:
+  NO_JUMP -> 116
+
+============================================================
+BLOCK 116
+- Instructions:
+  add	x1, sp, #12
+  mov	x0, x20
+  mov	x2, x22
+  bl	_strncpy
+  add	x20, x20, #3
+  sub	w21, w21, #3
+  add	x27, x27, #3
+  subs	x23, x23, #1
+  b.eq	LBB0_7
+
+- Edges:
+  NO_JUMP -> 152
+  JUMP -> 228
+
+============================================================
+BLOCK 152
+- Instructions:
+  cmp	x27, x24
+  csel	w28, w21, w25, hi
+  sxtw	x22, w28
+  add	x0, sp, #12
+  mov	x1, x20
+  mov	x2, x22
+  mov	w3, #4
+  bl	___strncpy_chk
+  strb	wzr, [x26, x22]
+  cmp	w28, #3
+  b.ne	LBB0_3
+
+- Edges:
+  NO_JUMP -> 196
+  JUMP -> 116
+
+============================================================
+BLOCK 196
+- Instructions:
+  ldrb	w8, [sp, #13]
+  cbz	w19, LBB0_2
+
+- Edges:
+  NO_JUMP -> 204
+  JUMP -> 96
+
+============================================================
+BLOCK 204
+- Instructions:
+  ldrb	w9, [sp, #14]
+  strb	w8, [sp, #14]
+  ldrb	w8, [sp, #12]
+  strb	w8, [sp, #13]
+  strb	w9, [sp, #12]
+  b	LBB0_3
+
+- Edges:
+  JUMP -> 116
+
+============================================================
+BLOCK 228
+- Instructions:
+  ldp	x29, x30, [sp, #96]
+  ldp	x20, x19, [sp, #80]
+  ldp	x22, x21, [sp, #64]
+  ldp	x24, x23, [sp, #48]
+  ldp	x26, x25, [sp, #32]
+  ldp	x28, x27, [sp, #16]
+  add	sp, sp, #112
+  ret
+
+- Edges: (none)

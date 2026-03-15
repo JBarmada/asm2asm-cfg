@@ -1,0 +1,132 @@
+Function: func0
+Basic blocks: 11
+
+============================================================
+BLOCK 0
+- Instructions:
+  addi	sp, sp, -48
+  sd	ra, 40(sp)
+  sd	s0, 32(sp)
+  sd	s1, 24(sp)
+  sd	s2, 16(sp)
+  sd	s3, 8(sp)
+  sd	s4, 0(sp)
+  blez	a1, .LBB0_6
+
+- Edges:
+  NO_JUMP -> 32
+  JUMP -> 128
+
+============================================================
+BLOCK 32
+- Instructions:
+  mv	s4, a1
+  mv	s3, a0
+  li	s2, 0
+  mv	s0, a1
+  mv	s1, a0
+
+- Edges:
+  NO_JUMP -> 52
+
+============================================================
+BLOCK 52
+- Instructions:
+  ld	a0, 0(s1)
+  call	strlen@plt
+  addw	s2, s2, a0
+  addi	s0, s0, -1
+  addi	s1, s1, 8
+  bnez	s0, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 76
+  JUMP -> 52
+
+============================================================
+BLOCK 76
+- Instructions:
+  addiw	a0, s2, 1
+  call	malloc@plt
+  beqz	a0, .LBB0_8
+
+- Edges:
+  NO_JUMP -> 88
+  JUMP -> 152
+
+============================================================
+BLOCK 88
+- Instructions:
+  mv	s2, a0
+  sb	zero, 0(a0)
+  blez	s4, .LBB0_9
+
+- Edges:
+  NO_JUMP -> 100
+  JUMP -> 156
+
+============================================================
+BLOCK 100
+- Instructions:
+  ld	a1, 0(s3)
+  mv	a0, s2
+  call	strcat@plt
+  addi	s4, s4, -1
+  addi	s3, s3, 8
+  bnez	s4, .LBB0_5
+
+- Edges:
+  NO_JUMP -> 124
+  JUMP -> 100
+
+============================================================
+BLOCK 124
+- Instructions:
+  j	.LBB0_9
+
+- Edges:
+  JUMP -> 156
+
+============================================================
+BLOCK 128
+- Instructions:
+  li	a0, 1
+  call	malloc@plt
+  beqz	a0, .LBB0_8
+
+- Edges:
+  NO_JUMP -> 140
+  JUMP -> 152
+
+============================================================
+BLOCK 140
+- Instructions:
+  mv	s2, a0
+  sb	zero, 0(a0)
+  j	.LBB0_9
+
+- Edges:
+  JUMP -> 156
+
+============================================================
+BLOCK 152
+- Instructions:
+  li	s2, 0
+
+- Edges:
+  NO_JUMP -> 156
+
+============================================================
+BLOCK 156
+- Instructions:
+  mv	a0, s2
+  ld	ra, 40(sp)
+  ld	s0, 32(sp)
+  ld	s1, 24(sp)
+  ld	s2, 16(sp)
+  ld	s3, 8(sp)
+  ld	s4, 0(sp)
+  addi	sp, sp, 48
+  ret
+
+- Edges: (none)

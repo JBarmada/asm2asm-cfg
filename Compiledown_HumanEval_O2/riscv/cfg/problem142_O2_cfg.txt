@@ -1,0 +1,171 @@
+Function: func0
+Basic blocks: 12
+
+============================================================
+BLOCK 0
+- Instructions:
+  addi	sp, sp, -48
+  sd	ra, 40(sp)
+  sd	s0, 32(sp)
+  sd	s1, 24(sp)
+  sd	s2, 16(sp)
+  sd	s3, 8(sp)
+  mv	s0, a0
+  call	strlen@plt
+  mv	s1, a0
+  sext.w	a0, a0
+  li	a1, 5
+  auipc	s2, %pcrel_hi(.L.str)
+  addi	s2, s2, %pcrel_lo(.LBB0_12)
+  blt	a0, a1, .LBB0_11
+
+- Edges:
+  NO_JUMP -> 56
+  JUMP -> 280
+
+============================================================
+BLOCK 56
+- Instructions:
+  lbu	a0, 0(s0)
+  li	a1, 65
+  bltu	a0, a1, .LBB0_11
+
+- Edges:
+  NO_JUMP -> 68
+  JUMP -> 280
+
+============================================================
+BLOCK 68
+- Instructions:
+  addiw	a1, a0, -91
+  andi	a1, a1, 255
+  sltiu	a1, a1, 6
+  sltiu	a0, a0, 123
+  xori	a0, a0, 1
+  or	a0, a0, a1
+  bnez	a0, .LBB0_11
+
+- Edges:
+  NO_JUMP -> 96
+  JUMP -> 280
+
+============================================================
+BLOCK 96
+- Instructions:
+  slli	a0, s1, 32
+  srli	a0, a0, 32
+  add	a0, a0, s0
+  addi	s3, a0, -4
+  auipc	a1, %pcrel_hi(.L.str.1)
+  addi	a1, a1, %pcrel_lo(.LBB0_13)
+  mv	a0, s3
+  call	strcmp@plt
+  beqz	a0, .LBB0_6
+
+- Edges:
+  NO_JUMP -> 132
+  JUMP -> 172
+
+============================================================
+BLOCK 132
+- Instructions:
+  auipc	a1, %pcrel_hi(.L.str.2)
+  addi	a1, a1, %pcrel_lo(.LBB0_14)
+  mv	a0, s3
+  call	strcmp@plt
+  beqz	a0, .LBB0_6
+
+- Edges:
+  NO_JUMP -> 152
+  JUMP -> 172
+
+============================================================
+BLOCK 152
+- Instructions:
+  auipc	a1, %pcrel_hi(.L.str.3)
+  addi	a1, a1, %pcrel_lo(.LBB0_15)
+  mv	a0, s3
+  call	strcmp@plt
+  bnez	a0, .LBB0_11
+
+- Edges:
+  NO_JUMP -> 172
+  JUMP -> 280
+
+============================================================
+BLOCK 172
+- Instructions:
+  li	a1, 0
+  li	a0, 0
+  li	a2, -1
+  srli	a2, a2, 32
+  and	a2, a2, s1
+
+- Edges:
+  NO_JUMP -> 192
+
+============================================================
+BLOCK 192
+- Instructions:
+  lbu	a3, 0(s0)
+  addiw	a4, a3, -48
+  andi	a4, a4, 255
+  sltiu	a4, a4, 10
+  addw	a1, a1, a4
+  addi	a3, a3, -46
+  seqz	a3, a3
+  addw	a0, a0, a3
+  addi	a2, a2, -1
+  addi	s0, s0, 1
+  bnez	a2, .LBB0_7
+
+- Edges:
+  NO_JUMP -> 236
+  JUMP -> 192
+
+============================================================
+BLOCK 236
+- Instructions:
+  sltiu	a1, a1, 4
+  xori	a1, a1, 1
+  addi	a0, a0, -1
+  snez	a0, a0
+  or	a0, a0, a1
+  bnez	a0, .LBB0_10
+
+- Edges:
+  NO_JUMP -> 260
+  JUMP -> 272
+
+============================================================
+BLOCK 260
+- Instructions:
+  auipc	s2, %pcrel_hi(.L.str.4)
+  addi	s2, s2, %pcrel_lo(.LBB0_16)
+  j	.LBB0_11
+
+- Edges:
+  JUMP -> 280
+
+============================================================
+BLOCK 272
+- Instructions:
+  auipc	s2, %pcrel_hi(.L.str)
+  addi	s2, s2, %pcrel_lo(.LBB0_17)
+
+- Edges:
+  NO_JUMP -> 280
+
+============================================================
+BLOCK 280
+- Instructions:
+  mv	a0, s2
+  ld	ra, 40(sp)
+  ld	s0, 32(sp)
+  ld	s1, 24(sp)
+  ld	s2, 16(sp)
+  ld	s3, 8(sp)
+  addi	sp, sp, 48
+  ret
+
+- Edges: (none)

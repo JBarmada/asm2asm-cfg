@@ -1,0 +1,90 @@
+Function: _func0
+Basic blocks: 7
+
+============================================================
+BLOCK 0
+- Instructions:
+  stp	x20, x19, [sp, #-32]!
+  stp	x29, x30, [sp, #16]
+  add	x29, sp, #16
+  mov	x19, x0
+  add	w20, w0, #1
+  sbfiz	x0, x20, #2, #32
+  bl	_malloc
+  mov	w8, #1
+  str	w8, [x0]
+  cbz	w19, LBB0_6
+
+- Edges:
+  NO_JUMP -> 40
+  JUMP -> 128
+
+============================================================
+BLOCK 40
+- Instructions:
+  mov	w8, #3
+  str	w8, [x0, #4]
+  cmp	w19, #2
+  b.lt	LBB0_6
+
+- Edges:
+  NO_JUMP -> 56
+  JUMP -> 128
+
+============================================================
+BLOCK 56
+- Instructions:
+  mov	w8, #2
+  b	LBB0_4
+
+- Edges:
+  JUMP -> 88
+
+============================================================
+BLOCK 64
+- Instructions:
+  lsr	w9, w8, #1
+  add	w9, w9, #1
+  str	w9, [x0, x8, lsl #2]
+  add	x8, x8, #1
+  cmp	x8, x20
+  b.eq	LBB0_6
+
+- Edges:
+  NO_JUMP -> 88
+  JUMP -> 128
+
+============================================================
+BLOCK 88
+- Instructions:
+  tbz	w8, #0, LBB0_3
+
+- Edges:
+  NO_JUMP -> 92
+  JUMP -> 64
+
+============================================================
+BLOCK 92
+- Instructions:
+  add	x9, x0, x8, lsl #2
+  ldp	w11, w10, [x9, #-8]
+  add	x8, x8, #1
+  add	w10, w10, w8, lsr #1
+  add	w10, w10, w11
+  add	w10, w10, #1
+  str	w10, [x9]
+  cmp	x8, x20
+  b.ne	LBB0_4
+
+- Edges:
+  NO_JUMP -> 128
+  JUMP -> 88
+
+============================================================
+BLOCK 128
+- Instructions:
+  ldp	x29, x30, [sp, #16]
+  ldp	x20, x19, [sp], #32
+  ret
+
+- Edges: (none)

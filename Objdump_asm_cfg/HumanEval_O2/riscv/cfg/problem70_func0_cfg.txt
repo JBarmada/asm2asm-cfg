@@ -1,0 +1,106 @@
+Function: func0
+Basic blocks: 9
+
+============================================================
+BLOCK 1788
+- Instructions:
+  add	sp,sp,-32
+  sd	ra,24(sp)
+  sd	s0,16(sp)
+  sd	s1,8(sp)
+  sd	s2,0(sp)
+  mv	s0,a1
+  mv	s2,a0
+  addw	a0,a1,1
+  li	a1,4
+  jal	620 <calloc@plt>
+
+- Edges:
+  JUMP -> 1568
+
+============================================================
+BLOCK 1812
+- Instructions:
+  blez	s0,748 <func0+0x4c>
+
+- Edges:
+  NO_JUMP -> 1816
+  JUMP -> 1864
+
+============================================================
+BLOCK 1816
+- Instructions:
+  li	a1,-1
+  j	724 <func0+0x28>
+
+- Edges:
+  JUMP -> 1828
+
+============================================================
+BLOCK 1820
+- Instructions:
+  add	s0,s0,-1
+  add	s2,s2,4
+  mv	a1,s1
+  beqz	s0,74a <func0+0x4e>
+
+- Edges:
+  NO_JUMP -> 1828
+  JUMP -> 1866
+
+============================================================
+BLOCK 1828
+- Instructions:
+  lw	s1,0(s2)
+  sll	a2,s1,0x2
+  add	a2,a2,a0
+  lw	a3,0(a2)
+  addw	a3,a3,1
+  slt	a4,a3,s1
+  xor	a4,a4,1
+  slt	a5,a1,s1
+  and	a4,a4,a5
+  sw	a3,0(a2)
+  bnez	a4,71c <func0+0x20>
+
+- Edges:
+  NO_JUMP -> 1860
+  JUMP -> 1820
+
+============================================================
+BLOCK 1860
+- Instructions:
+  mv	s1,a1
+  j	71c <func0+0x20>
+
+- Edges:
+  JUMP -> 1820
+
+============================================================
+BLOCK 1864
+- Instructions:
+  li	s1,-1
+
+- Edges:
+  NO_JUMP -> 1866
+
+============================================================
+BLOCK 1866
+- Instructions:
+  jal	630 <free@plt>
+
+- Edges:
+  JUMP -> 1584
+
+============================================================
+BLOCK 1870
+- Instructions:
+  mv	a0,s1
+  ld	ra,24(sp)
+  ld	s0,16(sp)
+  ld	s1,8(sp)
+  ld	s2,0(sp)
+  add	sp,sp,32
+  ret
+
+- Edges: (none)

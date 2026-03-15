@@ -1,0 +1,360 @@
+Function: func0
+Basic blocks: 31
+
+============================================================
+BLOCK 2672
+- Instructions:
+  add	sp,sp,-64
+  sd	ra,56(sp)
+  sd	s0,48(sp)
+  sd	s1,40(sp)
+  sd	s2,32(sp)
+  sd	s3,24(sp)
+  sd	s4,16(sp)
+  sd	s5,8(sp)
+  mv	s5,a1
+  mv	s0,a0
+  li	a0,-1
+  srl	s3,a0,0x20
+  mv	a0,s0
+  jal	670 <strlen@plt>
+
+- Edges:
+  JUMP -> 1648
+
+============================================================
+BLOCK 2704
+- Instructions:
+  mv	s2,a0
+  sext.w	s4,a0
+  mv	a0,s5
+  jal	670 <strlen@plt>
+
+- Edges:
+  JUMP -> 1648
+
+============================================================
+BLOCK 2716
+- Instructions:
+  li	a1,0
+  blez	s4,ad6 <func0+0x66>
+
+- Edges:
+  NO_JUMP -> 2722
+  JUMP -> 2774
+
+============================================================
+BLOCK 2722
+- Instructions:
+  and	a3,s2,s3
+  li	a5,1
+  mv	a4,s0
+  j	ab4 <func0+0x44>
+
+- Edges:
+  JUMP -> 2740
+
+============================================================
+BLOCK 2732
+- Instructions:
+  add	a3,a3,-1
+  add	a4,a4,1
+  mv	a5,a2
+  beqz	a3,ad8 <func0+0x68>
+
+- Edges:
+  NO_JUMP -> 2740
+  JUMP -> 2776
+
+============================================================
+BLOCK 2740
+- Instructions:
+  lbu	a2,0(a4)
+  add	s1,a2,-40
+  seqz	s1,s1
+  addw	a1,a1,s1
+  add	a2,a2,-41
+  seqz	a2,a2
+  subw	a1,a1,a2
+  li	a2,0
+  bltz	a1,aac <func0+0x3c>
+
+- Edges:
+  NO_JUMP -> 2770
+  JUMP -> 2732
+
+============================================================
+BLOCK 2770
+- Instructions:
+  mv	a2,a5
+  j	aac <func0+0x3c>
+
+- Edges:
+  JUMP -> 2732
+
+============================================================
+BLOCK 2774
+- Instructions:
+  li	a2,1
+
+- Edges:
+  NO_JUMP -> 2776
+
+============================================================
+BLOCK 2776
+- Instructions:
+  sext.w	a6,a0
+  blez	a6,b56 <func0+0xe6>
+
+- Edges:
+  NO_JUMP -> 2784
+  JUMP -> 2902
+
+============================================================
+BLOCK 2784
+- Instructions:
+  and	a4,a0,s3
+  mv	a5,s5
+  j	af0 <func0+0x80>
+
+- Edges:
+  JUMP -> 2800
+
+============================================================
+BLOCK 2792
+- Instructions:
+  add	a4,a4,-1
+  add	a5,a5,1
+  mv	a2,a3
+  beqz	a4,b12 <func0+0xa2>
+
+- Edges:
+  NO_JUMP -> 2800
+  JUMP -> 2834
+
+============================================================
+BLOCK 2800
+- Instructions:
+  lbu	a3,0(a5)
+  add	s1,a3,-40
+  seqz	s1,s1
+  addw	a1,a1,s1
+  add	a3,a3,-41
+  seqz	a3,a3
+  subw	a1,a1,a3
+  li	a3,0
+  bltz	a1,ae8 <func0+0x78>
+
+- Edges:
+  NO_JUMP -> 2830
+  JUMP -> 2792
+
+============================================================
+BLOCK 2830
+- Instructions:
+  mv	a3,a2
+  j	ae8 <func0+0x78>
+
+- Edges:
+  JUMP -> 2792
+
+============================================================
+BLOCK 2834
+- Instructions:
+  seqz	a1,a1
+  snez	a2,a3
+  and	a1,a1,a2
+  bnez	a1,bb2 <func0+0x142>
+
+- Edges:
+  NO_JUMP -> 2846
+  JUMP -> 2994
+
+============================================================
+BLOCK 2846
+- Instructions:
+  blez	a6,b62 <func0+0xf2>
+
+- Edges:
+  NO_JUMP -> 2850
+  JUMP -> 2914
+
+============================================================
+BLOCK 2850
+- Instructions:
+  li	a1,0
+  and	a2,a0,s3
+  li	a3,1
+  j	b34 <func0+0xc4>
+
+- Edges:
+  JUMP -> 2868
+
+============================================================
+BLOCK 2860
+- Instructions:
+  add	a2,a2,-1
+  add	s5,s5,1
+  mv	a3,a0
+  beqz	a2,b66 <func0+0xf6>
+
+- Edges:
+  NO_JUMP -> 2868
+  JUMP -> 2918
+
+============================================================
+BLOCK 2868
+- Instructions:
+  lbu	a0,0(s5)
+  add	a4,a0,-40
+  seqz	a4,a4
+  addw	a1,a1,a4
+  add	a0,a0,-41
+  seqz	a0,a0
+  subw	a1,a1,a0
+  li	a0,0
+  bltz	a1,b2c <func0+0xbc>
+
+- Edges:
+  NO_JUMP -> 2898
+  JUMP -> 2860
+
+============================================================
+BLOCK 2898
+- Instructions:
+  mv	a0,a3
+  j	b2c <func0+0xbc>
+
+- Edges:
+  JUMP -> 2860
+
+============================================================
+BLOCK 2902
+- Instructions:
+  seqz	a0,a1
+  snez	a1,a2
+  and	a0,a0,a1
+  bnez	a0,bb2 <func0+0x142>
+
+- Edges:
+  NO_JUMP -> 2914
+  JUMP -> 2994
+
+============================================================
+BLOCK 2914
+- Instructions:
+  li	a1,0
+  li	a0,1
+
+- Edges:
+  NO_JUMP -> 2918
+
+============================================================
+BLOCK 2918
+- Instructions:
+  blez	s4,b9a <func0+0x12a>
+
+- Edges:
+  NO_JUMP -> 2922
+  JUMP -> 2970
+
+============================================================
+BLOCK 2922
+- Instructions:
+  and	a2,s2,s3
+  j	b78 <func0+0x108>
+
+- Edges:
+  JUMP -> 2936
+
+============================================================
+BLOCK 2928
+- Instructions:
+  add	a2,a2,-1
+  add	s0,s0,1
+  mv	a0,a3
+  beqz	a2,b9c <func0+0x12c>
+
+- Edges:
+  NO_JUMP -> 2936
+  JUMP -> 2972
+
+============================================================
+BLOCK 2936
+- Instructions:
+  lbu	a3,0(s0)
+  add	a4,a3,-40
+  seqz	a4,a4
+  addw	a1,a1,a4
+  add	a3,a3,-41
+  seqz	a3,a3
+  subw	a1,a1,a3
+  li	a3,0
+  bltz	a1,b70 <func0+0x100>
+
+- Edges:
+  NO_JUMP -> 2966
+  JUMP -> 2928
+
+============================================================
+BLOCK 2966
+- Instructions:
+  mv	a3,a0
+  j	b70 <func0+0x100>
+
+- Edges:
+  JUMP -> 2928
+
+============================================================
+BLOCK 2970
+- Instructions:
+  mv	a3,a0
+
+- Edges:
+  NO_JUMP -> 2972
+
+============================================================
+BLOCK 2972
+- Instructions:
+  seqz	a0,a1
+  snez	a1,a3
+  and	a0,a0,a1
+  bnez	a0,bb2 <func0+0x142>
+
+- Edges:
+  NO_JUMP -> 2984
+  JUMP -> 2994
+
+============================================================
+BLOCK 2984
+- Instructions:
+  auipc	a0,0x0
+  add	a0,a0,111 # c17 <_IO_stdin_used+0x4b>
+  j	bba <func0+0x14a>
+
+- Edges:
+  JUMP -> 3002
+
+============================================================
+BLOCK 2994
+- Instructions:
+  auipc	a0,0x0
+  add	a0,a0,30 # bd0 <_IO_stdin_used+0x4>
+
+- Edges:
+  NO_JUMP -> 3002
+
+============================================================
+BLOCK 3002
+- Instructions:
+  ld	ra,56(sp)
+  ld	s0,48(sp)
+  ld	s1,40(sp)
+  ld	s2,32(sp)
+  ld	s3,24(sp)
+  ld	s4,16(sp)
+  ld	s5,8(sp)
+  add	sp,sp,64
+  ret
+
+- Edges: (none)

@@ -1,0 +1,15 @@
+Function: func0
+Basic blocks: 1
+
+============================================================
+BLOCK 0
+- Instructions:
+  leal	1(%rdi), %ecx
+  imull	%edi, %ecx
+  movl	%ecx, %eax
+  shrl	$31, %eax
+  addl	%ecx, %eax
+  sarl	%eax
+  retq
+
+- Edges: (none)

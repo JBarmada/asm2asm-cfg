@@ -1,0 +1,34 @@
+Function: func0
+Basic blocks: 3
+
+============================================================
+BLOCK 2144
+- Instructions:
+  li	a1,0
+  sraw	a2,a0,0x1f
+  xor	a0,a0,a2
+  subw	a0,a0,a2
+
+- Edges:
+  NO_JUMP -> 2154
+
+============================================================
+BLOCK 2154
+- Instructions:
+  mulw	a2,a1,a1
+  mulw	a2,a2,a1
+  addw	a1,a1,1
+  bltu	a2,a0,86a <func0+0xa>
+
+- Edges:
+  NO_JUMP -> 2168
+  JUMP -> 2154
+
+============================================================
+BLOCK 2168
+- Instructions:
+  sltu	a0,a0,a2
+  xor	a0,a0,1
+  ret
+
+- Edges: (none)

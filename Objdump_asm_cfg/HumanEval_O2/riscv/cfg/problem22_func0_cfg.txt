@@ -1,0 +1,124 @@
+Function: func0
+Basic blocks: 12
+
+============================================================
+BLOCK 2572
+- Instructions:
+  flw	ft1,0(a0)
+  li	a2,2
+  blt	a1,a2,a50 <func0+0x44>
+
+- Edges:
+  NO_JUMP -> 2582
+  JUMP -> 2640
+
+============================================================
+BLOCK 2582
+- Instructions:
+  add	a2,a0,4
+  add	a3,a1,-1
+  fmv.s	ft3,ft1
+  j	a32 <func0+0x26>
+
+- Edges:
+  JUMP -> 2610
+
+============================================================
+BLOCK 2596
+- Instructions:
+  add	a3,a3,-1
+  add	a2,a2,4
+  fmv.s	ft1,ft2
+  fmv.s	ft3,ft0
+  beqz	a3,a58 <func0+0x4c>
+
+- Edges:
+  NO_JUMP -> 2610
+  JUMP -> 2648
+
+============================================================
+BLOCK 2610
+- Instructions:
+  flw	ft2,0(a2)
+  flt.s	a4,ft2,ft3
+  fmv.s	ft0,ft2
+  bnez	a4,a44 <func0+0x38>
+
+- Edges:
+  NO_JUMP -> 2624
+  JUMP -> 2628
+
+============================================================
+BLOCK 2624
+- Instructions:
+  fmv.s	ft0,ft3
+
+- Edges:
+  NO_JUMP -> 2628
+
+============================================================
+BLOCK 2628
+- Instructions:
+  flt.s	a4,ft1,ft2
+  bnez	a4,a24 <func0+0x18>
+
+- Edges:
+  NO_JUMP -> 2634
+  JUMP -> 2596
+
+============================================================
+BLOCK 2634
+- Instructions:
+  fmv.s	ft2,ft1
+  j	a24 <func0+0x18>
+
+- Edges:
+  JUMP -> 2596
+
+============================================================
+BLOCK 2640
+- Instructions:
+  fmv.s	ft0,ft1
+  fmv.s	ft2,ft1
+
+- Edges:
+  NO_JUMP -> 2648
+
+============================================================
+BLOCK 2648
+- Instructions:
+  blez	a1,a76 <func0+0x6a>
+
+- Edges:
+  NO_JUMP -> 2652
+  JUMP -> 2678
+
+============================================================
+BLOCK 2652
+- Instructions:
+  fsub.s	ft1,ft2,ft0
+
+- Edges:
+  NO_JUMP -> 2656
+
+============================================================
+BLOCK 2656
+- Instructions:
+  flw	ft2,0(a0)
+  fsub.s	ft2,ft2,ft0
+  fdiv.s	ft2,ft2,ft1
+  fsw	ft2,0(a0)
+  add	a1,a1,-1
+  add	a0,a0,4
+  bnez	a1,a60 <func0+0x54>
+
+- Edges:
+  NO_JUMP -> 2678
+  JUMP -> 2656
+
+============================================================
+BLOCK 2678
+- Instructions:
+  ret
+
+- Edges: (none)

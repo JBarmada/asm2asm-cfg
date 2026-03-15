@@ -1,0 +1,126 @@
+Function: func0
+Basic blocks: 9
+
+============================================================
+BLOCK 2308
+- Instructions:
+  add	sp,sp,-80
+  sd	ra,72(sp)
+  sd	s0,64(sp)
+  sd	s1,56(sp)
+  sd	s2,48(sp)
+  sd	s3,40(sp)
+  sd	s4,32(sp)
+  fsd	fs0,24(sp)
+  fsd	fs1,16(sp)
+  fsd	fs2,8(sp)
+  fsd	fs3,0(sp)
+  blez	a1,980 <func0+0x7c>
+
+- Edges:
+  NO_JUMP -> 2334
+  JUMP -> 2432
+
+============================================================
+BLOCK 2334
+- Instructions:
+  mv	s0,a1
+  mv	s1,a0
+  li	s2,0
+  auipc	a0,0x1
+  add	a0,a0,1844 # 2058 <__SDATA_BEGIN__>
+  fld	fs1,0(a0)
+  fmv.w.x	fs2,zero
+  lui	a0,0x80000
+  addw	s3,a0,1 # ffffffff80000001 <__global_pointer$+0xffffffff7fffd801>
+  li	s4,1
+  j	944 <func0+0x40>
+
+- Edges:
+  JUMP -> 2372
+
+============================================================
+BLOCK 2366
+- Instructions:
+  add	s0,s0,-1
+  add	s1,s1,4
+  beqz	s0,982 <func0+0x7e>
+
+- Edges:
+  NO_JUMP -> 2372
+  JUMP -> 2434
+
+============================================================
+BLOCK 2372
+- Instructions:
+  flw	fs3,0(s1)
+  fcvt.d.s	fs0,fs3
+  fmv.d	fa0,fs0
+  jal	640 <round@plt>
+
+- Edges:
+  JUMP -> 1600
+
+============================================================
+BLOCK 2388
+- Instructions:
+  fsub.d	ft0,fs0,fa0
+  fabs.d	ft0,ft0
+  flt.d	a0,ft0,fs1
+  flt.s	a1,fs2,fs3
+  and	a0,a0,a1
+  beqz	a0,93e <func0+0x3a>
+
+- Edges:
+  NO_JUMP -> 2408
+  JUMP -> 2366
+
+============================================================
+BLOCK 2408
+- Instructions:
+  fcvt.w.d	a0,fa0,rtz
+  and	a1,a0,s3
+  bne	a1,s4,93e <func0+0x3a>
+
+- Edges:
+  NO_JUMP -> 2420
+  JUMP -> 2366
+
+============================================================
+BLOCK 2420
+- Instructions:
+  mulw	a0,a0,a0
+  sll	a0,a0,0x20
+  srl	a0,a0,0x20
+  add	s2,s2,a0
+  j	93e <func0+0x3a>
+
+- Edges:
+  JUMP -> 2366
+
+============================================================
+BLOCK 2432
+- Instructions:
+  li	s2,0
+
+- Edges:
+  NO_JUMP -> 2434
+
+============================================================
+BLOCK 2434
+- Instructions:
+  mv	a0,s2
+  ld	ra,72(sp)
+  ld	s0,64(sp)
+  ld	s1,56(sp)
+  ld	s2,48(sp)
+  ld	s3,40(sp)
+  ld	s4,32(sp)
+  fld	fs0,24(sp)
+  fld	fs1,16(sp)
+  fld	fs2,8(sp)
+  fld	fs3,0(sp)
+  add	sp,sp,80
+  ret
+
+- Edges: (none)

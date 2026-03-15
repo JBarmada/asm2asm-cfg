@@ -1,0 +1,67 @@
+Function: _func0
+Basic blocks: 4
+
+============================================================
+BLOCK 4294968732
+- Instructions:
+  stp	x20, x19, [sp, #-0x20]!
+  stp	x29, x30, [sp, #0x10]
+  add	x29, sp, #0x10
+  mov	x19, x0
+  bl	0x100000868 <_strlen+0x100000868>
+  cbz	x0, 0x100000620 <_func0+0x84>
+  ldrb	w8, [x19]
+  cmp	w8, #0x5b
+  cset	w9, eq
+  cmp	w8, #0x5d
+  cset	w8, eq
+  sub	w8, w9, w8
+  bic	w8, w8, w8, asr #31
+  mov	w11, #0x1               ; =1
+  mov	x10, x8
+
+- Edges:
+  NO_JUMP -> 4294968792
+
+============================================================
+BLOCK 4294968792
+- Instructions:
+  mov	x9, x11
+  cmp	x0, x11
+  b.eq	0x100000618 <_func0+0x7c>
+
+- Edges:
+  NO_JUMP -> 4294968804
+  JUMP -> 4294968856
+
+============================================================
+BLOCK 4294968804
+- Instructions:
+  ldrb	w11, [x19, x9]
+  cmp	w11, #0x5b
+  cinc	w10, w10, eq
+  cmp	w11, #0x5d
+  cset	w11, eq
+  sub	w10, w10, w11
+  bic	w10, w10, w10, asr #31
+  cmp	w10, w8
+  csel	w8, w10, w8, gt
+  sub	w12, w8, #0x2
+  add	x11, x9, #0x1
+  cmp	w10, w12
+  b.gt	0x1000005d8 <_func0+0x3c>
+
+- Edges:
+  NO_JUMP -> 4294968856
+  JUMP -> 4294968792
+
+============================================================
+BLOCK 4294968856
+- Instructions:
+  cmp	x0, x9
+  cset	w0, hi
+  ldp	x29, x30, [sp, #0x10]
+  ldp	x20, x19, [sp], #0x20
+  ret
+
+- Edges: (none)

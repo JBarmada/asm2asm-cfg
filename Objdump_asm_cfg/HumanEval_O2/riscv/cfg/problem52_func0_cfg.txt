@@ -1,0 +1,86 @@
+Function: func0
+Basic blocks: 7
+
+============================================================
+BLOCK 2388
+- Instructions:
+  add	sp,sp,-48
+  sd	ra,40(sp)
+  sd	s0,32(sp)
+  sd	s1,24(sp)
+  sd	s2,16(sp)
+  sd	s3,8(sp)
+  mv	s3,a0
+  lbu	s0,0(a0)
+  beqz	s0,998 <func0+0x44>
+
+- Edges:
+  NO_JUMP -> 2408
+  JUMP -> 2456
+
+============================================================
+BLOCK 2408
+- Instructions:
+  add	s1,s3,1
+  auipc	s2,0x0
+  add	s2,s2,346 # ac6 <_IO_stdin_used+0x11a>
+  j	97e <func0+0x2a>
+
+- Edges:
+  JUMP -> 2430
+
+============================================================
+BLOCK 2422
+- Instructions:
+  lbu	s0,0(s1)
+  add	s1,s1,1
+  beqz	s0,998 <func0+0x44>
+
+- Edges:
+  NO_JUMP -> 2430
+  JUMP -> 2456
+
+============================================================
+BLOCK 2430
+- Instructions:
+  zext.b	a1,s0
+  li	a2,11
+  mv	a0,s2
+  jal	660 <memchr@plt>
+
+- Edges:
+  JUMP -> 1632
+
+============================================================
+BLOCK 2442
+- Instructions:
+  bnez	a0,976 <func0+0x22>
+
+- Edges:
+  NO_JUMP -> 2444
+  JUMP -> 2422
+
+============================================================
+BLOCK 2444
+- Instructions:
+  add	a0,s3,1
+  sb	s0,0(s3)
+  mv	s3,a0
+  j	976 <func0+0x22>
+
+- Edges:
+  JUMP -> 2422
+
+============================================================
+BLOCK 2456
+- Instructions:
+  sb	zero,0(s3)
+  ld	ra,40(sp)
+  ld	s0,32(sp)
+  ld	s1,24(sp)
+  ld	s2,16(sp)
+  ld	s3,8(sp)
+  add	sp,sp,48
+  ret
+
+- Edges: (none)

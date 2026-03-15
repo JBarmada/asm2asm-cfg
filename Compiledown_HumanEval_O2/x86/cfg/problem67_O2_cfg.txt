@@ -1,0 +1,56 @@
+Function: func0
+Basic blocks: 5
+
+============================================================
+BLOCK 0
+- Instructions:
+  movzbl	(%rdi), %edx
+  testb	%dl, %dl
+  je	.LBB0_1
+
+- Edges:
+  NO_JUMP -> 12
+  JUMP -> 68
+
+============================================================
+BLOCK 12
+- Instructions:
+  incq	%rdi
+  xorl	%ecx, %ecx
+  xorl	%eax, %eax
+
+- Edges:
+  NO_JUMP -> 24
+
+============================================================
+BLOCK 24
+- Instructions:
+  leal	-65(%rdx), %esi
+  cmpb	$26, %sil
+  movzbl	%dl, %edx
+  cmovael	%ecx, %edx
+  movzbl	%dl, %edx
+  addl	%edx, %eax
+  movzbl	(%rdi), %edx
+  incq	%rdi
+  testb	%dl, %dl
+  jne	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 64
+  JUMP -> 24
+
+============================================================
+BLOCK 64
+- Instructions:
+  retq
+
+- Edges: (none)
+
+============================================================
+BLOCK 68
+- Instructions:
+  xorl	%eax, %eax
+  retq
+
+- Edges: (none)

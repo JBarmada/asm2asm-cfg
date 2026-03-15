@@ -1,0 +1,166 @@
+Function: func0
+Basic blocks: 9
+
+============================================================
+BLOCK 0
+- Instructions:
+  addi	sp, sp, -112
+  sd	ra, 104(sp)
+  sd	s0, 96(sp)
+  sd	s1, 88(sp)
+  sd	s2, 80(sp)
+  sd	s3, 72(sp)
+  sd	s4, 64(sp)
+  sd	s5, 56(sp)
+  sd	s6, 48(sp)
+  sd	s7, 40(sp)
+  sd	s8, 32(sp)
+  sd	s9, 24(sp)
+  sd	s10, 16(sp)
+  sd	s11, 8(sp)
+  sd	a2, 0(sp)
+  mv	s3, a1
+  mv	s4, a0
+  call	strlen@plt
+  addi	s5, a0, 1
+  mv	a0, s5
+  call	malloc@plt
+  mv	s10, a0
+  call	__ctype_b_loc@plt
+  mv	s8, a0
+  li	s1, 0
+  li	s6, 0
+  li	s0, 0
+  li	s11, 0
+  li	s9, 0
+  auipc	s7, %pcrel_hi(.L.str)
+  addi	s7, s7, %pcrel_lo(.LBB0_9)
+  j	.LBB0_3
+
+- Edges:
+  JUMP -> 144
+
+============================================================
+BLOCK 128
+- Instructions:
+  li	s0, 0
+  addiw	s11, s1, 1
+
+- Edges:
+  NO_JUMP -> 136
+
+============================================================
+BLOCK 136
+- Instructions:
+  addi	s1, s1, 1
+  beq	s5, s1, .LBB0_8
+
+- Edges:
+  NO_JUMP -> 144
+  JUMP -> 312
+
+============================================================
+BLOCK 144
+- Instructions:
+  add	a0, s4, s1
+  lbu	a1, 0(a0)
+  ld	a0, 0(s8)
+  slli	a2, a1, 1
+  add	a0, a0, a2
+  lhu	s2, 0(a0)
+  seqz	a0, a1
+  slli	a2, s2, 50
+  srli	a2, a2, 63
+  or	a0, a0, a2
+  beqz	a0, .LBB0_6
+
+- Edges:
+  NO_JUMP -> 188
+  JUMP -> 268
+
+============================================================
+BLOCK 188
+- Instructions:
+  bne	s0, s3, .LBB0_1
+
+- Edges:
+  NO_JUMP -> 192
+  JUMP -> 128
+
+============================================================
+BLOCK 192
+- Instructions:
+  subw	a0, s1, s11
+  add	a0, a0, s10
+  sb	zero, 0(a0)
+  addiw	s0, s9, 1
+  slli	a1, s0, 3
+  mv	a0, s6
+  call	realloc@plt
+  mv	s6, a0
+  mv	a0, s10
+  call	strlen@plt
+  addi	a0, a0, 1
+  call	malloc@plt
+  slli	a1, s9, 3
+  add	a1, a1, s6
+  sd	a0, 0(a1)
+  mv	a1, s10
+  call	strcpy@plt
+  mv	s9, s0
+  j	.LBB0_1
+
+- Edges:
+  JUMP -> 128
+
+============================================================
+BLOCK 268
+- Instructions:
+  subw	a0, s1, s11
+  add	a0, a0, s10
+  sb	a1, 0(a0)
+  li	a2, 11
+  mv	a0, s7
+  call	memchr@plt
+  bnez	a0, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 296
+  JUMP -> 136
+
+============================================================
+BLOCK 296
+- Instructions:
+  slli	a0, s2, 53
+  srli	a0, a0, 63
+  addw	s0, s0, a0
+  j	.LBB0_2
+
+- Edges:
+  JUMP -> 136
+
+============================================================
+BLOCK 312
+- Instructions:
+  mv	a0, s10
+  call	free@plt
+  ld	a0, 0(sp)
+  sw	s9, 0(a0)
+  mv	a0, s6
+  ld	ra, 104(sp)
+  ld	s0, 96(sp)
+  ld	s1, 88(sp)
+  ld	s2, 80(sp)
+  ld	s3, 72(sp)
+  ld	s4, 64(sp)
+  ld	s5, 56(sp)
+  ld	s6, 48(sp)
+  ld	s7, 40(sp)
+  ld	s8, 32(sp)
+  ld	s9, 24(sp)
+  ld	s10, 16(sp)
+  ld	s11, 8(sp)
+  addi	sp, sp, 112
+  ret
+
+- Edges: (none)

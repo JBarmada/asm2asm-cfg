@@ -1,0 +1,198 @@
+Function: func0
+Basic blocks: 18
+
+============================================================
+BLOCK 0
+- Instructions:
+  pushq	%r14
+  pushq	%rbx
+  pushq	%rax
+  testl	%esi, %esi
+  jle	.LBB0_8
+
+- Edges:
+  NO_JUMP -> 20
+  JUMP -> 124
+
+============================================================
+BLOCK 20
+- Instructions:
+  movq	%rdi, %rbx
+  movl	%esi, %r14d
+  leaq	(,%r14,4), %rdi
+  callq	malloc@PLT
+  testq	%rax, %rax
+  je	.LBB0_8
+
+- Edges:
+  NO_JUMP -> 44
+  JUMP -> 124
+
+============================================================
+BLOCK 44
+- Instructions:
+  movl	(%rbx), %edx
+  leaq	-1(%r14), %rcx
+  movl	%r14d, %r8d
+  andl	$3, %r8d
+  cmpq	$3, %rcx
+  jae	.LBB0_10
+
+- Edges:
+  NO_JUMP -> 68
+  JUMP -> 144
+
+============================================================
+BLOCK 68
+- Instructions:
+  xorl	%esi, %esi
+
+- Edges:
+  NO_JUMP -> 72
+
+============================================================
+BLOCK 72
+- Instructions:
+  testq	%r8, %r8
+  je	.LBB0_9
+
+- Edges:
+  NO_JUMP -> 80
+  JUMP -> 128
+
+============================================================
+BLOCK 80
+- Instructions:
+  leaq	(%rax,%rsi,4), %rdi
+  leaq	(%rbx,%rsi,4), %rsi
+  xorl	%ebx, %ebx
+
+- Edges:
+  NO_JUMP -> 92
+
+============================================================
+BLOCK 92
+- Instructions:
+  movl	(%rsi,%rbx,4), %ecx
+  cmpl	%edx, %ecx
+  cmovgl	%ecx, %edx
+  movl	%edx, (%rdi,%rbx,4)
+  incq	%rbx
+  cmpq	%rbx, %r8
+  jne	.LBB0_6
+
+- Edges:
+  NO_JUMP -> 120
+  JUMP -> 92
+
+============================================================
+BLOCK 120
+- Instructions:
+  jmp	.LBB0_9
+
+- Edges:
+  JUMP -> 128
+
+============================================================
+BLOCK 124
+- Instructions:
+  xorl	%eax, %eax
+
+- Edges:
+  NO_JUMP -> 128
+
+============================================================
+BLOCK 128
+- Instructions:
+  addq	$8, %rsp
+  popq	%rbx
+  popq	%r14
+  retq
+
+- Edges: (none)
+
+============================================================
+BLOCK 144
+- Instructions:
+  andl	$-4, %r14d
+  xorl	%esi, %esi
+  jmp	.LBB0_12
+
+- Edges:
+  JUMP -> 172
+
+============================================================
+BLOCK 156
+- Instructions:
+  movl	%edx, 12(%rax,%rsi,4)
+  addq	$4, %rsi
+  cmpq	%rsi, %r14
+  je	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 172
+  JUMP -> 72
+
+============================================================
+BLOCK 172
+- Instructions:
+  movl	(%rbx,%rsi,4), %ecx
+  cmpl	%edx, %ecx
+  cmovgl	%ecx, %edx
+  movl	%edx, (%rax,%rsi,4)
+  movl	4(%rbx,%rsi,4), %edi
+  cmpl	%edx, %edi
+  jg	.LBB0_14
+
+- Edges:
+  NO_JUMP -> 200
+  JUMP -> 204
+
+============================================================
+BLOCK 200
+- Instructions:
+  movl	%edx, %edi
+
+- Edges:
+  NO_JUMP -> 204
+
+============================================================
+BLOCK 204
+- Instructions:
+  movl	%edi, 4(%rax,%rsi,4)
+  movl	8(%rbx,%rsi,4), %ecx
+  cmpl	%edi, %ecx
+  jg	.LBB0_16
+
+- Edges:
+  NO_JUMP -> 220
+  JUMP -> 224
+
+============================================================
+BLOCK 220
+- Instructions:
+  movl	%edi, %ecx
+
+- Edges:
+  NO_JUMP -> 224
+
+============================================================
+BLOCK 224
+- Instructions:
+  movl	%ecx, 8(%rax,%rsi,4)
+  movl	12(%rbx,%rsi,4), %edx
+  cmpl	%ecx, %edx
+  jg	.LBB0_11
+
+- Edges:
+  NO_JUMP -> 240
+  JUMP -> 156
+
+============================================================
+BLOCK 240
+- Instructions:
+  movl	%ecx, %edx
+  jmp	.LBB0_11
+
+- Edges:
+  JUMP -> 156

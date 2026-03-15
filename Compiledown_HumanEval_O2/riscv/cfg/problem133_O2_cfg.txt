@@ -1,0 +1,133 @@
+Function: func0
+Basic blocks: 12
+
+============================================================
+BLOCK 0
+- Instructions:
+  addi	sp, sp, -16
+  sd	ra, 8(sp)
+  sd	s0, 0(sp)
+  mv	s0, a0
+  call	strlen@plt
+  beqz	a0, .LBB0_11
+
+- Edges:
+  NO_JUMP -> 24
+  JUMP -> 152
+
+============================================================
+BLOCK 24
+- Instructions:
+  lbu	a1, 0(s0)
+  addi	a2, a1, -91
+  seqz	a2, a2
+  addi	a1, a1, -93
+  seqz	a1, a1
+  sub	a1, a2, a1
+  bgtz	a1, .LBB0_3
+
+- Edges:
+  NO_JUMP -> 52
+  JUMP -> 56
+
+============================================================
+BLOCK 52
+- Instructions:
+  li	a1, 0
+
+- Edges:
+  NO_JUMP -> 56
+
+============================================================
+BLOCK 56
+- Instructions:
+  li	a4, 1
+  mv	a3, a1
+  j	.LBB0_5
+
+- Edges:
+  JUMP -> 80
+
+============================================================
+BLOCK 68
+- Instructions:
+  addiw	a5, a1, -2
+  addi	a4, a2, 1
+  bge	a5, a3, .LBB0_10
+
+- Edges:
+  NO_JUMP -> 80
+  JUMP -> 148
+
+============================================================
+BLOCK 80
+- Instructions:
+  mv	a2, a4
+  beq	a0, a4, .LBB0_10
+
+- Edges:
+  NO_JUMP -> 88
+  JUMP -> 148
+
+============================================================
+BLOCK 88
+- Instructions:
+  add	a4, s0, a2
+  lbu	a4, 0(a4)
+  addi	a5, a4, -91
+  seqz	a5, a5
+  addw	a3, a3, a5
+  addi	a4, a4, -93
+  seqz	a4, a4
+  subw	a3, a3, a4
+  bgtz	a3, .LBB0_8
+
+- Edges:
+  NO_JUMP -> 124
+  JUMP -> 128
+
+============================================================
+BLOCK 124
+- Instructions:
+  li	a3, 0
+
+- Edges:
+  NO_JUMP -> 128
+
+============================================================
+BLOCK 128
+- Instructions:
+  sext.w	a4, a1
+  mv	a1, a3
+  blt	a4, a3, .LBB0_4
+
+- Edges:
+  NO_JUMP -> 140
+  JUMP -> 68
+
+============================================================
+BLOCK 140
+- Instructions:
+  mv	a1, a4
+  j	.LBB0_4
+
+- Edges:
+  JUMP -> 68
+
+============================================================
+BLOCK 148
+- Instructions:
+  sltu	a0, a2, a0
+
+- Edges:
+  NO_JUMP -> 152
+
+============================================================
+BLOCK 152
+- Instructions:
+  ld	ra, 8(sp)
+  ld	s0, 0(sp)
+  addi	sp, sp, 16
+  ret
+
+- Edges: (none)

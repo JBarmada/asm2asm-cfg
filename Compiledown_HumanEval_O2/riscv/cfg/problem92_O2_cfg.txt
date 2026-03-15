@@ -1,0 +1,132 @@
+Function: func0
+Basic blocks: 10
+
+============================================================
+BLOCK 0
+- Instructions:
+  addi	sp, sp, -32
+  sd	ra, 24(sp)
+  sd	s0, 16(sp)
+  sd	s1, 8(sp)
+  sd	s2, 0(sp)
+  lbu	s1, 0(a0)
+  beqz	s1, .LBB0_8
+
+- Edges:
+  NO_JUMP -> 28
+  JUMP -> 196
+
+============================================================
+BLOCK 28
+- Instructions:
+  mv	s2, a0
+  call	__ctype_b_loc@plt
+  mv	a1, a0
+  li	a0, 0
+  li	s0, 0
+  ld	t0, 0(a1)
+  addi	a2, s2, 1
+  li	t1, 1
+  li	a6, 63
+  lui	a3, 786434
+  addiw	a3, a3, 1
+  slli	a7, a3, 33
+  j	.LBB0_4
+
+- Edges:
+  JUMP -> 116
+
+============================================================
+BLOCK 80
+- Instructions:
+  li	a3, 1
+
+- Edges:
+  NO_JUMP -> 84
+
+============================================================
+BLOCK 84
+- Instructions:
+  srli	a1, s1, 13
+  lbu	s1, 0(a2)
+  snez	a4, s0
+  and	a1, a1, a4
+  addw	a0, a0, a1
+  addi	a2, a2, 1
+  mv	s0, a3
+  beqz	s1, .LBB0_9
+
+- Edges:
+  NO_JUMP -> 116
+  JUMP -> 200
+
+============================================================
+BLOCK 116
+- Instructions:
+  andi	a4, s1, 255
+  slli	a3, a4, 1
+  add	a3, a3, t0
+  lh	s1, 0(a3)
+  slli	a3, s1, 50
+  srai	a3, a3, 63
+  addi	a1, a4, -73
+  seqz	a1, a1
+  snez	a5, t1
+  and	a1, a1, a5
+  and	t1, a3, t1
+  bnez	a1, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 164
+  JUMP -> 80
+
+============================================================
+BLOCK 164
+- Instructions:
+  li	a3, 0
+  bltu	a6, a4, .LBB0_3
+
+- Edges:
+  NO_JUMP -> 172
+  JUMP -> 84
+
+============================================================
+BLOCK 172
+- Instructions:
+  srl	a1, a7, a4
+  andi	a1, a1, 1
+  beqz	a1, .LBB0_3
+
+- Edges:
+  NO_JUMP -> 184
+  JUMP -> 84
+
+============================================================
+BLOCK 184
+- Instructions:
+  li	a3, 0
+  li	t1, 1
+  j	.LBB0_3
+
+- Edges:
+  JUMP -> 84
+
+============================================================
+BLOCK 196
+- Instructions:
+  li	a0, 0
+
+- Edges:
+  NO_JUMP -> 200
+
+============================================================
+BLOCK 200
+- Instructions:
+  ld	ra, 24(sp)
+  ld	s0, 16(sp)
+  ld	s1, 8(sp)
+  ld	s2, 0(sp)
+  addi	sp, sp, 32
+  ret
+
+- Edges: (none)

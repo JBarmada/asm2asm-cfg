@@ -1,0 +1,34 @@
+Function: func0
+Basic blocks: 3
+
+============================================================
+BLOCK 4912
+- Instructions:
+  mov    %edx,%eax
+  sub    %esi,%eax
+  jge    1340 <func0+0x10>
+
+- Edges:
+  NO_JUMP -> 4918
+  JUMP -> 4928
+
+============================================================
+BLOCK 4918
+- Instructions:
+  add    %edi,%edx
+  mov    %edx,(%rcx)
+  xor    %eax,%eax
+  mov    %eax,0x4(%rcx)
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 4928
+- Instructions:
+  add    %edi,%esi
+  mov    %esi,(%rcx)
+  mov    %eax,0x4(%rcx)
+  ret
+
+- Edges: (none)

@@ -1,0 +1,59 @@
+Function: func0
+Basic blocks: 5
+
+============================================================
+BLOCK 2288
+- Instructions:
+  add	sp,sp,-16
+  sd	ra,8(sp)
+  sd	s0,0(sp)
+  mv	s0,a0
+  sll	a0,a0,0x2
+  jal	660 <malloc@plt>
+
+- Edges:
+  JUMP -> 1632
+
+============================================================
+BLOCK 2302
+- Instructions:
+  li	a1,2
+  sw	s0,0(a0)
+  blt	s0,a1,91a <func0+0x2a>
+
+- Edges:
+  NO_JUMP -> 2310
+  JUMP -> 2330
+
+============================================================
+BLOCK 2310
+- Instructions:
+  lw	a1,0(a0)
+  add	a2,a0,4
+  add	a3,s0,-1
+
+- Edges:
+  NO_JUMP -> 2320
+
+============================================================
+BLOCK 2320
+- Instructions:
+  addw	a1,a1,2
+  sw	a1,0(a2)
+  add	a3,a3,-1
+  add	a2,a2,4
+  bnez	a3,910 <func0+0x20>
+
+- Edges:
+  NO_JUMP -> 2330
+  JUMP -> 2320
+
+============================================================
+BLOCK 2330
+- Instructions:
+  ld	ra,8(sp)
+  ld	s0,0(sp)
+  add	sp,sp,16
+  ret
+
+- Edges: (none)

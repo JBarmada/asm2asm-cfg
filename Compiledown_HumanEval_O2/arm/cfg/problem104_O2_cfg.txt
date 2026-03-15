@@ -1,0 +1,63 @@
+Function: _func0
+Basic blocks: 5
+
+============================================================
+BLOCK 0
+- Instructions:
+  cmp	w0, w1
+  b.le	LBB0_2
+
+- Edges:
+  NO_JUMP -> 8
+  JUMP -> 20
+
+============================================================
+BLOCK 8
+- Instructions:
+  adrp	x0, l_.str
+  add	x0, x0, l_.str
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 20
+- Instructions:
+  stp	x20, x19, [sp, #-32]!
+  stp	x29, x30, [sp, #16]
+  add	x29, sp, #16
+  add	w19, w1, w0
+  mov	w0, #33
+  bl	_malloc
+  strb	wzr, [x0]
+  strb	wzr, [x0, #32]!
+
+- Edges:
+  NO_JUMP -> 52
+
+============================================================
+BLOCK 52
+- Instructions:
+  add	w8, w19, w19, lsr #31
+  asr	w8, w8, #1
+  and	w9, w8, #0x1
+  cmp	w8, #0
+  cneg	w9, w9, lt
+  add	w9, w9, #48
+  strb	w9, [x0, #-1]!
+  cmp	w19, #3
+  mov	x19, x8
+  b.gt	LBB0_3
+
+- Edges:
+  NO_JUMP -> 92
+  JUMP -> 52
+
+============================================================
+BLOCK 92
+- Instructions:
+  ldp	x29, x30, [sp, #16]
+  ldp	x20, x19, [sp], #32
+  ret
+
+- Edges: (none)

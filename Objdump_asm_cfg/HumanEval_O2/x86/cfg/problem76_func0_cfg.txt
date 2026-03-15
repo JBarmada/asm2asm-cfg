@@ -1,0 +1,110 @@
+Function: func0
+Basic blocks: 10
+
+============================================================
+BLOCK 4944
+- Instructions:
+  xor    %eax,%eax
+  cmp    $0x2,%edi
+  jl     1370 <func0+0x20>
+
+- Edges:
+  NO_JUMP -> 4951
+  JUMP -> 4976
+
+============================================================
+BLOCK 4951
+- Instructions:
+  xor    %ecx,%ecx
+  cmp    $0x4,%edi
+  jae    1371 <func0+0x21>
+
+- Edges:
+  NO_JUMP -> 4958
+  JUMP -> 4977
+
+============================================================
+BLOCK 4958
+- Instructions:
+  xor    %edx,%edx
+  cmp    $0x2,%edi
+  setge  %dl
+  add    %ecx,%edx
+  xor    %eax,%eax
+  cmp    $0x3,%edx
+  sete   %al
+
+- Edges:
+  NO_JUMP -> 4976
+
+============================================================
+BLOCK 4976
+- Instructions:
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 4977
+- Instructions:
+  xor    %ecx,%ecx
+  mov    $0x2,%esi
+  jmp    138b <func0+0x3b>
+
+- Edges:
+  JUMP -> 5003
+
+============================================================
+BLOCK 4986
+- Instructions:
+  nopw   0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 4992
+
+============================================================
+BLOCK 4992
+- Instructions:
+  inc    %esi
+  mov    %esi,%eax
+  imul   %esi,%eax
+  cmp    %edi,%eax
+  jg     135e <func0+0xe>
+
+- Edges:
+  NO_JUMP -> 5003
+  JUMP -> 4958
+
+============================================================
+BLOCK 5003
+- Instructions:
+  mov    %edi,%eax
+  nopl   (%rax)
+
+- Edges:
+  NO_JUMP -> 5008
+
+============================================================
+BLOCK 5008
+- Instructions:
+  cltd
+  idiv   %esi
+  test   %edx,%edx
+  jne    1380 <func0+0x30>
+
+- Edges:
+  NO_JUMP -> 5015
+  JUMP -> 4992
+
+============================================================
+BLOCK 5015
+- Instructions:
+  mov    %edi,%eax
+  cltd
+  idiv   %esi
+  inc    %ecx
+  mov    %eax,%edi
+  jmp    1390 <func0+0x40>
+
+- Edges:
+  JUMP -> 5008

@@ -1,0 +1,162 @@
+Function: func0
+Basic blocks: 13
+
+============================================================
+BLOCK 0
+- Instructions:
+  addi	sp, sp, -48
+  sd	ra, 40(sp)
+  sd	s0, 32(sp)
+  sd	s1, 24(sp)
+  sd	s2, 16(sp)
+  sd	s3, 8(sp)
+  sd	s4, 0(sp)
+  mv	s1, a0
+  li	a0, 64
+  call	malloc@plt
+  beqz	a0, .LBB0_5
+
+- Edges:
+  NO_JUMP -> 44
+  JUMP -> 104
+
+============================================================
+BLOCK 44
+- Instructions:
+  mv	s0, a0
+  sb	zero, 63(a0)
+  beqz	s1, .LBB0_6
+
+- Edges:
+  NO_JUMP -> 56
+  JUMP -> 112
+
+============================================================
+BLOCK 56
+- Instructions:
+  li	a0, 62
+  blez	s1, .LBB0_7
+
+- Edges:
+  NO_JUMP -> 64
+  JUMP -> 124
+
+============================================================
+BLOCK 64
+- Instructions:
+  li	a1, 1
+
+- Edges:
+  NO_JUMP -> 68
+
+============================================================
+BLOCK 68
+- Instructions:
+  sext.w	a2, s1
+  andi	a3, s1, 1
+  ori	a3, a3, 48
+  add	a4, s0, a0
+  addi	a0, a0, -1
+  sb	a3, 0(a4)
+  srliw	s1, s1, 1
+  bltu	a1, a2, .LBB0_4
+
+- Edges:
+  NO_JUMP -> 100
+  JUMP -> 68
+
+============================================================
+BLOCK 100
+- Instructions:
+  j	.LBB0_7
+
+- Edges:
+  JUMP -> 124
+
+============================================================
+BLOCK 104
+- Instructions:
+  li	s1, 0
+  j	.LBB0_11
+
+- Edges:
+  JUMP -> 224
+
+============================================================
+BLOCK 112
+- Instructions:
+  li	a0, 48
+  sb	a0, 62(s0)
+  li	a0, 61
+
+- Edges:
+  NO_JUMP -> 124
+
+============================================================
+BLOCK 124
+- Instructions:
+  addiw	a1, a0, -1
+  sext.w	a2, a0
+  add	a2, a2, s0
+  li	s3, 98
+  sb	s3, 0(a2)
+  add	s2, s0, a1
+  li	s4, 100
+  sb	s4, 0(s2)
+  li	a1, 66
+  subw	a0, a1, a0
+  call	malloc@plt
+  beqz	a0, .LBB0_9
+
+- Edges:
+  NO_JUMP -> 172
+  JUMP -> 212
+
+============================================================
+BLOCK 172
+- Instructions:
+  mv	s1, a0
+  mv	a1, s2
+  call	strcpy@plt
+  mv	a0, s1
+  call	strlen@plt
+  add	a0, a0, s1
+  sb	s4, 0(a0)
+  sb	s3, 1(a0)
+  sb	zero, 2(a0)
+  j	.LBB0_10
+
+- Edges:
+  JUMP -> 216
+
+============================================================
+BLOCK 212
+- Instructions:
+  li	s1, 0
+
+- Edges:
+  NO_JUMP -> 216
+
+============================================================
+BLOCK 216
+- Instructions:
+  mv	a0, s0
+  call	free@plt
+
+- Edges:
+  NO_JUMP -> 224
+
+============================================================
+BLOCK 224
+- Instructions:
+  mv	a0, s1
+  ld	ra, 40(sp)
+  ld	s0, 32(sp)
+  ld	s1, 24(sp)
+  ld	s2, 16(sp)
+  ld	s3, 8(sp)
+  ld	s4, 0(sp)
+  addi	sp, sp, 48
+  ret
+
+- Edges: (none)

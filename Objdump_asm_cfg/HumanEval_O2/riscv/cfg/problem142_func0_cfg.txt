@@ -1,0 +1,199 @@
+Function: func0
+Basic blocks: 16
+
+============================================================
+BLOCK 3400
+- Instructions:
+  add	sp,sp,-48
+  sd	ra,40(sp)
+  sd	s0,32(sp)
+  sd	s1,24(sp)
+  sd	s2,16(sp)
+  sd	s3,8(sp)
+  mv	s0,a0
+  jal	670 <strlen@plt>
+
+- Edges:
+  JUMP -> 1648
+
+============================================================
+BLOCK 3418
+- Instructions:
+  mv	s1,a0
+  sext.w	a0,a0
+  li	a1,5
+  auipc	s2,0x0
+  add	s2,s2,307 # e93 <_IO_stdin_used+0x67>
+  blt	a0,a1,e1c <func0+0xd4>
+
+- Edges:
+  NO_JUMP -> 3436
+  JUMP -> 3612
+
+============================================================
+BLOCK 3436
+- Instructions:
+  lbu	a0,0(s0)
+  li	a1,65
+  bltu	a0,a1,e1c <func0+0xd4>
+
+- Edges:
+  NO_JUMP -> 3448
+  JUMP -> 3612
+
+============================================================
+BLOCK 3448
+- Instructions:
+  addw	a1,a0,-91
+  zext.b	a1,a1
+  sltiu	a1,a1,6
+  sltiu	a0,a0,123
+  xor	a0,a0,1
+  or	a0,a0,a1
+  bnez	a0,e1c <func0+0xd4>
+
+- Edges:
+  NO_JUMP -> 3472
+  JUMP -> 3612
+
+============================================================
+BLOCK 3472
+- Instructions:
+  sll	a0,s1,0x20
+  srl	a0,a0,0x20
+  add	a0,a0,s0
+  add	s3,a0,-4
+  auipc	a1,0x0
+  add	a1,a1,1429 # 1331 <_IO_stdin_used+0x505>
+  mv	a0,s3
+  jal	690 <strcmp@plt>
+
+- Edges:
+  JUMP -> 1680
+
+============================================================
+BLOCK 3498
+- Instructions:
+  beqz	a0,dcc <func0+0x84>
+
+- Edges:
+  NO_JUMP -> 3500
+  JUMP -> 3532
+
+============================================================
+BLOCK 3500
+- Instructions:
+  auipc	a1,0x0
+  add	a1,a1,375 # f23 <_IO_stdin_used+0xf7>
+  mv	a0,s3
+  jal	690 <strcmp@plt>
+
+- Edges:
+  JUMP -> 1680
+
+============================================================
+BLOCK 3514
+- Instructions:
+  beqz	a0,dcc <func0+0x84>
+
+- Edges:
+  NO_JUMP -> 3516
+  JUMP -> 3532
+
+============================================================
+BLOCK 3516
+- Instructions:
+  auipc	a1,0x0
+  add	a1,a1,310 # ef2 <_IO_stdin_used+0xc6>
+  mv	a0,s3
+  jal	690 <strcmp@plt>
+
+- Edges:
+  JUMP -> 1680
+
+============================================================
+BLOCK 3530
+- Instructions:
+  bnez	a0,e1c <func0+0xd4>
+
+- Edges:
+  NO_JUMP -> 3532
+  JUMP -> 3612
+
+============================================================
+BLOCK 3532
+- Instructions:
+  li	a1,0
+  li	a0,0
+  li	a2,-1
+  srl	a2,a2,0x20
+  and	a2,a2,s1
+
+- Edges:
+  NO_JUMP -> 3542
+
+============================================================
+BLOCK 3542
+- Instructions:
+  lbu	a3,0(s0)
+  addw	a4,a3,-48
+  zext.b	a4,a4
+  sltiu	a4,a4,10
+  addw	a1,a1,a4
+  add	a3,a3,-46
+  seqz	a3,a3
+  addw	a0,a0,a3
+  add	a2,a2,-1
+  add	s0,s0,1
+  bnez	a2,dd6 <func0+0x8e>
+
+- Edges:
+  NO_JUMP -> 3576
+  JUMP -> 3542
+
+============================================================
+BLOCK 3576
+- Instructions:
+  sltiu	a1,a1,4
+  xor	a1,a1,1
+  add	a0,a0,-1
+  snez	a0,a0
+  or	a0,a0,a1
+  bnez	a0,e14 <func0+0xcc>
+
+- Edges:
+  NO_JUMP -> 3594
+  JUMP -> 3604
+
+============================================================
+BLOCK 3594
+- Instructions:
+  auipc	s2,0x0
+  add	s2,s2,50 # e3c <_IO_stdin_used+0x10>
+  j	e1c <func0+0xd4>
+
+- Edges:
+  JUMP -> 3612
+
+============================================================
+BLOCK 3604
+- Instructions:
+  auipc	s2,0x0
+  add	s2,s2,127 # e93 <_IO_stdin_used+0x67>
+
+- Edges:
+  NO_JUMP -> 3612
+
+============================================================
+BLOCK 3612
+- Instructions:
+  mv	a0,s2
+  ld	ra,40(sp)
+  ld	s0,32(sp)
+  ld	s1,24(sp)
+  ld	s2,16(sp)
+  ld	s3,8(sp)
+  add	sp,sp,48
+  ret
+
+- Edges: (none)

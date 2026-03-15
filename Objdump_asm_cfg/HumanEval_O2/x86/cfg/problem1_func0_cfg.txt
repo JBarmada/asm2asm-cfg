@@ -1,0 +1,115 @@
+Function: func0
+Basic blocks: 11
+
+============================================================
+BLOCK 5040
+- Instructions:
+  mov    $0xa,%eax
+  test   %esi,%esi
+  jle    141f <func0+0x6f>
+
+- Edges:
+  NO_JUMP -> 5049
+  JUMP -> 5151
+
+============================================================
+BLOCK 5049
+- Instructions:
+  mov    %esi,%r8d
+  xor    %r9d,%r9d
+  movaps 0xdda(%rip),%xmm1        # 21a0 <_IO_stdin_used+0x1a0>
+  mov    %r8,%rdx
+  mov    %rdi,%rcx
+  jmp    13dc <func0+0x2c>
+
+- Edges:
+  JUMP -> 5084
+
+============================================================
+BLOCK 5070
+- Instructions:
+  xchg   %ax,%ax
+
+- Edges:
+  NO_JUMP -> 5072
+
+============================================================
+BLOCK 5072
+- Instructions:
+  add    $0x4,%rcx
+  dec    %rdx
+  cmp    %r8,%r9
+  je     141f <func0+0x6f>
+
+- Edges:
+  NO_JUMP -> 5084
+  JUMP -> 5151
+
+============================================================
+BLOCK 5084
+- Instructions:
+  mov    %r9,%rsi
+  inc    %r9
+  cmp    %r8,%r9
+  jae    13d0 <func0+0x20>
+
+- Edges:
+  NO_JUMP -> 5095
+  JUMP -> 5072
+
+============================================================
+BLOCK 5095
+- Instructions:
+  movss  (%rdi,%rsi,4),%xmm2
+  mov    $0x1,%esi
+  data16 data16 data16 data16 data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5120
+
+============================================================
+BLOCK 5120
+- Instructions:
+  movaps %xmm2,%xmm3
+  subss  (%rcx,%rsi,4),%xmm3
+  andps  %xmm1,%xmm3
+  ucomiss %xmm3,%xmm0
+  ja     141a <func0+0x6a>
+
+- Edges:
+  NO_JUMP -> 5136
+  JUMP -> 5146
+
+============================================================
+BLOCK 5136
+- Instructions:
+  inc    %rsi
+  cmp    %rsi,%rdx
+  jne    1400 <func0+0x50>
+
+- Edges:
+  NO_JUMP -> 5144
+  JUMP -> 5120
+
+============================================================
+BLOCK 5144
+- Instructions:
+  jmp    13d0 <func0+0x20>
+
+- Edges:
+  JUMP -> 5072
+
+============================================================
+BLOCK 5146
+- Instructions:
+  mov    $0x1,%eax
+
+- Edges:
+  NO_JUMP -> 5151
+
+============================================================
+BLOCK 5151
+- Instructions:
+  ret
+
+- Edges: (none)

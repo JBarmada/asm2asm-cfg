@@ -1,0 +1,88 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 5072
+- Instructions:
+  cmp    %edx,%edi
+  cmovg  %edi,%edx
+  cmp    %ecx,%esi
+  cmovl  %esi,%ecx
+  sub    %edx,%ecx
+  lea    0xc21(%rip),%rsi        # 2004 <_IO_stdin_used+0x4>
+  cmp    $0x2,%ecx
+  jge    13ec <func0+0x1c>
+
+- Edges:
+  NO_JUMP -> 5096
+  JUMP -> 5100
+
+============================================================
+BLOCK 5096
+- Instructions:
+  mov    %rsi,%rax
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 5100
+- Instructions:
+  lea    0xc7d(%rip),%r8        # 2070 <_IO_stdin_used+0x70>
+  cmp    $0x4,%ecx
+  jae    13fc <func0+0x2c>
+
+- Edges:
+  NO_JUMP -> 5112
+  JUMP -> 5116
+
+============================================================
+BLOCK 5112
+- Instructions:
+  mov    %r8,%rax
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 5116
+- Instructions:
+  mov    $0x2,%edi
+  data16 data16 data16 data16 data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5136
+
+============================================================
+BLOCK 5136
+- Instructions:
+  mov    %ecx,%eax
+  cltd
+  idiv   %edi
+  test   %edx,%edx
+  je     13e8 <func0+0x18>
+
+- Edges:
+  NO_JUMP -> 5145
+  JUMP -> 5096
+
+============================================================
+BLOCK 5145
+- Instructions:
+  inc    %edi
+  mov    %edi,%eax
+  imul   %edi,%eax
+  cmp    %ecx,%eax
+  jle    1410 <func0+0x40>
+
+- Edges:
+  NO_JUMP -> 5156
+  JUMP -> 5136
+
+============================================================
+BLOCK 5156
+- Instructions:
+  mov    %r8,%rax
+  ret
+
+- Edges: (none)

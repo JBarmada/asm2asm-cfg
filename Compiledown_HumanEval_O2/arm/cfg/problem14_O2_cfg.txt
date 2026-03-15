@@ -1,0 +1,39 @@
+Function: _func0
+Basic blocks: 4
+
+============================================================
+BLOCK 0
+- Instructions:
+  cbz	w1, LBB0_3
+
+- Edges:
+  NO_JUMP -> 4
+  JUMP -> 28
+
+============================================================
+BLOCK 4
+- Instructions:
+  mov	x8, x1
+  sdiv	w9, w0, w1
+  msub	w1, w9, w1, w0
+  mov	x0, x8
+  cbnz	w1, LBB0_1
+
+- Edges:
+  NO_JUMP -> 24
+  JUMP -> 4
+
+============================================================
+BLOCK 24
+- Instructions:
+  mov	x0, x8
+
+- Edges:
+  NO_JUMP -> 28
+
+============================================================
+BLOCK 28
+- Instructions:
+  ret
+
+- Edges: (none)

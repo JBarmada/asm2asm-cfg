@@ -1,0 +1,110 @@
+Function: func0
+Basic blocks: 9
+
+============================================================
+BLOCK 2096
+- Instructions:
+  blez	a0,8b0 <func0+0x80>
+
+- Edges:
+  NO_JUMP -> 2100
+  JUMP -> 2224
+
+============================================================
+BLOCK 2100
+- Instructions:
+  li	t5,0
+  li	a1,0
+  lui	a2,0xba2e9
+  addw	a6,a2,-1117 # ffffffffba2e8ba3 <__global_pointer$+0xffffffffba2e63a3>
+  lui	a2,0x1745d
+  addw	a7,a2,372 # 1745d174 <__global_pointer$+0x1745a974>
+  lui	a2,0xc4ec5
+  addw	t0,a2,-315 # ffffffffc4ec4ec5 <__global_pointer$+0xffffffffc4ec26c5>
+  lui	a2,0x13b14
+  addw	t1,a2,-1261 # 13b13b13 <__global_pointer$+0x13b11313>
+  lui	a2,0xccccd
+  addw	a2,a2,-819 # ffffffffcccccccd <__global_pointer$+0xffffffffcccca4cd>
+  sll	a4,a2,0x20
+  li	t2,10
+  li	t4,9
+  j	870 <func0+0x40>
+
+- Edges:
+  JUMP -> 2160
+
+============================================================
+BLOCK 2154
+- Instructions:
+  addw	t5,t5,1
+  bge	t5,a0,8b2 <func0+0x82>
+
+- Edges:
+  NO_JUMP -> 2160
+  JUMP -> 2226
+
+============================================================
+BLOCK 2160
+- Instructions:
+  mulw	a2,t5,a6
+  sltu	t3,a7,a2
+  mulw	a2,t5,t0
+  sltu	a2,t1,a2
+  and	t3,t3,a2
+  seqz	a2,t5
+  or	a2,t3,a2
+  bnez	a2,86a <func0+0x3a>
+
+- Edges:
+  NO_JUMP -> 2190
+  JUMP -> 2154
+
+============================================================
+BLOCK 2190
+- Instructions:
+  mv	a2,t5
+
+- Edges:
+  NO_JUMP -> 2192
+
+============================================================
+BLOCK 2192
+- Instructions:
+  mv	a3,a2
+  sll	a2,a2,0x20
+  mulhu	a2,a2,a4
+  srl	a2,a2,0x23
+  mulw	a5,a2,t2
+  subw	a5,a3,a5
+  add	a5,a5,-7
+  seqz	a5,a5
+  addw	a1,a1,a5
+  bltu	t4,a3,890 <func0+0x60>
+
+- Edges:
+  NO_JUMP -> 2222
+  JUMP -> 2192
+
+============================================================
+BLOCK 2222
+- Instructions:
+  j	86a <func0+0x3a>
+
+- Edges:
+  JUMP -> 2154
+
+============================================================
+BLOCK 2224
+- Instructions:
+  li	a1,0
+
+- Edges:
+  NO_JUMP -> 2226
+
+============================================================
+BLOCK 2226
+- Instructions:
+  mv	a0,a1
+  ret
+
+- Edges: (none)

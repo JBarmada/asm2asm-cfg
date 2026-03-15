@@ -1,0 +1,194 @@
+Function: _func0
+Basic blocks: 12
+
+============================================================
+BLOCK 0
+- Instructions:
+  cmp	w1, #1
+  b.lt	LBB0_11
+
+- Edges:
+  NO_JUMP -> 8
+  JUMP -> 404
+
+============================================================
+BLOCK 8
+- Instructions:
+  mov	w10, w1
+  and	x8, x10, #0x7
+  cmp	w1, #8
+  b.hs	LBB0_3
+
+- Edges:
+  NO_JUMP -> 24
+  JUMP -> 40
+
+============================================================
+BLOCK 24
+- Instructions:
+  mov	x9, #0
+  mov	w12, #2147483647
+  mov	w13, #-1
+  b	LBB0_5
+
+- Edges:
+  JUMP -> 340
+
+============================================================
+BLOCK 40
+- Instructions:
+  mov	x9, #0
+  and	x10, x10, #0x7ffffff8
+  add	x11, x0, #16
+  mov	w12, #2147483647
+  mov	w13, #-1
+
+- Edges:
+  NO_JUMP -> 60
+
+============================================================
+BLOCK 60
+- Instructions:
+  ldp	w14, w15, [x11, #-16]
+  cmp	w14, w12
+  ccmn	w13, #1, #4, ge
+  csel	w16, w14, w12, eq
+  csel	w17, w9, w13, eq
+  tst	w14, #0x1
+  csel	w12, w12, w16, ne
+  csel	w13, w13, w17, ne
+  cmp	w15, w12
+  ccmn	w13, #1, #4, ge
+  csel	w14, w15, w12, eq
+  csinc	w16, w13, w9, ne
+  tst	w15, #0x1
+  csel	w12, w12, w14, ne
+  csel	w13, w13, w16, ne
+  ldp	w14, w15, [x11, #-8]
+  cmp	w14, w12
+  ccmn	w13, #1, #4, ge
+  csel	w16, w14, w12, eq
+  add	w17, w9, #2
+  csel	w17, w17, w13, eq
+  tst	w14, #0x1
+  csel	w12, w12, w16, ne
+  csel	w13, w13, w17, ne
+  cmp	w15, w12
+  ccmn	w13, #1, #4, ge
+  csel	w14, w15, w12, eq
+  add	w16, w9, #3
+  csel	w16, w16, w13, eq
+  tst	w15, #0x1
+  csel	w12, w12, w14, ne
+  csel	w13, w13, w16, ne
+  ldp	w14, w15, [x11]
+  cmp	w14, w12
+  ccmn	w13, #1, #4, ge
+  csel	w16, w14, w12, eq
+  add	w17, w9, #4
+  csel	w17, w17, w13, eq
+  tst	w14, #0x1
+  csel	w12, w12, w16, ne
+  csel	w13, w13, w17, ne
+  cmp	w15, w12
+  ccmn	w13, #1, #4, ge
+  csel	w14, w15, w12, eq
+  add	w16, w9, #5
+  csel	w16, w16, w13, eq
+  tst	w15, #0x1
+  csel	w12, w12, w14, ne
+  csel	w13, w13, w16, ne
+  ldp	w14, w15, [x11, #8]
+  cmp	w14, w12
+  ccmn	w13, #1, #4, ge
+  csel	w16, w14, w12, eq
+  add	w17, w9, #6
+  csel	w17, w17, w13, eq
+  tst	w14, #0x1
+  csel	w12, w12, w16, ne
+  csel	w13, w13, w17, ne
+  cmp	w15, w12
+  ccmn	w13, #1, #4, ge
+  csel	w14, w15, w12, eq
+  add	w16, w9, #7
+  csel	w16, w16, w13, eq
+  tst	w15, #0x1
+  csel	w12, w12, w14, ne
+  csel	w13, w13, w16, ne
+  add	x9, x9, #8
+  add	x11, x11, #32
+  cmp	x10, x9
+  b.ne	LBB0_4
+
+- Edges:
+  NO_JUMP -> 340
+  JUMP -> 60
+
+============================================================
+BLOCK 340
+- Instructions:
+  cbnz	x8, LBB0_9
+
+- Edges:
+  NO_JUMP -> 344
+  JUMP -> 376
+
+============================================================
+BLOCK 344
+- Instructions:
+  cmn	w13, #1
+  b.eq	LBB0_11
+
+- Edges:
+  NO_JUMP -> 352
+  JUMP -> 404
+
+============================================================
+BLOCK 352
+- Instructions:
+  stp	w12, w13, [x2]
+  mov	x0, x2
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 364
+- Instructions:
+  add	x9, x9, #1
+  subs	x8, x8, #1
+  b.eq	LBB0_6
+
+- Edges:
+  NO_JUMP -> 376
+  JUMP -> 344
+
+============================================================
+BLOCK 376
+- Instructions:
+  ldr	w10, [x0, x9, lsl #2]
+  tbnz	w10, #0, LBB0_8
+
+- Edges:
+  NO_JUMP -> 384
+  JUMP -> 364
+
+============================================================
+BLOCK 384
+- Instructions:
+  cmp	w10, w12
+  ccmn	w13, #1, #4, ge
+  csel	w12, w10, w12, eq
+  csel	w13, w9, w13, eq
+  b	LBB0_8
+
+- Edges:
+  JUMP -> 364
+
+============================================================
+BLOCK 404
+- Instructions:
+  mov	x0, #0
+  ret
+
+- Edges: (none)

@@ -1,0 +1,125 @@
+Function: func0
+Basic blocks: 9
+
+============================================================
+BLOCK 0
+- Instructions:
+  pushq	%rbp
+  pushq	%rbx
+  pushq	%rax
+  movl	%edi, %ebp
+  movslq	%edi, %rbx
+  leaq	(,%rbx,4), %rdi
+  callq	malloc@PLT
+  movl	%ebx, (%rax)
+  cmpl	$2, %ebx
+  jl	.LBB0_8
+
+- Edges:
+  NO_JUMP -> 40
+  JUMP -> 208
+
+============================================================
+BLOCK 40
+- Instructions:
+  movl	%ebp, %ecx
+  movl	(%rax), %ebx
+  leaq	-1(%rcx), %rdi
+  addq	$-2, %rcx
+  movl	%edi, %edx
+  andl	$3, %edx
+  movl	$1, %esi
+  cmpq	$3, %rcx
+  jb	.LBB0_5
+
+- Edges:
+  NO_JUMP -> 76
+  JUMP -> 164
+
+============================================================
+BLOCK 76
+- Instructions:
+  andq	$-4, %rdi
+  movq	$-1, %rsi
+  xorl	%ecx, %ecx
+
+- Edges:
+  NO_JUMP -> 88
+
+============================================================
+BLOCK 88
+- Instructions:
+  leal	(%rbx,%rcx), %ebp
+  addl	$2, %ebp
+  movl	%ebp, 4(%rax,%rcx,2)
+  leal	4(%rbx,%rcx), %ebp
+  movl	%ebp, 8(%rax,%rcx,2)
+  leal	6(%rbx,%rcx), %ebp
+  movl	%ebp, 12(%rax,%rcx,2)
+  leal	(%rbx,%rcx), %ebp
+  addl	$8, %ebp
+  movl	%ebp, 16(%rax,%rcx,2)
+  addq	$8, %rcx
+  leaq	(%rdi,%rsi), %rbp
+  addq	$-4, %rbp
+  addq	$-4, %rsi
+  cmpq	$-1, %rbp
+  jne	.LBB0_3
+
+- Edges:
+  NO_JUMP -> 152
+  JUMP -> 88
+
+============================================================
+BLOCK 152
+- Instructions:
+  addl	%ebx, %ecx
+  negq	%rsi
+  movl	%ecx, %ebx
+
+- Edges:
+  NO_JUMP -> 164
+
+============================================================
+BLOCK 164
+- Instructions:
+  testq	%rdx, %rdx
+  je	.LBB0_8
+
+- Edges:
+  NO_JUMP -> 172
+  JUMP -> 208
+
+============================================================
+BLOCK 172
+- Instructions:
+  addl	$2, %ebx
+  leaq	(%rax,%rsi,4), %rcx
+  addq	%rdx, %rdx
+  xorl	%esi, %esi
+
+- Edges:
+  NO_JUMP -> 188
+
+============================================================
+BLOCK 188
+- Instructions:
+  leal	(%rbx,%rsi), %edi
+  movl	%edi, (%rcx,%rsi,2)
+  addq	$2, %rsi
+  cmpq	%rsi, %rdx
+  jne	.LBB0_7
+
+- Edges:
+  NO_JUMP -> 208
+  JUMP -> 188
+
+============================================================
+BLOCK 208
+- Instructions:
+  addq	$8, %rsp
+  popq	%rbx
+  popq	%rbp
+  retq
+
+- Edges: (none)

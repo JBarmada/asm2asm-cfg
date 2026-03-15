@@ -1,0 +1,143 @@
+Function: func0
+Basic blocks: 11
+
+============================================================
+BLOCK 4624
+- Instructions:
+  test   %edi,%edi
+  jle    1245 <func0+0x35>
+
+- Edges:
+  NO_JUMP -> 4628
+  JUMP -> 4677
+
+============================================================
+BLOCK 4628
+- Instructions:
+  mov    %edi,%r8d
+  lea    -0x1(%r8),%rax
+  mov    %r8d,%r9d
+  and    $0x7,%r9d
+  cmp    $0x7,%rax
+  jae    124b <func0+0x3b>
+
+- Edges:
+  NO_JUMP -> 4648
+  JUMP -> 4683
+
+============================================================
+BLOCK 4648
+- Instructions:
+  mov    $0x1,%edx
+  mov    $0x1,%eax
+  mov    $0x1,%edi
+  test   %r9,%r9
+  jne    12f0 <func0+0xe0>
+
+- Edges:
+  NO_JUMP -> 4672
+  JUMP -> 4848
+
+============================================================
+BLOCK 4672
+- Instructions:
+  jmp    1300 <func0+0xf0>
+
+- Edges:
+  JUMP -> 4864
+
+============================================================
+BLOCK 4677
+- Instructions:
+  mov    $0x1,%eax
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 4683
+- Instructions:
+  and    $0xfffffff8,%r8d
+  neg    %r8
+  mov    $0x1,%eax
+  mov    $0x8,%edx
+  mov    $0x1,%edi
+  data16 data16 data16 data16 data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 4720
+
+============================================================
+BLOCK 4720
+- Instructions:
+  lea    -0x7(%rdx),%rsi
+  imul   %rdi,%rsi
+  imul   %rsi,%rax
+  lea    -0x6(%rdx),%rdi
+  imul   %rsi,%rdi
+  imul   %rdi,%rax
+  lea    -0x5(%rdx),%rsi
+  imul   %rdi,%rsi
+  imul   %rsi,%rax
+  lea    -0x4(%rdx),%rdi
+  imul   %rsi,%rdi
+  imul   %rdi,%rax
+  lea    -0x3(%rdx),%rsi
+  imul   %rdi,%rsi
+  imul   %rsi,%rax
+  lea    -0x2(%rdx),%rcx
+  imul   %rsi,%rcx
+  imul   %rcx,%rax
+  lea    -0x1(%rdx),%rdi
+  imul   %rcx,%rdi
+  imul   %rdi,%rax
+  imul   %rdx,%rdi
+  imul   %rdi,%rax
+  lea    (%r8,%rdx,1),%rcx
+  add    $0x8,%rcx
+  add    $0x8,%rdx
+  cmp    $0x8,%rcx
+  jne    1270 <func0+0x60>
+
+- Edges:
+  NO_JUMP -> 4830
+  JUMP -> 4720
+
+============================================================
+BLOCK 4830
+- Instructions:
+  add    $0xfffffffffffffff9,%rdx
+  test   %r9,%r9
+  je     1300 <func0+0xf0>
+
+- Edges:
+  NO_JUMP -> 4839
+  JUMP -> 4864
+
+============================================================
+BLOCK 4839
+- Instructions:
+  nopw   0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 4848
+
+============================================================
+BLOCK 4848
+- Instructions:
+  imul   %rdx,%rdi
+  imul   %rdi,%rax
+  inc    %rdx
+  dec    %r9
+  jne    12f0 <func0+0xe0>
+
+- Edges:
+  NO_JUMP -> 4864
+  JUMP -> 4848
+
+============================================================
+BLOCK 4864
+- Instructions:
+  ret
+
+- Edges: (none)

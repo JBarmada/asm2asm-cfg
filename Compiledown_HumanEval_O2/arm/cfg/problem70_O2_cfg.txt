@@ -1,0 +1,75 @@
+Function: _func0
+Basic blocks: 6
+
+============================================================
+BLOCK 0
+- Instructions:
+  stp	x20, x19, [sp, #-32]!
+  stp	x29, x30, [sp, #16]
+  add	x29, sp, #16
+  mov	x20, x1
+  mov	x19, x0
+  add	w8, w1, #1
+  sxtw	x0, w8
+  mov	w1, #4
+  bl	_calloc
+  cmp	w20, #1
+  b.lt	LBB0_3
+
+- Edges:
+  NO_JUMP -> 44
+  JUMP -> 96
+
+============================================================
+BLOCK 44
+- Instructions:
+  mov	w8, w20
+  mov	w20, #-1
+
+- Edges:
+  NO_JUMP -> 52
+
+============================================================
+BLOCK 52
+- Instructions:
+  ldrsw	x9, [x19], #4
+  ldr	w10, [x0, x9, lsl #2]
+  add	w10, w10, #1
+  str	w10, [x0, x9, lsl #2]
+  cmp	w9, w20
+  csel	w11, w9, w20, gt
+  cmp	w10, w9
+  csel	w20, w20, w11, lt
+  subs	x8, x8, #1
+  b.ne	LBB0_2
+
+- Edges:
+  NO_JUMP -> 92
+  JUMP -> 52
+
+============================================================
+BLOCK 92
+- Instructions:
+  b	LBB0_4
+
+- Edges:
+  JUMP -> 100
+
+============================================================
+BLOCK 96
+- Instructions:
+  mov	w20, #-1
+
+- Edges:
+  NO_JUMP -> 100
+
+============================================================
+BLOCK 100
+- Instructions:
+  bl	_free
+  mov	x0, x20
+  ldp	x29, x30, [sp, #16]
+  ldp	x20, x19, [sp], #32
+  ret
+
+- Edges: (none)

@@ -1,0 +1,119 @@
+Function: _func0
+Basic blocks: 12
+
+============================================================
+BLOCK 0
+- Instructions:
+  cmp	w1, #2
+  b.ge	LBB0_3
+
+- Edges:
+  NO_JUMP -> 8
+  JUMP -> 16
+
+============================================================
+BLOCK 8
+- Instructions:
+  mov	w0, #1
+
+- Edges:
+  NO_JUMP -> 12
+
+============================================================
+BLOCK 12
+- Instructions:
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 16
+- Instructions:
+  ldp	w9, w8, [x0]
+  cmp	w8, w9
+  b.ge	LBB0_5
+
+- Edges:
+  NO_JUMP -> 28
+  JUMP -> 36
+
+============================================================
+BLOCK 28
+- Instructions:
+  mov	w0, #0
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 36
+- Instructions:
+  mov	x8, x0
+  cmp	w1, #2
+  cset	w0, eq
+  b.eq	LBB0_2
+
+- Edges:
+  NO_JUMP -> 52
+  JUMP -> 12
+
+============================================================
+BLOCK 52
+- Instructions:
+  mov	w9, w1
+  add	x8, x8, #8
+  sub	x9, x9, #2
+  b	LBB0_8
+
+- Edges:
+  JUMP -> 80
+
+============================================================
+BLOCK 68
+- Instructions:
+  add	x8, x8, #4
+  subs	x9, x9, #1
+  b.eq	LBB0_1
+
+- Edges:
+  NO_JUMP -> 80
+  JUMP -> 8
+
+============================================================
+BLOCK 80
+- Instructions:
+  ldp	w11, w10, [x8, #-4]
+  cmp	w10, w11
+  b.lt	LBB0_4
+
+- Edges:
+  NO_JUMP -> 92
+  JUMP -> 28
+
+============================================================
+BLOCK 92
+- Instructions:
+  b.ne	LBB0_7
+
+- Edges:
+  NO_JUMP -> 96
+  JUMP -> 68
+
+============================================================
+BLOCK 96
+- Instructions:
+  ldur	w11, [x8, #-8]
+  cmp	w10, w11
+  b.ne	LBB0_7
+
+- Edges:
+  NO_JUMP -> 108
+  JUMP -> 68
+
+============================================================
+BLOCK 108
+- Instructions:
+  b	LBB0_4
+
+- Edges:
+  JUMP -> 28

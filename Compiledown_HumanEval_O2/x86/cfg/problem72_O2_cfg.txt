@@ -1,0 +1,99 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 0
+- Instructions:
+  pushq	%rax
+  movaps	%xmm0, %xmm4
+  movaps	%xmm1, %xmm0
+  addss	%xmm2, %xmm0
+  ucomiss	%xmm0, %xmm4
+  movss	.LCPI0_0(%rip), %xmm3
+  jae	.LBB0_7
+
+- Edges:
+  NO_JUMP -> 28
+  JUMP -> 140
+
+============================================================
+BLOCK 28
+- Instructions:
+  movaps	%xmm4, %xmm0
+  addss	%xmm1, %xmm0
+  ucomiss	%xmm0, %xmm2
+  jae	.LBB0_7
+
+- Edges:
+  NO_JUMP -> 44
+  JUMP -> 140
+
+============================================================
+BLOCK 44
+- Instructions:
+  movaps	%xmm4, %xmm5
+  addss	%xmm2, %xmm5
+  ucomiss	%xmm5, %xmm1
+  jae	.LBB0_7
+
+- Edges:
+  NO_JUMP -> 60
+  JUMP -> 140
+
+============================================================
+BLOCK 60
+- Instructions:
+  addss	%xmm2, %xmm0
+  mulss	.LCPI0_1(%rip), %xmm0
+  movaps	%xmm0, %xmm3
+  subss	%xmm4, %xmm3
+  mulss	%xmm0, %xmm3
+  movaps	%xmm0, %xmm4
+  subss	%xmm1, %xmm4
+  mulss	%xmm3, %xmm4
+  subss	%xmm2, %xmm0
+  mulss	%xmm4, %xmm0
+  xorps	%xmm1, %xmm1
+  ucomiss	%xmm1, %xmm0
+  jb	.LBB0_5
+
+- Edges:
+  NO_JUMP -> 112
+  JUMP -> 120
+
+============================================================
+BLOCK 112
+- Instructions:
+  sqrtss	%xmm0, %xmm0
+  jmp	.LBB0_6
+
+- Edges:
+  JUMP -> 124
+
+============================================================
+BLOCK 120
+- Instructions:
+  callq	sqrtf@PLT
+
+- Edges:
+  NO_JUMP -> 124
+
+============================================================
+BLOCK 124
+- Instructions:
+  mulss	.LCPI0_2(%rip), %xmm0
+  callq	roundf@PLT
+  movaps	%xmm0, %xmm3
+  divss	.LCPI0_2(%rip), %xmm3
+
+- Edges:
+  NO_JUMP -> 140
+
+============================================================
+BLOCK 140
+- Instructions:
+  movaps	%xmm3, %xmm0
+  popq	%rax
+  retq
+
+- Edges: (none)

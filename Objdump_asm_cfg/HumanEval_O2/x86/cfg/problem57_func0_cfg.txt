@@ -1,0 +1,79 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 5040
+- Instructions:
+  xor    %eax,%eax
+  jmp    13d1 <func0+0x21>
+
+- Edges:
+  JUMP -> 5073
+
+============================================================
+BLOCK 5044
+- Instructions:
+  data16 data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5056
+
+============================================================
+BLOCK 5056
+- Instructions:
+  inc    %eax
+
+- Edges:
+  NO_JUMP -> 5058
+
+============================================================
+BLOCK 5058
+- Instructions:
+  xor    %edx,%edx
+  cmp    $0x3e,%cl
+  sete   %dl
+  inc    %rdi
+  sub    %edx,%eax
+  js     13e3 <func0+0x33>
+
+- Edges:
+  NO_JUMP -> 5073
+  JUMP -> 5091
+
+============================================================
+BLOCK 5073
+- Instructions:
+  movzbl (%rdi),%ecx
+  cmp    $0x3c,%ecx
+  je     13c0 <func0+0x10>
+
+- Edges:
+  NO_JUMP -> 5081
+  JUMP -> 5056
+
+============================================================
+BLOCK 5081
+- Instructions:
+  test   %ecx,%ecx
+  jne    13c2 <func0+0x12>
+
+- Edges:
+  NO_JUMP -> 5085
+  JUMP -> 5058
+
+============================================================
+BLOCK 5085
+- Instructions:
+  test   %eax,%eax
+  sete   %al
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 5091
+- Instructions:
+  xor    %eax,%eax
+  ret
+
+- Edges: (none)

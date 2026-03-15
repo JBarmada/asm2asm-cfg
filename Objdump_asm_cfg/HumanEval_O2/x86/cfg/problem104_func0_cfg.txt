@@ -1,0 +1,69 @@
+Function: func0
+Basic blocks: 5
+
+============================================================
+BLOCK 5296
+- Instructions:
+  push   %rbx
+  cmp    %esi,%edi
+  jle    14be <func0+0xe>
+
+- Edges:
+  NO_JUMP -> 5301
+  JUMP -> 5310
+
+============================================================
+BLOCK 5301
+- Instructions:
+  lea    0xd19(%rip),%rax        # 21d5 <_IO_stdin_used+0x1d5>
+  pop    %rbx
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 5310
+- Instructions:
+  mov    %esi,%ebx
+  add    %edi,%ebx
+  mov    $0x21,%edi
+  call   1050 <malloc@plt>
+  movb   $0x0,(%rax)
+  movb   $0x0,0x20(%rax)
+  add    $0x20,%rax
+  nopw   0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5344
+
+============================================================
+BLOCK 5344
+- Instructions:
+  mov    %ebx,%ecx
+  shr    $0x1f,%ecx
+  add    %ebx,%ecx
+  mov    %ecx,%edx
+  sar    %edx
+  shr    $0x1f,%ecx
+  add    %edx,%ecx
+  and    $0xfe,%ecx
+  mov    %edx,%esi
+  sub    %ecx,%esi
+  add    $0x30,%sil
+  mov    %sil,-0x1(%rax)
+  dec    %rax
+  cmp    $0x3,%ebx
+  mov    %edx,%ebx
+  jg     14e0 <func0+0x30>
+
+- Edges:
+  NO_JUMP -> 5388
+  JUMP -> 5344
+
+============================================================
+BLOCK 5388
+- Instructions:
+  pop    %rbx
+  ret
+
+- Edges: (none)

@@ -1,0 +1,115 @@
+Function: func0
+Basic blocks: 10
+
+============================================================
+BLOCK 4832
+- Instructions:
+  test   %edi,%edi
+  jle    12f8 <func0+0x18>
+
+- Edges:
+  NO_JUMP -> 4836
+  JUMP -> 4856
+
+============================================================
+BLOCK 4836
+- Instructions:
+  lea    -0x1(%rdi),%eax
+  mov    %edi,%ecx
+  and    $0x3,%ecx
+  cmp    $0x3,%eax
+  jae    12fe <func0+0x1e>
+
+- Edges:
+  NO_JUMP -> 4849
+  JUMP -> 4862
+
+============================================================
+BLOCK 4849
+- Instructions:
+  mov    $0x1,%edx
+  jmp    132e <func0+0x4e>
+
+- Edges:
+  JUMP -> 4910
+
+============================================================
+BLOCK 4856
+- Instructions:
+  mov    $0x1,%eax
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 4862
+- Instructions:
+  and    $0xfffffffc,%edi
+  mov    $0x1,%edx
+  cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 4880
+
+============================================================
+BLOCK 4880
+- Instructions:
+  add    %edx,%edx
+  mov    %edx,%eax
+  cltd
+  idiv   %esi
+  lea    (%rdx,%rdx,1),%eax
+  cltd
+  idiv   %esi
+  lea    (%rdx,%rdx,1),%eax
+  cltd
+  idiv   %esi
+  lea    (%rdx,%rdx,1),%eax
+  cltd
+  idiv   %esi
+  add    $0xfffffffc,%edi
+  jne    1310 <func0+0x30>
+
+- Edges:
+  NO_JUMP -> 4910
+  JUMP -> 4880
+
+============================================================
+BLOCK 4910
+- Instructions:
+  test   %ecx,%ecx
+  je     134b <func0+0x6b>
+
+- Edges:
+  NO_JUMP -> 4914
+  JUMP -> 4939
+
+============================================================
+BLOCK 4914
+- Instructions:
+  data16 data16 data16 data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 4928
+
+============================================================
+BLOCK 4928
+- Instructions:
+  add    %edx,%edx
+  mov    %edx,%eax
+  cltd
+  idiv   %esi
+  dec    %ecx
+  jne    1340 <func0+0x60>
+
+- Edges:
+  NO_JUMP -> 4939
+  JUMP -> 4928
+
+============================================================
+BLOCK 4939
+- Instructions:
+  mov    %edx,%eax
+  ret
+
+- Edges: (none)

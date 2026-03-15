@@ -1,0 +1,12 @@
+Function: _func0
+Basic blocks: 1
+
+============================================================
+BLOCK 0
+- Instructions:
+  madd	w8, w0, w0, w0
+  add	w8, w8, w8, lsr #31
+  asr	w0, w8, #1
+  ret
+
+- Edges: (none)

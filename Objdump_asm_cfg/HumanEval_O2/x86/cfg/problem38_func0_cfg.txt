@@ -1,0 +1,417 @@
+Function: func0
+Basic blocks: 36
+
+============================================================
+BLOCK 5792
+- Instructions:
+  push   %r15
+  push   %r14
+  push   %r12
+  push   %rbx
+  push   %rax
+  mov    %rdx,%r14
+  mov    %esi,%r15d
+  mov    %rdi,%r12
+  mov    %esi,%eax
+  shr    $0x1f,%eax
+  add    %esi,%eax
+  sar    %eax
+  cltq
+  lea    0x4(,%rax,4),%rdi
+  call   1050 <malloc@plt>
+  test   %r15d,%r15d
+  jle    1890 <func0+0x1f0>
+
+- Edges:
+  NO_JUMP -> 5842
+  JUMP -> 6288
+
+============================================================
+BLOCK 5842
+- Instructions:
+  lea    -0x1(%r15),%edx
+  mov    %edx,%r8d
+  shr    %r8d
+  cmp    $0xf,%edx
+  ja     16e7 <func0+0x47>
+
+- Edges:
+  NO_JUMP -> 5857
+  JUMP -> 5863
+
+============================================================
+BLOCK 5857
+- Instructions:
+  xor    %esi,%esi
+  xor    %edi,%edi
+  jmp    1741 <func0+0xa1>
+
+- Edges:
+  JUMP -> 5953
+
+============================================================
+BLOCK 5863
+- Instructions:
+  lea    0x1(%r8),%esi
+  mov    %esi,%ecx
+  and    $0x7,%ecx
+  mov    $0x8,%edi
+  cmovne %rcx,%rdi
+  sub    %rdi,%rsi
+  lea    (%rsi,%rsi,1),%rdi
+  xor    %ecx,%ecx
+  data16 data16 data16 data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5904
+
+============================================================
+BLOCK 5904
+- Instructions:
+  movups (%r12,%rcx,8),%xmm0
+  movups 0x10(%r12,%rcx,8),%xmm1
+  shufps $0x88,%xmm1,%xmm0
+  movups 0x20(%r12,%rcx,8),%xmm1
+  movups 0x30(%r12,%rcx,8),%xmm2
+  shufps $0x88,%xmm2,%xmm1
+  movups %xmm0,(%rax,%rcx,4)
+  movups %xmm1,0x10(%rax,%rcx,4)
+  add    $0x8,%rcx
+  cmp    %rcx,%rsi
+  jne    1710 <func0+0x70>
+
+- Edges:
+  NO_JUMP -> 5953
+  JUMP -> 5904
+
+============================================================
+BLOCK 5953
+- Instructions:
+  lea    (%rax,%rsi,4),%rcx
+  mov    %edx,%ebx
+  shr    %rbx
+  sub    %rsi,%rbx
+  inc    %rbx
+  lea    (%r12,%rdi,4),%rsi
+  xor    %edi,%edi
+  cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5984
+
+============================================================
+BLOCK 5984
+- Instructions:
+  movss  (%rsi,%rdi,8),%xmm0
+  movss  %xmm0,(%rcx,%rdi,4)
+  inc    %rdi
+  cmp    %rdi,%rbx
+  jne    1760 <func0+0xc0>
+
+- Edges:
+  NO_JUMP -> 6002
+  JUMP -> 5984
+
+============================================================
+BLOCK 6002
+- Instructions:
+  cmp    $0x2,%edx
+  jae    1794 <func0+0xf4>
+
+- Edges:
+  NO_JUMP -> 6007
+  JUMP -> 6036
+
+============================================================
+BLOCK 6007
+- Instructions:
+  test   %r15d,%r15d
+  jle    1890 <func0+0x1f0>
+
+- Edges:
+  NO_JUMP -> 6016
+  JUMP -> 6288
+
+============================================================
+BLOCK 6016
+- Instructions:
+  mov    %r15d,%edx
+  cmp    $0x1,%r15d
+  jne    1837 <func0+0x197>
+
+- Edges:
+  NO_JUMP -> 6029
+  JUMP -> 6199
+
+============================================================
+BLOCK 6029
+- Instructions:
+  xor    %ecx,%ecx
+  jmp    186d <func0+0x1cd>
+
+- Edges:
+  JUMP -> 6253
+
+============================================================
+BLOCK 6036
+- Instructions:
+  xor    %edx,%edx
+  mov    %r8d,%esi
+  jmp    17a9 <func0+0x109>
+
+- Edges:
+  JUMP -> 6057
+
+============================================================
+BLOCK 6043
+- Instructions:
+  nopl   0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 6048
+
+============================================================
+BLOCK 6048
+- Instructions:
+  inc    %edx
+  dec    %esi
+  cmp    %r8d,%edx
+  je     1777 <func0+0xd7>
+
+- Edges:
+  NO_JUMP -> 6057
+  JUMP -> 6007
+
+============================================================
+BLOCK 6057
+- Instructions:
+  mov    %esi,%esi
+  cmp    %edx,%r8d
+  jbe    17a0 <func0+0x100>
+
+- Edges:
+  NO_JUMP -> 6064
+  JUMP -> 6048
+
+============================================================
+BLOCK 6064
+- Instructions:
+  movss  (%rax),%xmm0
+  cmp    $0x1,%esi
+  jne    17e0 <func0+0x140>
+
+- Edges:
+  NO_JUMP -> 6073
+  JUMP -> 6112
+
+============================================================
+BLOCK 6073
+- Instructions:
+  xor    %ebx,%ebx
+
+- Edges:
+  NO_JUMP -> 6075
+
+============================================================
+BLOCK 6075
+- Instructions:
+  test   $0x1,%sil
+  je     17a0 <func0+0x100>
+
+- Edges:
+  NO_JUMP -> 6081
+  JUMP -> 6048
+
+============================================================
+BLOCK 6081
+- Instructions:
+  movss  0x4(%rax,%rbx,4),%xmm1
+  ucomiss %xmm1,%xmm0
+  jbe    17a0 <func0+0x100>
+
+- Edges:
+  NO_JUMP -> 6092
+  JUMP -> 6048
+
+============================================================
+BLOCK 6092
+- Instructions:
+  movss  %xmm1,(%rax,%rbx,4)
+  movss  %xmm0,0x4(%rax,%rbx,4)
+  jmp    17a0 <func0+0x100>
+
+- Edges:
+  JUMP -> 6048
+
+============================================================
+BLOCK 6105
+- Instructions:
+  nopl   0x0(%rax)
+
+- Edges:
+  NO_JUMP -> 6112
+
+============================================================
+BLOCK 6112
+- Instructions:
+  mov    %esi,%edi
+  and    $0xfffffffe,%edi
+  xor    %ecx,%ecx
+  jmp    1804 <func0+0x164>
+
+- Edges:
+  JUMP -> 6148
+
+============================================================
+BLOCK 6121
+- Instructions:
+  nopl   0x0(%rax)
+
+- Edges:
+  NO_JUMP -> 6128
+
+============================================================
+BLOCK 6128
+- Instructions:
+  movss  %xmm1,0x4(%rax,%rcx,4)
+  movss  %xmm0,0x8(%rax,%rcx,4)
+
+- Edges:
+  NO_JUMP -> 6140
+
+============================================================
+BLOCK 6140
+- Instructions:
+  mov    %rbx,%rcx
+  cmp    %rbx,%rdi
+  je     17bb <func0+0x11b>
+
+- Edges:
+  NO_JUMP -> 6148
+  JUMP -> 6075
+
+============================================================
+BLOCK 6148
+- Instructions:
+  movss  0x4(%rax,%rcx,4),%xmm1
+  ucomiss %xmm1,%xmm0
+  jbe    1820 <func0+0x180>
+
+- Edges:
+  NO_JUMP -> 6159
+  JUMP -> 6176
+
+============================================================
+BLOCK 6159
+- Instructions:
+  movss  %xmm1,(%rax,%rcx,4)
+  movss  %xmm0,0x4(%rax,%rcx,4)
+  jmp    1823 <func0+0x183>
+
+- Edges:
+  JUMP -> 6179
+
+============================================================
+BLOCK 6172
+- Instructions:
+  nopl   0x0(%rax)
+
+- Edges:
+  NO_JUMP -> 6176
+
+============================================================
+BLOCK 6176
+- Instructions:
+  movaps %xmm1,%xmm0
+
+- Edges:
+  NO_JUMP -> 6179
+
+============================================================
+BLOCK 6179
+- Instructions:
+  lea    0x2(%rcx),%rbx
+  movss  0x8(%rax,%rcx,4),%xmm1
+  ucomiss %xmm1,%xmm0
+  ja     17f0 <func0+0x150>
+
+- Edges:
+  NO_JUMP -> 6194
+  JUMP -> 6128
+
+============================================================
+BLOCK 6194
+- Instructions:
+  movaps %xmm1,%xmm0
+  jmp    17fc <func0+0x15c>
+
+- Edges:
+  JUMP -> 6140
+
+============================================================
+BLOCK 6199
+- Instructions:
+  mov    %edx,%esi
+  and    $0xfffffffe,%esi
+  xor    %ebx,%ebx
+  xor    %ecx,%ecx
+
+- Edges:
+  NO_JUMP -> 6208
+
+============================================================
+BLOCK 6208
+- Instructions:
+  mov    %ebx,%edi
+  and    $0x7fffffff,%edi
+  movss  (%rax,%rdi,4),%xmm0
+  movss  %xmm0,(%r14,%rcx,4)
+  movss  0x4(%r12,%rcx,4),%xmm0
+  movss  %xmm0,0x4(%r14,%rcx,4)
+  add    $0x2,%rcx
+  inc    %rbx
+  cmp    %rcx,%rsi
+  jne    1840 <func0+0x1a0>
+
+- Edges:
+  NO_JUMP -> 6253
+  JUMP -> 6208
+
+============================================================
+BLOCK 6253
+- Instructions:
+  test   $0x1,%dl
+  je     1890 <func0+0x1f0>
+
+- Edges:
+  NO_JUMP -> 6258
+  JUMP -> 6288
+
+============================================================
+BLOCK 6258
+- Instructions:
+  mov    %ecx,%edx
+  and    $0xfffffffe,%edx
+  test   $0x1,%cl
+  lea    (%rax,%rdx,2),%rdx
+  lea    (%r12,%rcx,4),%rsi
+  cmove  %rdx,%rsi
+  movss  (%rsi),%xmm0
+  movss  %xmm0,(%r14,%rcx,4)
+
+- Edges:
+  NO_JUMP -> 6288
+
+============================================================
+BLOCK 6288
+- Instructions:
+  mov    %rax,%rdi
+  add    $0x8,%rsp
+  pop    %rbx
+  pop    %r12
+  pop    %r14
+  pop    %r15
+  jmp    1030 <free@plt>
+
+- Edges:
+  JUMP -> 4144

@@ -1,0 +1,99 @@
+Function: func0
+Basic blocks: 7
+
+============================================================
+BLOCK 0
+- Instructions:
+  pushq	%rbp
+  pushq	%r15
+  pushq	%r14
+  pushq	%r12
+  pushq	%rbx
+  subq	$1024, %rsp
+  movq	%rdi, %rbp
+  movq	%rsp, %rdi
+  xorl	%r14d, %r14d
+  movl	$1024, %edx
+  xorl	%esi, %esi
+  callq	memset@PLT
+  movzbl	(%rbp), %ebx
+  testb	%bl, %bl
+  je	.LBB0_6
+
+- Edges:
+  NO_JUMP -> 60
+  JUMP -> 148
+
+============================================================
+BLOCK 60
+- Instructions:
+  callq	__ctype_tolower_loc@PLT
+  movq	(%rax), %r15
+  incq	%rbp
+  xorl	%r14d, %r14d
+  jmp	.LBB0_2
+
+- Edges:
+  JUMP -> 96
+
+============================================================
+BLOCK 80
+- Instructions:
+  movzbl	(%rbp), %ebx
+  incq	%rbp
+  testb	%bl, %bl
+  je	.LBB0_6
+
+- Edges:
+  NO_JUMP -> 96
+  JUMP -> 148
+
+============================================================
+BLOCK 96
+- Instructions:
+  movzbl	%bl, %eax
+  movl	(%r15,%rax,4), %ebx
+  movsbq	%bl, %r12
+  cmpl	$0, (%rsp,%r12,4)
+  jne	.LBB0_5
+
+- Edges:
+  NO_JUMP -> 116
+  JUMP -> 80
+
+============================================================
+BLOCK 116
+- Instructions:
+  callq	__ctype_b_loc@PLT
+  movq	(%rax), %rax
+  movzbl	%bl, %ecx
+  testb	$4, 1(%rax,%rcx,2)
+  je	.LBB0_5
+
+- Edges:
+  NO_JUMP -> 136
+  JUMP -> 80
+
+============================================================
+BLOCK 136
+- Instructions:
+  movl	$1, (%rsp,%r12,4)
+  incl	%r14d
+  jmp	.LBB0_5
+
+- Edges:
+  JUMP -> 80
+
+============================================================
+BLOCK 148
+- Instructions:
+  movl	%r14d, %eax
+  addq	$1024, %rsp
+  popq	%rbx
+  popq	%r12
+  popq	%r14
+  popq	%r15
+  popq	%rbp
+  retq
+
+- Edges: (none)

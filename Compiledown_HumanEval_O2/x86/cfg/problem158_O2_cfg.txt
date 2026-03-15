@@ -1,0 +1,67 @@
+Function: func0
+Basic blocks: 5
+
+============================================================
+BLOCK 0
+- Instructions:
+  mulss	%xmm1, %xmm1
+  mulss	%xmm0, %xmm0
+  movaps	%xmm0, %xmm3
+  addss	%xmm1, %xmm3
+  mulss	%xmm2, %xmm2
+  subss	%xmm2, %xmm3
+  andps	.LCPI0_0(%rip), %xmm3
+  cvtss2sd	%xmm3, %xmm4
+  movl	$1, %eax
+  movsd	.LCPI0_1(%rip), %xmm3
+  ucomisd	%xmm4, %xmm3
+  ja	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 48
+  JUMP -> 108
+
+============================================================
+BLOCK 48
+- Instructions:
+  movaps	%xmm0, %xmm4
+  addss	%xmm2, %xmm4
+  subss	%xmm1, %xmm4
+  andps	.LCPI0_0(%rip), %xmm4
+  cvtss2sd	%xmm4, %xmm4
+  ucomisd	%xmm4, %xmm3
+  ja	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 76
+  JUMP -> 108
+
+============================================================
+BLOCK 76
+- Instructions:
+  addss	%xmm2, %xmm1
+  subss	%xmm0, %xmm1
+  andps	.LCPI0_0(%rip), %xmm1
+  xorps	%xmm0, %xmm0
+  cvtss2sd	%xmm1, %xmm0
+  ucomisd	%xmm0, %xmm3
+  ja	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 104
+  JUMP -> 108
+
+============================================================
+BLOCK 104
+- Instructions:
+  xorl	%eax, %eax
+
+- Edges:
+  NO_JUMP -> 108
+
+============================================================
+BLOCK 108
+- Instructions:
+  retq
+
+- Edges: (none)

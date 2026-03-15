@@ -1,0 +1,136 @@
+Function: func0
+Basic blocks: 11
+
+============================================================
+BLOCK 5456
+- Instructions:
+  push   %rbp
+  push   %r14
+  push   %rbx
+  mov    %rsi,%r14
+  mov    %edi,%ebp
+  mov    $0x100,%edi
+  call   1050 <malloc@plt>
+  mov    %rax,%rcx
+  movl   $0x0,(%r14)
+  xor    %esi,%esi
+  cmp    $0x4,%ebp
+  jge    158d <func0+0x3d>
+
+- Edges:
+  NO_JUMP -> 5492
+  JUMP -> 5517
+
+============================================================
+BLOCK 5492
+- Instructions:
+  cmp    $0x1,%ebp
+  jle    1585 <func0+0x35>
+
+- Edges:
+  NO_JUMP -> 5497
+  JUMP -> 5509
+
+============================================================
+BLOCK 5497
+- Instructions:
+  lea    0x1(%rsi),%eax
+  mov    %eax,(%r14)
+  movslq %esi,%rax
+  mov    %ebp,(%rcx,%rax,4)
+
+- Edges:
+  NO_JUMP -> 5509
+
+============================================================
+BLOCK 5509
+- Instructions:
+  mov    %rcx,%rax
+  pop    %rbx
+  pop    %r14
+  pop    %rbp
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 5517
+- Instructions:
+  mov    $0x2,%edi
+  xor    %esi,%esi
+  jmp    15ab <func0+0x5b>
+
+- Edges:
+  JUMP -> 5547
+
+============================================================
+BLOCK 5526
+- Instructions:
+  cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5536
+
+============================================================
+BLOCK 5536
+- Instructions:
+  inc    %edi
+  mov    %edi,%eax
+  imul   %edi,%eax
+  cmp    %ebp,%eax
+  jg     1574 <func0+0x24>
+
+- Edges:
+  NO_JUMP -> 5547
+  JUMP -> 5492
+
+============================================================
+BLOCK 5547
+- Instructions:
+  mov    %ebp,%eax
+  cltd
+  idiv   %edi
+  test   %edx,%edx
+  jne    15a0 <func0+0x50>
+
+- Edges:
+  NO_JUMP -> 5556
+  JUMP -> 5536
+
+============================================================
+BLOCK 5556
+- Instructions:
+  movslq %esi,%rax
+  lea    (%rcx,%rax,4),%rbx
+  nopl   0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5568
+
+============================================================
+BLOCK 5568
+- Instructions:
+  mov    %ebp,%eax
+  cltd
+  idiv   %edi
+  mov    %edi,(%rbx)
+  mov    %eax,%ebp
+  cltd
+  idiv   %edi
+  add    $0x4,%rbx
+  inc    %esi
+  test   %edx,%edx
+  je     15c0 <func0+0x70>
+
+- Edges:
+  NO_JUMP -> 5590
+  JUMP -> 5568
+
+============================================================
+BLOCK 5590
+- Instructions:
+  mov    %esi,(%r14)
+  jmp    15a0 <func0+0x50>
+
+- Edges:
+  JUMP -> 5536

@@ -1,0 +1,106 @@
+Function: func0
+Basic blocks: 10
+
+============================================================
+BLOCK 0
+- Instructions:
+  movl	$10, %eax
+  testl	%esi, %esi
+  jle	.LBB0_8
+
+- Edges:
+  NO_JUMP -> 12
+  JUMP -> 116
+
+============================================================
+BLOCK 12
+- Instructions:
+  movl	%esi, %r8d
+  xorl	%r9d, %r9d
+  movaps	.LCPI0_0(%rip), %xmm1
+  movq	%r8, %rdx
+  movq	%rdi, %rcx
+  jmp	.LBB0_3
+
+- Edges:
+  JUMP -> 52
+
+============================================================
+BLOCK 36
+- Instructions:
+  addq	$4, %rcx
+  decq	%rdx
+  cmpq	%r8, %r9
+  je	.LBB0_8
+
+- Edges:
+  NO_JUMP -> 52
+  JUMP -> 116
+
+============================================================
+BLOCK 52
+- Instructions:
+  movq	%r9, %rsi
+  incq	%r9
+  cmpq	%r8, %r9
+  jae	.LBB0_2
+
+- Edges:
+  NO_JUMP -> 68
+  JUMP -> 36
+
+============================================================
+BLOCK 68
+- Instructions:
+  movss	(%rdi,%rsi,4), %xmm2
+  movl	$1, %esi
+
+- Edges:
+  NO_JUMP -> 76
+
+============================================================
+BLOCK 76
+- Instructions:
+  movaps	%xmm2, %xmm3
+  subss	(%rcx,%rsi,4), %xmm3
+  andps	%xmm1, %xmm3
+  ucomiss	%xmm3, %xmm0
+  ja	.LBB0_7
+
+- Edges:
+  NO_JUMP -> 96
+  JUMP -> 112
+
+============================================================
+BLOCK 96
+- Instructions:
+  incq	%rsi
+  cmpq	%rsi, %rdx
+  jne	.LBB0_6
+
+- Edges:
+  NO_JUMP -> 108
+  JUMP -> 76
+
+============================================================
+BLOCK 108
+- Instructions:
+  jmp	.LBB0_2
+
+- Edges:
+  JUMP -> 36
+
+============================================================
+BLOCK 112
+- Instructions:
+  movl	$1, %eax
+
+- Edges:
+  NO_JUMP -> 116
+
+============================================================
+BLOCK 116
+- Instructions:
+  retq
+
+- Edges: (none)

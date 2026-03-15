@@ -1,0 +1,130 @@
+Function: _func0
+Basic blocks: 10
+
+============================================================
+BLOCK 0
+- Instructions:
+  stp	x28, x27, [sp, #-96]!
+  stp	x26, x25, [sp, #16]
+  stp	x24, x23, [sp, #32]
+  stp	x22, x21, [sp, #48]
+  stp	x20, x19, [sp, #64]
+  stp	x29, x30, [sp, #80]
+  add	x29, sp, #80
+  mov	x19, x4
+  mov	x20, x3
+  mov	x21, x2
+  mov	x24, x1
+  mov	x23, x0
+  mov	w0, #800
+  bl	_malloc
+  mov	x22, x0
+  cmp	w24, #1
+  b.lt	LBB0_8
+
+- Edges:
+  NO_JUMP -> 68
+  JUMP -> 176
+
+============================================================
+BLOCK 68
+- Instructions:
+  mov	x26, #0
+  mov	w25, #0
+  mov	w24, w24
+  b	LBB0_3
+
+- Edges:
+  JUMP -> 96
+
+============================================================
+BLOCK 84
+- Instructions:
+  add	x26, x26, #1
+  cmp	x26, x24
+  b.eq	LBB0_9
+
+- Edges:
+  NO_JUMP -> 96
+  JUMP -> 180
+
+============================================================
+BLOCK 96
+- Instructions:
+  ldr	w27, [x21, x26, lsl #2]
+  cmp	w27, #1
+  b.lt	LBB0_2
+
+- Edges:
+  NO_JUMP -> 108
+  JUMP -> 84
+
+============================================================
+BLOCK 108
+- Instructions:
+  ldr	x8, [x23, x26, lsl #3]
+  sub	x28, x8, #4
+  b	LBB0_6
+
+- Edges:
+  JUMP -> 136
+
+============================================================
+BLOCK 120
+- Instructions:
+  sub	x27, x27, #1
+  add	x8, x27, #1
+  cmp	x8, #1
+  b.ls	LBB0_2
+
+- Edges:
+  NO_JUMP -> 136
+  JUMP -> 84
+
+============================================================
+BLOCK 136
+- Instructions:
+  ldr	w8, [x28, x27, lsl #2]
+  cmp	w8, w20
+  b.ne	LBB0_5
+
+- Edges:
+  NO_JUMP -> 148
+  JUMP -> 120
+
+============================================================
+BLOCK 148
+- Instructions:
+  mov	w0, #8
+  bl	_malloc
+  str	x0, [x22, w25, sxtw #3]
+  sub	w8, w27, #1
+  stp	w26, w8, [x0]
+  add	w25, w25, #1
+  b	LBB0_5
+
+- Edges:
+  JUMP -> 120
+
+============================================================
+BLOCK 176
+- Instructions:
+  mov	w25, #0
+
+- Edges:
+  NO_JUMP -> 180
+
+============================================================
+BLOCK 180
+- Instructions:
+  str	w25, [x19]
+  mov	x0, x22
+  ldp	x29, x30, [sp, #80]
+  ldp	x20, x19, [sp, #64]
+  ldp	x22, x21, [sp, #48]
+  ldp	x24, x23, [sp, #32]
+  ldp	x26, x25, [sp, #16]
+  ldp	x28, x27, [sp], #96
+  ret
+
+- Edges: (none)

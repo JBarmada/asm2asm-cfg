@@ -1,0 +1,127 @@
+Function: func0
+Basic blocks: 13
+
+============================================================
+BLOCK 0
+- Instructions:
+  blez	a1, .LBB0_11
+
+- Edges:
+  NO_JUMP -> 4
+  JUMP -> 96
+
+============================================================
+BLOCK 4
+- Instructions:
+  li	a7, 0
+  li	a6, 0
+  j	.LBB0_4
+
+- Edges:
+  JUMP -> 32
+
+============================================================
+BLOCK 16
+- Instructions:
+  mv	a7, a5
+
+- Edges:
+  NO_JUMP -> 20
+
+============================================================
+BLOCK 20
+- Instructions:
+  addi	a1, a1, -1
+  addi	a0, a0, 4
+  beqz	a1, .LBB0_12
+
+- Edges:
+  NO_JUMP -> 32
+  JUMP -> 104
+
+============================================================
+BLOCK 32
+- Instructions:
+  lw	a5, 0(a0)
+  bltz	a5, .LBB0_8
+
+- Edges:
+  NO_JUMP -> 40
+  JUMP -> 68
+
+============================================================
+BLOCK 40
+- Instructions:
+  beqz	a5, .LBB0_3
+
+- Edges:
+  NO_JUMP -> 44
+  JUMP -> 20
+
+============================================================
+BLOCK 44
+- Instructions:
+  seqz	a3, a7
+  slt	a4, a5, a7
+  or	a3, a3, a4
+  bnez	a3, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 60
+  JUMP -> 16
+
+============================================================
+BLOCK 60
+- Instructions:
+  mv	a5, a7
+  j	.LBB0_2
+
+- Edges:
+  JUMP -> 16
+
+============================================================
+BLOCK 68
+- Instructions:
+  seqz	a4, a6
+  slt	a3, a6, a5
+  or	a3, a3, a4
+  bnez	a3, .LBB0_10
+
+- Edges:
+  NO_JUMP -> 84
+  JUMP -> 88
+
+============================================================
+BLOCK 84
+- Instructions:
+  mv	a5, a6
+
+- Edges:
+  NO_JUMP -> 88
+
+============================================================
+BLOCK 88
+- Instructions:
+  mv	a6, a5
+  j	.LBB0_3
+
+- Edges:
+  JUMP -> 20
+
+============================================================
+BLOCK 96
+- Instructions:
+  li	a6, 0
+  li	a7, 0
+
+- Edges:
+  NO_JUMP -> 104
+
+============================================================
+BLOCK 104
+- Instructions:
+  sw	a6, 0(a2)
+  sw	a7, 4(a2)
+  ret
+
+- Edges: (none)

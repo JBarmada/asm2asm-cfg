@@ -1,0 +1,10 @@
+Function: func0
+Basic blocks: 1
+
+============================================================
+BLOCK 0
+- Instructions:
+  addw	a0, a0, a1
+  ret
+
+- Edges: (none)

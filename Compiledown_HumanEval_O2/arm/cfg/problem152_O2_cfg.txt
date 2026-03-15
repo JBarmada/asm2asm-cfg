@@ -1,0 +1,91 @@
+Function: _func0
+Basic blocks: 8
+
+============================================================
+BLOCK 0
+- Instructions:
+  cmp	w1, #1
+  b.lt	LBB0_6
+
+- Edges:
+  NO_JUMP -> 8
+  JUMP -> 112
+
+============================================================
+BLOCK 8
+- Instructions:
+  mov	x8, x0
+  mov	x0, #0
+  mov	w9, w1
+  mov	x10, #17197
+  movk	x10, #60188, lsl #16
+  movk	x10, #14050, lsl #32
+  movk	x10, #16154, lsl #48
+  fmov	d0, x10
+  b	LBB0_3
+
+- Edges:
+  JUMP -> 56
+
+============================================================
+BLOCK 44
+- Instructions:
+  add	x8, x8, #4
+  subs	x9, x9, #1
+  b.eq	LBB0_7
+
+- Edges:
+  NO_JUMP -> 56
+  JUMP -> 116
+
+============================================================
+BLOCK 56
+- Instructions:
+  ldr	s1, [x8]
+  fcvt	d3, s1
+  frinta	d2, d3
+  fabd	d3, d3, d2
+  fcmp	d3, d0
+  b.pl	LBB0_2
+
+- Edges:
+  NO_JUMP -> 80
+  JUMP -> 44
+
+============================================================
+BLOCK 80
+- Instructions:
+  fcmp	s1, #0.0
+  fcvtzs	w10, d2
+  and	w11, w10, #0x80000001
+  ccmp	w11, #1, #0, gt
+  b.ne	LBB0_2
+
+- Edges:
+  NO_JUMP -> 100
+  JUMP -> 44
+
+============================================================
+BLOCK 100
+- Instructions:
+  mul	w10, w10, w10
+  add	x0, x0, x10
+  b	LBB0_2
+
+- Edges:
+  JUMP -> 44
+
+============================================================
+BLOCK 112
+- Instructions:
+  mov	x0, #0
+
+- Edges:
+  NO_JUMP -> 116
+
+============================================================
+BLOCK 116
+- Instructions:
+  ret
+
+- Edges: (none)

@@ -1,0 +1,77 @@
+Function: func0
+Basic blocks: 6
+
+============================================================
+BLOCK 0
+- Instructions:
+  addi	sp, sp, -48
+  sd	ra, 40(sp)
+  sd	s0, 32(sp)
+  sd	s1, 24(sp)
+  sd	s2, 16(sp)
+  sd	s3, 8(sp)
+  mv	s2, a0
+  call	strlen@plt
+  beqz	a0, .LBB0_3
+
+- Edges:
+  NO_JUMP -> 36
+  JUMP -> 92
+
+============================================================
+BLOCK 36
+- Instructions:
+  mv	s1, a0
+  li	s0, 0
+  auipc	s3, %pcrel_hi(.L.str)
+  addi	s3, s3, %pcrel_lo(.LBB0_5)
+
+- Edges:
+  NO_JUMP -> 52
+
+============================================================
+BLOCK 52
+- Instructions:
+  lbu	a1, 0(s2)
+  li	a2, 7
+  mv	a0, s3
+  call	memchr@plt
+  snez	a0, a0
+  addw	s0, s0, a0
+  addi	s1, s1, -1
+  addi	s2, s2, 1
+  bnez	s1, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 88
+  JUMP -> 52
+
+============================================================
+BLOCK 88
+- Instructions:
+  j	.LBB0_4
+
+- Edges:
+  JUMP -> 96
+
+============================================================
+BLOCK 92
+- Instructions:
+  li	s0, 0
+
+- Edges:
+  NO_JUMP -> 96
+
+============================================================
+BLOCK 96
+- Instructions:
+  mv	a0, s0
+  ld	ra, 40(sp)
+  ld	s0, 32(sp)
+  ld	s1, 24(sp)
+  ld	s2, 16(sp)
+  ld	s3, 8(sp)
+  addi	sp, sp, 48
+  ret
+
+- Edges: (none)

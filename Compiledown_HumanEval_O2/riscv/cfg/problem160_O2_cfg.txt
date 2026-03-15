@@ -1,0 +1,32 @@
+Function: func0
+Basic blocks: 3
+
+============================================================
+BLOCK 0
+- Instructions:
+  bge	a2, a1, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 4
+  JUMP -> 20
+
+============================================================
+BLOCK 4
+- Instructions:
+  addw	a0, a0, a2
+  sw	a0, 0(a3)
+  sw	zero, 4(a3)
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 20
+- Instructions:
+  addw	a0, a0, a1
+  sw	a0, 0(a3)
+  subw	a1, a2, a1
+  sw	a1, 4(a3)
+  ret
+
+- Edges: (none)

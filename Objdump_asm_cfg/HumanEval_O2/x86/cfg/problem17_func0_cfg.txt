@@ -1,0 +1,107 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 4720
+- Instructions:
+  push   %rbp
+  push   %r15
+  push   %r14
+  push   %r12
+  push   %rbx
+  sub    $0x400,%rsp
+  mov    %rdi,%rbp
+  mov    %rsp,%rdi
+  xor    %r14d,%r14d
+  mov    $0x400,%edx
+  xor    %esi,%esi
+  call   1040 <memset@plt>
+  movzbl 0x0(%rbp),%ebx
+  test   %bl,%bl
+  je     12ec <func0+0x7c>
+
+- Edges:
+  NO_JUMP -> 4764
+  JUMP -> 4844
+
+============================================================
+BLOCK 4764
+- Instructions:
+  call   1050 <__ctype_tolower_loc@plt>
+  mov    (%rax),%r15
+  inc    %rbp
+  xor    %r14d,%r14d
+  jmp    12bb <func0+0x4b>
+
+- Edges:
+  JUMP -> 4795
+
+============================================================
+BLOCK 4780
+- Instructions:
+  nopl   0x0(%rax)
+
+- Edges:
+  NO_JUMP -> 4784
+
+============================================================
+BLOCK 4784
+- Instructions:
+  movzbl 0x0(%rbp),%ebx
+  inc    %rbp
+  test   %bl,%bl
+  je     12ec <func0+0x7c>
+
+- Edges:
+  NO_JUMP -> 4795
+  JUMP -> 4844
+
+============================================================
+BLOCK 4795
+- Instructions:
+  movzbl %bl,%eax
+  mov    (%r15,%rax,4),%ebx
+  movsbq %bl,%r12
+  cmpl   $0x0,(%rsp,%r12,4)
+  jne    12b0 <func0+0x40>
+
+- Edges:
+  NO_JUMP -> 4813
+  JUMP -> 4784
+
+============================================================
+BLOCK 4813
+- Instructions:
+  call   1060 <__ctype_b_loc@plt>
+  mov    (%rax),%rax
+  movzbl %bl,%ecx
+  testb  $0x4,0x1(%rax,%rcx,2)
+  je     12b0 <func0+0x40>
+
+- Edges:
+  NO_JUMP -> 4831
+  JUMP -> 4784
+
+============================================================
+BLOCK 4831
+- Instructions:
+  movl   $0x1,(%rsp,%r12,4)
+  inc    %r14d
+  jmp    12b0 <func0+0x40>
+
+- Edges:
+  JUMP -> 4784
+
+============================================================
+BLOCK 4844
+- Instructions:
+  mov    %r14d,%eax
+  add    $0x400,%rsp
+  pop    %rbx
+  pop    %r12
+  pop    %r14
+  pop    %r15
+  pop    %rbp
+  ret
+
+- Edges: (none)

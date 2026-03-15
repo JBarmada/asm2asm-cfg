@@ -1,0 +1,139 @@
+Function: func0
+Basic blocks: 11
+
+============================================================
+BLOCK 2084
+- Instructions:
+  add	sp,sp,-32
+  sd	ra,24(sp)
+  sd	s0,16(sp)
+  sd	s1,8(sp)
+  sd	s2,0(sp)
+  lbu	s1,0(a0)
+  beqz	s1,8ae <func0+0x8a>
+
+- Edges:
+  NO_JUMP -> 2100
+  JUMP -> 2222
+
+============================================================
+BLOCK 2100
+- Instructions:
+  mv	s2,a0
+  jal	640 <__ctype_b_loc@plt>
+
+- Edges:
+  JUMP -> 1600
+
+============================================================
+BLOCK 2106
+- Instructions:
+  mv	a1,a0
+  li	a0,0
+  li	s0,0
+  ld	t0,0(a1)
+  add	a2,s2,1
+  li	t1,1
+  li	a6,63
+  lui	a3,0xc0002
+  addw	a3,a3,1 # ffffffffc0002001 <__global_pointer$+0xffffffffbffff801>
+  sll	a7,a3,0x21
+  j	872 <func0+0x4e>
+
+- Edges:
+  JUMP -> 2162
+
+============================================================
+BLOCK 2138
+- Instructions:
+  li	a3,1
+
+- Edges:
+  NO_JUMP -> 2140
+
+============================================================
+BLOCK 2140
+- Instructions:
+  srl	a1,s1,0xd
+  lbu	s1,0(a2)
+  snez	a4,s0
+  and	a1,a1,a4
+  addw	a0,a0,a1
+  add	a2,a2,1
+  mv	s0,a3
+  beqz	s1,8b0 <func0+0x8c>
+
+- Edges:
+  NO_JUMP -> 2162
+  JUMP -> 2224
+
+============================================================
+BLOCK 2162
+- Instructions:
+  zext.b	a4,s1
+  sll	a3,a4,0x1
+  add	a3,a3,t0
+  lh	s1,0(a3)
+  sll	a3,s1,0x32
+  sra	a3,a3,0x3f
+  add	a1,a4,-73
+  seqz	a1,a1
+  snez	a5,t1
+  and	a1,a1,a5
+  and	t1,a3,t1
+  bnez	a1,85a <func0+0x36>
+
+- Edges:
+  NO_JUMP -> 2202
+  JUMP -> 2138
+
+============================================================
+BLOCK 2202
+- Instructions:
+  li	a3,0
+  bltu	a6,a4,85c <func0+0x38>
+
+- Edges:
+  NO_JUMP -> 2208
+  JUMP -> 2140
+
+============================================================
+BLOCK 2208
+- Instructions:
+  srl	a1,a7,a4
+  and	a1,a1,1
+  beqz	a1,85c <func0+0x38>
+
+- Edges:
+  NO_JUMP -> 2216
+  JUMP -> 2140
+
+============================================================
+BLOCK 2216
+- Instructions:
+  li	a3,0
+  li	t1,1
+  j	85c <func0+0x38>
+
+- Edges:
+  JUMP -> 2140
+
+============================================================
+BLOCK 2222
+- Instructions:
+  li	a0,0
+
+- Edges:
+  NO_JUMP -> 2224
+
+============================================================
+BLOCK 2224
+- Instructions:
+  ld	ra,24(sp)
+  ld	s0,16(sp)
+  ld	s1,8(sp)
+  ld	s2,0(sp)
+  add	sp,sp,32
+  ret
+
+- Edges: (none)

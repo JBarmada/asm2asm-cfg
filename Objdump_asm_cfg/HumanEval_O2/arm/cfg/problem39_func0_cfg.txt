@@ -1,0 +1,118 @@
+Function: _func0
+Basic blocks: 7
+
+============================================================
+BLOCK 4294968756
+- Instructions:
+  sub	sp, sp, #0x70
+  stp	x28, x27, [sp, #0x10]
+  stp	x26, x25, [sp, #0x20]
+  stp	x24, x23, [sp, #0x30]
+  stp	x22, x21, [sp, #0x40]
+  stp	x20, x19, [sp, #0x50]
+  stp	x29, x30, [sp, #0x60]
+  add	x29, sp, #0x60
+  mov	x19, x1
+  mov	x20, x0
+  bl	0x100000734 <_time+0x100000734>
+  mov	x21, x0
+  cmp	w21, #0x1
+  b.lt	0x100000698 <_func0+0xe4>
+
+- Edges:
+  NO_JUMP -> 4294968812
+  JUMP -> 4294968984
+
+============================================================
+BLOCK 4294968812
+- Instructions:
+  add	w8, w21, #0x2
+  mov	w9, #0xaaab             ; =43691
+  movk	w9, #0xaaaa, lsl #16
+  umull	x8, w8, w9
+  lsr	x23, x8, #33
+  and	x24, x21, #0x7fffffff
+  mov	w25, #0x3               ; =3
+  add	x26, sp, #0xc
+  mov	w27, #0x3               ; =3
+  b	0x10000064c <_func0+0x98>
+
+- Edges:
+  JUMP -> 4294968908
+
+============================================================
+BLOCK 4294968852
+- Instructions:
+  ldrb	w9, [sp, #0xc]
+  strb	w8, [sp, #0xc]
+  ldrb	w8, [sp, #0xe]
+  strb	w8, [sp, #0xd]
+  strb	w9, [sp, #0xe]
+
+- Edges:
+  NO_JUMP -> 4294968872
+
+============================================================
+BLOCK 4294968872
+- Instructions:
+  add	x1, sp, #0xc
+  mov	x0, x20
+  mov	x2, x22
+  bl	0x100000740 <_time+0x100000740>
+  add	x20, x20, #0x3
+  sub	w21, w21, #0x3
+  add	x27, x27, #0x3
+  subs	x23, x23, #0x1
+  b.eq	0x100000698 <_func0+0xe4>
+
+- Edges:
+  NO_JUMP -> 4294968908
+  JUMP -> 4294968984
+
+============================================================
+BLOCK 4294968908
+- Instructions:
+  cmp	x27, x24
+  csel	w28, w21, w25, hi
+  sxtw	x22, w28
+  add	x0, sp, #0xc
+  mov	x1, x20
+  mov	x2, x22
+  mov	w3, #0x4                ; =4
+  bl	0x100000704 <_time+0x100000704>
+  strb	wzr, [x26, x22]
+  cmp	w28, #0x3
+  b.ne	0x100000628 <_func0+0x74>
+
+- Edges:
+  NO_JUMP -> 4294968952
+  JUMP -> 4294968872
+
+============================================================
+BLOCK 4294968952
+- Instructions:
+  ldrb	w8, [sp, #0xd]
+  cbz	w19, 0x100000614 <_func0+0x60>
+  ldrb	w9, [sp, #0xe]
+  strb	w8, [sp, #0xe]
+  ldrb	w8, [sp, #0xc]
+  strb	w8, [sp, #0xd]
+  strb	w9, [sp, #0xc]
+  b	0x100000628 <_func0+0x74>
+
+- Edges:
+  JUMP -> 4294968872
+
+============================================================
+BLOCK 4294968984
+- Instructions:
+  ldp	x29, x30, [sp, #0x60]
+  ldp	x20, x19, [sp, #0x50]
+  ldp	x22, x21, [sp, #0x40]
+  ldp	x24, x23, [sp, #0x30]
+  ldp	x26, x25, [sp, #0x20]
+  ldp	x28, x27, [sp, #0x10]
+  add	sp, sp, #0x70
+  ret
+
+- Edges: (none)

@@ -1,0 +1,163 @@
+Function: func0
+Basic blocks: 14
+
+============================================================
+BLOCK 2656
+- Instructions:
+  li	a3,2
+  addw	a7,a1,-1
+  blt	a1,a3,ab4 <func0+0x54>
+
+- Edges:
+  NO_JUMP -> 2666
+  JUMP -> 2740
+
+============================================================
+BLOCK 2666
+- Instructions:
+  li	t0,0
+  sll	a3,a7,0x20
+  srl	a6,a3,0x20
+  add	t1,a0,4
+  li	t2,1
+  j	a84 <func0+0x24>
+
+- Edges:
+  JUMP -> 2692
+
+============================================================
+BLOCK 2684
+- Instructions:
+  add	t2,t2,1
+  add	t1,t1,4
+  beq	t0,a6,ab4 <func0+0x54>
+
+- Edges:
+  NO_JUMP -> 2692
+  JUMP -> 2740
+
+============================================================
+BLOCK 2692
+- Instructions:
+  mv	a3,t0
+  add	t0,t0,1
+  bgeu	t0,a1,a7c <func0+0x1c>
+
+- Edges:
+  NO_JUMP -> 2700
+  JUMP -> 2684
+
+============================================================
+BLOCK 2700
+- Instructions:
+  sll	a3,a3,0x2
+  add	t3,a0,a3
+  mv	a5,a1
+  mv	a4,t1
+  j	aa0 <func0+0x40>
+
+- Edges:
+  JUMP -> 2720
+
+============================================================
+BLOCK 2712
+- Instructions:
+  add	a5,a5,-1
+  add	a4,a4,4
+  beq	t2,a5,a7c <func0+0x1c>
+
+- Edges:
+  NO_JUMP -> 2720
+  JUMP -> 2684
+
+============================================================
+BLOCK 2720
+- Instructions:
+  lw	t4,0(t3)
+  lw	a3,0(a4)
+  bge	a3,t4,a98 <func0+0x38>
+
+- Edges:
+  NO_JUMP -> 2730
+  JUMP -> 2712
+
+============================================================
+BLOCK 2730
+- Instructions:
+  sw	a3,0(t3)
+  sw	t4,0(a4)
+  j	a98 <func0+0x38>
+
+- Edges:
+  JUMP -> 2712
+
+============================================================
+BLOCK 2740
+- Instructions:
+  blez	a1,afe <func0+0x9e>
+
+- Edges:
+  NO_JUMP -> 2744
+  JUMP -> 2814
+
+============================================================
+BLOCK 2744
+- Instructions:
+  li	a3,0
+  li	a6,-1
+  mv	a4,a0
+  j	ac8 <func0+0x68>
+
+- Edges:
+  JUMP -> 2760
+
+============================================================
+BLOCK 2752
+- Instructions:
+  add	a4,a4,4
+  mv	a3,t0
+  bge	a6,a7,afe <func0+0x9e>
+
+- Edges:
+  NO_JUMP -> 2760
+  JUMP -> 2814
+
+============================================================
+BLOCK 2760
+- Instructions:
+  add	a6,a6,1
+  sll	a5,a7,0x20
+  srl	t1,a5,0x20
+  lw	a5,0(a4)
+  addw	t0,a3,1
+  sll	a1,a3,0x2
+  add	a1,a1,a2
+  sw	a5,0(a1)
+  beq	a6,t1,ac0 <func0+0x60>
+
+- Edges:
+  NO_JUMP -> 2788
+  JUMP -> 2752
+
+============================================================
+BLOCK 2788
+- Instructions:
+  sll	a1,a7,0x2
+  addw	a7,a7,-1
+  add	a1,a1,a0
+  lw	a1,0(a1)
+  sll	a5,t0,0x2
+  addw	t0,a3,2
+  add	a3,a2,a5
+  sw	a1,0(a3)
+  j	ac0 <func0+0x60>
+
+- Edges:
+  JUMP -> 2752
+
+============================================================
+BLOCK 2814
+- Instructions:
+  ret
+
+- Edges: (none)

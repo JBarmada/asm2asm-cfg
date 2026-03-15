@@ -1,0 +1,118 @@
+Function: func0
+Basic blocks: 11
+
+============================================================
+BLOCK 4944
+- Instructions:
+  xor    %r9d,%r9d
+  mov    $0x2,%eax
+  mov    $0x1,%r8d
+  jmp    1378 <func0+0x28>
+
+- Edges:
+  JUMP -> 4984
+
+============================================================
+BLOCK 4960
+- Instructions:
+  test   %edx,%edx
+  setne  %dl
+
+- Edges:
+  NO_JUMP -> 4965
+
+============================================================
+BLOCK 4965
+- Instructions:
+  mov    %r8d,%eax
+  add    %ecx,%eax
+  movzbl %dl,%edx
+  add    %edx,%r9d
+  mov    %ecx,%r8d
+  cmp    %edi,%r9d
+  je     13a6 <func0+0x56>
+
+- Edges:
+  NO_JUMP -> 4984
+  JUMP -> 5030
+
+============================================================
+BLOCK 4984
+- Instructions:
+  cmp    %edi,%r9d
+  jge    13a9 <func0+0x59>
+
+- Edges:
+  NO_JUMP -> 4989
+  JUMP -> 5033
+
+============================================================
+BLOCK 4989
+- Instructions:
+  mov    %eax,%ecx
+  mov    $0x1,%dl
+  cmp    $0x4,%eax
+  jl     1365 <func0+0x15>
+
+- Edges:
+  NO_JUMP -> 4998
+  JUMP -> 4965
+
+============================================================
+BLOCK 4998
+- Instructions:
+  mov    $0x2,%esi
+  nopl   0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5008
+
+============================================================
+BLOCK 5008
+- Instructions:
+  mov    %ecx,%eax
+  cltd
+  idiv   %esi
+  test   %edx,%edx
+  je     1360 <func0+0x10>
+
+- Edges:
+  NO_JUMP -> 5017
+  JUMP -> 4960
+
+============================================================
+BLOCK 5017
+- Instructions:
+  inc    %esi
+  mov    %esi,%eax
+  imul   %esi,%eax
+  cmp    %ecx,%eax
+  jle    1390 <func0+0x40>
+
+- Edges:
+  NO_JUMP -> 5028
+  JUMP -> 5008
+
+============================================================
+BLOCK 5028
+- Instructions:
+  jmp    1360 <func0+0x10>
+
+- Edges:
+  JUMP -> 4960
+
+============================================================
+BLOCK 5030
+- Instructions:
+  mov    %ecx,%eax
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 5033
+- Instructions:
+  xor    %eax,%eax
+  ret
+
+- Edges: (none)

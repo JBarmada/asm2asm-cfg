@@ -1,0 +1,127 @@
+Function: func0
+Basic blocks: 13
+
+============================================================
+BLOCK 2584
+- Instructions:
+  blez	a1,a54 <func0+0x3c>
+
+- Edges:
+  NO_JUMP -> 2588
+  JUMP -> 2644
+
+============================================================
+BLOCK 2588
+- Instructions:
+  li	a7,0
+  li	a6,0
+  j	a2a <func0+0x12>
+
+- Edges:
+  JUMP -> 2602
+
+============================================================
+BLOCK 2594
+- Instructions:
+  mv	a7,a5
+
+- Edges:
+  NO_JUMP -> 2596
+
+============================================================
+BLOCK 2596
+- Instructions:
+  add	a1,a1,-1
+  add	a0,a0,4
+  beqz	a1,a58 <func0+0x40>
+
+- Edges:
+  NO_JUMP -> 2602
+  JUMP -> 2648
+
+============================================================
+BLOCK 2602
+- Instructions:
+  lw	a5,0(a0)
+  bltz	a5,a42 <func0+0x2a>
+
+- Edges:
+  NO_JUMP -> 2608
+  JUMP -> 2626
+
+============================================================
+BLOCK 2608
+- Instructions:
+  beqz	a5,a24 <func0+0xc>
+
+- Edges:
+  NO_JUMP -> 2610
+  JUMP -> 2596
+
+============================================================
+BLOCK 2610
+- Instructions:
+  seqz	a3,a7
+  slt	a4,a5,a7
+  or	a3,a3,a4
+  bnez	a3,a22 <func0+0xa>
+
+- Edges:
+  NO_JUMP -> 2622
+  JUMP -> 2594
+
+============================================================
+BLOCK 2622
+- Instructions:
+  mv	a5,a7
+  j	a22 <func0+0xa>
+
+- Edges:
+  JUMP -> 2594
+
+============================================================
+BLOCK 2626
+- Instructions:
+  seqz	a4,a6
+  slt	a3,a6,a5
+  or	a3,a3,a4
+  bnez	a3,a50 <func0+0x38>
+
+- Edges:
+  NO_JUMP -> 2638
+  JUMP -> 2640
+
+============================================================
+BLOCK 2638
+- Instructions:
+  mv	a5,a6
+
+- Edges:
+  NO_JUMP -> 2640
+
+============================================================
+BLOCK 2640
+- Instructions:
+  mv	a6,a5
+  j	a24 <func0+0xc>
+
+- Edges:
+  JUMP -> 2596
+
+============================================================
+BLOCK 2644
+- Instructions:
+  li	a6,0
+  li	a7,0
+
+- Edges:
+  NO_JUMP -> 2648
+
+============================================================
+BLOCK 2648
+- Instructions:
+  sw	a6,0(a2)
+  sw	a7,4(a2)
+  ret
+
+- Edges: (none)

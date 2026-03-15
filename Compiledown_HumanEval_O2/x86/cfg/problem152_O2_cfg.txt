@@ -1,0 +1,114 @@
+Function: func0
+Basic blocks: 9
+
+============================================================
+BLOCK 0
+- Instructions:
+  pushq	%r15
+  pushq	%r14
+  pushq	%r12
+  pushq	%rbx
+  subq	$40, %rsp
+  testl	%esi, %esi
+  jle	.LBB0_1
+
+- Edges:
+  NO_JUMP -> 28
+  JUMP -> 148
+
+============================================================
+BLOCK 28
+- Instructions:
+  movq	%rdi, %r15
+  movl	%esi, %r12d
+  xorl	%ebx, %ebx
+  xorl	%r14d, %r14d
+  jmp	.LBB0_4
+
+- Edges:
+  JUMP -> 60
+
+============================================================
+BLOCK 48
+- Instructions:
+  incq	%rbx
+  cmpq	%rbx, %r12
+  je	.LBB0_2
+
+- Edges:
+  NO_JUMP -> 60
+  JUMP -> 152
+
+============================================================
+BLOCK 60
+- Instructions:
+  movss	(%r15,%rbx,4), %xmm0
+  movss	%xmm0, 12(%rsp)
+  cvtss2sd	%xmm0, %xmm0
+  movaps	%xmm0, 16(%rsp)
+  callq	round@PLT
+  movapd	16(%rsp), %xmm2
+  subsd	%xmm0, %xmm2
+  andpd	.LCPI0_0(%rip), %xmm2
+  movsd	.LCPI0_1(%rip), %xmm1
+  ucomisd	%xmm2, %xmm1
+  jbe	.LBB0_8
+
+- Edges:
+  NO_JUMP -> 104
+  JUMP -> 48
+
+============================================================
+BLOCK 104
+- Instructions:
+  movss	12(%rsp), %xmm1
+  ucomiss	.LCPI0_2(%rip), %xmm1
+  jbe	.LBB0_8
+
+- Edges:
+  NO_JUMP -> 116
+  JUMP -> 48
+
+============================================================
+BLOCK 116
+- Instructions:
+  cvttsd2si	%xmm0, %eax
+  movl	%eax, %ecx
+  andl	$-2147483647, %ecx
+  cmpl	$1, %ecx
+  jne	.LBB0_8
+
+- Edges:
+  NO_JUMP -> 136
+  JUMP -> 48
+
+============================================================
+BLOCK 136
+- Instructions:
+  imull	%eax, %eax
+  addq	%rax, %r14
+  jmp	.LBB0_8
+
+- Edges:
+  JUMP -> 48
+
+============================================================
+BLOCK 148
+- Instructions:
+  xorl	%r14d, %r14d
+
+- Edges:
+  NO_JUMP -> 152
+
+============================================================
+BLOCK 152
+- Instructions:
+  movq	%r14, %rax
+  addq	$40, %rsp
+  popq	%rbx
+  popq	%r12
+  popq	%r14
+  popq	%r15
+  retq
+
+- Edges: (none)

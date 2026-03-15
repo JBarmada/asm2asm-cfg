@@ -1,0 +1,83 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 0
+- Instructions:
+  addi	sp, sp, -16
+  sd	ra, 8(sp)
+  call	strlen@plt
+  sext.w	a2, a0
+  li	a1, 2
+  bge	a2, a1, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 24
+  JUMP -> 32
+
+============================================================
+BLOCK 24
+- Instructions:
+  li	a1, 0
+  j	.LBB0_7
+
+- Edges:
+  JUMP -> 72
+
+============================================================
+BLOCK 32
+- Instructions:
+  li	a3, 4
+  li	a1, 1
+  bltu	a2, a3, .LBB0_7
+
+- Edges:
+  NO_JUMP -> 44
+  JUMP -> 72
+
+============================================================
+BLOCK 44
+- Instructions:
+  li	a1, 2
+
+- Edges:
+  NO_JUMP -> 48
+
+============================================================
+BLOCK 48
+- Instructions:
+  remw	a3, a0, a1
+  beqz	a3, .LBB0_6
+
+- Edges:
+  NO_JUMP -> 56
+  JUMP -> 68
+
+============================================================
+BLOCK 56
+- Instructions:
+  addiw	a1, a1, 1
+  mulw	a4, a1, a1
+  bge	a2, a4, .LBB0_4
+
+- Edges:
+  NO_JUMP -> 68
+  JUMP -> 48
+
+============================================================
+BLOCK 68
+- Instructions:
+  snez	a1, a3
+
+- Edges:
+  NO_JUMP -> 72
+
+============================================================
+BLOCK 72
+- Instructions:
+  mv	a0, a1
+  ld	ra, 8(sp)
+  addi	sp, sp, 16
+  ret
+
+- Edges: (none)

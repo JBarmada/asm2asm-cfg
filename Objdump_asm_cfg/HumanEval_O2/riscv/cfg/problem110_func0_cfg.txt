@@ -1,0 +1,87 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 2020
+- Instructions:
+  beqz	a1,810 <func0+0x2c>
+
+- Edges:
+  NO_JUMP -> 2022
+  JUMP -> 2064
+
+============================================================
+BLOCK 2022
+- Instructions:
+  li	a2,1
+  bge	a2,a1,814 <func0+0x30>
+
+- Edges:
+  NO_JUMP -> 2028
+  JUMP -> 2068
+
+============================================================
+BLOCK 2028
+- Instructions:
+  lw	a6,0(a0)
+  li	a3,0
+  add	a4,a0,4
+  add	a5,a1,-1
+  mv	a2,a6
+
+- Edges:
+  NO_JUMP -> 2044
+
+============================================================
+BLOCK 2044
+- Instructions:
+  lw	a7,0(a4)
+  slt	a2,a7,a2
+  addw	a3,a3,a2
+  add	a5,a5,-1
+  add	a4,a4,4
+  mv	a2,a7
+  bnez	a5,7fc <func0+0x18>
+
+- Edges:
+  NO_JUMP -> 2062
+  JUMP -> 2044
+
+============================================================
+BLOCK 2062
+- Instructions:
+  j	81a <func0+0x36>
+
+- Edges:
+  JUMP -> 2074
+
+============================================================
+BLOCK 2064
+- Instructions:
+  li	a0,1
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 2068
+- Instructions:
+  lw	a6,0(a0)
+  li	a3,0
+
+- Edges:
+  NO_JUMP -> 2074
+
+============================================================
+BLOCK 2074
+- Instructions:
+  addw	a1,a1,-1
+  sll	a1,a1,0x2
+  add	a0,a0,a1
+  lw	a0,0(a0)
+  slt	a0,a6,a0
+  addw	a0,a0,a3
+  sltiu	a0,a0,2
+  ret
+
+- Edges: (none)

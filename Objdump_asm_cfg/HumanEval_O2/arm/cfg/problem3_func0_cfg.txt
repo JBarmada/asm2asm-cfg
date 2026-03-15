@@ -1,0 +1,12 @@
+Function: _func0
+Basic blocks: 1
+
+============================================================
+BLOCK 4294968616
+- Instructions:
+  fcvtzs	s1, s0
+  scvtf	s1, s1
+  fsub	s0, s0, s1
+  ret
+
+- Edges: (none)

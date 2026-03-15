@@ -1,0 +1,45 @@
+Function: func0
+Basic blocks: 4
+
+============================================================
+BLOCK 2104
+- Instructions:
+  mv	a2,a0
+  li	a0,-1
+  blt	a1,a2,860 <func0+0x28>
+
+- Edges:
+  NO_JUMP -> 2112
+  JUMP -> 2144
+
+============================================================
+BLOCK 2112
+- Instructions:
+  xor	a3,a1,a2
+  lui	a2,0x80000
+  addw	a2,a2,1 # ffffffff80000001 <__global_pointer$+0xffffffff7fffd801>
+  and	a2,a2,a1
+  xor	a4,a2,1
+  or	a3,a3,a4
+  beqz	a3,860 <func0+0x28>
+
+- Edges:
+  NO_JUMP -> 2132
+  JUMP -> 2144
+
+============================================================
+BLOCK 2132
+- Instructions:
+  add	a0,a2,-1
+  seqz	a0,a0
+  subw	a0,a1,a0
+
+- Edges:
+  NO_JUMP -> 2144
+
+============================================================
+BLOCK 2144
+- Instructions:
+  ret
+
+- Edges: (none)

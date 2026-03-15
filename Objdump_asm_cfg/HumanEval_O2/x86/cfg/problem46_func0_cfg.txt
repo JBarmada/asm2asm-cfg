@@ -1,0 +1,11 @@
+Function: func0
+Basic blocks: 1
+
+============================================================
+BLOCK 4688
+- Instructions:
+  mulss  %xmm1,%xmm0
+  mulss  0xe70(%rip),%xmm0        # 20cc <_IO_stdin_used+0xcc>
+  ret
+
+- Edges: (none)

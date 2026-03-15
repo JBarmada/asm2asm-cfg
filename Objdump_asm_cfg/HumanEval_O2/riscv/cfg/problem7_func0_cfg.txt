@@ -1,0 +1,143 @@
+Function: func0
+Basic blocks: 12
+
+============================================================
+BLOCK 2220
+- Instructions:
+  add	sp,sp,-64
+  sd	ra,56(sp)
+  sd	s0,48(sp)
+  sd	s1,40(sp)
+  sd	s2,32(sp)
+  sd	s3,24(sp)
+  sd	s4,16(sp)
+  sd	s5,8(sp)
+  sd	s6,0(sp)
+  mv	s2,a1
+  mv	s1,a0
+  li	a2,0
+  li	s6,0
+  li	s3,0
+  li	a0,0
+  li	s5,40
+  li	s4,41
+  j	8de <func0+0x32>
+
+- Edges:
+  JUMP -> 2270
+
+============================================================
+BLOCK 2260
+- Instructions:
+  addw	a1,a2,-1
+  beqz	a1,8fc <func0+0x50>
+
+- Edges:
+  NO_JUMP -> 2266
+  JUMP -> 2300
+
+============================================================
+BLOCK 2266
+- Instructions:
+  add	s1,s1,1
+  mv	a2,a1
+
+- Edges:
+  NO_JUMP -> 2270
+
+============================================================
+BLOCK 2270
+- Instructions:
+  lbu	a1,0(s1)
+  beq	a1,s5,8f0 <func0+0x44>
+
+- Edges:
+  NO_JUMP -> 2278
+  JUMP -> 2288
+
+============================================================
+BLOCK 2278
+- Instructions:
+  beq	a1,s4,8d4 <func0+0x28>
+
+- Edges:
+  NO_JUMP -> 2282
+  JUMP -> 2260
+
+============================================================
+BLOCK 2282
+- Instructions:
+  beqz	a1,91a <func0+0x6e>
+
+- Edges:
+  NO_JUMP -> 2284
+  JUMP -> 2330
+
+============================================================
+BLOCK 2284
+- Instructions:
+  mv	a1,a2
+  j	8da <func0+0x2e>
+
+- Edges:
+  JUMP -> 2266
+
+============================================================
+BLOCK 2288
+- Instructions:
+  addw	a1,a2,1
+  blt	a2,s6,8da <func0+0x2e>
+
+- Edges:
+  NO_JUMP -> 2296
+  JUMP -> 2266
+
+============================================================
+BLOCK 2296
+- Instructions:
+  mv	s6,a1
+  j	8da <func0+0x2e>
+
+- Edges:
+  JUMP -> 2266
+
+============================================================
+BLOCK 2300
+- Instructions:
+  addw	s0,s3,1
+  sll	a1,s0,0x2
+  jal	680 <realloc@plt>
+
+- Edges:
+  JUMP -> 1664
+
+============================================================
+BLOCK 2312
+- Instructions:
+  li	a1,0
+  sll	a2,s3,0x2
+  add	a2,a2,a0
+  sw	s6,0(a2)
+  mv	s3,s0
+  li	s6,0
+  j	8da <func0+0x2e>
+
+- Edges:
+  JUMP -> 2266
+
+============================================================
+BLOCK 2330
+- Instructions:
+  sw	s3,0(s2)
+  ld	ra,56(sp)
+  ld	s0,48(sp)
+  ld	s1,40(sp)
+  ld	s2,32(sp)
+  ld	s3,24(sp)
+  ld	s4,16(sp)
+  ld	s5,8(sp)
+  ld	s6,0(sp)
+  add	sp,sp,64
+  ret
+
+- Edges: (none)

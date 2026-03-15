@@ -1,0 +1,140 @@
+Function: func0
+Basic blocks: 11
+
+============================================================
+BLOCK 0
+- Instructions:
+  testl	%esi, %esi
+  je	.LBB0_1
+
+- Edges:
+  NO_JUMP -> 8
+  JUMP -> 40
+
+============================================================
+BLOCK 8
+- Instructions:
+  jle	.LBB0_3
+
+- Edges:
+  NO_JUMP -> 12
+  JUMP -> 48
+
+============================================================
+BLOCK 12
+- Instructions:
+  movl	%esi, %r8d
+  cmpl	$1, %esi
+  jne	.LBB0_6
+
+- Edges:
+  NO_JUMP -> 24
+  JUMP -> 56
+
+============================================================
+BLOCK 24
+- Instructions:
+  xorl	%r10d, %r10d
+  movl	$1, %esi
+  xorl	%eax, %eax
+  jmp	.LBB0_8
+
+- Edges:
+  JUMP -> 176
+
+============================================================
+BLOCK 40
+- Instructions:
+  movl	$-32768, %eax
+  retq
+
+- Edges: (none)
+
+============================================================
+BLOCK 48
+- Instructions:
+  xorl	%eax, %eax
+  retq
+
+- Edges: (none)
+
+============================================================
+BLOCK 56
+- Instructions:
+  movl	%r8d, %r9d
+  andl	$-2, %r9d
+  xorl	%r10d, %r10d
+  movl	$1, %esi
+  xorl	%eax, %eax
+
+- Edges:
+  NO_JUMP -> 76
+
+============================================================
+BLOCK 76
+- Instructions:
+  movl	(%rdi,%r10,4), %edx
+  movl	4(%rdi,%r10,4), %r11d
+  testl	%edx, %edx
+  cmovel	%edx, %esi
+  movl	%esi, %ecx
+  negl	%ecx
+  testl	%edx, %edx
+  cmovnsl	%esi, %ecx
+  testl	%r11d, %r11d
+  cmovel	%r11d, %ecx
+  movl	%ecx, %esi
+  negl	%esi
+  testl	%r11d, %r11d
+  cmovnsl	%ecx, %esi
+  movl	%edx, %ecx
+  negl	%ecx
+  cmovsl	%edx, %ecx
+  addl	%eax, %ecx
+  movl	%r11d, %eax
+  negl	%eax
+  cmovsl	%r11d, %eax
+  addl	%ecx, %eax
+  addq	$2, %r10
+  cmpq	%r10, %r9
+  jne	.LBB0_7
+
+- Edges:
+  NO_JUMP -> 176
+  JUMP -> 76
+
+============================================================
+BLOCK 176
+- Instructions:
+  testb	$1, %r8b
+  je	.LBB0_10
+
+- Edges:
+  NO_JUMP -> 184
+  JUMP -> 228
+
+============================================================
+BLOCK 184
+- Instructions:
+  movl	(%rdi,%r10,4), %ecx
+  testl	%ecx, %ecx
+  cmovel	%ecx, %esi
+  movl	%esi, %edx
+  negl	%edx
+  testl	%ecx, %ecx
+  cmovsl	%edx, %esi
+  movl	%ecx, %edx
+  negl	%edx
+  cmovsl	%ecx, %edx
+  addl	%edx, %eax
+
+- Edges:
+  NO_JUMP -> 228
+
+============================================================
+BLOCK 228
+- Instructions:
+  imull	%esi, %eax
+  retq
+
+- Edges: (none)

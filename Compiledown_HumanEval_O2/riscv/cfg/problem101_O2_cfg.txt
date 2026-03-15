@@ -1,0 +1,52 @@
+Function: func0
+Basic blocks: 4
+
+============================================================
+BLOCK 0
+- Instructions:
+  addi	sp, sp, -16
+  sd	ra, 8(sp)
+  sd	s0, 0(sp)
+  mv	s0, a0
+  slli	a0, a0, 2
+  call	malloc@plt
+  li	a1, 2
+  sw	s0, 0(a0)
+  blt	s0, a1, .LBB0_3
+
+- Edges:
+  NO_JUMP -> 36
+  JUMP -> 68
+
+============================================================
+BLOCK 36
+- Instructions:
+  lw	a1, 0(a0)
+  addi	a2, a0, 4
+  addi	a3, s0, -1
+
+- Edges:
+  NO_JUMP -> 48
+
+============================================================
+BLOCK 48
+- Instructions:
+  addiw	a1, a1, 2
+  sw	a1, 0(a2)
+  addi	a3, a3, -1
+  addi	a2, a2, 4
+  bnez	a3, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 68
+  JUMP -> 48
+
+============================================================
+BLOCK 68
+- Instructions:
+  ld	ra, 8(sp)
+  ld	s0, 0(sp)
+  addi	sp, sp, 16
+  ret
+
+- Edges: (none)

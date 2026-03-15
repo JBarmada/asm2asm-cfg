@@ -1,0 +1,228 @@
+Function: _func0
+Basic blocks: 20
+
+============================================================
+BLOCK 0
+- Instructions:
+  ldr	s1, [x0]
+  mov	w8, w1
+  cmp	w1, #1
+  b.le	LBB0_4
+
+- Edges:
+  NO_JUMP -> 16
+  JUMP -> 68
+
+============================================================
+BLOCK 16
+- Instructions:
+  add	x9, x0, #4
+  sub	x10, x8, #1
+  fmov	s0, s1
+
+- Edges:
+  NO_JUMP -> 28
+
+============================================================
+BLOCK 28
+- Instructions:
+  ldr	s2, [x9], #4
+  fcmp	s2, s0
+  fcsel	s0, s2, s0, mi
+  fcmp	s2, s1
+  fcsel	s1, s2, s1, gt
+  subs	x10, x10, #1
+  b.ne	LBB0_2
+
+- Edges:
+  NO_JUMP -> 56
+  JUMP -> 28
+
+============================================================
+BLOCK 56
+- Instructions:
+  cmp	w1, #1
+  b.ge	LBB0_5
+
+- Edges:
+  NO_JUMP -> 64
+  JUMP -> 80
+
+============================================================
+BLOCK 64
+- Instructions:
+  b	LBB0_18
+
+- Edges:
+  JUMP -> 296
+
+============================================================
+BLOCK 68
+- Instructions:
+  fmov	s0, s1
+  cmp	w1, #1
+  b.lt	LBB0_18
+
+- Edges:
+  NO_JUMP -> 80
+  JUMP -> 296
+
+============================================================
+BLOCK 80
+- Instructions:
+  fsub	s1, s1, s0
+  cmp	w1, #4
+  b.hs	LBB0_7
+
+- Edges:
+  NO_JUMP -> 92
+  JUMP -> 100
+
+============================================================
+BLOCK 92
+- Instructions:
+  mov	x9, #0
+  b	LBB0_16
+
+- Edges:
+  JUMP -> 264
+
+============================================================
+BLOCK 100
+- Instructions:
+  cmp	w1, #16
+  b.hs	LBB0_9
+
+- Edges:
+  NO_JUMP -> 108
+  JUMP -> 116
+
+============================================================
+BLOCK 108
+- Instructions:
+  mov	x9, #0
+  b	LBB0_13
+
+- Edges:
+  JUMP -> 208
+
+============================================================
+BLOCK 116
+- Instructions:
+  and	x9, x8, #0x7ffffff0
+  dup.4s	v2, v0[0]
+  dup.4s	v3, v1[0]
+  add	x10, x0, #32
+  mov	x11, x9
+
+- Edges:
+  NO_JUMP -> 136
+
+============================================================
+BLOCK 136
+- Instructions:
+  ldp	q4, q5, [x10, #-32]
+  ldp	q6, q7, [x10]
+  fsub.4s	v4, v4, v2
+  fsub.4s	v5, v5, v2
+  fsub.4s	v6, v6, v2
+  fsub.4s	v7, v7, v2
+  fdiv.4s	v4, v4, v3
+  fdiv.4s	v5, v5, v3
+  fdiv.4s	v6, v6, v3
+  fdiv.4s	v7, v7, v3
+  stp	q4, q5, [x10, #-32]
+  stp	q6, q7, [x10], #64
+  subs	x11, x11, #16
+  b.ne	LBB0_10
+
+- Edges:
+  NO_JUMP -> 192
+  JUMP -> 136
+
+============================================================
+BLOCK 192
+- Instructions:
+  cmp	x9, x8
+  b.eq	LBB0_18
+
+- Edges:
+  NO_JUMP -> 200
+  JUMP -> 296
+
+============================================================
+BLOCK 200
+- Instructions:
+  tst	x8, #0xc
+  b.eq	LBB0_16
+
+- Edges:
+  NO_JUMP -> 208
+  JUMP -> 264
+
+============================================================
+BLOCK 208
+- Instructions:
+  mov	x11, x9
+  and	x9, x8, #0x7ffffffc
+  dup.4s	v2, v0[0]
+  dup.4s	v3, v1[0]
+  add	x10, x0, x11, lsl #2
+  sub	x11, x11, x9
+
+- Edges:
+  NO_JUMP -> 232
+
+============================================================
+BLOCK 232
+- Instructions:
+  ldr	q4, [x10]
+  fsub.4s	v4, v4, v2
+  fdiv.4s	v4, v4, v3
+  str	q4, [x10], #16
+  adds	x11, x11, #4
+  b.ne	LBB0_14
+
+- Edges:
+  NO_JUMP -> 256
+  JUMP -> 232
+
+============================================================
+BLOCK 256
+- Instructions:
+  cmp	x9, x8
+  b.eq	LBB0_18
+
+- Edges:
+  NO_JUMP -> 264
+  JUMP -> 296
+
+============================================================
+BLOCK 264
+- Instructions:
+  add	x10, x0, x9, lsl #2
+  sub	x8, x8, x9
+
+- Edges:
+  NO_JUMP -> 272
+
+============================================================
+BLOCK 272
+- Instructions:
+  ldr	s2, [x10]
+  fsub	s2, s2, s0
+  fdiv	s2, s2, s1
+  str	s2, [x10], #4
+  subs	x8, x8, #1
+  b.ne	LBB0_17
+
+- Edges:
+  NO_JUMP -> 296
+  JUMP -> 272
+
+============================================================
+BLOCK 296
+- Instructions:
+  ret
+
+- Edges: (none)

@@ -1,0 +1,642 @@
+Function: func0
+Basic blocks: 21
+
+============================================================
+BLOCK 4864
+- Instructions:
+  push   %rbp
+  push   %rbx
+  push   %rax
+  mov    %esi,%ebp
+  mov    %rdi,%rbx
+  call   1050 <strlen@plt>
+  test   %rax,%rax
+  je     1b3f <func0+0x83f>
+
+- Edges:
+  NO_JUMP -> 4886
+  JUMP -> 6975
+
+============================================================
+BLOCK 4886
+- Instructions:
+  xor    %ecx,%ecx
+  test   %ebp,%ebp
+  sete   %cl
+  shl    $0x4,%ecx
+  or     $0xffffffa4,%ecx
+  cmp    $0x8,%rax
+  jae    1330 <func0+0x30>
+
+- Edges:
+  NO_JUMP -> 4905
+  JUMP -> 4912
+
+============================================================
+BLOCK 4905
+- Instructions:
+  xor    %edx,%edx
+  jmp    1b07 <func0+0x807>
+
+- Edges:
+  JUMP -> 6919
+
+============================================================
+BLOCK 4912
+- Instructions:
+  movd   %ecx,%xmm8
+  cmp    $0x10,%rax
+  jae    148f <func0+0x18f>
+
+- Edges:
+  NO_JUMP -> 4927
+  JUMP -> 5263
+
+============================================================
+BLOCK 4927
+- Instructions:
+  xor    %edx,%edx
+
+- Edges:
+  NO_JUMP -> 4929
+
+============================================================
+BLOCK 4929
+- Instructions:
+  mov    %rdx,%rsi
+  mov    %rax,%rdx
+  and    $0xfffffffffffffff8,%rdx
+  pshufd $0x0,%xmm8,%xmm0
+  movdqa 0xce7(%rip),%xmm1        # 2040 <_IO_stdin_used+0x40>
+  movdqa 0xcef(%rip),%xmm2        # 2050 <_IO_stdin_used+0x50>
+  movdqa 0xcf7(%rip),%xmm3        # 2060 <_IO_stdin_used+0x60>
+  movdqa 0xd0e(%rip),%xmm8        # 2080 <_IO_stdin_used+0x80>
+  data16 data16 data16 data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 4992
+
+============================================================
+BLOCK 4992
+- Instructions:
+  movq   (%rbx,%rsi,1),%xmm5
+  punpcklbw %xmm5,%xmm6
+  punpcklwd %xmm6,%xmm5
+  psrad  $0x18,%xmm5
+  punpckhwd %xmm6,%xmm6
+  psrad  $0x18,%xmm6
+  paddd  %xmm0,%xmm6
+  paddd  %xmm0,%xmm5
+  movdqa %xmm5,%xmm7
+  pmuludq %xmm1,%xmm7
+  pshufd $0xed,%xmm7,%xmm7
+  pshufd $0xf5,%xmm5,%xmm4
+  pmuludq %xmm1,%xmm4
+  pshufd $0xed,%xmm4,%xmm4
+  punpckldq %xmm4,%xmm7
+  pxor   %xmm4,%xmm4
+  pcmpgtd %xmm5,%xmm4
+  pand   %xmm1,%xmm4
+  psubd  %xmm4,%xmm7
+  movdqa %xmm7,%xmm4
+  psrld  $0x1f,%xmm4
+  psrld  $0x3,%xmm7
+  paddd  %xmm4,%xmm7
+  pshufd $0xf5,%xmm7,%xmm4
+  pmuludq %xmm2,%xmm7
+  pshufd $0xe8,%xmm7,%xmm7
+  pmuludq %xmm2,%xmm4
+  pshufd $0xe8,%xmm4,%xmm4
+  punpckldq %xmm4,%xmm7
+  psubd  %xmm7,%xmm5
+  movdqa %xmm6,%xmm4
+  pmuludq %xmm1,%xmm4
+  pshufd $0xed,%xmm4,%xmm4
+  pshufd $0xf5,%xmm6,%xmm7
+  pmuludq %xmm1,%xmm7
+  pshufd $0xed,%xmm7,%xmm7
+  punpckldq %xmm7,%xmm4
+  pxor   %xmm7,%xmm7
+  pcmpgtd %xmm6,%xmm7
+  pand   %xmm1,%xmm7
+  psubd  %xmm7,%xmm4
+  movdqa %xmm4,%xmm7
+  psrld  $0x1f,%xmm7
+  psrld  $0x3,%xmm4
+  paddd  %xmm7,%xmm4
+  pshufd $0xf5,%xmm4,%xmm7
+  pmuludq %xmm2,%xmm4
+  pshufd $0xe8,%xmm4,%xmm4
+  pmuludq %xmm2,%xmm7
+  pshufd $0xe8,%xmm7,%xmm7
+  punpckldq %xmm7,%xmm4
+  psubd  %xmm4,%xmm6
+  pand   %xmm3,%xmm6
+  pand   %xmm3,%xmm5
+  packuswb %xmm6,%xmm5
+  packuswb %xmm5,%xmm5
+  paddb  %xmm8,%xmm5
+  movq   %xmm5,(%rbx,%rsi,1)
+  add    $0x8,%rsi
+  cmp    %rsi,%rdx
+  jne    1380 <func0+0x80>
+
+- Edges:
+  NO_JUMP -> 5258
+  JUMP -> 4992
+
+============================================================
+BLOCK 5258
+- Instructions:
+  jmp    1b3a <func0+0x83a>
+
+- Edges:
+  JUMP -> 6970
+
+============================================================
+BLOCK 5263
+- Instructions:
+  mov    %rax,%rdx
+  and    $0xfffffffffffffff0,%rdx
+  pshufd $0x0,%xmm8,%xmm12
+  lea    -0x10(%rdx),%rsi
+  mov    %rsi,%rbp
+  shr    $0x4,%rbp
+  inc    %rbp
+  test   %rsi,%rsi
+  je     1af9 <func0+0x7f9>
+
+- Edges:
+  NO_JUMP -> 5299
+  JUMP -> 6905
+
+============================================================
+BLOCK 5299
+- Instructions:
+  mov    %rbp,%rdi
+  and    $0xfffffffffffffffe,%rdi
+  xor    %esi,%esi
+  movdqa 0xb7c(%rip),%xmm2        # 2040 <_IO_stdin_used+0x40>
+  movdqa 0xb84(%rip),%xmm3        # 2050 <_IO_stdin_used+0x50>
+  movdqa 0xb8b(%rip),%xmm10        # 2060 <_IO_stdin_used+0x60>
+  movdqa 0xb92(%rip),%xmm9        # 2070 <_IO_stdin_used+0x70>
+  xchg   %ax,%ax
+
+- Edges:
+  NO_JUMP -> 5344
+
+============================================================
+BLOCK 5344
+- Instructions:
+  movdqu (%rbx,%rsi,1),%xmm4
+  movdqu 0x10(%rbx,%rsi,1),%xmm11
+  punpcklbw %xmm4,%xmm0
+  punpcklwd %xmm0,%xmm6
+  psrad  $0x18,%xmm6
+  punpckhwd %xmm0,%xmm0
+  psrad  $0x18,%xmm0
+  punpckhbw %xmm4,%xmm4
+  punpcklwd %xmm4,%xmm5
+  psrad  $0x18,%xmm5
+  punpckhwd %xmm4,%xmm4
+  psrad  $0x18,%xmm4
+  paddd  %xmm12,%xmm4
+  paddd  %xmm12,%xmm5
+  paddd  %xmm12,%xmm0
+  paddd  %xmm12,%xmm6
+  movdqa %xmm6,%xmm7
+  pmuludq %xmm2,%xmm7
+  pshufd $0xed,%xmm7,%xmm7
+  pshufd $0xf5,%xmm6,%xmm1
+  pmuludq %xmm2,%xmm1
+  pshufd $0xed,%xmm1,%xmm1
+  punpckldq %xmm1,%xmm7
+  pxor   %xmm1,%xmm1
+  pcmpgtd %xmm6,%xmm1
+  pand   %xmm2,%xmm1
+  psubd  %xmm1,%xmm7
+  movdqa %xmm7,%xmm1
+  psrld  $0x1f,%xmm1
+  psrld  $0x3,%xmm7
+  paddd  %xmm1,%xmm7
+  pshufd $0xf5,%xmm7,%xmm1
+  pmuludq %xmm3,%xmm7
+  pshufd $0xe8,%xmm7,%xmm7
+  pmuludq %xmm3,%xmm1
+  pshufd $0xe8,%xmm1,%xmm1
+  punpckldq %xmm1,%xmm7
+  psubd  %xmm7,%xmm6
+  movdqa %xmm0,%xmm1
+  pmuludq %xmm2,%xmm1
+  pshufd $0xed,%xmm1,%xmm1
+  pshufd $0xf5,%xmm0,%xmm7
+  pmuludq %xmm2,%xmm7
+  pshufd $0xed,%xmm7,%xmm7
+  punpckldq %xmm7,%xmm1
+  pxor   %xmm7,%xmm7
+  pcmpgtd %xmm0,%xmm7
+  pand   %xmm2,%xmm7
+  psubd  %xmm7,%xmm1
+  movdqa %xmm1,%xmm7
+  psrld  $0x1f,%xmm7
+  psrld  $0x3,%xmm1
+  paddd  %xmm7,%xmm1
+  pshufd $0xf5,%xmm1,%xmm7
+  pmuludq %xmm3,%xmm1
+  pshufd $0xe8,%xmm1,%xmm1
+  pmuludq %xmm3,%xmm7
+  pshufd $0xe8,%xmm7,%xmm7
+  punpckldq %xmm7,%xmm1
+  psubd  %xmm1,%xmm0
+  movdqa %xmm5,%xmm1
+  pmuludq %xmm2,%xmm1
+  pshufd $0xed,%xmm1,%xmm1
+  pshufd $0xf5,%xmm5,%xmm7
+  pmuludq %xmm2,%xmm7
+  pshufd $0xed,%xmm7,%xmm7
+  punpckldq %xmm7,%xmm1
+  pxor   %xmm7,%xmm7
+  pcmpgtd %xmm5,%xmm7
+  pand   %xmm2,%xmm7
+  psubd  %xmm7,%xmm1
+  movdqa %xmm1,%xmm7
+  psrld  $0x1f,%xmm7
+  psrld  $0x3,%xmm1
+  paddd  %xmm7,%xmm1
+  pshufd $0xf5,%xmm1,%xmm7
+  pmuludq %xmm3,%xmm1
+  pshufd $0xe8,%xmm1,%xmm1
+  pmuludq %xmm3,%xmm7
+  pshufd $0xe8,%xmm7,%xmm7
+  punpckldq %xmm7,%xmm1
+  psubd  %xmm1,%xmm5
+  movdqa %xmm4,%xmm1
+  pmuludq %xmm2,%xmm1
+  pshufd $0xed,%xmm1,%xmm1
+  pshufd $0xf5,%xmm4,%xmm7
+  pmuludq %xmm2,%xmm7
+  pshufd $0xed,%xmm7,%xmm7
+  punpckldq %xmm7,%xmm1
+  pxor   %xmm7,%xmm7
+  pcmpgtd %xmm4,%xmm7
+  pand   %xmm2,%xmm7
+  psubd  %xmm7,%xmm1
+  movdqa %xmm1,%xmm7
+  psrld  $0x1f,%xmm7
+  psrld  $0x3,%xmm1
+  paddd  %xmm7,%xmm1
+  pshufd $0xf5,%xmm1,%xmm7
+  pmuludq %xmm3,%xmm1
+  pshufd $0xe8,%xmm1,%xmm1
+  pmuludq %xmm3,%xmm7
+  pshufd $0xe8,%xmm7,%xmm7
+  punpckldq %xmm7,%xmm1
+  psubd  %xmm1,%xmm4
+  pand   %xmm10,%xmm4
+  pand   %xmm10,%xmm5
+  packuswb %xmm4,%xmm5
+  pand   %xmm10,%xmm0
+  pand   %xmm10,%xmm6
+  packuswb %xmm0,%xmm6
+  packuswb %xmm5,%xmm6
+  paddb  %xmm9,%xmm6
+  movdqu %xmm6,(%rbx,%rsi,1)
+  punpcklbw %xmm11,%xmm0
+  punpcklwd %xmm0,%xmm7
+  psrad  $0x18,%xmm7
+  punpckhwd %xmm0,%xmm0
+  psrad  $0x18,%xmm0
+  punpckhbw %xmm11,%xmm1
+  punpcklwd %xmm1,%xmm5
+  psrad  $0x18,%xmm5
+  punpckhwd %xmm1,%xmm4
+  psrad  $0x18,%xmm4
+  paddd  %xmm12,%xmm4
+  paddd  %xmm12,%xmm5
+  paddd  %xmm12,%xmm0
+  paddd  %xmm12,%xmm7
+  movdqa %xmm7,%xmm1
+  pmuludq %xmm2,%xmm1
+  pshufd $0xed,%xmm1,%xmm1
+  pshufd $0xf5,%xmm7,%xmm6
+  pmuludq %xmm2,%xmm6
+  pshufd $0xed,%xmm6,%xmm6
+  punpckldq %xmm6,%xmm1
+  pxor   %xmm6,%xmm6
+  pcmpgtd %xmm7,%xmm6
+  pand   %xmm2,%xmm6
+  psubd  %xmm6,%xmm1
+  movdqa %xmm1,%xmm6
+  psrld  $0x1f,%xmm6
+  psrld  $0x3,%xmm1
+  paddd  %xmm6,%xmm1
+  pshufd $0xf5,%xmm1,%xmm6
+  pmuludq %xmm3,%xmm1
+  pshufd $0xe8,%xmm1,%xmm1
+  pmuludq %xmm3,%xmm6
+  pshufd $0xe8,%xmm6,%xmm6
+  punpckldq %xmm6,%xmm1
+  psubd  %xmm1,%xmm7
+  movdqa %xmm0,%xmm1
+  pmuludq %xmm2,%xmm1
+  pshufd $0xed,%xmm1,%xmm1
+  pshufd $0xf5,%xmm0,%xmm6
+  pmuludq %xmm2,%xmm6
+  pshufd $0xed,%xmm6,%xmm6
+  punpckldq %xmm6,%xmm1
+  pxor   %xmm6,%xmm6
+  pcmpgtd %xmm0,%xmm6
+  pand   %xmm2,%xmm6
+  psubd  %xmm6,%xmm1
+  movdqa %xmm1,%xmm6
+  psrld  $0x1f,%xmm6
+  psrld  $0x3,%xmm1
+  paddd  %xmm6,%xmm1
+  pshufd $0xf5,%xmm1,%xmm6
+  pmuludq %xmm3,%xmm1
+  pshufd $0xe8,%xmm1,%xmm1
+  pmuludq %xmm3,%xmm6
+  pshufd $0xe8,%xmm6,%xmm6
+  punpckldq %xmm6,%xmm1
+  psubd  %xmm1,%xmm0
+  movdqa %xmm5,%xmm1
+  pmuludq %xmm2,%xmm1
+  pshufd $0xed,%xmm1,%xmm1
+  pshufd $0xf5,%xmm5,%xmm6
+  pmuludq %xmm2,%xmm6
+  pshufd $0xed,%xmm6,%xmm6
+  punpckldq %xmm6,%xmm1
+  pxor   %xmm6,%xmm6
+  pcmpgtd %xmm5,%xmm6
+  pand   %xmm2,%xmm6
+  psubd  %xmm6,%xmm1
+  movdqa %xmm1,%xmm6
+  psrld  $0x1f,%xmm6
+  psrld  $0x3,%xmm1
+  paddd  %xmm6,%xmm1
+  pshufd $0xf5,%xmm1,%xmm6
+  pmuludq %xmm3,%xmm1
+  pshufd $0xe8,%xmm1,%xmm1
+  pmuludq %xmm3,%xmm6
+  pshufd $0xe8,%xmm6,%xmm6
+  punpckldq %xmm6,%xmm1
+  psubd  %xmm1,%xmm5
+  movdqa %xmm4,%xmm1
+  pmuludq %xmm2,%xmm1
+  pshufd $0xed,%xmm1,%xmm1
+  pshufd $0xf5,%xmm4,%xmm6
+  pmuludq %xmm2,%xmm6
+  pshufd $0xed,%xmm6,%xmm6
+  punpckldq %xmm6,%xmm1
+  pxor   %xmm6,%xmm6
+  pcmpgtd %xmm4,%xmm6
+  pand   %xmm2,%xmm6
+  psubd  %xmm6,%xmm1
+  movdqa %xmm1,%xmm6
+  psrld  $0x1f,%xmm6
+  psrld  $0x3,%xmm1
+  paddd  %xmm6,%xmm1
+  pshufd $0xf5,%xmm1,%xmm6
+  pmuludq %xmm3,%xmm1
+  pshufd $0xe8,%xmm1,%xmm1
+  pmuludq %xmm3,%xmm6
+  pshufd $0xe8,%xmm6,%xmm6
+  punpckldq %xmm6,%xmm1
+  psubd  %xmm1,%xmm4
+  pand   %xmm10,%xmm4
+  pand   %xmm10,%xmm5
+  packuswb %xmm4,%xmm5
+  pand   %xmm10,%xmm0
+  pand   %xmm10,%xmm7
+  packuswb %xmm0,%xmm7
+  packuswb %xmm5,%xmm7
+  paddb  %xmm9,%xmm7
+  movdqu %xmm7,0x10(%rbx,%rsi,1)
+  add    $0x20,%rsi
+  add    $0xfffffffffffffffe,%rdi
+  jne    14e0 <func0+0x1e0>
+
+- Edges:
+  NO_JUMP -> 6353
+  JUMP -> 5344
+
+============================================================
+BLOCK 6353
+- Instructions:
+  test   $0x1,%bpl
+  je     1aea <func0+0x7ea>
+
+- Edges:
+  NO_JUMP -> 6363
+  JUMP -> 6890
+
+============================================================
+BLOCK 6363
+- Instructions:
+  movdqu (%rbx,%rsi,1),%xmm0
+  punpcklbw %xmm0,%xmm1
+  punpcklwd %xmm1,%xmm2
+  psrad  $0x18,%xmm2
+  punpckhwd %xmm1,%xmm3
+  psrad  $0x18,%xmm3
+  punpckhbw %xmm0,%xmm0
+  punpcklwd %xmm0,%xmm4
+  psrad  $0x18,%xmm4
+  punpckhwd %xmm0,%xmm0
+  psrad  $0x18,%xmm0
+  paddd  %xmm12,%xmm0
+  paddd  %xmm12,%xmm4
+  paddd  %xmm12,%xmm3
+  paddd  %xmm12,%xmm2
+  movdqa 0x718(%rip),%xmm1        # 2040 <_IO_stdin_used+0x40>
+  movdqa %xmm2,%xmm5
+  pmuludq %xmm1,%xmm5
+  pshufd $0xed,%xmm5,%xmm7
+  pshufd $0xf5,%xmm2,%xmm5
+  pmuludq %xmm1,%xmm5
+  pshufd $0xed,%xmm5,%xmm5
+  punpckldq %xmm5,%xmm7
+  pxor   %xmm5,%xmm5
+  pxor   %xmm6,%xmm6
+  pcmpgtd %xmm2,%xmm6
+  pand   %xmm1,%xmm6
+  psubd  %xmm6,%xmm7
+  movdqa %xmm7,%xmm6
+  psrld  $0x1f,%xmm6
+  psrld  $0x3,%xmm7
+  paddd  %xmm6,%xmm7
+  movdqa 0x6da(%rip),%xmm9        # 2050 <_IO_stdin_used+0x50>
+  pshufd $0xf5,%xmm7,%xmm6
+  pmuludq %xmm9,%xmm7
+  pshufd $0xe8,%xmm7,%xmm7
+  pmuludq %xmm9,%xmm6
+  pshufd $0xe8,%xmm6,%xmm6
+  punpckldq %xmm6,%xmm7
+  psubd  %xmm7,%xmm2
+  movdqa %xmm3,%xmm6
+  pmuludq %xmm1,%xmm6
+  pshufd $0xed,%xmm6,%xmm6
+  pshufd $0xf5,%xmm3,%xmm7
+  pmuludq %xmm1,%xmm7
+  pshufd $0xed,%xmm7,%xmm7
+  punpckldq %xmm7,%xmm6
+  pxor   %xmm7,%xmm7
+  pcmpgtd %xmm3,%xmm7
+  pand   %xmm1,%xmm7
+  psubd  %xmm7,%xmm6
+  movdqa %xmm6,%xmm7
+  psrld  $0x1f,%xmm7
+  psrld  $0x3,%xmm6
+  paddd  %xmm7,%xmm6
+  pshufd $0xf5,%xmm6,%xmm7
+  pmuludq %xmm9,%xmm6
+  pshufd $0xe8,%xmm6,%xmm6
+  pmuludq %xmm9,%xmm7
+  pshufd $0xe8,%xmm7,%xmm7
+  punpckldq %xmm7,%xmm6
+  psubd  %xmm6,%xmm3
+  movdqa %xmm4,%xmm6
+  pmuludq %xmm1,%xmm6
+  pshufd $0xed,%xmm6,%xmm6
+  pshufd $0xf5,%xmm4,%xmm7
+  pmuludq %xmm1,%xmm7
+  pshufd $0xed,%xmm7,%xmm7
+  punpckldq %xmm7,%xmm6
+  pxor   %xmm7,%xmm7
+  pcmpgtd %xmm4,%xmm7
+  pand   %xmm1,%xmm7
+  psubd  %xmm7,%xmm6
+  movdqa %xmm6,%xmm7
+  psrld  $0x1f,%xmm7
+  psrld  $0x3,%xmm6
+  paddd  %xmm7,%xmm6
+  pshufd $0xf5,%xmm6,%xmm7
+  pmuludq %xmm9,%xmm6
+  pshufd $0xe8,%xmm6,%xmm6
+  pmuludq %xmm9,%xmm7
+  pshufd $0xe8,%xmm7,%xmm7
+  punpckldq %xmm7,%xmm6
+  psubd  %xmm6,%xmm4
+  movdqa %xmm0,%xmm6
+  pmuludq %xmm1,%xmm6
+  pshufd $0xed,%xmm6,%xmm6
+  pshufd $0xf5,%xmm0,%xmm7
+  pmuludq %xmm1,%xmm7
+  pshufd $0xed,%xmm7,%xmm7
+  punpckldq %xmm7,%xmm6
+  pcmpgtd %xmm0,%xmm5
+  pand   %xmm1,%xmm5
+  psubd  %xmm5,%xmm6
+  movdqa %xmm6,%xmm1
+  psrld  $0x1f,%xmm1
+  psrld  $0x3,%xmm6
+  paddd  %xmm1,%xmm6
+  pshufd $0xf5,%xmm6,%xmm1
+  pmuludq %xmm9,%xmm6
+  pshufd $0xe8,%xmm6,%xmm5
+  pmuludq %xmm9,%xmm1
+  pshufd $0xe8,%xmm1,%xmm1
+  punpckldq %xmm1,%xmm5
+  psubd  %xmm5,%xmm0
+  movdqa 0x59f(%rip),%xmm1        # 2060 <_IO_stdin_used+0x60>
+  pand   %xmm1,%xmm0
+  pand   %xmm1,%xmm4
+  packuswb %xmm0,%xmm4
+  pand   %xmm1,%xmm3
+  pand   %xmm1,%xmm2
+  packuswb %xmm3,%xmm2
+  packuswb %xmm4,%xmm2
+  paddb  0x58b(%rip),%xmm2        # 2070 <_IO_stdin_used+0x70>
+  movdqu %xmm2,(%rbx,%rsi,1)
+
+- Edges:
+  NO_JUMP -> 6890
+
+============================================================
+BLOCK 6890
+- Instructions:
+  cmp    %rdx,%rax
+  je     1b3f <func0+0x83f>
+
+- Edges:
+  NO_JUMP -> 6895
+  JUMP -> 6975
+
+============================================================
+BLOCK 6895
+- Instructions:
+  test   $0x8,%al
+  jne    1341 <func0+0x41>
+
+- Edges:
+  NO_JUMP -> 6903
+  JUMP -> 4929
+
+============================================================
+BLOCK 6903
+- Instructions:
+  jmp    1b07 <func0+0x807>
+
+- Edges:
+  JUMP -> 6919
+
+============================================================
+BLOCK 6905
+- Instructions:
+  xor    %esi,%esi
+  test   $0x1,%bpl
+  jne    18db <func0+0x5db>
+
+- Edges:
+  NO_JUMP -> 6917
+  JUMP -> 6363
+
+============================================================
+BLOCK 6917
+- Instructions:
+  jmp    1aea <func0+0x7ea>
+
+- Edges:
+  JUMP -> 6890
+
+============================================================
+BLOCK 6919
+- Instructions:
+  movsbl (%rbx,%rdx,1),%esi
+  add    %ecx,%esi
+  movslq %esi,%rsi
+  imul   $0x4ec4ec4f,%rsi,%rdi
+  mov    %rdi,%rbp
+  shr    $0x3f,%rbp
+  sar    $0x23,%rdi
+  add    %ebp,%edi
+  lea    (%rdi,%rdi,4),%ebp
+  lea    0x0(%rbp,%rbp,4),%ebp
+  add    %edi,%ebp
+  sub    %ebp,%esi
+  add    $0x61,%sil
+  mov    %sil,(%rbx,%rdx,1)
+  inc    %rdx
+
+- Edges:
+  NO_JUMP -> 6970
+
+============================================================
+BLOCK 6970
+- Instructions:
+  cmp    %rdx,%rax
+  jne    1b07 <func0+0x807>
+
+- Edges:
+  NO_JUMP -> 6975
+  JUMP -> 6919
+
+============================================================
+BLOCK 6975
+- Instructions:
+  add    $0x8,%rsp
+  pop    %rbx
+  pop    %rbp
+  ret
+
+- Edges: (none)

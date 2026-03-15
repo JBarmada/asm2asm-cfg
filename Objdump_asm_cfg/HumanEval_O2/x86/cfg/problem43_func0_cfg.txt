@@ -1,0 +1,163 @@
+Function: func0
+Basic blocks: 14
+
+============================================================
+BLOCK 4752
+- Instructions:
+  test   %esi,%esi
+  jle    135b <func0+0xcb>
+
+- Edges:
+  NO_JUMP -> 4760
+  JUMP -> 4955
+
+============================================================
+BLOCK 4760
+- Instructions:
+  mov    %esi,%eax
+  cmp    $0x8,%esi
+  jae    12a6 <func0+0x16>
+
+- Edges:
+  NO_JUMP -> 4767
+  JUMP -> 4774
+
+============================================================
+BLOCK 4767
+- Instructions:
+  xor    %ecx,%ecx
+  jmp    1350 <func0+0xc0>
+
+- Edges:
+  JUMP -> 4944
+
+============================================================
+BLOCK 4774
+- Instructions:
+  mov    %eax,%ecx
+  and    $0xfffffff8,%ecx
+  lea    -0x8(%rcx),%rdx
+  mov    %rdx,%r8
+  shr    $0x3,%r8
+  inc    %r8
+  test   %rdx,%rdx
+  je     135c <func0+0xcc>
+
+- Edges:
+  NO_JUMP -> 4802
+  JUMP -> 4956
+
+============================================================
+BLOCK 4802
+- Instructions:
+  mov    %r8,%rsi
+  and    $0xfffffffffffffffe,%rsi
+  xor    %edx,%edx
+  pcmpeqd %xmm0,%xmm0
+  nop
+
+- Edges:
+  NO_JUMP -> 4816
+
+============================================================
+BLOCK 4816
+- Instructions:
+  movdqu (%rdi,%rdx,4),%xmm1
+  movdqu 0x10(%rdi,%rdx,4),%xmm2
+  movdqu 0x20(%rdi,%rdx,4),%xmm3
+  movdqu 0x30(%rdi,%rdx,4),%xmm4
+  psubd  %xmm0,%xmm1
+  psubd  %xmm0,%xmm2
+  movdqu %xmm1,(%rdi,%rdx,4)
+  movdqu %xmm2,0x10(%rdi,%rdx,4)
+  psubd  %xmm0,%xmm3
+  psubd  %xmm0,%xmm4
+  movdqu %xmm3,0x20(%rdi,%rdx,4)
+  movdqu %xmm4,0x30(%rdi,%rdx,4)
+  add    $0x10,%rdx
+  add    $0xfffffffffffffffe,%rsi
+  jne    12d0 <func0+0x40>
+
+- Edges:
+  NO_JUMP -> 4888
+  JUMP -> 4816
+
+============================================================
+BLOCK 4888
+- Instructions:
+  test   $0x1,%r8b
+  je     1340 <func0+0xb0>
+
+- Edges:
+  NO_JUMP -> 4894
+  JUMP -> 4928
+
+============================================================
+BLOCK 4894
+- Instructions:
+  movdqu (%rdi,%rdx,4),%xmm0
+  movdqu 0x10(%rdi,%rdx,4),%xmm1
+  pcmpeqd %xmm2,%xmm2
+  psubd  %xmm2,%xmm0
+  psubd  %xmm2,%xmm1
+  movdqu %xmm0,(%rdi,%rdx,4)
+  movdqu %xmm1,0x10(%rdi,%rdx,4)
+
+- Edges:
+  NO_JUMP -> 4928
+
+============================================================
+BLOCK 4928
+- Instructions:
+  cmp    %rax,%rcx
+  je     135b <func0+0xcb>
+
+- Edges:
+  NO_JUMP -> 4933
+  JUMP -> 4955
+
+============================================================
+BLOCK 4933
+- Instructions:
+  data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 4944
+
+============================================================
+BLOCK 4944
+- Instructions:
+  incl   (%rdi,%rcx,4)
+  inc    %rcx
+  cmp    %rcx,%rax
+  jne    1350 <func0+0xc0>
+
+- Edges:
+  NO_JUMP -> 4955
+  JUMP -> 4944
+
+============================================================
+BLOCK 4955
+- Instructions:
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 4956
+- Instructions:
+  xor    %edx,%edx
+  test   $0x1,%r8b
+  jne    131e <func0+0x8e>
+
+- Edges:
+  NO_JUMP -> 4964
+  JUMP -> 4894
+
+============================================================
+BLOCK 4964
+- Instructions:
+  jmp    1340 <func0+0xb0>
+
+- Edges:
+  JUMP -> 4928

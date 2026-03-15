@@ -1,0 +1,117 @@
+Function: func0
+Basic blocks: 10
+
+============================================================
+BLOCK 2308
+- Instructions:
+  add	sp,sp,-64
+  sd	ra,56(sp)
+  sd	s0,48(sp)
+  sd	s1,40(sp)
+  sd	s2,32(sp)
+  sd	s3,24(sp)
+  sd	s4,16(sp)
+  sd	s5,8(sp)
+  blez	a1,950 <func0+0x4c>
+
+- Edges:
+  NO_JUMP -> 2328
+  JUMP -> 2384
+
+============================================================
+BLOCK 2328
+- Instructions:
+  mv	s5,a1
+  mv	s1,a0
+  li	s0,0
+  auipc	s4,0x0
+  add	s4,s4,172 # 9ca <_IO_stdin_used+0x5e>
+  li	s3,0
+  j	936 <func0+0x32>
+
+- Edges:
+  JUMP -> 2358
+
+============================================================
+BLOCK 2346
+- Instructions:
+  add	s5,s5,-1
+  add	s1,s1,8
+  mv	s4,s2
+  mv	s0,s3
+  beqz	s5,958 <func0+0x54>
+
+- Edges:
+  NO_JUMP -> 2358
+  JUMP -> 2392
+
+============================================================
+BLOCK 2358
+- Instructions:
+  ld	s2,0(s1)
+  mv	a0,s2
+  jal	740 <strlen@plt>
+
+- Edges:
+  JUMP -> 1856
+
+============================================================
+BLOCK 2368
+- Instructions:
+  sext.w	a0,a0
+  blt	a0,s0,948 <func0+0x44>
+
+- Edges:
+  NO_JUMP -> 2374
+  JUMP -> 2376
+
+============================================================
+BLOCK 2374
+- Instructions:
+  mv	s3,a0
+
+- Edges:
+  NO_JUMP -> 2376
+
+============================================================
+BLOCK 2376
+- Instructions:
+  blt	s0,a0,92a <func0+0x26>
+
+- Edges:
+  NO_JUMP -> 2380
+  JUMP -> 2346
+
+============================================================
+BLOCK 2380
+- Instructions:
+  mv	s2,s4
+  j	92a <func0+0x26>
+
+- Edges:
+  JUMP -> 2346
+
+============================================================
+BLOCK 2384
+- Instructions:
+  auipc	s2,0x0
+  add	s2,s2,122 # 9ca <_IO_stdin_used+0x5e>
+
+- Edges:
+  NO_JUMP -> 2392
+
+============================================================
+BLOCK 2392
+- Instructions:
+  mv	a0,s2
+  ld	ra,56(sp)
+  ld	s0,48(sp)
+  ld	s1,40(sp)
+  ld	s2,32(sp)
+  ld	s3,24(sp)
+  ld	s4,16(sp)
+  ld	s5,8(sp)
+  add	sp,sp,64
+  ret
+
+- Edges: (none)

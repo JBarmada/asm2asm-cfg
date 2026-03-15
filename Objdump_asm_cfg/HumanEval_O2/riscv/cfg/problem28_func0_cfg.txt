@@ -1,0 +1,107 @@
+Function: func0
+Basic blocks: 9
+
+============================================================
+BLOCK 2056
+- Instructions:
+  add	sp,sp,-32
+  sd	ra,24(sp)
+  sd	s0,16(sp)
+  sd	s1,8(sp)
+  sd	s2,0(sp)
+  mv	s2,a1
+  mv	s1,a0
+  jal	660 <strlen@plt>
+
+- Edges:
+  JUMP -> 1632
+
+============================================================
+BLOCK 2074
+- Instructions:
+  sext.w	a1,a0
+  blez	a1,85e <func0+0x56>
+
+- Edges:
+  NO_JUMP -> 2082
+  JUMP -> 2142
+
+============================================================
+BLOCK 2082
+- Instructions:
+  sll	a0,a0,0x20
+  srl	a0,a0,0x20
+  li	a2,25
+  li	a3,26
+  mv	a4,s2
+  j	83c <func0+0x34>
+
+- Edges:
+  JUMP -> 2108
+
+============================================================
+BLOCK 2094
+- Instructions:
+  add	a5,a5,-32
+
+- Edges:
+  NO_JUMP -> 2096
+
+============================================================
+BLOCK 2096
+- Instructions:
+  sb	a5,0(a4)
+  add	a4,a4,1
+  add	a0,a0,-1
+  add	s1,s1,1
+  beqz	a0,85e <func0+0x56>
+
+- Edges:
+  NO_JUMP -> 2108
+  JUMP -> 2142
+
+============================================================
+BLOCK 2108
+- Instructions:
+  lbu	a5,0(s1)
+  addw	s0,a5,-97
+  zext.b	s0,s0
+  bgeu	a2,s0,82e <func0+0x26>
+
+- Edges:
+  NO_JUMP -> 2124
+  JUMP -> 2094
+
+============================================================
+BLOCK 2124
+- Instructions:
+  addw	s0,a5,-65
+  zext.b	s0,s0
+  bgeu	s0,a3,830 <func0+0x28>
+
+- Edges:
+  NO_JUMP -> 2136
+  JUMP -> 2096
+
+============================================================
+BLOCK 2136
+- Instructions:
+  add	a5,a5,32
+  j	830 <func0+0x28>
+
+- Edges:
+  JUMP -> 2096
+
+============================================================
+BLOCK 2142
+- Instructions:
+  add	a0,s2,a1
+  sb	zero,0(a0)
+  ld	ra,24(sp)
+  ld	s0,16(sp)
+  ld	s1,8(sp)
+  ld	s2,0(sp)
+  add	sp,sp,32
+  ret
+
+- Edges: (none)

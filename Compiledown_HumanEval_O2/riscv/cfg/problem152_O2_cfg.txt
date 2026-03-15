@@ -1,0 +1,119 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 0
+- Instructions:
+  addi	sp, sp, -80
+  sd	ra, 72(sp)
+  sd	s0, 64(sp)
+  sd	s1, 56(sp)
+  sd	s2, 48(sp)
+  sd	s3, 40(sp)
+  sd	s4, 32(sp)
+  fsd	fs0, 24(sp)
+  fsd	fs1, 16(sp)
+  fsd	fs2, 8(sp)
+  fsd	fs3, 0(sp)
+  blez	a1, .LBB0_6
+
+- Edges:
+  NO_JUMP -> 48
+  JUMP -> 176
+
+============================================================
+BLOCK 48
+- Instructions:
+  mv	s0, a1
+  mv	s1, a0
+  li	s2, 0
+  auipc	a0, %pcrel_hi(.LCPI0_0)
+  addi	a0, a0, %pcrel_lo(.LBB0_8)
+  fld	fs1, 0(a0)
+  fmv.w.x	fs2, zero
+  lui	a0, 524288
+  addiw	s3, a0, 1
+  li	s4, 1
+  j	.LBB0_3
+
+- Edges:
+  JUMP -> 104
+
+============================================================
+BLOCK 92
+- Instructions:
+  addi	s0, s0, -1
+  addi	s1, s1, 4
+  beqz	s0, .LBB0_7
+
+- Edges:
+  NO_JUMP -> 104
+  JUMP -> 180
+
+============================================================
+BLOCK 104
+- Instructions:
+  flw	fs3, 0(s1)
+  fcvt.d.s	fs0, fs3
+  fmv.d	fa0, fs0
+  call	round@plt
+  fsub.d	ft0, fs0, fa0
+  fabs.d	ft0, ft0
+  flt.d	a0, ft0, fs1
+  flt.s	a1, fs2, fs3
+  and	a0, a0, a1
+  beqz	a0, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 144
+  JUMP -> 92
+
+============================================================
+BLOCK 144
+- Instructions:
+  fcvt.w.d	a0, fa0, rtz
+  and	a1, a0, s3
+  bne	a1, s4, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 156
+  JUMP -> 92
+
+============================================================
+BLOCK 156
+- Instructions:
+  mulw	a0, a0, a0
+  slli	a0, a0, 32
+  srli	a0, a0, 32
+  add	s2, s2, a0
+  j	.LBB0_2
+
+- Edges:
+  JUMP -> 92
+
+============================================================
+BLOCK 176
+- Instructions:
+  li	s2, 0
+
+- Edges:
+  NO_JUMP -> 180
+
+============================================================
+BLOCK 180
+- Instructions:
+  mv	a0, s2
+  ld	ra, 72(sp)
+  ld	s0, 64(sp)
+  ld	s1, 56(sp)
+  ld	s2, 48(sp)
+  ld	s3, 40(sp)
+  ld	s4, 32(sp)
+  fld	fs0, 24(sp)
+  fld	fs1, 16(sp)
+  fld	fs2, 8(sp)
+  fld	fs3, 0(sp)
+  addi	sp, sp, 80
+  ret
+
+- Edges: (none)

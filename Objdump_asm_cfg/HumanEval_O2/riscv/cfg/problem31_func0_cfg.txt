@@ -1,0 +1,86 @@
+Function: func0
+Basic blocks: 7
+
+============================================================
+BLOCK 2676
+- Instructions:
+  add	sp,sp,-32
+  sd	ra,24(sp)
+  sd	s0,16(sp)
+  sd	s1,8(sp)
+  sd	s2,0(sp)
+  mv	s2,a2
+  mv	s1,a1
+  mv	s0,a0
+  sll	a0,a1,0x2
+  jal	660 <malloc@plt>
+
+- Edges:
+  JUMP -> 1632
+
+============================================================
+BLOCK 2700
+- Instructions:
+  sw	zero,0(s2)
+  blez	s1,abe <func0+0x4a>
+
+- Edges:
+  NO_JUMP -> 2708
+  JUMP -> 2750
+
+============================================================
+BLOCK 2708
+- Instructions:
+  li	a1,0
+  fmv.w.x	ft0,zero
+  j	aa2 <func0+0x2e>
+
+- Edges:
+  JUMP -> 2722
+
+============================================================
+BLOCK 2716
+- Instructions:
+  add	s1,s1,-1
+  add	s0,s0,4 # 40c00004 <__global_pointer$+0x40bfd804>
+  beqz	s1,abe <func0+0x4a>
+
+- Edges:
+  NO_JUMP -> 2722
+  JUMP -> 2750
+
+============================================================
+BLOCK 2722
+- Instructions:
+  flw	ft1,0(s0)
+  flt.s	a2,ft0,ft1
+  beqz	a2,a9c <func0+0x28>
+
+- Edges:
+  NO_JUMP -> 2732
+  JUMP -> 2716
+
+============================================================
+BLOCK 2732
+- Instructions:
+  sll	a2,a1,0x2
+  addw	a1,a1,1
+  sw	a1,0(s2)
+  add	a2,a2,a0
+  fsw	ft1,0(a2) # 40a00000 <__global_pointer$+0x409fd800>
+  j	a9c <func0+0x28>
+
+- Edges:
+  JUMP -> 2716
+
+============================================================
+BLOCK 2750
+- Instructions:
+  ld	ra,24(sp)
+  ld	s0,16(sp)
+  ld	s1,8(sp)
+  ld	s2,0(sp)
+  add	sp,sp,32
+  ret
+
+- Edges: (none)

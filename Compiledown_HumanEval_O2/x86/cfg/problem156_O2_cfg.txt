@@ -1,0 +1,43 @@
+Function: func0
+Basic blocks: 3
+
+============================================================
+BLOCK 0
+- Instructions:
+  movl	%edi, %eax
+  negl	%eax
+  cmovsl	%edi, %eax
+  xorl	%ecx, %ecx
+  xorl	%edx, %edx
+
+- Edges:
+  NO_JUMP -> 20
+
+============================================================
+BLOCK 20
+- Instructions:
+  movslq	%eax, %r8
+  andl	$1, %eax
+  addl	%eax, %edx
+  xorl	$1, %eax
+  addl	%eax, %ecx
+  imulq	$1717986919, %r8, %rax
+  movq	%rax, %rdi
+  shrq	$63, %rdi
+  sarq	$34, %rax
+  addl	%edi, %eax
+  cmpl	$9, %r8d
+  jg	.LBB0_1
+
+- Edges:
+  NO_JUMP -> 68
+  JUMP -> 20
+
+============================================================
+BLOCK 68
+- Instructions:
+  movl	%ecx, (%rsi)
+  movl	%edx, 4(%rsi)
+  retq
+
+- Edges: (none)

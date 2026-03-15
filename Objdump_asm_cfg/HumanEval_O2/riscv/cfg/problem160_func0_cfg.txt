@@ -1,0 +1,32 @@
+Function: func0
+Basic blocks: 3
+
+============================================================
+BLOCK 2092
+- Instructions:
+  bge	a2,a1,83a <func0+0xe>
+
+- Edges:
+  NO_JUMP -> 2096
+  JUMP -> 2106
+
+============================================================
+BLOCK 2096
+- Instructions:
+  addw	a0,a0,a2
+  sw	a0,0(a3)
+  sw	zero,4(a3)
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 2106
+- Instructions:
+  addw	a0,a0,a1
+  sw	a0,0(a3)
+  subw	a1,a2,a1
+  sw	a1,4(a3)
+  ret
+
+- Edges: (none)

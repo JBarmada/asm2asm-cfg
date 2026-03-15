@@ -1,0 +1,33 @@
+Function: _func0
+Basic blocks: 3
+
+============================================================
+BLOCK 0
+- Instructions:
+  mov	w8, #0
+  cmp	w0, #0
+  cneg	w9, w0, mi
+
+- Edges:
+  NO_JUMP -> 12
+
+============================================================
+BLOCK 12
+- Instructions:
+  mul	w10, w8, w8
+  mul	w10, w10, w8
+  add	w8, w8, #1
+  cmp	w10, w9
+  b.lo	LBB0_1
+
+- Edges:
+  NO_JUMP -> 32
+  JUMP -> 12
+
+============================================================
+BLOCK 32
+- Instructions:
+  cset	w0, ls
+  ret
+
+- Edges: (none)

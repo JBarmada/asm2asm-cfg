@@ -1,0 +1,107 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 0
+- Instructions:
+  subq	$56, %rsp
+  movaps	%xmm2, 16(%rsp)
+  movaps	%xmm1, 32(%rsp)
+  movss	%xmm0, 8(%rsp)
+  callq	roundf@PLT
+  movss	%xmm0, 12(%rsp)
+  movaps	32(%rsp), %xmm0
+  callq	roundf@PLT
+  movss	%xmm0, 4(%rsp)
+  movaps	16(%rsp), %xmm0
+  callq	roundf@PLT
+  movss	8(%rsp), %xmm4
+  xorl	%eax, %eax
+  movss	12(%rsp), %xmm1
+  ucomiss	%xmm4, %xmm1
+  jne	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 64
+  JUMP -> 168
+
+============================================================
+BLOCK 64
+- Instructions:
+  jp	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 68
+  JUMP -> 168
+
+============================================================
+BLOCK 68
+- Instructions:
+  movaps	32(%rsp), %xmm2
+  movss	4(%rsp), %xmm1
+  ucomiss	%xmm2, %xmm1
+  jne	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 84
+  JUMP -> 168
+
+============================================================
+BLOCK 84
+- Instructions:
+  jp	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 88
+  JUMP -> 168
+
+============================================================
+BLOCK 88
+- Instructions:
+  movaps	16(%rsp), %xmm3
+  ucomiss	%xmm3, %xmm0
+  jne	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 100
+  JUMP -> 168
+
+============================================================
+BLOCK 100
+- Instructions:
+  jp	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 104
+  JUMP -> 168
+
+============================================================
+BLOCK 104
+- Instructions:
+  movaps	%xmm4, %xmm0
+  addss	%xmm2, %xmm0
+  movaps	%xmm4, %xmm1
+  addss	%xmm3, %xmm1
+  cmpeqps	%xmm2, %xmm1
+  cmpeqps	%xmm3, %xmm0
+  orps	%xmm1, %xmm0
+  movd	%xmm0, %eax
+  addss	%xmm3, %xmm2
+  ucomiss	%xmm4, %xmm2
+  setnp	%cl
+  sete	%dl
+  andb	%cl, %dl
+  orb	%al, %dl
+  movzbl	%dl, %eax
+  andl	$1, %eax
+
+- Edges:
+  NO_JUMP -> 168
+
+============================================================
+BLOCK 168
+- Instructions:
+  addq	$56, %rsp
+  retq
+
+- Edges: (none)

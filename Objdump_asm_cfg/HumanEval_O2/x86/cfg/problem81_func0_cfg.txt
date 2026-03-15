@@ -1,0 +1,98 @@
+Function: func0
+Basic blocks: 9
+
+============================================================
+BLOCK 4848
+- Instructions:
+  push   %rbx
+  mov    %rdi,%rbx
+  call   1030 <strlen@plt>
+  cmp    $0x3,%rax
+  jae    1303 <func0+0x13>
+
+- Edges:
+  NO_JUMP -> 4863
+  JUMP -> 4867
+
+============================================================
+BLOCK 4863
+- Instructions:
+  xor    %eax,%eax
+  jmp    133d <func0+0x4d>
+
+- Edges:
+  JUMP -> 4925
+
+============================================================
+BLOCK 4867
+- Instructions:
+  mov    %rax,%rdi
+  movzbl 0x2(%rbx),%ecx
+  mov    $0x1,%al
+  cmp    0x1(%rbx),%cl
+  je     133b <func0+0x4b>
+
+- Edges:
+  NO_JUMP -> 4881
+  JUMP -> 4923
+
+============================================================
+BLOCK 4881
+- Instructions:
+  mov    $0x1,%al
+  mov    $0x3,%esi
+  nopl   0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 4896
+
+============================================================
+BLOCK 4896
+- Instructions:
+  cmp    -0x3(%rbx,%rsi,1),%cl
+  je     133b <func0+0x4b>
+
+- Edges:
+  NO_JUMP -> 4902
+  JUMP -> 4923
+
+============================================================
+BLOCK 4902
+- Instructions:
+  cmp    %rsi,%rdi
+  seta   %al
+  je     133b <func0+0x4b>
+
+- Edges:
+  NO_JUMP -> 4910
+  JUMP -> 4923
+
+============================================================
+BLOCK 4910
+- Instructions:
+  movzbl (%rbx,%rsi,1),%edx
+  inc    %rsi
+  cmp    %cl,%dl
+  mov    %edx,%ecx
+  jne    1320 <func0+0x30>
+
+- Edges:
+  NO_JUMP -> 4923
+  JUMP -> 4896
+
+============================================================
+BLOCK 4923
+- Instructions:
+  xor    $0x1,%al
+
+- Edges:
+  NO_JUMP -> 4925
+
+============================================================
+BLOCK 4925
+- Instructions:
+  and    $0x1,%al
+  pop    %rbx
+  ret
+
+- Edges: (none)

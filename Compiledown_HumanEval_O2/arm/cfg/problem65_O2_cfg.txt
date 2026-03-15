@@ -1,0 +1,90 @@
+Function: _func0
+Basic blocks: 7
+
+============================================================
+BLOCK 0
+- Instructions:
+  stp	x24, x23, [sp, #-64]!
+  stp	x22, x21, [sp, #16]
+  stp	x20, x19, [sp, #32]
+  stp	x29, x30, [sp, #48]
+  add	x29, sp, #48
+  mov	x20, x0
+  bl	_strlen
+  mov	x21, x0
+  cmp	w21, #1
+  b.lt	LBB0_5
+
+- Edges:
+  NO_JUMP -> 40
+  JUMP -> 120
+
+============================================================
+BLOCK 40
+- Instructions:
+  mov	w19, #0
+  and	x23, x21, #0x7fffffff
+  mov	x24, x20
+  adrp	x22, l_.str
+  add	x22, x22, l_.str
+
+- Edges:
+  NO_JUMP -> 60
+
+============================================================
+BLOCK 60
+- Instructions:
+  ldrsb	w1, [x24], #1
+  mov	x0, x22
+  mov	w2, #11
+  bl	_memchr
+  cmp	x0, #0
+  cinc	w19, w19, ne
+  subs	x23, x23, #1
+  b.ne	LBB0_2
+
+- Edges:
+  NO_JUMP -> 92
+  JUMP -> 60
+
+============================================================
+BLOCK 92
+- Instructions:
+  sub	w8, w21, #1
+  ldrb	w8, [x20, w8, uxtw]
+  orr	w8, w8, #0x20
+  cmp	w8, #121
+  b.ne	LBB0_6
+
+- Edges:
+  NO_JUMP -> 112
+  JUMP -> 124
+
+============================================================
+BLOCK 112
+- Instructions:
+  add	w19, w19, #1
+  b	LBB0_6
+
+- Edges:
+  JUMP -> 124
+
+============================================================
+BLOCK 120
+- Instructions:
+  mov	w19, #0
+
+- Edges:
+  NO_JUMP -> 124
+
+============================================================
+BLOCK 124
+- Instructions:
+  mov	x0, x19
+  ldp	x29, x30, [sp, #48]
+  ldp	x20, x19, [sp, #32]
+  ldp	x22, x21, [sp, #16]
+  ldp	x24, x23, [sp], #64
+  ret
+
+- Edges: (none)

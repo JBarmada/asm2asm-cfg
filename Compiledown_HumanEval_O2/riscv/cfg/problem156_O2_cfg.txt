@@ -1,0 +1,44 @@
+Function: func0
+Basic blocks: 3
+
+============================================================
+BLOCK 0
+- Instructions:
+  li	a2, 0
+  li	a3, 0
+  sraiw	a4, a0, 31
+  xor	a0, a0, a4
+  subw	a5, a0, a4
+  lui	a0, 419430
+  addiw	a7, a0, 1639
+  li	a6, 9
+
+- Edges:
+  NO_JUMP -> 32
+
+============================================================
+BLOCK 32
+- Instructions:
+  mv	t0, a5
+  mul	a5, a5, a7
+  srli	a0, a5, 63
+  srai	a5, a5, 34
+  addw	a5, a5, a0
+  andi	a0, t0, 1
+  xori	a4, a0, 1
+  addw	a2, a2, a4
+  addw	a3, a3, a0
+  blt	a6, t0, .LBB0_1
+
+- Edges:
+  NO_JUMP -> 72
+  JUMP -> 32
+
+============================================================
+BLOCK 72
+- Instructions:
+  sw	a2, 0(a1)
+  sw	a3, 4(a1)
+  ret
+
+- Edges: (none)

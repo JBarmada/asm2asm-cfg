@@ -1,0 +1,143 @@
+Function: func0
+Basic blocks: 13
+
+============================================================
+BLOCK 5280
+- Instructions:
+  movss  (%rdi),%xmm1
+  movss  %xmm1,(%rdx)
+  movss  0x4(%rdi),%xmm0
+  movss  %xmm0,0x4(%rdx)
+  test   %esi,%esi
+  jle    1533 <func0+0x93>
+
+- Edges:
+  NO_JUMP -> 5302
+  JUMP -> 5427
+
+============================================================
+BLOCK 5302
+- Instructions:
+  mov    %esi,%r8d
+  movss  0xcc3(%rip),%xmm3        # 2184 <_IO_stdin_used+0x184>
+  xor    %r9d,%r9d
+  movaps 0xb45(%rip),%xmm2        # 2010 <_IO_stdin_used+0x10>
+  mov    %r8,%r10
+  mov    %rdi,%rsi
+  jmp    14ec <func0+0x4c>
+
+- Edges:
+  JUMP -> 5356
+
+============================================================
+BLOCK 5331
+- Instructions:
+  data16 data16 data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5344
+
+============================================================
+BLOCK 5344
+- Instructions:
+  add    $0x4,%rsi
+  dec    %r10
+  cmp    %r8,%r9
+  je     1533 <func0+0x93>
+
+- Edges:
+  NO_JUMP -> 5356
+  JUMP -> 5427
+
+============================================================
+BLOCK 5356
+- Instructions:
+  mov    %r9,%rax
+  inc    %r9
+  cmp    %r8,%r9
+  jae    14e0 <func0+0x40>
+
+- Edges:
+  NO_JUMP -> 5367
+  JUMP -> 5344
+
+============================================================
+BLOCK 5367
+- Instructions:
+  mov    $0x1,%ecx
+  jmp    1508 <func0+0x68>
+
+- Edges:
+  JUMP -> 5384
+
+============================================================
+BLOCK 5374
+- Instructions:
+  xchg   %ax,%ax
+
+- Edges:
+  NO_JUMP -> 5376
+
+============================================================
+BLOCK 5376
+- Instructions:
+  inc    %rcx
+  cmp    %rcx,%r10
+  je     14e0 <func0+0x40>
+
+- Edges:
+  NO_JUMP -> 5384
+  JUMP -> 5344
+
+============================================================
+BLOCK 5384
+- Instructions:
+  movss  (%rdi,%rax,4),%xmm4
+  movaps %xmm4,%xmm5
+  subss  (%rsi,%rcx,4),%xmm5
+  andps  %xmm2,%xmm5
+  ucomiss %xmm5,%xmm3
+  jbe    1500 <func0+0x60>
+
+- Edges:
+  NO_JUMP -> 5405
+  JUMP -> 5376
+
+============================================================
+BLOCK 5405
+- Instructions:
+  movss  %xmm4,(%rdx)
+  movss  (%rsi,%rcx,4),%xmm0
+  movss  %xmm0,0x4(%rdx)
+  movaps %xmm4,%xmm1
+  movaps %xmm5,%xmm3
+  jmp    1500 <func0+0x60>
+
+- Edges:
+  JUMP -> 5376
+
+============================================================
+BLOCK 5427
+- Instructions:
+  ucomiss %xmm0,%xmm1
+  jbe    1541 <func0+0xa1>
+
+- Edges:
+  NO_JUMP -> 5432
+  JUMP -> 5441
+
+============================================================
+BLOCK 5432
+- Instructions:
+  movss  %xmm0,(%rdx)
+  movss  %xmm1,0x4(%rdx)
+
+- Edges:
+  NO_JUMP -> 5441
+
+============================================================
+BLOCK 5441
+- Instructions:
+  ret
+
+- Edges: (none)

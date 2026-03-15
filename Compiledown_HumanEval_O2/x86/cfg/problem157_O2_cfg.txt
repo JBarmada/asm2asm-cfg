@@ -1,0 +1,104 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 0
+- Instructions:
+  pushq	%rbp
+  pushq	%r15
+  pushq	%r14
+  pushq	%r13
+  pushq	%r12
+  pushq	%rbx
+  pushq	%rax
+  movb	$0, (%rsi)
+  testl	%edi, %edi
+  jle	.LBB0_6
+
+- Edges:
+  NO_JUMP -> 40
+  JUMP -> 140
+
+============================================================
+BLOCK 40
+- Instructions:
+  movq	%rsi, %r14
+  movl	%edi, %ebp
+  xorl	%eax, %eax
+  leaq	.Lreltable.func0(%rip), %r12
+  jmp	.LBB0_2
+
+- Edges:
+  JUMP -> 84
+
+============================================================
+BLOCK 60
+- Instructions:
+  xorl	%eax, %eax
+  testl	%ebp, %ebp
+  setg	%al
+  addl	%r13d, %eax
+  testl	%ebp, %ebp
+  jle	.LBB0_6
+
+- Edges:
+  NO_JUMP -> 84
+  JUMP -> 140
+
+============================================================
+BLOCK 84
+- Instructions:
+  movl	%eax, %r13d
+  leaq	.L__const.func0.num(%rip), %rax
+  movl	(%rax,%r13,4), %r15d
+  cmpl	%r15d, %ebp
+  jl	.LBB0_5
+
+- Edges:
+  NO_JUMP -> 104
+  JUMP -> 60
+
+============================================================
+BLOCK 104
+- Instructions:
+  movslq	(%r12,%r13,4), %rbx
+  addq	%r12, %rbx
+
+- Edges:
+  NO_JUMP -> 112
+
+============================================================
+BLOCK 112
+- Instructions:
+  movq	%r14, %rdi
+  movq	%rbx, %rsi
+  callq	strcat@PLT
+  subl	%r15d, %ebp
+  cmpl	%r15d, %ebp
+  jge	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 136
+  JUMP -> 112
+
+============================================================
+BLOCK 136
+- Instructions:
+  jmp	.LBB0_5
+
+- Edges:
+  JUMP -> 60
+
+============================================================
+BLOCK 140
+- Instructions:
+  addq	$8, %rsp
+  popq	%rbx
+  popq	%r12
+  popq	%r13
+  popq	%r14
+  popq	%r15
+  popq	%rbp
+  retq
+
+- Edges: (none)

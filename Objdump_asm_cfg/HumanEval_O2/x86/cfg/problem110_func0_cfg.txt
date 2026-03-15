@@ -1,0 +1,160 @@
+Function: func0
+Basic blocks: 12
+
+============================================================
+BLOCK 4768
+- Instructions:
+  test   %esi,%esi
+  je     12ca <func0+0x2a>
+
+- Edges:
+  NO_JUMP -> 4772
+  JUMP -> 4810
+
+============================================================
+BLOCK 4772
+- Instructions:
+  push   %rbx
+  cmp    $0x1,%esi
+  jle    12cd <func0+0x2d>
+
+- Edges:
+  NO_JUMP -> 4778
+  JUMP -> 4813
+
+============================================================
+BLOCK 4778
+- Instructions:
+  mov    %esi,%r10d
+  mov    (%rdi),%r8d
+  lea    -0x1(%r10),%r9
+  cmp    $0x8,%r9
+  jae    12d7 <func0+0x37>
+
+- Edges:
+  NO_JUMP -> 4794
+  JUMP -> 4823
+
+============================================================
+BLOCK 4794
+- Instructions:
+  xor    %ebx,%ebx
+  mov    $0x1,%r11d
+  mov    %r8d,%edx
+  jmp    1360 <func0+0xc0>
+
+- Edges:
+  JUMP -> 4960
+
+============================================================
+BLOCK 4810
+- Instructions:
+  mov    $0x1,%al
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 4813
+- Instructions:
+  mov    (%rdi),%r8d
+  xor    %ebx,%ebx
+  jmp    1377 <func0+0xd7>
+
+- Edges:
+  JUMP -> 4983
+
+============================================================
+BLOCK 4823
+- Instructions:
+  mov    %r9,%rcx
+  and    $0xfffffffffffffff8,%rcx
+  lea    0x1(%rcx),%r11
+  movd   %r8d,%xmm0
+  pshufd $0x0,%xmm0,%xmm2
+  pxor   %xmm0,%xmm0
+  xor    %eax,%eax
+  pxor   %xmm1,%xmm1
+  cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 4864
+
+============================================================
+BLOCK 4864
+- Instructions:
+  movups 0x4(%rdi,%rax,4),%xmm3
+  shufps $0x3,%xmm3,%xmm2
+  shufps $0x98,%xmm3,%xmm2
+  pcmpgtd %xmm3,%xmm2
+  psubd  %xmm2,%xmm0
+  movups 0x14(%rdi,%rax,4),%xmm2
+  shufps $0x3,%xmm2,%xmm3
+  shufps $0x98,%xmm2,%xmm3
+  pcmpgtd %xmm2,%xmm3
+  psubd  %xmm3,%xmm1
+  add    $0x8,%rax
+  cmp    %rax,%rcx
+  jne    1300 <func0+0x60>
+
+- Edges:
+  NO_JUMP -> 4915
+  JUMP -> 4864
+
+============================================================
+BLOCK 4915
+- Instructions:
+  paddd  %xmm0,%xmm1
+  pshufd $0xee,%xmm1,%xmm0
+  paddd  %xmm1,%xmm0
+  pshufd $0x55,%xmm0,%xmm1
+  paddd  %xmm0,%xmm1
+  movd   %xmm1,%ebx
+  cmp    %rcx,%r9
+  je     1377 <func0+0xd7>
+
+- Edges:
+  NO_JUMP -> 4946
+  JUMP -> 4983
+
+============================================================
+BLOCK 4946
+- Instructions:
+  pshufd $0xff,%xmm2,%xmm0
+  movd   %xmm0,%edx
+  nopl   0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 4960
+
+============================================================
+BLOCK 4960
+- Instructions:
+  mov    (%rdi,%r11,4),%ecx
+  xor    %eax,%eax
+  cmp    %edx,%ecx
+  setl   %al
+  add    %eax,%ebx
+  inc    %r11
+  mov    %ecx,%edx
+  cmp    %r11,%r10
+  jne    1360 <func0+0xc0>
+
+- Edges:
+  NO_JUMP -> 4983
+  JUMP -> 4960
+
+============================================================
+BLOCK 4983
+- Instructions:
+  movslq %esi,%rcx
+  xor    %edx,%edx
+  cmp    %r8d,-0x4(%rdi,%rcx,4)
+  setg   %dl
+  add    %ebx,%edx
+  cmp    $0x2,%edx
+  setb   %al
+  pop    %rbx
+  ret
+
+- Edges: (none)

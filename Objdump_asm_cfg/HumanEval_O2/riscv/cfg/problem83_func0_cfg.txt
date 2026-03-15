@@ -1,0 +1,90 @@
+Function: func0
+Basic blocks: 9
+
+============================================================
+BLOCK 2548
+- Instructions:
+  add	sp,sp,-16
+  sd	ra,8(sp)
+  jal	630 <strlen@plt>
+
+- Edges:
+  JUMP -> 1584
+
+============================================================
+BLOCK 2556
+- Instructions:
+  sext.w	a2,a0
+  li	a1,2
+  bge	a2,a1,a0a <func0+0x16>
+
+- Edges:
+  NO_JUMP -> 2566
+  JUMP -> 2570
+
+============================================================
+BLOCK 2566
+- Instructions:
+  li	a1,0
+  j	a28 <func0+0x34>
+
+- Edges:
+  JUMP -> 2600
+
+============================================================
+BLOCK 2570
+- Instructions:
+  li	a3,4
+  li	a1,1
+  bltu	a2,a3,a28 <func0+0x34>
+
+- Edges:
+  NO_JUMP -> 2578
+  JUMP -> 2600
+
+============================================================
+BLOCK 2578
+- Instructions:
+  li	a1,2
+
+- Edges:
+  NO_JUMP -> 2580
+
+============================================================
+BLOCK 2580
+- Instructions:
+  remw	a3,a0,a1
+  beqz	a3,a24 <func0+0x30>
+
+- Edges:
+  NO_JUMP -> 2586
+  JUMP -> 2596
+
+============================================================
+BLOCK 2586
+- Instructions:
+  addw	a1,a1,1
+  mulw	a4,a1,a1
+  bge	a2,a4,a14 <func0+0x20>
+
+- Edges:
+  NO_JUMP -> 2596
+  JUMP -> 2580
+
+============================================================
+BLOCK 2596
+- Instructions:
+  snez	a1,a3
+
+- Edges:
+  NO_JUMP -> 2600
+
+============================================================
+BLOCK 2600
+- Instructions:
+  mv	a0,a1
+  ld	ra,8(sp)
+  add	sp,sp,16
+  ret
+
+- Edges: (none)

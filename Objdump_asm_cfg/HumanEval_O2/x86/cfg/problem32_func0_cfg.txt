@@ -1,0 +1,123 @@
+Function: func0
+Basic blocks: 12
+
+============================================================
+BLOCK 5072
+- Instructions:
+  cmp    $0x2,%rdi
+  jge    13d9 <func0+0x9>
+
+- Edges:
+  NO_JUMP -> 5078
+  JUMP -> 5081
+
+============================================================
+BLOCK 5078
+- Instructions:
+  xor    %eax,%eax
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 5081
+- Instructions:
+  mov    $0x1,%al
+  cmp    $0x4,%rdi
+  jb     1430 <func0+0x60>
+
+- Edges:
+  NO_JUMP -> 5089
+  JUMP -> 5168
+
+============================================================
+BLOCK 5089
+- Instructions:
+  mov    $0x2,%ecx
+  cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5104
+
+============================================================
+BLOCK 5104
+- Instructions:
+  mov    %rdi,%rax
+  or     %rcx,%rax
+  shr    $0x20,%rax
+  je     1410 <func0+0x40>
+
+- Edges:
+  NO_JUMP -> 5116
+  JUMP -> 5136
+
+============================================================
+BLOCK 5116
+- Instructions:
+  mov    %rdi,%rax
+  cqto
+  idiv   %rcx
+  test   %rdx,%rdx
+  jne    141b <func0+0x4b>
+
+- Edges:
+  NO_JUMP -> 5129
+  JUMP -> 5147
+
+============================================================
+BLOCK 5129
+- Instructions:
+  jmp    142a <func0+0x5a>
+
+- Edges:
+  JUMP -> 5162
+
+============================================================
+BLOCK 5131
+- Instructions:
+  nopl   0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5136
+
+============================================================
+BLOCK 5136
+- Instructions:
+  mov    %edi,%eax
+  xor    %edx,%edx
+  div    %ecx
+  test   %rdx,%rdx
+  je     142a <func0+0x5a>
+
+- Edges:
+  NO_JUMP -> 5147
+  JUMP -> 5162
+
+============================================================
+BLOCK 5147
+- Instructions:
+  inc    %rcx
+  mov    %rcx,%rax
+  imul   %rcx,%rax
+  cmp    %rdi,%rax
+  jle    13f0 <func0+0x20>
+
+- Edges:
+  NO_JUMP -> 5162
+  JUMP -> 5104
+
+============================================================
+BLOCK 5162
+- Instructions:
+  test   %rdx,%rdx
+  setne  %al
+
+- Edges:
+  NO_JUMP -> 5168
+
+============================================================
+BLOCK 5168
+- Instructions:
+  ret
+
+- Edges: (none)

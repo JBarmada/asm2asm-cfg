@@ -1,0 +1,134 @@
+Function: func0
+Basic blocks: 12
+
+============================================================
+BLOCK 2512
+- Instructions:
+  beqz	a1,a3a <func0+0x6a>
+
+- Edges:
+  NO_JUMP -> 2514
+  JUMP -> 2618
+
+============================================================
+BLOCK 2514
+- Instructions:
+  li	a2,2
+  blt	a1,a2,a40 <func0+0x70>
+
+- Edges:
+  NO_JUMP -> 2520
+  JUMP -> 2624
+
+============================================================
+BLOCK 2520
+- Instructions:
+  lw	t2,0(a0)
+  lw	a3,4(a0)
+  li	t1,1
+  blt	a3,t2,a42 <func0+0x72>
+
+- Edges:
+  NO_JUMP -> 2532
+  JUMP -> 2626
+
+============================================================
+BLOCK 2532
+- Instructions:
+  li	a4,0
+  li	a2,-1
+  srl	t0,a2,0x20
+  add	a5,a0,8
+  add	a6,a1,-2
+  li	a7,1
+  li	t1,1
+
+- Edges:
+  NO_JUMP -> 2552
+
+============================================================
+BLOCK 2552
+- Instructions:
+  mv	t4,a3
+  add	t3,a4,1
+  sltu	a3,a7,t3
+  xor	a2,t4,t2
+  seqz	a2,a2
+  and	a2,a2,a3
+  beqz	a2,a20 <func0+0x50>
+
+- Edges:
+  NO_JUMP -> 2574
+  JUMP -> 2592
+
+============================================================
+BLOCK 2574
+- Instructions:
+  add	a2,a4,t0
+  and	a2,a2,t0
+  sll	a2,a2,0x2
+  add	a2,a2,a0
+  lw	a2,0(a2)
+  beq	t2,a2,a42 <func0+0x72>
+
+- Edges:
+  NO_JUMP -> 2592
+  JUMP -> 2626
+
+============================================================
+BLOCK 2592
+- Instructions:
+  add	a2,a4,2
+  sltu	t1,a2,a1
+  beq	a6,a4,a42 <func0+0x72>
+
+- Edges:
+  NO_JUMP -> 2604
+  JUMP -> 2626
+
+============================================================
+BLOCK 2604
+- Instructions:
+  lw	a3,0(a5)
+  add	a5,a5,4
+  mv	a4,t3
+  mv	t2,t4
+  bge	a3,t4,9f8 <func0+0x28>
+
+- Edges:
+  NO_JUMP -> 2616
+  JUMP -> 2552
+
+============================================================
+BLOCK 2616
+- Instructions:
+  j	a42 <func0+0x72>
+
+- Edges:
+  JUMP -> 2626
+
+============================================================
+BLOCK 2618
+- Instructions:
+  li	a0,1
+  and	a0,a0,1
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 2624
+- Instructions:
+  li	t1,0
+
+- Edges:
+  NO_JUMP -> 2626
+
+============================================================
+BLOCK 2626
+- Instructions:
+  xor	a0,t1,1
+  and	a0,a0,1
+  ret
+
+- Edges: (none)

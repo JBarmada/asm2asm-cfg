@@ -1,0 +1,132 @@
+Function: func0
+Basic blocks: 9
+
+============================================================
+BLOCK 0
+- Instructions:
+  pushq	%rbp
+  pushq	%r14
+  pushq	%rbx
+  subq	$32, %rsp
+  movl	%esi, %r14d
+  movw	$0, 24(%rsp)
+  movq	$0, 16(%rsp)
+  movw	$0, 8(%rsp)
+  movq	$0, (%rsp)
+  movzbl	(%rdi), %ebx
+  testb	%bl, %bl
+  je	.LBB0_8
+
+- Edges:
+  NO_JUMP -> 48
+  JUMP -> 188
+
+============================================================
+BLOCK 48
+- Instructions:
+  movq	%rdi, %rbp
+  callq	__ctype_b_loc@PLT
+  movq	(%rax), %rax
+  incq	%rbp
+  xorl	%r8d, %r8d
+  movl	$1, %edx
+  xorl	%edi, %edi
+  xorl	%esi, %esi
+  jmp	.LBB0_2
+
+- Edges:
+  JUMP -> 136
+
+============================================================
+BLOCK 84
+- Instructions:
+  testl	%esi, %esi
+  sete	%cl
+  testl	%edi, %edi
+  setg	%bl
+  testb	%bl, %cl
+  cmovnel	%edx, %esi
+  cmovnel	%r8d, %edi
+  movl	%edi, %ecx
+
+- Edges:
+  NO_JUMP -> 116
+
+============================================================
+BLOCK 116
+- Instructions:
+  movzbl	(%rbp), %ebx
+  incq	%rbp
+  movl	%ecx, %edi
+  testb	%bl, %bl
+  je	.LBB0_8
+
+- Edges:
+  NO_JUMP -> 136
+  JUMP -> 188
+
+============================================================
+BLOCK 136
+- Instructions:
+  movsbq	%bl, %rcx
+  testb	$8, 1(%rax,%rcx,2)
+  je	.LBB0_6
+
+- Edges:
+  NO_JUMP -> 148
+  JUMP -> 84
+
+============================================================
+BLOCK 148
+- Instructions:
+  leal	1(%rdi), %ecx
+  movslq	%edi, %rdi
+  testl	%esi, %esi
+  je	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 164
+  JUMP -> 176
+
+============================================================
+BLOCK 164
+- Instructions:
+  movb	%bl, (%rsp,%rdi)
+  movl	$1, %esi
+  jmp	.LBB0_7
+
+- Edges:
+  JUMP -> 116
+
+============================================================
+BLOCK 176
+- Instructions:
+  movb	%bl, 16(%rsp,%rdi)
+  xorl	%esi, %esi
+  jmp	.LBB0_7
+
+- Edges:
+  JUMP -> 116
+
+============================================================
+BLOCK 188
+- Instructions:
+  leaq	16(%rsp), %rdi
+  xorl	%esi, %esi
+  movl	$10, %edx
+  callq	strtol@PLT
+  movq	%rax, %rbx
+  movq	%rsp, %rdi
+  xorl	%esi, %esi
+  movl	$10, %edx
+  callq	strtol@PLT
+  addl	%ebx, %eax
+  subl	%eax, %r14d
+  movl	%r14d, %eax
+  addq	$32, %rsp
+  popq	%rbx
+  popq	%r14
+  popq	%rbp
+  retq
+
+- Edges: (none)

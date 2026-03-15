@@ -1,0 +1,93 @@
+Function: func0
+Basic blocks: 9
+
+============================================================
+BLOCK 4656
+- Instructions:
+  cmp    $0x4,%edi
+  jge    1238 <func0+0x8>
+
+- Edges:
+  NO_JUMP -> 4661
+  JUMP -> 4664
+
+============================================================
+BLOCK 4661
+- Instructions:
+  mov    %edi,%eax
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 4664
+- Instructions:
+  mov    $0x2,%ecx
+  jmp    124b <func0+0x1b>
+
+- Edges:
+  JUMP -> 4683
+
+============================================================
+BLOCK 4671
+- Instructions:
+  nop
+
+- Edges:
+  NO_JUMP -> 4672
+
+============================================================
+BLOCK 4672
+- Instructions:
+  inc    %ecx
+  mov    %ecx,%eax
+  imul   %ecx,%eax
+  cmp    %edi,%eax
+  jg     1235 <func0+0x5>
+
+- Edges:
+  NO_JUMP -> 4683
+  JUMP -> 4661
+
+============================================================
+BLOCK 4683
+- Instructions:
+  mov    %edi,%eax
+  nopl   (%rax)
+
+- Edges:
+  NO_JUMP -> 4688
+
+============================================================
+BLOCK 4688
+- Instructions:
+  cltd
+  idiv   %ecx
+  cmp    %ecx,%edi
+  jle    1240 <func0+0x10>
+
+- Edges:
+  NO_JUMP -> 4695
+  JUMP -> 4672
+
+============================================================
+BLOCK 4695
+- Instructions:
+  test   %edx,%edx
+  jne    1240 <func0+0x10>
+
+- Edges:
+  NO_JUMP -> 4699
+  JUMP -> 4672
+
+============================================================
+BLOCK 4699
+- Instructions:
+  mov    %edi,%eax
+  cltd
+  idiv   %ecx
+  mov    %eax,%edi
+  jmp    1250 <func0+0x20>
+
+- Edges:
+  JUMP -> 4688

@@ -1,0 +1,88 @@
+Function: _func0
+Basic blocks: 6
+
+============================================================
+BLOCK 4294968596
+- Instructions:
+  sub	sp, sp, #0x1c0
+  stp	x28, x27, [sp, #0x1a0]
+  stp	x29, x30, [sp, #0x1b0]
+  add	x29, sp, #0x1b0
+  adrp	x8, 0x100004000 <___stack_chk_guard+0x100004000>
+  ldr	x8, [x8, #0x10]
+  ldr	x8, [x8]
+  stur	x8, [x29, #-0x18]
+  adrp	x8, 0x100000000 <___stack_chk_guard+0x100000000>
+  ldr	q0, [x8, #0x6c0]
+  str	q0, [sp]
+  cmp	w0, #0x4
+  b.lt	0x100000588 <_func0+0x74>
+
+- Edges:
+  NO_JUMP -> 4294968648
+  JUMP -> 4294968712
+
+============================================================
+BLOCK 4294968648
+- Instructions:
+  mov	w11, #0x0               ; =0
+  mov	w8, #0x0                ; =0
+  add	w10, w0, #0x1
+  mov	x9, sp
+  orr	x9, x9, #0x8
+  sub	x10, x10, #0x4
+
+- Edges:
+  NO_JUMP -> 4294968672
+
+============================================================
+BLOCK 4294968672
+- Instructions:
+  ldr	w12, [x9]
+  add	w8, w8, w11
+  add	w8, w12, w8
+  ldur	w11, [x9, #-0x8]
+  add	w8, w8, w11
+  str	w8, [x9, #0x8]
+  add	x9, x9, #0x4
+  mov	x11, x12
+  subs	x10, x10, #0x1
+  b.ne	0x100000560 <_func0+0x4c>
+
+- Edges:
+  NO_JUMP -> 4294968712
+  JUMP -> 4294968672
+
+============================================================
+BLOCK 4294968712
+- Instructions:
+  mov	x8, sp
+  ldr	w0, [x8, w0, sxtw #2]
+  ldur	x8, [x29, #-0x18]
+  adrp	x9, 0x100004000 <___stack_chk_guard+0x100004000>
+  ldr	x9, [x9, #0x10]
+  ldr	x9, [x9]
+  cmp	x9, x8
+  b.ne	0x1000005b8 <_func0+0xa4>
+
+- Edges:
+  NO_JUMP -> 4294968744
+  JUMP -> 4294968760
+
+============================================================
+BLOCK 4294968744
+- Instructions:
+  ldp	x29, x30, [sp, #0x1b0]
+  ldp	x28, x27, [sp, #0x1a0]
+  add	sp, sp, #0x1c0
+  ret
+
+- Edges:
+  NO_JUMP -> 4294968760
+
+============================================================
+BLOCK 4294968760
+- Instructions:
+  bl	0x100000668 <___stack_chk_guard+0x100000668>
+
+- Edges: (none)

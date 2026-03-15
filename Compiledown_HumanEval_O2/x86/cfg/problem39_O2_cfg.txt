@@ -1,0 +1,127 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 0
+- Instructions:
+  pushq	%rbp
+  pushq	%r15
+  pushq	%r14
+  pushq	%r13
+  pushq	%r12
+  pushq	%rbx
+  subq	$24, %rsp
+  movl	%esi, 4(%rsp)
+  movq	%rdi, %rbx
+  callq	strlen@PLT
+  movq	%rax, 8(%rsp)
+  testl	%eax, %eax
+  jle	.LBB0_7
+
+- Edges:
+  NO_JUMP -> 52
+  JUMP -> 232
+
+============================================================
+BLOCK 52
+- Instructions:
+  movq	8(%rsp), %rax
+  addl	$2, %eax
+  movl	$2863311531, %ecx
+  imulq	%rax, %rcx
+  shrq	$33, %rcx
+  movl	$3, %r14d
+  xorl	%r15d, %r15d
+  movq	%rsp, %r13
+  jmp	.LBB0_2
+
+- Edges:
+  JUMP -> 144
+
+============================================================
+BLOCK 88
+- Instructions:
+  movzbl	(%rsp), %eax
+  movzwl	1(%rsp), %ecx
+  movw	%cx, (%rsp)
+  movb	%al, 2(%rsp)
+
+- Edges:
+  NO_JUMP -> 104
+
+============================================================
+BLOCK 104
+- Instructions:
+  movq	%rbx, %rdi
+  movq	%r13, %rsi
+  movq	%rbp, %rdx
+  callq	strncpy@PLT
+  addl	$3, %r14d
+  addq	$3, %rbx
+  addl	$-3, %r15d
+  movq	16(%rsp), %rcx
+  decq	%rcx
+  je	.LBB0_7
+
+- Edges:
+  NO_JUMP -> 144
+  JUMP -> 232
+
+============================================================
+BLOCK 144
+- Instructions:
+  movq	%rcx, 16(%rsp)
+  movq	8(%rsp), %r12
+  cmpl	%r12d, %r14d
+  cmovll	%r14d, %r12d
+  leal	(%r12,%r15), %eax
+  movslq	%eax, %rbp
+  movq	%r13, %rdi
+  movq	%rbx, %rsi
+  movq	%rbp, %rdx
+  callq	strncpy@PLT
+  movb	$0, (%rsp,%rbp)
+  cmpl	%r14d, %r12d
+  jne	.LBB0_6
+
+- Edges:
+  NO_JUMP -> 196
+  JUMP -> 104
+
+============================================================
+BLOCK 196
+- Instructions:
+  cmpl	$0, 4(%rsp)
+  je	.LBB0_5
+
+- Edges:
+  NO_JUMP -> 204
+  JUMP -> 88
+
+============================================================
+BLOCK 204
+- Instructions:
+  movzbl	2(%rsp), %eax
+  movzbl	(%rsp), %ecx
+  movzbl	1(%rsp), %edx
+  movb	%dl, 2(%rsp)
+  movb	%cl, 1(%rsp)
+  movb	%al, (%rsp)
+  jmp	.LBB0_6
+
+- Edges:
+  JUMP -> 104
+
+============================================================
+BLOCK 232
+- Instructions:
+  addq	$24, %rsp
+  popq	%rbx
+  popq	%r12
+  popq	%r13
+  popq	%r14
+  popq	%r15
+  popq	%rbp
+  retq
+
+- Edges: (none)

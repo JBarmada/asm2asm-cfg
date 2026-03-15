@@ -1,0 +1,111 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 0
+- Instructions:
+  pushq	%rbx
+  movl	$-1, %eax
+  cmpl	$2, %esi
+  jl	.LBB0_5
+
+- Edges:
+  NO_JUMP -> 16
+  JUMP -> 188
+
+============================================================
+BLOCK 16
+- Instructions:
+  movl	%esi, %eax
+  movl	(%rdi), %esi
+  leaq	-1(%rax), %r8
+  addq	$-2, %rax
+  movl	%r8d, %r9d
+  andl	$3, %r9d
+  cmpq	$3, %rax
+  jae	.LBB0_6
+
+- Edges:
+  NO_JUMP -> 48
+  JUMP -> 60
+
+============================================================
+BLOCK 48
+- Instructions:
+  movl	$-1, %eax
+  movl	$1, %edx
+  jmp	.LBB0_3
+
+- Edges:
+  JUMP -> 152
+
+============================================================
+BLOCK 60
+- Instructions:
+  andq	$-4, %r8
+  movl	$-1, %eax
+  movl	$1, %edx
+  xorl	%ebx, %ebx
+
+- Edges:
+  NO_JUMP -> 76
+
+============================================================
+BLOCK 76
+- Instructions:
+  movl	(%rdi,%rdx,4), %r10d
+  movl	4(%rdi,%rdx,4), %r11d
+  cmpl	%esi, %r10d
+  cmovll	%edx, %eax
+  leal	1(%rdx), %esi
+  cmpl	%r10d, %r11d
+  cmovgel	%eax, %esi
+  leal	2(%rdx), %ecx
+  movl	8(%rdi,%rdx,4), %r10d
+  cmpl	%r11d, %r10d
+  cmovgel	%esi, %ecx
+  leal	3(%rdx), %eax
+  movl	12(%rdi,%rdx,4), %esi
+  cmpl	%r10d, %esi
+  cmovgel	%ecx, %eax
+  addq	$4, %rdx
+  addq	$4, %rbx
+  cmpq	%r8, %rbx
+  jne	.LBB0_7
+
+- Edges:
+  NO_JUMP -> 152
+  JUMP -> 76
+
+============================================================
+BLOCK 152
+- Instructions:
+  testq	%r9, %r9
+  je	.LBB0_5
+
+- Edges:
+  NO_JUMP -> 160
+  JUMP -> 188
+
+============================================================
+BLOCK 160
+- Instructions:
+  movl	(%rdi,%rdx,4), %ecx
+  cmpl	%esi, %ecx
+  cmovll	%edx, %eax
+  incq	%rdx
+  movl	%ecx, %esi
+  decq	%r9
+  jne	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 188
+  JUMP -> 160
+
+============================================================
+BLOCK 188
+- Instructions:
+  popq	%rbx
+  retq
+
+- Edges: (none)

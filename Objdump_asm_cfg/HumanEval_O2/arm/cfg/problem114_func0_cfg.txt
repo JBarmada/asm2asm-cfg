@@ -1,0 +1,96 @@
+Function: _func0
+Basic blocks: 6
+
+============================================================
+BLOCK 4294969020
+- Instructions:
+  sub	sp, sp, #0x60
+  stp	x24, x23, [sp, #0x20]
+  stp	x22, x21, [sp, #0x30]
+  stp	x20, x19, [sp, #0x40]
+  stp	x29, x30, [sp, #0x50]
+  add	x29, sp, #0x50
+  mov	x21, x1
+  mov	x19, x0
+  sbfiz	x0, x21, #3, #32
+  bl	0x100000830 <_strcmp+0x100000830>
+  mov	x20, x0
+  cmp	w21, #0x1
+  b.lt	0x10000076c <_func0+0xb0>
+
+- Edges:
+  NO_JUMP -> 4294969072
+  JUMP -> 4294969196
+
+============================================================
+BLOCK 4294969072
+- Instructions:
+  mov	x22, #0x0               ; =0
+  mov	w23, w21
+  adrp	x21, 0x100000000 <_strcmp+0x100000000>
+  add	x21, x21, #0x9fe
+  b	0x100000738 <_func0+0x7c>
+
+- Edges:
+  JUMP -> 4294969144
+
+============================================================
+BLOCK 4294969092
+- Instructions:
+  mov	w24, #0x0               ; =0
+
+- Edges:
+  NO_JUMP -> 4294969096
+
+============================================================
+BLOCK 4294969096
+- Instructions:
+  mov	w0, #0x64               ; =100
+  bl	0x100000830 <_strcmp+0x100000830>
+  str	x0, [x20, x22, lsl #3]
+  stp	x24, x24, [sp, #0x8]
+  str	x24, [sp]
+  mov	w1, #0x0                ; =0
+  mov	w2, #0x64               ; =100
+  mov	x3, x21
+  bl	0x10000080c <_strcmp+0x10000080c>
+  add	x22, x22, #0x1
+  cmp	x22, x23
+  b.eq	0x10000076c <_func0+0xb0>
+
+- Edges:
+  NO_JUMP -> 4294969144
+  JUMP -> 4294969196
+
+============================================================
+BLOCK 4294969144
+- Instructions:
+  ldr	x9, [x19, x22, lsl #3]
+  ldrb	w8, [x9]
+  cbz	w8, 0x100000704 <_func0+0x48>
+  mov	w24, #0x0               ; =0
+  add	x9, x9, #0x1
+  sub	w10, w8, #0x30
+  cmp	w10, #0xa
+  cset	w10, lo
+  and	w8, w10, w8
+  add	w24, w24, w8
+  ldrb	w8, [x9], #0x1
+  cbnz	w8, 0x10000074c <_func0+0x90>
+  b	0x100000708 <_func0+0x4c>
+
+- Edges:
+  JUMP -> 4294969096
+
+============================================================
+BLOCK 4294969196
+- Instructions:
+  mov	x0, x20
+  ldp	x29, x30, [sp, #0x50]
+  ldp	x20, x19, [sp, #0x40]
+  ldp	x22, x21, [sp, #0x30]
+  ldp	x24, x23, [sp, #0x20]
+  add	sp, sp, #0x60
+  ret
+
+- Edges: (none)

@@ -1,0 +1,81 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 4896
+- Instructions:
+  test   %esi,%esi
+  jle    135a <func0+0x3a>
+
+- Edges:
+  NO_JUMP -> 4900
+  JUMP -> 4954
+
+============================================================
+BLOCK 4900
+- Instructions:
+  mov    (%rdi),%eax
+  test   %eax,%eax
+  js     135d <func0+0x3d>
+
+- Edges:
+  NO_JUMP -> 4906
+  JUMP -> 4957
+
+============================================================
+BLOCK 4906
+- Instructions:
+  mov    %esi,%ecx
+  mov    $0x1,%esi
+  data16 data16 data16 data16 data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 4928
+
+============================================================
+BLOCK 4928
+- Instructions:
+  mov    %rsi,%rdx
+  cmp    %rsi,%rcx
+  je     1351 <func0+0x31>
+
+- Edges:
+  NO_JUMP -> 4936
+  JUMP -> 4945
+
+============================================================
+BLOCK 4936
+- Instructions:
+  lea    0x1(%rdx),%rsi
+  add    (%rdi,%rdx,4),%eax
+  jns    1340 <func0+0x20>
+
+- Edges:
+  NO_JUMP -> 4945
+  JUMP -> 4928
+
+============================================================
+BLOCK 4945
+- Instructions:
+  xor    %eax,%eax
+  cmp    %rcx,%rdx
+  setb   %al
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 4954
+- Instructions:
+  xor    %eax,%eax
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 4957
+- Instructions:
+  mov    $0x1,%eax
+  ret
+
+- Edges: (none)

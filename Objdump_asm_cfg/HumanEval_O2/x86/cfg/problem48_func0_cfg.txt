@@ -1,0 +1,142 @@
+Function: func0
+Basic blocks: 13
+
+============================================================
+BLOCK 4944
+- Instructions:
+  test   %esi,%esi
+  jle    13b3 <func0+0x63>
+
+- Edges:
+  NO_JUMP -> 4948
+  JUMP -> 5043
+
+============================================================
+BLOCK 4948
+- Instructions:
+  mov    %esi,%r8d
+  xor    %r9d,%r9d
+  mov    %r8,%r10
+  mov    %rdi,%rdx
+  jmp    137c <func0+0x2c>
+
+- Edges:
+  JUMP -> 4988
+
+============================================================
+BLOCK 4962
+- Instructions:
+  data16 data16 data16 data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 4976
+
+============================================================
+BLOCK 4976
+- Instructions:
+  add    $0x4,%rdx
+  dec    %r10
+  cmp    %r8,%r9
+  je     13b3 <func0+0x63>
+
+- Edges:
+  NO_JUMP -> 4988
+  JUMP -> 5043
+
+============================================================
+BLOCK 4988
+- Instructions:
+  mov    %r9,%rax
+  inc    %r9
+  cmp    %r8,%r9
+  jae    1370 <func0+0x20>
+
+- Edges:
+  NO_JUMP -> 4999
+  JUMP -> 4976
+
+============================================================
+BLOCK 4999
+- Instructions:
+  mov    $0x1,%ecx
+  jmp    1398 <func0+0x48>
+
+- Edges:
+  JUMP -> 5016
+
+============================================================
+BLOCK 5006
+- Instructions:
+  xchg   %ax,%ax
+
+- Edges:
+  NO_JUMP -> 5008
+
+============================================================
+BLOCK 5008
+- Instructions:
+  inc    %rcx
+  cmp    %rcx,%r10
+  je     1370 <func0+0x20>
+
+- Edges:
+  NO_JUMP -> 5016
+  JUMP -> 4976
+
+============================================================
+BLOCK 5016
+- Instructions:
+  movss  (%rdi,%rax,4),%xmm0
+  movss  (%rdx,%rcx,4),%xmm1
+  ucomiss %xmm1,%xmm0
+  jbe    1390 <func0+0x40>
+
+- Edges:
+  NO_JUMP -> 5031
+  JUMP -> 5008
+
+============================================================
+BLOCK 5031
+- Instructions:
+  movss  %xmm1,(%rdi,%rax,4)
+  movss  %xmm0,(%rdx,%rcx,4)
+  jmp    1390 <func0+0x40>
+
+- Edges:
+  JUMP -> 5008
+
+============================================================
+BLOCK 5043
+- Instructions:
+  mov    %esi,%eax
+  and    $0x80000001,%eax
+  cmp    $0x1,%eax
+  jne    13c7 <func0+0x77>
+
+- Edges:
+  NO_JUMP -> 5055
+  JUMP -> 5063
+
+============================================================
+BLOCK 5055
+- Instructions:
+  shr    %esi
+  movss  (%rdi,%rsi,4),%xmm0
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 5063
+- Instructions:
+  mov    %esi,%eax
+  shr    $0x1f,%eax
+  add    %esi,%eax
+  sar    %eax
+  cltq
+  movss  (%rdi,%rax,4),%xmm0
+  addss  -0x4(%rdi,%rax,4),%xmm0
+  mulss  0xd8f(%rip),%xmm0        # 2174 <_IO_stdin_used+0x174>
+  ret
+
+- Edges: (none)

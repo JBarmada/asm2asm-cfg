@@ -1,0 +1,15 @@
+Function: func0
+Basic blocks: 1
+
+============================================================
+BLOCK 4832
+- Instructions:
+  test   $0x1,%dil
+  sete   %al
+  cmp    $0x8,%edi
+  setge  %cl
+  and    %al,%cl
+  movzbl %cl,%eax
+  ret
+
+- Edges: (none)

@@ -1,0 +1,123 @@
+Function: func0
+Basic blocks: 10
+
+============================================================
+BLOCK 5584
+- Instructions:
+  push   %rbp
+  push   %r14
+  push   %rbx
+  mov    %rdi,%r8
+  test   %edx,%edx
+  jle    163f <func0+0x6f>
+
+- Edges:
+  NO_JUMP -> 5595
+  JUMP -> 5695
+
+============================================================
+BLOCK 5595
+- Instructions:
+  mov    %edx,%r9d
+  mov    $0xfffffc18,%r14d
+  xor    %edx,%edx
+  xor    %r11d,%r11d
+  jmp    1603 <func0+0x33>
+
+- Edges:
+  JUMP -> 5635
+
+============================================================
+BLOCK 5611
+- Instructions:
+  nopl   0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5616
+
+============================================================
+BLOCK 5616
+- Instructions:
+  cmp    %r14d,%eax
+  cmovg  %r10,%r11
+  cmovg  %eax,%r14d
+  inc    %rdx
+  cmp    %r9,%rdx
+  je     1642 <func0+0x72>
+
+- Edges:
+  NO_JUMP -> 5635
+  JUMP -> 5698
+
+============================================================
+BLOCK 5635
+- Instructions:
+  mov    (%rsi,%rdx,8),%r10
+  movzbl (%r10),%ebx
+  mov    $0x0,%eax
+  test   %bl,%bl
+  je     15f0 <func0+0x20>
+
+- Edges:
+  NO_JUMP -> 5652
+  JUMP -> 5616
+
+============================================================
+BLOCK 5652
+- Instructions:
+  lea    0x1(%r10),%rdi
+  xor    %eax,%eax
+  nopw   0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5664
+
+============================================================
+BLOCK 5664
+- Instructions:
+  lea    -0x41(%rbx),%ebp
+  cmp    $0x1a,%bpl
+  adc    $0x0,%eax
+  add    $0x9f,%bl
+  cmp    $0x1a,%bl
+  sbb    $0x0,%eax
+  movzbl (%rdi),%ebx
+  inc    %rdi
+  test   %bl,%bl
+  jne    1620 <func0+0x50>
+
+- Edges:
+  NO_JUMP -> 5693
+  JUMP -> 5664
+
+============================================================
+BLOCK 5693
+- Instructions:
+  jmp    15f0 <func0+0x20>
+
+- Edges:
+  JUMP -> 5616
+
+============================================================
+BLOCK 5695
+- Instructions:
+  xor    %r11d,%r11d
+
+- Edges:
+  NO_JUMP -> 5698
+
+============================================================
+BLOCK 5698
+- Instructions:
+  lea    0xd01(%rip),%rsi        # 234a <_IO_stdin_used+0x34a>
+  mov    %rcx,%rdi
+  mov    %r8,%rdx
+  mov    %r11,%rcx
+  xor    %eax,%eax
+  pop    %rbx
+  pop    %r14
+  pop    %rbp
+  jmp    1040 <sprintf@plt>
+
+- Edges:
+  JUMP -> 4160

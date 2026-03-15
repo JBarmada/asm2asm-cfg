@@ -1,0 +1,102 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 2716
+- Instructions:
+  add	sp,sp,-16
+  sd	ra,8(sp)
+  fsd	fs0,0(sp)
+  fadd.s	ft0,fa0,fa1
+  fle.s	a0,ft0,fa2
+  fadd.s	ft1,fa0,fa2
+  fle.s	a1,ft1,fa1
+  or	a0,a0,a1
+  fadd.s	ft1,fa1,fa2
+  fle.s	a1,ft1,fa0
+  or	a0,a0,a1
+  bnez	a0,b10 <func0+0x74>
+
+- Edges:
+  NO_JUMP -> 2752
+  JUMP -> 2832
+
+============================================================
+BLOCK 2752
+- Instructions:
+  auipc	a0,0x1
+  add	a0,a0,1540 # 20c4 <__SDATA_BEGIN__+0x64>
+  flw	ft1,0(a0)
+  fadd.s	ft0,ft0,fa2
+  fmul.s	ft0,ft0,ft1
+  fsub.s	ft1,ft0,fa0
+  fmul.s	ft1,ft0,ft1
+  fsub.s	ft2,ft0,fa1
+  fmul.s	ft1,ft2,ft1
+  fsub.s	ft0,ft0,fa2
+  fmul.s	ft0,ft0,ft1
+  fsqrt.s	fa0,ft0
+  feq.s	a0,fa0,fa0
+  beqz	a0,b24 <func0+0x88>
+
+- Edges:
+  NO_JUMP -> 2806
+  JUMP -> 2852
+
+============================================================
+BLOCK 2806
+- Instructions:
+  auipc	a0,0x1
+  add	a0,a0,1490 # 20c8 <__SDATA_BEGIN__+0x68>
+  flw	fs0,0(a0)
+  fmul.s	fa0,fa0,fs0
+  jal	6a0 <roundf@plt>
+
+- Edges:
+  JUMP -> 1696
+
+============================================================
+BLOCK 2826
+- Instructions:
+  fdiv.s	fa0,fa0,fs0
+  j	b1c <func0+0x80>
+
+- Edges:
+  JUMP -> 2844
+
+============================================================
+BLOCK 2832
+- Instructions:
+  auipc	a0,0x1
+  add	a0,a0,1456 # 20c0 <__SDATA_BEGIN__+0x60>
+  flw	fa0,0(a0)
+
+- Edges:
+  NO_JUMP -> 2844
+
+============================================================
+BLOCK 2844
+- Instructions:
+  ld	ra,8(sp)
+  fld	fs0,0(sp)
+  add	sp,sp,16
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 2852
+- Instructions:
+  fmv.s	fa0,ft0
+  jal	6b0 <sqrtf@plt>
+
+- Edges:
+  JUMP -> 1712
+
+============================================================
+BLOCK 2860
+- Instructions:
+  j	af6 <func0+0x5a>
+
+- Edges:
+  JUMP -> 2806

@@ -1,0 +1,340 @@
+Function: func0
+Basic blocks: 31
+
+============================================================
+BLOCK 5360
+- Instructions:
+  push   %rbp
+  push   %r15
+  push   %r14
+  push   %r13
+  push   %r12
+  push   %rbx
+  push   %rax
+  mov    %esi,%r14d
+  mov    %rdi,%rbx
+  movslq %esi,%rbp
+  lea    0x0(,%rbp,8),%rdi
+  call   1060 <malloc@plt>
+  test   %ebp,%ebp
+  jle    16be <func0+0x1ce>
+
+- Edges:
+  NO_JUMP -> 5401
+  JUMP -> 5822
+
+============================================================
+BLOCK 5401
+- Instructions:
+  mov    %r14d,%ecx
+  xor    %edx,%edx
+  movsd  0xc0a(%rip),%xmm0        # 2130 <_IO_stdin_used+0x130>
+  movsd  0xc0a(%rip),%xmm1        # 2138 <_IO_stdin_used+0x138>
+  lea    0xc5b(%rip),%rsi        # 2190 <_IO_stdin_used+0x190>
+  movsd  0xc03(%rip),%xmm2        # 2140 <_IO_stdin_used+0x140>
+  lea    0xb0a(%rip),%rdi        # 204e <_IO_stdin_used+0x4e>
+  movsd  0xbfc(%rip),%xmm3        # 2148 <_IO_stdin_used+0x148>
+  lea    0xb9d(%rip),%rbp        # 20f0 <_IO_stdin_used+0xf0>
+  movsd  0xbf5(%rip),%xmm4        # 2150 <_IO_stdin_used+0x150>
+  lea    0xae5(%rip),%r8        # 2047 <_IO_stdin_used+0x47>
+  movsd  0xbee(%rip),%xmm5        # 2158 <_IO_stdin_used+0x158>
+  lea    0xc21(%rip),%r9        # 2192 <_IO_stdin_used+0x192>
+  movsd  0xbe7(%rip),%xmm6        # 2160 <_IO_stdin_used+0x160>
+  lea    0xc15(%rip),%r10        # 2195 <_IO_stdin_used+0x195>
+  movsd  0xbdf(%rip),%xmm12        # 2168 <_IO_stdin_used+0x168>
+  lea    0xabc(%rip),%r11        # 204c <_IO_stdin_used+0x4c>
+  movsd  0xbd7(%rip),%xmm8        # 2170 <_IO_stdin_used+0x170>
+  lea    0xaa9(%rip),%r14        # 2049 <_IO_stdin_used+0x49>
+  movsd  0xbcf(%rip),%xmm9        # 2178 <_IO_stdin_used+0x178>
+  movsd  0xbce(%rip),%xmm10        # 2180 <_IO_stdin_used+0x180>
+  lea    0xb35(%rip),%r13        # 20ee <_IO_stdin_used+0xee>
+  movsd  0xbc6(%rip),%xmm11        # 2188 <_IO_stdin_used+0x188>
+  lea    0xb05(%rip),%r15        # 20ce <_IO_stdin_used+0xce>
+  lea    0xa74(%rip),%r12        # 2044 <_IO_stdin_used+0x44>
+  jmp    15f0 <func0+0x100>
+
+- Edges:
+  JUMP -> 5616
+
+============================================================
+BLOCK 5586
+- Instructions:
+  data16 data16 data16 data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5600
+
+============================================================
+BLOCK 5600
+- Instructions:
+  mov    %r12,(%rax,%rdx,8)
+
+- Edges:
+  NO_JUMP -> 5604
+
+============================================================
+BLOCK 5604
+- Instructions:
+  inc    %rdx
+  cmp    %rdx,%rcx
+  je     16be <func0+0x1ce>
+
+- Edges:
+  NO_JUMP -> 5616
+  JUMP -> 5822
+
+============================================================
+BLOCK 5616
+- Instructions:
+  movss  (%rbx,%rdx,4),%xmm7
+  cvtss2sd %xmm7,%xmm7
+  ucomisd %xmm0,%xmm7
+  jae    15e0 <func0+0xf0>
+
+- Edges:
+  NO_JUMP -> 5631
+  JUMP -> 5600
+
+============================================================
+BLOCK 5631
+- Instructions:
+  ucomisd %xmm1,%xmm7
+  jbe    1610 <func0+0x120>
+
+- Edges:
+  NO_JUMP -> 5637
+  JUMP -> 5648
+
+============================================================
+BLOCK 5637
+- Instructions:
+  mov    %rsi,(%rax,%rdx,8)
+  jmp    15e4 <func0+0xf4>
+
+- Edges:
+  JUMP -> 5604
+
+============================================================
+BLOCK 5643
+- Instructions:
+  nopl   0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5648
+
+============================================================
+BLOCK 5648
+- Instructions:
+  ucomisd %xmm2,%xmm7
+  jbe    161c <func0+0x12c>
+
+- Edges:
+  NO_JUMP -> 5654
+  JUMP -> 5660
+
+============================================================
+BLOCK 5654
+- Instructions:
+  mov    %rdi,(%rax,%rdx,8)
+  jmp    15e4 <func0+0xf4>
+
+- Edges:
+  JUMP -> 5604
+
+============================================================
+BLOCK 5660
+- Instructions:
+  ucomisd %xmm3,%xmm7
+  jbe    1628 <func0+0x138>
+
+- Edges:
+  NO_JUMP -> 5666
+  JUMP -> 5672
+
+============================================================
+BLOCK 5666
+- Instructions:
+  mov    %rbp,(%rax,%rdx,8)
+  jmp    15e4 <func0+0xf4>
+
+- Edges:
+  JUMP -> 5604
+
+============================================================
+BLOCK 5672
+- Instructions:
+  ucomisd %xmm4,%xmm7
+  jbe    1634 <func0+0x144>
+
+- Edges:
+  NO_JUMP -> 5678
+  JUMP -> 5684
+
+============================================================
+BLOCK 5678
+- Instructions:
+  mov    %r8,(%rax,%rdx,8)
+  jmp    15e4 <func0+0xf4>
+
+- Edges:
+  JUMP -> 5604
+
+============================================================
+BLOCK 5684
+- Instructions:
+  ucomisd %xmm5,%xmm7
+  jbe    1640 <func0+0x150>
+
+- Edges:
+  NO_JUMP -> 5690
+  JUMP -> 5696
+
+============================================================
+BLOCK 5690
+- Instructions:
+  mov    %r9,(%rax,%rdx,8)
+  jmp    15e4 <func0+0xf4>
+
+- Edges:
+  JUMP -> 5604
+
+============================================================
+BLOCK 5696
+- Instructions:
+  ucomisd %xmm6,%xmm7
+  jbe    164c <func0+0x15c>
+
+- Edges:
+  NO_JUMP -> 5702
+  JUMP -> 5708
+
+============================================================
+BLOCK 5702
+- Instructions:
+  mov    %r10,(%rax,%rdx,8)
+  jmp    15e4 <func0+0xf4>
+
+- Edges:
+  JUMP -> 5604
+
+============================================================
+BLOCK 5708
+- Instructions:
+  ucomisd %xmm12,%xmm7
+  jbe    1659 <func0+0x169>
+
+- Edges:
+  NO_JUMP -> 5715
+  JUMP -> 5721
+
+============================================================
+BLOCK 5715
+- Instructions:
+  mov    %r11,(%rax,%rdx,8)
+  jmp    15e4 <func0+0xf4>
+
+- Edges:
+  JUMP -> 5604
+
+============================================================
+BLOCK 5721
+- Instructions:
+  ucomisd %xmm8,%xmm7
+  jbe    1669 <func0+0x179>
+
+- Edges:
+  NO_JUMP -> 5728
+  JUMP -> 5737
+
+============================================================
+BLOCK 5728
+- Instructions:
+  mov    %r14,(%rax,%rdx,8)
+  jmp    15e4 <func0+0xf4>
+
+- Edges:
+  JUMP -> 5604
+
+============================================================
+BLOCK 5737
+- Instructions:
+  ucomisd %xmm9,%xmm7
+  jbe    1687 <func0+0x197>
+
+- Edges:
+  NO_JUMP -> 5744
+  JUMP -> 5767
+
+============================================================
+BLOCK 5744
+- Instructions:
+  lea    0xa15(%rip),%r13        # 208c <_IO_stdin_used+0x8c>
+  mov    %r13,(%rax,%rdx,8)
+  lea    0xa6c(%rip),%r13        # 20ee <_IO_stdin_used+0xee>
+  jmp    15e4 <func0+0xf4>
+
+- Edges:
+  JUMP -> 5604
+
+============================================================
+BLOCK 5767
+- Instructions:
+  ucomisd %xmm10,%xmm7
+  jbe    1697 <func0+0x1a7>
+
+- Edges:
+  NO_JUMP -> 5774
+  JUMP -> 5783
+
+============================================================
+BLOCK 5774
+- Instructions:
+  mov    %r13,(%rax,%rdx,8)
+  jmp    15e4 <func0+0xf4>
+
+- Edges:
+  JUMP -> 5604
+
+============================================================
+BLOCK 5783
+- Instructions:
+  ucomisd %xmm11,%xmm7
+  jbe    16b5 <func0+0x1c5>
+
+- Edges:
+  NO_JUMP -> 5790
+  JUMP -> 5813
+
+============================================================
+BLOCK 5790
+- Instructions:
+  lea    0xa08(%rip),%r14        # 20ad <_IO_stdin_used+0xad>
+  mov    %r14,(%rax,%rdx,8)
+  lea    0x999(%rip),%r14        # 2049 <_IO_stdin_used+0x49>
+  jmp    15e4 <func0+0xf4>
+
+- Edges:
+  JUMP -> 5604
+
+============================================================
+BLOCK 5813
+- Instructions:
+  mov    %r15,(%rax,%rdx,8)
+  jmp    15e4 <func0+0xf4>
+
+- Edges:
+  JUMP -> 5604
+
+============================================================
+BLOCK 5822
+- Instructions:
+  add    $0x8,%rsp
+  pop    %rbx
+  pop    %r12
+  pop    %r13
+  pop    %r14
+  pop    %r15
+  pop    %rbp
+  ret
+
+- Edges: (none)

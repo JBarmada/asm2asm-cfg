@@ -1,0 +1,54 @@
+Function: _func0
+Basic blocks: 4
+
+============================================================
+BLOCK 4294968860
+- Instructions:
+  stp	x22, x21, [sp, #-0x30]!
+  stp	x20, x19, [sp, #0x10]
+  stp	x29, x30, [sp, #0x20]
+  add	x29, sp, #0x20
+  mov	x19, x0
+  ldrb	w22, [x0]
+  cbz	w22, 0x10000066c <_func0+0x50>
+  add	x21, x19, #0x1
+  adrp	x20, 0x100000000 <_memchr+0x100000000>
+  add	x20, x20, #0x8c2
+  b	0x100000650 <_func0+0x34>
+
+- Edges:
+  JUMP -> 4294968912
+
+============================================================
+BLOCK 4294968904
+- Instructions:
+  ldrb	w22, [x21], #0x1
+  cbz	w22, 0x10000066c <_func0+0x50>
+
+- Edges:
+  NO_JUMP -> 4294968912
+
+============================================================
+BLOCK 4294968912
+- Instructions:
+  sxtb	w1, w22
+  mov	x0, x20
+  mov	w2, #0xb                ; =11
+  bl	0x1000007b0 <_memchr+0x1000007b0>
+  cbnz	x0, 0x100000648 <_func0+0x2c>
+  strb	w22, [x19], #0x1
+  b	0x100000648 <_func0+0x2c>
+
+- Edges:
+  JUMP -> 4294968904
+
+============================================================
+BLOCK 4294968940
+- Instructions:
+  strb	wzr, [x19]
+  ldp	x29, x30, [sp, #0x20]
+  ldp	x20, x19, [sp, #0x10]
+  ldp	x22, x21, [sp], #0x30
+  ret
+
+- Edges: (none)

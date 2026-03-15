@@ -1,0 +1,83 @@
+Function: func0
+Basic blocks: 6
+
+============================================================
+BLOCK 2504
+- Instructions:
+  add	sp,sp,-48
+  sd	ra,40(sp)
+  sd	s0,32(sp)
+  fsd	fs0,24(sp)
+  fsd	fs1,16(sp)
+  fsd	fs2,8(sp)
+  fmv.s	fs0,fa2
+  fmv.s	fs2,fa1
+  fmv.s	fs1,fa0
+  jal	660 <roundf@plt>
+
+- Edges:
+  JUMP -> 1632
+
+============================================================
+BLOCK 2532
+- Instructions:
+  feq.s	a0,fa0,fs1
+  xor	s0,a0,1
+  fmv.s	fa0,fs2
+  jal	660 <roundf@plt>
+
+- Edges:
+  JUMP -> 1632
+
+============================================================
+BLOCK 2548
+- Instructions:
+  feq.s	a0,fa0,fs2
+  xor	a0,a0,1
+  or	s0,s0,a0
+  fmv.s	fa0,fs0
+  jal	660 <roundf@plt>
+
+- Edges:
+  JUMP -> 1632
+
+============================================================
+BLOCK 2566
+- Instructions:
+  feq.s	a0,fa0,fs0
+  xor	a0,a0,1
+  or	a1,s0,a0
+  li	a0,0
+  bnez	a1,a32 <func0+0x6a>
+
+- Edges:
+  NO_JUMP -> 2582
+  JUMP -> 2610
+
+============================================================
+BLOCK 2582
+- Instructions:
+  fadd.s	ft0,fs1,fs2
+  feq.s	a0,ft0,fs0
+  fadd.s	ft0,fs1,fs0
+  feq.s	a1,ft0,fs2
+  or	a0,a0,a1
+  fadd.s	ft0,fs2,fs0
+  feq.s	a1,ft0,fs1
+  or	a0,a0,a1
+
+- Edges:
+  NO_JUMP -> 2610
+
+============================================================
+BLOCK 2610
+- Instructions:
+  ld	ra,40(sp)
+  ld	s0,32(sp)
+  fld	fs0,24(sp)
+  fld	fs1,16(sp)
+  fld	fs2,8(sp)
+  add	sp,sp,48
+  ret
+
+- Edges: (none)

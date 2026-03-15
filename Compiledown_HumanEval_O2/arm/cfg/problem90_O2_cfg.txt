@@ -1,0 +1,59 @@
+Function: _func0
+Basic blocks: 5
+
+============================================================
+BLOCK 0
+- Instructions:
+  ldrb	w12, [x0]
+  cbz	w12, LBB0_4
+
+- Edges:
+  NO_JUMP -> 8
+  JUMP -> 80
+
+============================================================
+BLOCK 8
+- Instructions:
+  mov	x9, #0
+  add	x8, x0, #1
+  mov	w10, #20165
+  mov	w11, #26
+
+- Edges:
+  NO_JUMP -> 24
+
+============================================================
+BLOCK 24
+- Instructions:
+  sxtb	w12, w12
+  sub	w12, w12, #93
+  mul	w13, w12, w10
+  lsr	w14, w13, #19
+  add	w13, w14, w13, lsr #31
+  msub	w12, w13, w11, w12
+  add	w12, w12, #97
+  strb	w12, [x1, x9]
+  add	x13, x9, #1
+  ldrb	w12, [x8, x9]
+  mov	x9, x13
+  cbnz	w12, LBB0_2
+
+- Edges:
+  NO_JUMP -> 72
+  JUMP -> 24
+
+============================================================
+BLOCK 72
+- Instructions:
+  strb	wzr, [x1, x13]
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 80
+- Instructions:
+  strb	wzr, [x1, xzr]
+  ret
+
+- Edges: (none)

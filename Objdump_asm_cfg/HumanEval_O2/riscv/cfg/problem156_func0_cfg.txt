@@ -1,0 +1,44 @@
+Function: func0
+Basic blocks: 3
+
+============================================================
+BLOCK 2316
+- Instructions:
+  li	a2,0
+  li	a3,0
+  sraw	a4,a0,0x1f
+  xor	a0,a0,a4
+  subw	a5,a0,a4
+  lui	a0,0x66666
+  addw	a7,a0,1639 # 66666667 <__global_pointer$+0x66663e67>
+  li	a6,9
+
+- Edges:
+  NO_JUMP -> 2340
+
+============================================================
+BLOCK 2340
+- Instructions:
+  mv	t0,a5
+  mul	a5,a5,a7
+  srl	a0,a5,0x3f
+  sra	a5,a5,0x22
+  addw	a5,a5,a0
+  and	a0,t0,1
+  xor	a4,a0,1
+  addw	a2,a2,a4
+  addw	a3,a3,a0
+  blt	a6,t0,924 <func0+0x18>
+
+- Edges:
+  NO_JUMP -> 2370
+  JUMP -> 2340
+
+============================================================
+BLOCK 2370
+- Instructions:
+  sw	a2,0(a1)
+  sw	a3,4(a1)
+  ret
+
+- Edges: (none)

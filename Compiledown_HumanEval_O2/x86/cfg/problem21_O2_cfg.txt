@@ -1,0 +1,127 @@
+Function: func0
+Basic blocks: 11
+
+============================================================
+BLOCK 0
+- Instructions:
+  movss	(%rdi), %xmm1
+  movss	%xmm1, (%rdx)
+  movss	4(%rdi), %xmm0
+  movss	%xmm0, 4(%rdx)
+  testl	%esi, %esi
+  jle	.LBB0_8
+
+- Edges:
+  NO_JUMP -> 24
+  JUMP -> 152
+
+============================================================
+BLOCK 24
+- Instructions:
+  movl	%esi, %r8d
+  movss	.LCPI0_0(%rip), %xmm3
+  xorl	%r9d, %r9d
+  movaps	.LCPI0_1(%rip), %xmm2
+  movq	%r8, %r10
+  movq	%rdi, %rsi
+  jmp	.LBB0_3
+
+- Edges:
+  JUMP -> 68
+
+============================================================
+BLOCK 52
+- Instructions:
+  addq	$4, %rsi
+  decq	%r10
+  cmpq	%r8, %r9
+  je	.LBB0_8
+
+- Edges:
+  NO_JUMP -> 68
+  JUMP -> 152
+
+============================================================
+BLOCK 68
+- Instructions:
+  movq	%r9, %rax
+  incq	%r9
+  cmpq	%r8, %r9
+  jae	.LBB0_2
+
+- Edges:
+  NO_JUMP -> 84
+  JUMP -> 52
+
+============================================================
+BLOCK 84
+- Instructions:
+  movl	$1, %ecx
+  jmp	.LBB0_5
+
+- Edges:
+  JUMP -> 104
+
+============================================================
+BLOCK 92
+- Instructions:
+  incq	%rcx
+  cmpq	%rcx, %r10
+  je	.LBB0_2
+
+- Edges:
+  NO_JUMP -> 104
+  JUMP -> 52
+
+============================================================
+BLOCK 104
+- Instructions:
+  movss	(%rdi,%rax,4), %xmm4
+  movaps	%xmm4, %xmm5
+  subss	(%rsi,%rcx,4), %xmm5
+  andps	%xmm2, %xmm5
+  ucomiss	%xmm5, %xmm3
+  jbe	.LBB0_7
+
+- Edges:
+  NO_JUMP -> 128
+  JUMP -> 92
+
+============================================================
+BLOCK 128
+- Instructions:
+  movss	%xmm4, (%rdx)
+  movss	(%rsi,%rcx,4), %xmm0
+  movss	%xmm0, 4(%rdx)
+  movaps	%xmm4, %xmm1
+  movaps	%xmm5, %xmm3
+  jmp	.LBB0_7
+
+- Edges:
+  JUMP -> 92
+
+============================================================
+BLOCK 152
+- Instructions:
+  ucomiss	%xmm0, %xmm1
+  jbe	.LBB0_10
+
+- Edges:
+  NO_JUMP -> 160
+  JUMP -> 168
+
+============================================================
+BLOCK 160
+- Instructions:
+  movss	%xmm0, (%rdx)
+  movss	%xmm1, 4(%rdx)
+
+- Edges:
+  NO_JUMP -> 168
+
+============================================================
+BLOCK 168
+- Instructions:
+  retq
+
+- Edges: (none)

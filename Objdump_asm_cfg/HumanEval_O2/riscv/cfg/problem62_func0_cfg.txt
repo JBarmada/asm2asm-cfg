@@ -1,0 +1,124 @@
+Function: func0
+Basic blocks: 11
+
+============================================================
+BLOCK 2360
+- Instructions:
+  add	sp,sp,-16
+  sd	ra,8(sp)
+  sd	s0,0(sp)
+  mv	s0,a0
+  jal	630 <strlen@plt>
+
+- Edges:
+  JUMP -> 1584
+
+============================================================
+BLOCK 2372
+- Instructions:
+  beqz	a0,99a <func0+0x62>
+
+- Edges:
+  NO_JUMP -> 2374
+  JUMP -> 2458
+
+============================================================
+BLOCK 2374
+- Instructions:
+  lbu	a1,0(s0)
+  add	a2,a1,-40
+  seqz	a2,a2
+  add	a1,a1,-41
+  seqz	a1,a1
+  sub	a1,a2,a1
+  bltz	a1,9a0 <func0+0x68>
+
+- Edges:
+  NO_JUMP -> 2402
+  JUMP -> 2464
+
+============================================================
+BLOCK 2402
+- Instructions:
+  li	a3,1
+
+- Edges:
+  NO_JUMP -> 2404
+
+============================================================
+BLOCK 2404
+- Instructions:
+  mv	a2,a3
+  beq	a0,a3,990 <func0+0x58>
+
+- Edges:
+  NO_JUMP -> 2410
+  JUMP -> 2448
+
+============================================================
+BLOCK 2410
+- Instructions:
+  add	a3,s0,a2
+  lbu	a3,0(a3)
+  add	a4,a3,-40
+  seqz	a4,a4
+  addw	a1,a1,a4
+  add	a3,a3,-41
+  seqz	a3,a3
+  subw	a1,a1,a3
+  add	a3,a2,1
+  bgez	a1,964 <func0+0x2c>
+
+- Edges:
+  NO_JUMP -> 2446
+  JUMP -> 2404
+
+============================================================
+BLOCK 2446
+- Instructions:
+  li	a1,1
+
+- Edges:
+  NO_JUMP -> 2448
+
+============================================================
+BLOCK 2448
+- Instructions:
+  sltu	a0,a2,a0
+  xor	a0,a0,1
+  j	9a4 <func0+0x6c>
+
+- Edges:
+  JUMP -> 2468
+
+============================================================
+BLOCK 2458
+- Instructions:
+  li	a1,0
+  li	a0,1
+  j	9a4 <func0+0x6c>
+
+- Edges:
+  JUMP -> 2468
+
+============================================================
+BLOCK 2464
+- Instructions:
+  li	a0,0
+  li	a1,1
+
+- Edges:
+  NO_JUMP -> 2468
+
+============================================================
+BLOCK 2468
+- Instructions:
+  sext.w	a1,a1
+  seqz	a1,a1
+  and	a0,a0,a1
+  ld	ra,8(sp)
+  ld	s0,0(sp)
+  add	sp,sp,16
+  ret
+
+- Edges: (none)

@@ -1,0 +1,384 @@
+Function: _func0
+Basic blocks: 29
+
+============================================================
+BLOCK 4294968828
+- Instructions:
+  cmp	w1, #0x0
+  b.le	0x10000061c <_func0+0x20>
+
+- Edges:
+  NO_JUMP -> 4294968836
+  JUMP -> 4294968860
+
+============================================================
+BLOCK 4294968836
+- Instructions:
+  mov	w8, w1
+  cmp	w1, #0x4
+  b.hs	0x10000062c <_func0+0x30>
+
+- Edges:
+  NO_JUMP -> 4294968848
+  JUMP -> 4294968876
+
+============================================================
+BLOCK 4294968848
+- Instructions:
+  mov	x9, #0x0                ; =0
+  movi	d1, #0000000000000000
+  b	0x100000720 <_func0+0x124>
+
+- Edges:
+  JUMP -> 4294969120
+
+============================================================
+BLOCK 4294968860
+- Instructions:
+  scvtf	s0, w1
+  movi	d2, #0000000000000000
+  fdiv	s0, s2, s0
+  ret
+
+- Edges:
+  NO_JUMP -> 4294968876
+
+============================================================
+BLOCK 4294968876
+- Instructions:
+  cmp	w1, #0x10
+  b.hs	0x100000640 <_func0+0x44>
+
+- Edges:
+  NO_JUMP -> 4294968884
+  JUMP -> 4294968896
+
+============================================================
+BLOCK 4294968884
+- Instructions:
+  mov	x9, #0x0                ; =0
+  movi	d1, #0000000000000000
+  b	0x1000006e0 <_func0+0xe4>
+
+- Edges:
+  JUMP -> 4294969056
+
+============================================================
+BLOCK 4294968896
+- Instructions:
+  and	x9, x8, #0x7ffffff0
+  add	x10, x0, #0x20
+  movi	d1, #0000000000000000
+  mov	x11, x9
+
+- Edges:
+  NO_JUMP -> 4294968912
+
+============================================================
+BLOCK 4294968912
+- Instructions:
+  ldp	q0, q2, [x10, #-0x20]
+  mov	s3, v0[3]
+  mov	s4, v0[2]
+  mov	s5, v0[1]
+  mov	s6, v2[3]
+  mov	s7, v2[2]
+  mov	s16, v2[1]
+  ldp	q17, q18, [x10], #0x40
+  mov	s19, v17[3]
+  mov	s20, v17[2]
+  mov	s21, v17[1]
+  mov	s22, v18[3]
+  mov	s23, v18[2]
+  mov	s24, v18[1]
+  fadd	s0, s1, s0
+  fadd	s0, s0, s5
+  fadd	s0, s0, s4
+  fadd	s0, s0, s3
+  fadd	s0, s0, s2
+  fadd	s0, s0, s16
+  fadd	s0, s0, s7
+  fadd	s0, s0, s6
+  fadd	s0, s0, s17
+  fadd	s0, s0, s21
+  fadd	s0, s0, s20
+  fadd	s0, s0, s19
+  fadd	s0, s0, s18
+  fadd	s0, s0, s24
+  fadd	s0, s0, s23
+  fadd	s1, s0, s22
+  subs	x11, x11, #0x10
+  b.ne	0x100000650 <_func0+0x54>
+
+- Edges:
+  NO_JUMP -> 4294969040
+  JUMP -> 4294968912
+
+============================================================
+BLOCK 4294969040
+- Instructions:
+  cmp	x9, x8
+  b.eq	0x100000738 <_func0+0x13c>
+
+- Edges:
+  NO_JUMP -> 4294969048
+  JUMP -> 4294969144
+
+============================================================
+BLOCK 4294969048
+- Instructions:
+  tst	x8, #0xc
+  b.eq	0x100000720 <_func0+0x124>
+
+- Edges:
+  NO_JUMP -> 4294969056
+  JUMP -> 4294969120
+
+============================================================
+BLOCK 4294969056
+- Instructions:
+  mov	x11, x9
+  and	x9, x8, #0x7ffffffc
+  add	x10, x0, x11, lsl #2
+  sub	x11, x11, x9
+
+- Edges:
+  NO_JUMP -> 4294969072
+
+============================================================
+BLOCK 4294969072
+- Instructions:
+  ldr	q0, [x10], #0x10
+  mov	s2, v0[3]
+  mov	s3, v0[2]
+  mov	s4, v0[1]
+  fadd	s0, s1, s0
+  fadd	s0, s0, s4
+  fadd	s0, s0, s3
+  fadd	s1, s0, s2
+  adds	x11, x11, #0x4
+  b.ne	0x1000006f0 <_func0+0xf4>
+
+- Edges:
+  NO_JUMP -> 4294969112
+  JUMP -> 4294969072
+
+============================================================
+BLOCK 4294969112
+- Instructions:
+  cmp	x9, x8
+  b.eq	0x100000738 <_func0+0x13c>
+
+- Edges:
+  NO_JUMP -> 4294969120
+  JUMP -> 4294969144
+
+============================================================
+BLOCK 4294969120
+- Instructions:
+  add	x10, x0, x9, lsl #2
+  sub	x9, x8, x9
+
+- Edges:
+  NO_JUMP -> 4294969128
+
+============================================================
+BLOCK 4294969128
+- Instructions:
+  ldr	s0, [x10], #0x4
+  fadd	s1, s1, s0
+  subs	x9, x9, #0x1
+  b.ne	0x100000728 <_func0+0x12c>
+
+- Edges:
+  NO_JUMP -> 4294969144
+  JUMP -> 4294969128
+
+============================================================
+BLOCK 4294969144
+- Instructions:
+  scvtf	s0, w1
+  fdiv	s1, s1, s0
+  cmp	w1, #0x4
+  b.hs	0x100000754 <_func0+0x158>
+
+- Edges:
+  NO_JUMP -> 4294969160
+  JUMP -> 4294969172
+
+============================================================
+BLOCK 4294969160
+- Instructions:
+  mov	x9, #0x0                ; =0
+  movi	d2, #0000000000000000
+  b	0x100000864 <_func0+0x268>
+
+- Edges:
+  JUMP -> 4294969444
+
+============================================================
+BLOCK 4294969172
+- Instructions:
+  cmp	w1, #0x10
+  b.hs	0x100000768 <_func0+0x16c>
+
+- Edges:
+  NO_JUMP -> 4294969180
+  JUMP -> 4294969192
+
+============================================================
+BLOCK 4294969180
+- Instructions:
+  mov	x9, #0x0                ; =0
+  movi	d2, #0000000000000000
+  b	0x10000081c <_func0+0x220>
+
+- Edges:
+  JUMP -> 4294969372
+
+============================================================
+BLOCK 4294969192
+- Instructions:
+  and	x9, x8, #0x7ffffff0
+  dup.4s	v3, v1[0]
+  add	x10, x0, #0x20
+  movi	d2, #0000000000000000
+  mov	x11, x9
+
+- Edges:
+  NO_JUMP -> 4294969212
+
+============================================================
+BLOCK 4294969212
+- Instructions:
+  ldp	q4, q5, [x10, #-0x20]
+  ldp	q6, q7, [x10], #0x40
+  fabd.4s	v4, v4, v3
+  mov	s16, v4[3]
+  mov	s17, v4[2]
+  mov	s18, v4[1]
+  fabd.4s	v5, v5, v3
+  mov	s19, v5[3]
+  mov	s20, v5[2]
+  mov	s21, v5[1]
+  fabd.4s	v6, v6, v3
+  mov	s22, v6[3]
+  mov	s23, v6[2]
+  mov	s24, v6[1]
+  fabd.4s	v7, v7, v3
+  mov	s25, v7[3]
+  mov	s26, v7[2]
+  mov	s27, v7[1]
+  fadd	s2, s2, s4
+  fadd	s2, s2, s18
+  fadd	s2, s2, s17
+  fadd	s2, s2, s16
+  fadd	s2, s2, s5
+  fadd	s2, s2, s21
+  fadd	s2, s2, s20
+  fadd	s2, s2, s19
+  fadd	s2, s2, s6
+  fadd	s2, s2, s24
+  fadd	s2, s2, s23
+  fadd	s2, s2, s22
+  fadd	s2, s2, s7
+  fadd	s2, s2, s27
+  fadd	s2, s2, s26
+  fadd	s2, s2, s25
+  subs	x11, x11, #0x10
+  b.ne	0x10000077c <_func0+0x180>
+
+- Edges:
+  NO_JUMP -> 4294969356
+  JUMP -> 4294969212
+
+============================================================
+BLOCK 4294969356
+- Instructions:
+  cmp	x9, x8
+  b.eq	0x100000880 <_func0+0x284>
+
+- Edges:
+  NO_JUMP -> 4294969364
+  JUMP -> 4294969472
+
+============================================================
+BLOCK 4294969364
+- Instructions:
+  tst	x8, #0xc
+  b.eq	0x100000864 <_func0+0x268>
+
+- Edges:
+  NO_JUMP -> 4294969372
+  JUMP -> 4294969444
+
+============================================================
+BLOCK 4294969372
+- Instructions:
+  mov	x11, x9
+  and	x9, x8, #0x7ffffffc
+  dup.4s	v3, v1[0]
+  add	x10, x0, x11, lsl #2
+  sub	x11, x11, x9
+
+- Edges:
+  NO_JUMP -> 4294969392
+
+============================================================
+BLOCK 4294969392
+- Instructions:
+  ldr	q4, [x10], #0x10
+  fabd.4s	v4, v4, v3
+  mov	s5, v4[3]
+  mov	s6, v4[2]
+  mov	s7, v4[1]
+  fadd	s2, s2, s4
+  fadd	s2, s2, s7
+  fadd	s2, s2, s6
+  fadd	s2, s2, s5
+  adds	x11, x11, #0x4
+  b.ne	0x100000830 <_func0+0x234>
+
+- Edges:
+  NO_JUMP -> 4294969436
+  JUMP -> 4294969392
+
+============================================================
+BLOCK 4294969436
+- Instructions:
+  cmp	x9, x8
+  b.eq	0x100000880 <_func0+0x284>
+
+- Edges:
+  NO_JUMP -> 4294969444
+  JUMP -> 4294969472
+
+============================================================
+BLOCK 4294969444
+- Instructions:
+  add	x10, x0, x9, lsl #2
+  sub	x8, x8, x9
+
+- Edges:
+  NO_JUMP -> 4294969452
+
+============================================================
+BLOCK 4294969452
+- Instructions:
+  ldr	s3, [x10], #0x4
+  fabd	s3, s3, s1
+  fadd	s2, s2, s3
+  subs	x8, x8, #0x1
+  b.ne	0x10000086c <_func0+0x270>
+
+- Edges:
+  NO_JUMP -> 4294969472
+  JUMP -> 4294969452
+
+============================================================
+BLOCK 4294969472
+- Instructions:
+  fdiv	s0, s2, s0
+  ret
+
+- Edges: (none)

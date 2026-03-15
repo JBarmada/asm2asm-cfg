@@ -1,0 +1,183 @@
+Function: func0
+Basic blocks: 9
+
+============================================================
+BLOCK 0
+- Instructions:
+  pushq	%rbp
+  pushq	%r15
+  pushq	%r14
+  pushq	%r12
+  pushq	%rbx
+  subq	$96, %rsp
+  testl	%esi, %esi
+  jle	.LBB0_1
+
+- Edges:
+  NO_JUMP -> 32
+  JUMP -> 60
+
+============================================================
+BLOCK 32
+- Instructions:
+  movq	%rdi, %r15
+  movl	%esi, %r14d
+  cmpl	$8, %esi
+  jae	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 48
+  JUMP -> 68
+
+============================================================
+BLOCK 48
+- Instructions:
+  xorl	%ebx, %ebx
+  xorl	%ebp, %ebp
+  jmp	.LBB0_7
+
+- Edges:
+  JUMP -> 392
+
+============================================================
+BLOCK 60
+- Instructions:
+  xorl	%ebp, %ebp
+  jmp	.LBB0_8
+
+- Edges:
+  JUMP -> 424
+
+============================================================
+BLOCK 68
+- Instructions:
+  movl	%r14d, %ebx
+  andl	$-8, %ebx
+  leaq	(,%r14,4), %r12
+  andq	$-32, %r12
+  pxor	%xmm2, %xmm2
+  xorl	%ebp, %ebp
+  pxor	%xmm1, %xmm1
+
+- Edges:
+  NO_JUMP -> 96
+
+============================================================
+BLOCK 96
+- Instructions:
+  movdqa	%xmm1, 64(%rsp)
+  movdqa	%xmm2, 80(%rsp)
+  movups	(%r15,%rbp), %xmm1
+  movaps	%xmm1, (%rsp)
+  movups	16(%r15,%rbp), %xmm0
+  movaps	%xmm0, 32(%rsp)
+  movaps	%xmm1, %xmm0
+  shufps	$255, %xmm1, %xmm0
+  callq	ceilf@PLT
+  movaps	%xmm0, 16(%rsp)
+  movaps	(%rsp), %xmm0
+  movhlps	%xmm0, %xmm0
+  callq	ceilf@PLT
+  unpcklps	16(%rsp), %xmm0
+  movaps	%xmm0, 48(%rsp)
+  movaps	(%rsp), %xmm0
+  callq	ceilf@PLT
+  movaps	%xmm0, 16(%rsp)
+  movaps	(%rsp), %xmm0
+  shufps	$85, %xmm0, %xmm0
+  callq	ceilf@PLT
+  movaps	16(%rsp), %xmm1
+  unpcklps	%xmm0, %xmm1
+  unpcklpd	48(%rsp), %xmm1
+  movaps	%xmm1, 16(%rsp)
+  movaps	32(%rsp), %xmm0
+  shufps	$255, %xmm0, %xmm0
+  callq	ceilf@PLT
+  movaps	%xmm0, (%rsp)
+  movaps	32(%rsp), %xmm0
+  movhlps	%xmm0, %xmm0
+  callq	ceilf@PLT
+  unpcklps	(%rsp), %xmm0
+  movaps	%xmm0, (%rsp)
+  movaps	32(%rsp), %xmm0
+  callq	ceilf@PLT
+  movaps	%xmm0, 48(%rsp)
+  movaps	32(%rsp), %xmm0
+  shufps	$85, %xmm0, %xmm0
+  callq	ceilf@PLT
+  movaps	48(%rsp), %xmm1
+  unpcklps	%xmm0, %xmm1
+  unpcklpd	(%rsp), %xmm1
+  cvttps2dq	16(%rsp), %xmm0
+  cvttps2dq	%xmm1, %xmm1
+  pshufd	$245, %xmm0, %xmm2
+  pmuludq	%xmm0, %xmm0
+  pshufd	$232, %xmm0, %xmm0
+  pmuludq	%xmm2, %xmm2
+  pshufd	$232, %xmm2, %xmm2
+  punpckldq	%xmm2, %xmm0
+  movdqa	80(%rsp), %xmm2
+  paddd	%xmm0, %xmm2
+  pshufd	$245, %xmm1, %xmm0
+  pmuludq	%xmm1, %xmm1
+  pshufd	$232, %xmm1, %xmm1
+  pmuludq	%xmm0, %xmm0
+  pshufd	$232, %xmm0, %xmm0
+  punpckldq	%xmm0, %xmm1
+  movdqa	64(%rsp), %xmm0
+  paddd	%xmm1, %xmm0
+  movdqa	%xmm0, 64(%rsp)
+  movdqa	64(%rsp), %xmm1
+  addq	$32, %rbp
+  cmpq	%rbp, %r12
+  jne	.LBB0_5
+
+- Edges:
+  NO_JUMP -> 360
+  JUMP -> 96
+
+============================================================
+BLOCK 360
+- Instructions:
+  paddd	%xmm2, %xmm1
+  pshufd	$238, %xmm1, %xmm0
+  paddd	%xmm1, %xmm0
+  pshufd	$85, %xmm0, %xmm1
+  paddd	%xmm0, %xmm1
+  movd	%xmm1, %ebp
+  cmpq	%r14, %rbx
+  je	.LBB0_8
+
+- Edges:
+  NO_JUMP -> 392
+  JUMP -> 424
+
+============================================================
+BLOCK 392
+- Instructions:
+  movss	(%r15,%rbx,4), %xmm0
+  callq	ceilf@PLT
+  cvttss2si	%xmm0, %eax
+  imull	%eax, %eax
+  addl	%eax, %ebp
+  incq	%rbx
+  cmpq	%rbx, %r14
+  jne	.LBB0_7
+
+- Edges:
+  NO_JUMP -> 424
+  JUMP -> 392
+
+============================================================
+BLOCK 424
+- Instructions:
+  movl	%ebp, %eax
+  addq	$96, %rsp
+  popq	%rbx
+  popq	%r12
+  popq	%r14
+  popq	%r15
+  popq	%rbp
+  retq
+
+- Edges: (none)

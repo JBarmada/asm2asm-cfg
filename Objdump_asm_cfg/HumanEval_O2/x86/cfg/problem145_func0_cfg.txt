@@ -1,0 +1,215 @@
+Function: func0
+Basic blocks: 15
+
+============================================================
+BLOCK 5200
+- Instructions:
+  push   %rbp
+  push   %r15
+  push   %r14
+  push   %r13
+  push   %r12
+  push   %rbx
+  sub    $0xd8,%rsp
+  mov    %rsi,%r13
+  mov    %rdi,%r15
+  movzbl (%rdi),%ecx
+  xor    %eax,%eax
+  cmp    $0x2f,%cl
+  je     1492 <func0+0x42>
+
+- Edges:
+  NO_JUMP -> 5233
+  JUMP -> 5266
+
+============================================================
+BLOCK 5233
+- Instructions:
+  xor    %eax,%eax
+  data16 data16 data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5248
+
+============================================================
+BLOCK 5248
+- Instructions:
+  mov    %cl,0x70(%rsp,%rax,1)
+  movzbl 0x1(%r15,%rax,1),%ecx
+  inc    %rax
+  cmp    $0x2f,%cl
+  jne    1480 <func0+0x30>
+
+- Edges:
+  NO_JUMP -> 5266
+  JUMP -> 5248
+
+============================================================
+BLOCK 5266
+- Instructions:
+  mov    %eax,%ebp
+  movb   $0x0,0x70(%rsp,%rbp,1)
+  xor    %ebx,%ebx
+  lea    0x70(%rsp),%rdi
+  xor    %esi,%esi
+  mov    $0xa,%edx
+  call   1040 <strtol@plt>
+  mov    %rax,%r14
+  movzbl 0x1(%rbp,%r15,1),%eax
+  mov    $0x0,%ecx
+  test   %al,%al
+  je     14e0 <func0+0x90>
+
+- Edges:
+  NO_JUMP -> 5310
+  JUMP -> 5344
+
+============================================================
+BLOCK 5310
+- Instructions:
+  lea    (%r15,%rbp,1),%rdx
+  add    $0x2,%rdx
+  xor    %ecx,%ecx
+  nopl   0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5328
+
+============================================================
+BLOCK 5328
+- Instructions:
+  mov    %al,(%rsp,%rcx,1)
+  movzbl (%rdx,%rcx,1),%eax
+  inc    %rcx
+  test   %al,%al
+  jne    14d0 <func0+0x80>
+
+- Edges:
+  NO_JUMP -> 5342
+  JUMP -> 5328
+
+============================================================
+BLOCK 5342
+- Instructions:
+  mov    %ecx,%ecx
+
+- Edges:
+  NO_JUMP -> 5344
+
+============================================================
+BLOCK 5344
+- Instructions:
+  movb   $0x0,(%rsp,%rcx,1)
+  mov    %rsp,%rdi
+  xor    %esi,%esi
+  mov    $0xa,%edx
+  call   1040 <strtol@plt>
+  mov    %rax,%r15
+  movzbl 0x0(%r13),%eax
+  cmp    $0x2f,%al
+  je     1521 <func0+0xd1>
+
+- Edges:
+  NO_JUMP -> 5375
+  JUMP -> 5409
+
+============================================================
+BLOCK 5375
+- Instructions:
+  xor    %ebx,%ebx
+  data16 data16 data16 data16 data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5392
+
+============================================================
+BLOCK 5392
+- Instructions:
+  mov    %al,0x70(%rsp,%rbx,1)
+  movzbl 0x1(%r13,%rbx,1),%eax
+  inc    %rbx
+  cmp    $0x2f,%al
+  jne    1510 <func0+0xc0>
+
+- Edges:
+  NO_JUMP -> 5409
+  JUMP -> 5392
+
+============================================================
+BLOCK 5409
+- Instructions:
+  mov    %ebx,%ebp
+  movb   $0x0,0x70(%rsp,%rbp,1)
+  xor    %ebx,%ebx
+  lea    0x70(%rsp),%rdi
+  xor    %esi,%esi
+  mov    $0xa,%edx
+  call   1040 <strtol@plt>
+  mov    %rax,%r12
+  movzbl 0x1(%rbp,%r13,1),%eax
+  test   %al,%al
+  je     1570 <func0+0x120>
+
+- Edges:
+  NO_JUMP -> 5448
+  JUMP -> 5488
+
+============================================================
+BLOCK 5448
+- Instructions:
+  lea    0x2(,%r13,1),%rdx
+  add    %rbp,%rdx
+  xor    %ecx,%ecx
+  data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5472
+
+============================================================
+BLOCK 5472
+- Instructions:
+  mov    %al,(%rsp,%rcx,1)
+  movzbl (%rdx,%rcx,1),%eax
+  inc    %rcx
+  test   %al,%al
+  jne    1560 <func0+0x110>
+
+- Edges:
+  NO_JUMP -> 5486
+  JUMP -> 5472
+
+============================================================
+BLOCK 5486
+- Instructions:
+  mov    %ecx,%ebx
+
+- Edges:
+  NO_JUMP -> 5488
+
+============================================================
+BLOCK 5488
+- Instructions:
+  movb   $0x0,(%rsp,%rbx,1)
+  mov    %rsp,%rdi
+  xor    %esi,%esi
+  mov    $0xa,%edx
+  call   1040 <strtol@plt>
+  mov    %rax,%rcx
+  imul   %r12d,%r14d
+  imul   %r15d,%ecx
+  mov    %r14d,%eax
+  cltd
+  idiv   %ecx
+  xor    %eax,%eax
+  test   %edx,%edx
+  sete   %al
+  add    $0xd8,%rsp
+  pop    %rbx
+  pop    %r12
+  pop    %r13
+  pop    %r14
+  pop    %r15
+  pop    %rbp
+  ret
+
+- Edges: (none)

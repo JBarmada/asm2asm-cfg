@@ -1,0 +1,10 @@
+Function: _func0
+Basic blocks: 1
+
+============================================================
+BLOCK 4294968672
+- Instructions:
+  add	w0, w1, w0
+  ret
+
+- Edges: (none)

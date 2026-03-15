@@ -1,0 +1,15 @@
+Function: func0
+Basic blocks: 1
+
+============================================================
+BLOCK 0
+- Instructions:
+  testb	$1, %dil
+  sete	%al
+  cmpl	$8, %edi
+  setge	%cl
+  andb	%al, %cl
+  movzbl	%cl, %eax
+  retq
+
+- Edges: (none)

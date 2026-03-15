@@ -1,0 +1,28 @@
+Function: func0
+Basic blocks: 1
+
+============================================================
+BLOCK 4864
+- Instructions:
+  mov    %edi,%ecx
+  neg    %ecx
+  cmovs  %edi,%ecx
+  mov    $0xcccccccd,%edx
+  mov    %rcx,%rax
+  imul   %rdx,%rax
+  shr    $0x23,%rax
+  add    %eax,%eax
+  lea    (%rax,%rax,4),%eax
+  sub    %eax,%ecx
+  mov    %esi,%eax
+  neg    %eax
+  cmovs  %esi,%eax
+  imul   %rax,%rdx
+  shr    $0x23,%rdx
+  add    %edx,%edx
+  lea    (%rdx,%rdx,4),%edx
+  sub    %edx,%eax
+  imul   %ecx,%eax
+  ret
+
+- Edges: (none)

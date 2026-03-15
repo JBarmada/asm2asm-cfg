@@ -1,0 +1,244 @@
+Function: func0
+Basic blocks: 21
+
+============================================================
+BLOCK 3036
+- Instructions:
+  add	sp,sp,-64
+  sd	ra,56(sp)
+  sd	s0,48(sp)
+  sd	s1,40(sp)
+  sd	s2,32(sp)
+  sd	s3,24(sp)
+  sd	s4,16(sp)
+  sd	s5,8(sp)
+  sd	s6,0(sp)
+  mv	s2,a3
+  mv	s3,a2
+  mv	s4,a1
+  mv	s6,a0
+  jal	730 <strlen@plt>
+
+- Edges:
+  JUMP -> 1840
+
+============================================================
+BLOCK 3066
+- Instructions:
+  addw	a0,a0,1
+  jal	720 <malloc@plt>
+
+- Edges:
+  JUMP -> 1824
+
+============================================================
+BLOCK 3072
+- Instructions:
+  lbu	a3,0(s6)
+  mv	s5,a0
+  beqz	a3,c48 <func0+0x6c>
+
+- Edges:
+  NO_JUMP -> 3080
+  JUMP -> 3144
+
+============================================================
+BLOCK 3080
+- Instructions:
+  lbu	s0,0(s4)
+  li	a2,0
+  li	a1,0
+  add	a4,s4,1
+  j	c2c <func0+0x50>
+
+- Edges:
+  JUMP -> 3116
+
+============================================================
+BLOCK 3094
+- Instructions:
+  add	a0,s5,a1
+  addw	a1,a1,1
+  sb	a3,0(a0)
+
+- Edges:
+  NO_JUMP -> 3104
+
+============================================================
+BLOCK 3104
+- Instructions:
+  add	a2,a2,1
+  add	a0,s6,a2
+  lbu	a3,0(a0)
+  beqz	a3,c4a <func0+0x6e>
+
+- Edges:
+  NO_JUMP -> 3116
+  JUMP -> 3146
+
+============================================================
+BLOCK 3116
+- Instructions:
+  mv	a5,a4
+  mv	a0,s0
+  beqz	s0,c16 <func0+0x3a>
+
+- Edges:
+  NO_JUMP -> 3122
+  JUMP -> 3094
+
+============================================================
+BLOCK 3122
+- Instructions:
+  zext.b	a0,a0
+  zext.b	s1,a3
+  beq	s1,a0,c20 <func0+0x44>
+
+- Edges:
+  NO_JUMP -> 3134
+  JUMP -> 3104
+
+============================================================
+BLOCK 3134
+- Instructions:
+  lbu	a0,0(a5)
+  add	a5,a5,1
+  bnez	a0,c32 <func0+0x56>
+
+- Edges:
+  NO_JUMP -> 3142
+  JUMP -> 3122
+
+============================================================
+BLOCK 3142
+- Instructions:
+  j	c16 <func0+0x3a>
+
+- Edges:
+  JUMP -> 3094
+
+============================================================
+BLOCK 3144
+- Instructions:
+  li	a1,0
+
+- Edges:
+  NO_JUMP -> 3146
+
+============================================================
+BLOCK 3146
+- Instructions:
+  add	a0,s5,a1
+  sb	zero,0(a0)
+  mv	a0,s5
+  jal	730 <strlen@plt>
+
+- Edges:
+  JUMP -> 1840
+
+============================================================
+BLOCK 3160
+- Instructions:
+  sext.w	a1,a0
+  li	a2,2
+  auipc	s1,0x0
+  add	s1,s1,318 # d9c <_IO_stdin_used+0xd4>
+  blt	a1,a2,ca0 <func0+0xc4>
+
+- Edges:
+  NO_JUMP -> 3178
+  JUMP -> 3232
+
+============================================================
+BLOCK 3178
+- Instructions:
+  li	a1,-1
+  sll	a1,a1,0x20
+  srlw	a2,a0,0x1
+  sll	a0,a0,0x20
+  add	a3,a0,a1
+  auipc	a0,0x0
+  add	a0,a0,97 # cd9 <_IO_stdin_used+0x11>
+  mv	a4,s5
+
+- Edges:
+  NO_JUMP -> 3202
+
+============================================================
+BLOCK 3202
+- Instructions:
+  lbu	a5,0(a4)
+  sra	s0,a3,0x20
+  add	s0,s0,s5
+  lbu	s0,0(s0)
+  bne	a5,s0,c9e <func0+0xc2>
+
+- Edges:
+  NO_JUMP -> 3220
+  JUMP -> 3230
+
+============================================================
+BLOCK 3220
+- Instructions:
+  add	a3,a3,a1
+  add	a2,a2,-1
+  add	a4,a4,1
+  bnez	a2,c82 <func0+0xa6>
+
+- Edges:
+  NO_JUMP -> 3228
+  JUMP -> 3202
+
+============================================================
+BLOCK 3228
+- Instructions:
+  j	ca0 <func0+0xc4>
+
+- Edges:
+  JUMP -> 3232
+
+============================================================
+BLOCK 3230
+- Instructions:
+  mv	s1,a0
+
+- Edges:
+  NO_JUMP -> 3232
+
+============================================================
+BLOCK 3232
+- Instructions:
+  mv	a0,s3
+  mv	a1,s5
+  jal	740 <strcpy@plt>
+
+- Edges:
+  JUMP -> 1856
+
+============================================================
+BLOCK 3240
+- Instructions:
+  mv	a0,s2
+  mv	a1,s1
+  jal	740 <strcpy@plt>
+
+- Edges:
+  JUMP -> 1856
+
+============================================================
+BLOCK 3248
+- Instructions:
+  mv	a0,s5
+  ld	ra,56(sp)
+  ld	s0,48(sp)
+  ld	s1,40(sp)
+  ld	s2,32(sp)
+  ld	s3,24(sp)
+  ld	s4,16(sp)
+  ld	s5,8(sp)
+  ld	s6,0(sp)
+  add	sp,sp,64
+  j	770 <free@plt>
+
+- Edges:
+  JUMP -> 1904

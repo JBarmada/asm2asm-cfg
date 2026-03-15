@@ -1,0 +1,167 @@
+Function: func0
+Basic blocks: 11
+
+============================================================
+BLOCK 0
+- Instructions:
+  movb	$1, %al
+  cmpl	$2, %esi
+  jl	.LBB0_10
+
+- Edges:
+  NO_JUMP -> 12
+  JUMP -> 332
+
+============================================================
+BLOCK 12
+- Instructions:
+  movl	%esi, %r9d
+  movss	(%rdi), %xmm1
+  leaq	-1(%r9), %r8
+  cmpq	$8, %r8
+  jae	.LBB0_3
+
+- Edges:
+  NO_JUMP -> 32
+  JUMP -> 48
+
+============================================================
+BLOCK 32
+- Instructions:
+  xorl	%eax, %eax
+  movl	$1, %ecx
+  xorl	%edx, %edx
+  jmp	.LBB0_7
+
+- Edges:
+  JUMP -> 280
+
+============================================================
+BLOCK 48
+- Instructions:
+  movq	%r8, %rsi
+  andq	$-8, %rsi
+  leaq	1(%rsi), %rcx
+  shufps	$0, %xmm1, %xmm1
+  xorps	%xmm8, %xmm8
+  xorl	%eax, %eax
+  xorps	%xmm9, %xmm9
+  xorps	%xmm3, %xmm3
+  xorps	%xmm4, %xmm4
+
+- Edges:
+  NO_JUMP -> 84
+
+============================================================
+BLOCK 84
+- Instructions:
+  movaps	%xmm1, %xmm0
+  movups	4(%rdi,%rax,4), %xmm5
+  shufps	$3, %xmm5, %xmm0
+  shufps	$152, %xmm5, %xmm0
+  movaps	%xmm5, %xmm6
+  movaps	%xmm0, %xmm2
+  cmpltps	%xmm5, %xmm2
+  cmpltps	%xmm0, %xmm5
+  movups	20(%rdi,%rax,4), %xmm1
+  shufps	$3, %xmm1, %xmm6
+  shufps	$152, %xmm1, %xmm6
+  movaps	%xmm1, %xmm0
+  cmpltps	%xmm6, %xmm0
+  cmpltps	%xmm1, %xmm6
+  movaps	%xmm2, %xmm7
+  andnps	%xmm3, %xmm7
+  movaps	%xmm7, %xmm3
+  psubd	%xmm2, %xmm3
+  movaps	%xmm6, %xmm2
+  andnps	%xmm4, %xmm2
+  movaps	%xmm2, %xmm4
+  psubd	%xmm6, %xmm4
+  movaps	%xmm5, %xmm2
+  andnps	%xmm8, %xmm2
+  movaps	%xmm2, %xmm8
+  psubd	%xmm5, %xmm8
+  movaps	%xmm0, %xmm2
+  andnps	%xmm9, %xmm2
+  movaps	%xmm2, %xmm9
+  psubd	%xmm0, %xmm9
+  addq	$8, %rax
+  cmpq	%rax, %rsi
+  jne	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 216
+  JUMP -> 84
+
+============================================================
+BLOCK 216
+- Instructions:
+  orps	%xmm4, %xmm3
+  pxor	%xmm0, %xmm0
+  pcmpeqd	%xmm0, %xmm3
+  movmskps	%xmm3, %eax
+  xorl	%edx, %edx
+  cmpl	$15, %eax
+  setne	%dl
+  orps	%xmm9, %xmm8
+  pcmpeqd	%xmm0, %xmm8
+  movmskps	%xmm8, %r10d
+  xorl	%eax, %eax
+  cmpl	$15, %r10d
+  setne	%al
+  cmpq	%rsi, %r8
+  je	.LBB0_9
+
+- Edges:
+  NO_JUMP -> 276
+  JUMP -> 320
+
+============================================================
+BLOCK 276
+- Instructions:
+  shufps	$255, %xmm1, %xmm1
+
+- Edges:
+  NO_JUMP -> 280
+
+============================================================
+BLOCK 280
+- Instructions:
+  movl	$1, %esi
+
+- Edges:
+  NO_JUMP -> 284
+
+============================================================
+BLOCK 284
+- Instructions:
+  movss	(%rdi,%rcx,4), %xmm0
+  ucomiss	%xmm1, %xmm0
+  cmoval	%esi, %edx
+  ucomiss	%xmm0, %xmm1
+  cmoval	%esi, %eax
+  incq	%rcx
+  movaps	%xmm0, %xmm1
+  cmpq	%rcx, %r9
+  jne	.LBB0_8
+
+- Edges:
+  NO_JUMP -> 320
+  JUMP -> 284
+
+============================================================
+BLOCK 320
+- Instructions:
+  addl	%eax, %edx
+  cmpl	$2, %edx
+  setne	%al
+
+- Edges:
+  NO_JUMP -> 332
+
+============================================================
+BLOCK 332
+- Instructions:
+  retq
+
+- Edges: (none)

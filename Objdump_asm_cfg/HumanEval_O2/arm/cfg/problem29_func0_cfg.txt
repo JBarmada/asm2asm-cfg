@@ -1,0 +1,96 @@
+Function: _func0
+Basic blocks: 8
+
+============================================================
+BLOCK 4294968740
+- Instructions:
+  stp	x24, x23, [sp, #-0x40]!
+  stp	x22, x21, [sp, #0x10]
+  stp	x20, x19, [sp, #0x20]
+  stp	x29, x30, [sp, #0x30]
+  add	x29, sp, #0x30
+  cmp	w1, #0x1
+  b.lt	0x100000610 <_func0+0x6c>
+
+- Edges:
+  NO_JUMP -> 4294968768
+  JUMP -> 4294968848
+
+============================================================
+BLOCK 4294968768
+- Instructions:
+  mov	x19, x0
+  mov	w21, #0x0               ; =0
+  mov	w20, w1
+  mov	x22, x20
+  mov	x23, x0
+
+- Edges:
+  NO_JUMP -> 4294968788
+
+============================================================
+BLOCK 4294968788
+- Instructions:
+  ldr	x0, [x23], #0x8
+  bl	0x1000006f4 <_strlen+0x1000006f4>
+  add	w21, w21, w0
+  subs	x22, x22, #0x1
+  b.ne	0x1000005d4 <_func0+0x30>
+
+- Edges:
+  NO_JUMP -> 4294968808
+  JUMP -> 4294968788
+
+============================================================
+BLOCK 4294968808
+- Instructions:
+  add	w8, w21, #0x1
+  sxtw	x0, w8
+  bl	0x1000006d0 <_strlen+0x1000006d0>
+  cbz	x0, 0x100000620 <_func0+0x7c>
+  strb	wzr, [x0]
+
+- Edges:
+  NO_JUMP -> 4294968828
+
+============================================================
+BLOCK 4294968828
+- Instructions:
+  ldr	x1, [x19], #0x8
+  bl	0x1000006dc <_strlen+0x1000006dc>
+  subs	x20, x20, #0x1
+  b.ne	0x1000005fc <_func0+0x58>
+
+- Edges:
+  NO_JUMP -> 4294968844
+  JUMP -> 4294968828
+
+============================================================
+BLOCK 4294968844
+- Instructions:
+  b	0x100000620 <_func0+0x7c>
+
+- Edges:
+  JUMP -> 4294968864
+
+============================================================
+BLOCK 4294968848
+- Instructions:
+  mov	w0, #0x1                ; =1
+  bl	0x1000006d0 <_strlen+0x1000006d0>
+  cbz	x0, 0x100000620 <_func0+0x7c>
+  strb	wzr, [x0]
+
+- Edges:
+  NO_JUMP -> 4294968864
+
+============================================================
+BLOCK 4294968864
+- Instructions:
+  ldp	x29, x30, [sp, #0x30]
+  ldp	x20, x19, [sp, #0x20]
+  ldp	x22, x21, [sp, #0x10]
+  ldp	x24, x23, [sp], #0x40
+  ret
+
+- Edges: (none)

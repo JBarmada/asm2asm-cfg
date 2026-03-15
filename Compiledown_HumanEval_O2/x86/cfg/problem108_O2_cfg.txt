@@ -1,0 +1,123 @@
+Function: func0
+Basic blocks: 10
+
+============================================================
+BLOCK 0
+- Instructions:
+  pushq	%rbp
+  pushq	%r14
+  pushq	%rbx
+  movl	%edi, %r14d
+  movl	$8, %edi
+  callq	malloc@PLT
+  movq	$0, (%rax)
+  testl	%r14d, %r14d
+  jle	.LBB0_9
+
+- Edges:
+  NO_JUMP -> 36
+  JUMP -> 172
+
+============================================================
+BLOCK 36
+- Instructions:
+  movl	$1, %esi
+  xorl	%r8d, %r8d
+  xorl	%r9d, %r9d
+  jmp	.LBB0_2
+
+- Edges:
+  JUMP -> 76
+
+============================================================
+BLOCK 52
+- Instructions:
+  incl	%r9d
+  movl	%r9d, 4(%rax)
+
+- Edges:
+  NO_JUMP -> 60
+
+============================================================
+BLOCK 60
+- Instructions:
+  leal	1(%rsi), %ecx
+  cmpl	%r14d, %esi
+  movl	%ecx, %esi
+  je	.LBB0_9
+
+- Edges:
+  NO_JUMP -> 76
+  JUMP -> 172
+
+============================================================
+BLOCK 76
+- Instructions:
+  movl	%esi, %edi
+  xorl	%ecx, %ecx
+
+- Edges:
+  NO_JUMP -> 84
+
+============================================================
+BLOCK 84
+- Instructions:
+  leal	(%rcx,%rcx,4), %ecx
+  movslq	%edi, %rbp
+  imulq	$1717986919, %rbp, %rdi
+  movq	%rdi, %rbx
+  shrq	$63, %rbx
+  sarq	$34, %rdi
+  addl	%ebx, %edi
+  leal	(%rdi,%rdi), %ebx
+  leal	(%rbx,%rbx,4), %ebx
+  movl	%ebp, %edx
+  subl	%ebx, %edx
+  leal	(%rdx,%rcx,2), %ecx
+  addl	$9, %ebp
+  cmpl	$18, %ebp
+  ja	.LBB0_3
+
+- Edges:
+  NO_JUMP -> 144
+  JUMP -> 84
+
+============================================================
+BLOCK 144
+- Instructions:
+  cmpl	%ecx, %esi
+  jne	.LBB0_8
+
+- Edges:
+  NO_JUMP -> 152
+  JUMP -> 60
+
+============================================================
+BLOCK 152
+- Instructions:
+  testb	$1, %sil
+  jne	.LBB0_7
+
+- Edges:
+  NO_JUMP -> 160
+  JUMP -> 52
+
+============================================================
+BLOCK 160
+- Instructions:
+  incl	%r8d
+  movl	%r8d, (%rax)
+  jmp	.LBB0_8
+
+- Edges:
+  JUMP -> 60
+
+============================================================
+BLOCK 172
+- Instructions:
+  popq	%rbx
+  popq	%r14
+  popq	%rbp
+  retq
+
+- Edges: (none)

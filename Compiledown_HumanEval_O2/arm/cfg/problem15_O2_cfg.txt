@@ -1,0 +1,83 @@
+Function: _func0
+Basic blocks: 4
+
+============================================================
+BLOCK 0
+- Instructions:
+  stp	x26, x25, [sp, #-80]!
+  stp	x24, x23, [sp, #16]
+  stp	x22, x21, [sp, #32]
+  stp	x20, x19, [sp, #48]
+  stp	x29, x30, [sp, #64]
+  add	x29, sp, #64
+  mov	x19, x1
+  mov	x21, x0
+  bl	_strlen
+  mov	x20, x0
+  sbfiz	x0, x0, #3, #32
+  bl	_malloc
+  mov	x22, x0
+  mov	x8, #4294967296
+  add	x8, x8, x20, lsl #32
+  asr	x0, x8, #32
+  bl	_malloc
+  mov	x23, x0
+  strb	wzr, [x0]
+  cmp	w20, #1
+  b.lt	LBB0_3
+
+- Edges:
+  NO_JUMP -> 84
+  JUMP -> 168
+
+============================================================
+BLOCK 84
+- Instructions:
+  and	x25, x20, #0x7fffffff
+  mov	x26, x22
+
+- Edges:
+  NO_JUMP -> 92
+
+============================================================
+BLOCK 92
+- Instructions:
+  mov	x0, x23
+  bl	_strlen
+  mov	x24, x0
+  add	x1, x0, #2
+  mov	x0, x23
+  bl	_realloc
+  mov	x23, x0
+  ldrb	w8, [x21], #1
+  add	x9, x0, x24
+  strb	w8, [x9]
+  strb	wzr, [x9, #1]
+  bl	_strlen
+  add	x0, x0, #1
+  bl	_malloc
+  str	x0, [x26], #8
+  mov	x1, x23
+  bl	_strcpy
+  subs	x25, x25, #1
+  b.ne	LBB0_2
+
+- Edges:
+  NO_JUMP -> 168
+  JUMP -> 92
+
+============================================================
+BLOCK 168
+- Instructions:
+  mov	x0, x23
+  bl	_free
+  str	w20, [x19]
+  mov	x0, x22
+  ldp	x29, x30, [sp, #64]
+  ldp	x20, x19, [sp, #48]
+  ldp	x22, x21, [sp, #32]
+  ldp	x24, x23, [sp, #16]
+  ldp	x26, x25, [sp], #80
+  ret
+
+- Edges: (none)

@@ -1,0 +1,110 @@
+Function: func0
+Basic blocks: 10
+
+============================================================
+BLOCK 0
+- Instructions:
+  blez	a1, .LBB0_7
+
+- Edges:
+  NO_JUMP -> 4
+  JUMP -> 124
+
+============================================================
+BLOCK 4
+- Instructions:
+  li	t3, 0
+  li	t1, 0
+  li	a6, -10
+  lui	a2, 838861
+  addiw	a2, a2, -819
+  slli	t2, a2, 32
+  li	a7, 10
+  li	t0, 99
+  j	.LBB0_4
+
+- Edges:
+  JUMP -> 56
+
+============================================================
+BLOCK 40
+- Instructions:
+  slt	a2, a4, a2
+
+- Edges:
+  NO_JUMP -> 44
+
+============================================================
+BLOCK 44
+- Instructions:
+  addi	t3, t3, 1
+  addw	t1, t1, a2
+  beq	t3, a1, .LBB0_8
+
+- Edges:
+  NO_JUMP -> 56
+  JUMP -> 128
+
+============================================================
+BLOCK 56
+- Instructions:
+  slli	a2, t3, 2
+  add	a2, a2, a0
+  lw	a5, 0(a2)
+  li	a2, 1
+  bgtz	a5, .LBB0_3
+
+- Edges:
+  NO_JUMP -> 76
+  JUMP -> 44
+
+============================================================
+BLOCK 76
+- Instructions:
+  negw	a4, a5
+  li	a2, 0
+  blt	a6, a5, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 88
+  JUMP -> 40
+
+============================================================
+BLOCK 88
+- Instructions:
+  mv	a5, a4
+  slli	a4, a4, 32
+  mulhu	a4, a4, t2
+  srli	a4, a4, 35
+  mulw	a3, a4, a7
+  subw	a3, a5, a3
+  addw	a2, a2, a3
+  bltu	t0, a5, .LBB0_6
+
+- Edges:
+  NO_JUMP -> 120
+  JUMP -> 88
+
+============================================================
+BLOCK 120
+- Instructions:
+  j	.LBB0_2
+
+- Edges:
+  JUMP -> 40
+
+============================================================
+BLOCK 124
+- Instructions:
+  li	t1, 0
+
+- Edges:
+  NO_JUMP -> 128
+
+============================================================
+BLOCK 128
+- Instructions:
+  mv	a0, t1
+  ret
+
+- Edges: (none)

@@ -1,0 +1,127 @@
+Function: func0
+Basic blocks: 10
+
+============================================================
+BLOCK 0
+- Instructions:
+  pushq	%rbp
+  pushq	%r14
+  pushq	%rbx
+  movq	%rsi, %r14
+  movl	%edi, %ebp
+  movl	$256, %edi
+  callq	malloc@PLT
+  movq	%rax, %rcx
+  movl	$0, (%r14)
+  xorl	%esi, %esi
+  cmpl	$4, %ebp
+  jge	.LBB0_1
+
+- Edges:
+  NO_JUMP -> 48
+  JUMP -> 92
+
+============================================================
+BLOCK 48
+- Instructions:
+  cmpl	$1, %ebp
+  jle	.LBB0_9
+
+- Edges:
+  NO_JUMP -> 56
+  JUMP -> 72
+
+============================================================
+BLOCK 56
+- Instructions:
+  leal	1(%rsi), %eax
+  movl	%eax, (%r14)
+  movslq	%esi, %rax
+  movl	%ebp, (%rcx,%rax,4)
+
+- Edges:
+  NO_JUMP -> 72
+
+============================================================
+BLOCK 72
+- Instructions:
+  movq	%rcx, %rax
+  popq	%rbx
+  popq	%r14
+  popq	%rbp
+  retq
+
+- Edges: (none)
+
+============================================================
+BLOCK 92
+- Instructions:
+  movl	$2, %edi
+  xorl	%esi, %esi
+  jmp	.LBB0_2
+
+- Edges:
+  JUMP -> 124
+
+============================================================
+BLOCK 104
+- Instructions:
+  incl	%edi
+  movl	%edi, %eax
+  imull	%edi, %eax
+  cmpl	%ebp, %eax
+  jg	.LBB0_7
+
+- Edges:
+  NO_JUMP -> 124
+  JUMP -> 48
+
+============================================================
+BLOCK 124
+- Instructions:
+  movl	%ebp, %eax
+  cltd
+  idivl	%edi
+  testl	%edx, %edx
+  jne	.LBB0_6
+
+- Edges:
+  NO_JUMP -> 144
+  JUMP -> 104
+
+============================================================
+BLOCK 144
+- Instructions:
+  movslq	%esi, %rax
+  leaq	(%rcx,%rax,4), %rbx
+
+- Edges:
+  NO_JUMP -> 152
+
+============================================================
+BLOCK 152
+- Instructions:
+  movl	%ebp, %eax
+  cltd
+  idivl	%edi
+  movl	%edi, (%rbx)
+  movl	%eax, %ebp
+  cltd
+  idivl	%edi
+  addq	$4, %rbx
+  incl	%esi
+  testl	%edx, %edx
+  je	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 196
+  JUMP -> 152
+
+============================================================
+BLOCK 196
+- Instructions:
+  movl	%esi, (%r14)
+  jmp	.LBB0_6
+
+- Edges:
+  JUMP -> 104

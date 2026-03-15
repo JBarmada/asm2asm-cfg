@@ -1,0 +1,114 @@
+Function: func0
+Basic blocks: 12
+
+============================================================
+BLOCK 0
+- Instructions:
+  beqz	a1, .LBB0_10
+
+- Edges:
+  NO_JUMP -> 4
+  JUMP -> 88
+
+============================================================
+BLOCK 4
+- Instructions:
+  blez	a1, .LBB0_11
+
+- Edges:
+  NO_JUMP -> 8
+  JUMP -> 96
+
+============================================================
+BLOCK 8
+- Instructions:
+  li	a2, 0
+  li	a3, 1
+  j	.LBB0_5
+
+- Edges:
+  JUMP -> 52
+
+============================================================
+BLOCK 20
+- Instructions:
+  mv	a3, a5
+
+- Edges:
+  NO_JUMP -> 24
+
+============================================================
+BLOCK 24
+- Instructions:
+  sraiw	a5, a4, 31
+  xor	a4, a4, a5
+  subw	a4, a4, a5
+  addw	a2, a2, a4
+  addi	a1, a1, -1
+  addi	a0, a0, 4
+  beqz	a1, .LBB0_9
+
+- Edges:
+  NO_JUMP -> 52
+  JUMP -> 80
+
+============================================================
+BLOCK 52
+- Instructions:
+  lw	a4, 0(a0)
+  li	a5, 0
+  beqz	a4, .LBB0_7
+
+- Edges:
+  NO_JUMP -> 64
+  JUMP -> 68
+
+============================================================
+BLOCK 64
+- Instructions:
+  mv	a5, a3
+
+- Edges:
+  NO_JUMP -> 68
+
+============================================================
+BLOCK 68
+- Instructions:
+  bgez	a4, .LBB0_3
+
+- Edges:
+  NO_JUMP -> 72
+  JUMP -> 20
+
+============================================================
+BLOCK 72
+- Instructions:
+  negw	a3, a5
+  j	.LBB0_4
+
+- Edges:
+  JUMP -> 24
+
+============================================================
+BLOCK 80
+- Instructions:
+  mulw	a0, a3, a2
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 88
+- Instructions:
+  lui	a0, 1048568
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 96
+- Instructions:
+  li	a0, 0
+  ret
+
+- Edges: (none)

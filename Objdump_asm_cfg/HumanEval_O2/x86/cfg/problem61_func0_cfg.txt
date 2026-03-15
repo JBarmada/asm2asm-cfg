@@ -1,0 +1,15 @@
+Function: func0
+Basic blocks: 1
+
+============================================================
+BLOCK 4672
+- Instructions:
+  lea    0x1(%rdi),%ecx
+  imul   %edi,%ecx
+  mov    %ecx,%eax
+  shr    $0x1f,%eax
+  add    %ecx,%eax
+  sar    %eax
+  ret
+
+- Edges: (none)

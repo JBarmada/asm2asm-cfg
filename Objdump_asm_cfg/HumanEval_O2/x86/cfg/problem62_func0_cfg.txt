@@ -1,0 +1,123 @@
+Function: func0
+Basic blocks: 10
+
+============================================================
+BLOCK 5056
+- Instructions:
+  push   %r14
+  push   %rbx
+  push   %rax
+  mov    %rdi,%r14
+  call   1030 <strlen@plt>
+  test   %rax,%rax
+  je     1426 <func0+0x66>
+
+- Edges:
+  NO_JUMP -> 5073
+  JUMP -> 5158
+
+============================================================
+BLOCK 5073
+- Instructions:
+  movzbl (%r14),%edx
+  xor    %ecx,%ecx
+  cmp    $0x28,%dl
+  sete   %cl
+  xor    %esi,%esi
+  cmp    $0x29,%dl
+  sete   %sil
+  sub    %esi,%ecx
+  js     142c <func0+0x6c>
+
+- Edges:
+  NO_JUMP -> 5098
+  JUMP -> 5164
+
+============================================================
+BLOCK 5098
+- Instructions:
+  mov    $0x1,%esi
+  nop
+
+- Edges:
+  NO_JUMP -> 5104
+
+============================================================
+BLOCK 5104
+- Instructions:
+  mov    %rsi,%rdx
+  cmp    %rsi,%rax
+  je     141e <func0+0x5e>
+
+- Edges:
+  NO_JUMP -> 5112
+  JUMP -> 5150
+
+============================================================
+BLOCK 5112
+- Instructions:
+  movzbl (%r14,%rdx,1),%ebx
+  xor    %esi,%esi
+  cmp    $0x28,%bl
+  sete   %sil
+  add    %esi,%ecx
+  xor    %edi,%edi
+  cmp    $0x29,%bl
+  sete   %dil
+  lea    0x1(%rdx),%rsi
+  sub    %edi,%ecx
+  jns    13f0 <func0+0x30>
+
+- Edges:
+  NO_JUMP -> 5145
+  JUMP -> 5104
+
+============================================================
+BLOCK 5145
+- Instructions:
+  mov    $0x1,%ecx
+
+- Edges:
+  NO_JUMP -> 5150
+
+============================================================
+BLOCK 5150
+- Instructions:
+  cmp    %rdx,%rax
+  setbe  %dl
+  jmp    1433 <func0+0x73>
+
+- Edges:
+  JUMP -> 5171
+
+============================================================
+BLOCK 5158
+- Instructions:
+  xor    %ecx,%ecx
+  mov    $0x1,%dl
+  jmp    1433 <func0+0x73>
+
+- Edges:
+  JUMP -> 5171
+
+============================================================
+BLOCK 5164
+- Instructions:
+  xor    %edx,%edx
+  mov    $0x1,%ecx
+
+- Edges:
+  NO_JUMP -> 5171
+
+============================================================
+BLOCK 5171
+- Instructions:
+  test   %ecx,%ecx
+  sete   %al
+  and    %dl,%al
+  add    $0x8,%rsp
+  pop    %rbx
+  pop    %r14
+  ret
+
+- Edges: (none)

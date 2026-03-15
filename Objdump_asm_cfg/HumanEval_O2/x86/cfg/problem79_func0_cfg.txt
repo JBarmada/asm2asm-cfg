@@ -1,0 +1,77 @@
+Function: func0
+Basic blocks: 6
+
+============================================================
+BLOCK 4816
+- Instructions:
+  push   %rbp
+  push   %r15
+  push   %r14
+  push   %r12
+  push   %rbx
+  mov    %rdi,%r14
+  call   1030 <strlen@plt>
+  test   %rax,%rax
+  je     1323 <func0+0x53>
+
+- Edges:
+  NO_JUMP -> 4837
+  JUMP -> 4899
+
+============================================================
+BLOCK 4837
+- Instructions:
+  mov    %rax,%r12
+  xor    %ebx,%ebx
+  lea    0xe26(%rip),%r15        # 2117 <_IO_stdin_used+0x117>
+  xor    %ebp,%ebp
+  data16 data16 data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 4864
+
+============================================================
+BLOCK 4864
+- Instructions:
+  movsbl (%r14,%rbx,1),%esi
+  mov    $0x7,%edx
+  mov    %r15,%rdi
+  call   1050 <memchr@plt>
+  cmp    $0x1,%rax
+  sbb    $0xffffffff,%ebp
+  inc    %rbx
+  cmp    %rbx,%r12
+  jne    1300 <func0+0x30>
+
+- Edges:
+  NO_JUMP -> 4897
+  JUMP -> 4864
+
+============================================================
+BLOCK 4897
+- Instructions:
+  jmp    1325 <func0+0x55>
+
+- Edges:
+  JUMP -> 4901
+
+============================================================
+BLOCK 4899
+- Instructions:
+  xor    %ebp,%ebp
+
+- Edges:
+  NO_JUMP -> 4901
+
+============================================================
+BLOCK 4901
+- Instructions:
+  mov    %ebp,%eax
+  pop    %rbx
+  pop    %r12
+  pop    %r14
+  pop    %r15
+  pop    %rbp
+  ret
+
+- Edges: (none)

@@ -1,0 +1,211 @@
+Function: func0
+Basic blocks: 21
+
+============================================================
+BLOCK 2464
+- Instructions:
+  blez	a1,a32 <func0+0x92>
+
+- Edges:
+  NO_JUMP -> 2468
+  JUMP -> 2610
+
+============================================================
+BLOCK 2468
+- Instructions:
+  li	a6,0
+  li	t5,1
+  li	t6,2
+  li	a7,1
+  j	9b4 <func0+0x14>
+
+- Edges:
+  JUMP -> 2484
+
+============================================================
+BLOCK 2478
+- Instructions:
+  add	a7,a7,1
+  beq	a6,a1,a32 <func0+0x92>
+
+- Edges:
+  NO_JUMP -> 2484
+  JUMP -> 2610
+
+============================================================
+BLOCK 2484
+- Instructions:
+  mv	a2,a6
+  add	a6,a6,1
+  bgeu	a6,a1,9ae <func0+0xe>
+
+- Edges:
+  NO_JUMP -> 2492
+  JUMP -> 2478
+
+============================================================
+BLOCK 2492
+- Instructions:
+  sll	a2,a2,0x2
+  add	t0,a0,a2
+  mv	t4,a7
+  j	9d4 <func0+0x34>
+
+- Edges:
+  JUMP -> 2516
+
+============================================================
+BLOCK 2502
+- Instructions:
+  sw	t3,0(t0)
+  sw	t1,0(t2)
+
+- Edges:
+  NO_JUMP -> 2510
+
+============================================================
+BLOCK 2510
+- Instructions:
+  add	t4,t4,1
+  beq	t4,a1,9ae <func0+0xe>
+
+- Edges:
+  NO_JUMP -> 2516
+  JUMP -> 2478
+
+============================================================
+BLOCK 2516
+- Instructions:
+  lw	t1,0(t0)
+  blez	t1,9f0 <func0+0x50>
+
+- Edges:
+  NO_JUMP -> 2524
+  JUMP -> 2544
+
+============================================================
+BLOCK 2524
+- Instructions:
+  li	a4,0
+  mv	a5,t1
+
+- Edges:
+  NO_JUMP -> 2528
+
+============================================================
+BLOCK 2528
+- Instructions:
+  mv	a2,a5
+  and	a5,a5,1
+  addw	a4,a4,a5
+  srlw	a5,a2,0x1
+  bgeu	a2,t6,9e0 <func0+0x40>
+
+- Edges:
+  NO_JUMP -> 2542
+  JUMP -> 2528
+
+============================================================
+BLOCK 2542
+- Instructions:
+  j	9f2 <func0+0x52>
+
+- Edges:
+  JUMP -> 2546
+
+============================================================
+BLOCK 2544
+- Instructions:
+  li	a4,0
+
+- Edges:
+  NO_JUMP -> 2546
+
+============================================================
+BLOCK 2546
+- Instructions:
+  sll	a2,t4,0x2
+  add	t2,a0,a2
+  lw	t3,0(t2)
+  blez	t3,a1a <func0+0x7a>
+
+- Edges:
+  NO_JUMP -> 2562
+  JUMP -> 2586
+
+============================================================
+BLOCK 2562
+- Instructions:
+  li	a5,0
+  mv	a3,t3
+
+- Edges:
+  NO_JUMP -> 2566
+
+============================================================
+BLOCK 2566
+- Instructions:
+  mv	a2,a3
+  and	a3,a3,1
+  addw	a5,a5,a3
+  srlw	a3,a2,0x1
+  bltu	t5,a2,a06 <func0+0x66>
+
+- Edges:
+  NO_JUMP -> 2580
+  JUMP -> 2566
+
+============================================================
+BLOCK 2580
+- Instructions:
+  bltu	a5,a4,9c6 <func0+0x26>
+
+- Edges:
+  NO_JUMP -> 2584
+  JUMP -> 2502
+
+============================================================
+BLOCK 2584
+- Instructions:
+  j	a20 <func0+0x80>
+
+- Edges:
+  JUMP -> 2592
+
+============================================================
+BLOCK 2586
+- Instructions:
+  li	a5,0
+  bltu	a5,a4,9c6 <func0+0x26>
+
+- Edges:
+  NO_JUMP -> 2592
+  JUMP -> 2502
+
+============================================================
+BLOCK 2592
+- Instructions:
+  xor	a2,a5,a4
+  seqz	a2,a2
+  slt	a3,t3,t1
+  and	a2,a2,a3
+  bnez	a2,9c6 <func0+0x26>
+
+- Edges:
+  NO_JUMP -> 2608
+  JUMP -> 2502
+
+============================================================
+BLOCK 2608
+- Instructions:
+  j	9ce <func0+0x2e>
+
+- Edges:
+  JUMP -> 2510
+
+============================================================
+BLOCK 2610
+- Instructions:
+  ret
+
+- Edges: (none)

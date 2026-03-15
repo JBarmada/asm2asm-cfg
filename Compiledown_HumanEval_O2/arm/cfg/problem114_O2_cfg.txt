@@ -1,0 +1,119 @@
+Function: _func0
+Basic blocks: 9
+
+============================================================
+BLOCK 0
+- Instructions:
+  sub	sp, sp, #96
+  stp	x24, x23, [sp, #32]
+  stp	x22, x21, [sp, #48]
+  stp	x20, x19, [sp, #64]
+  stp	x29, x30, [sp, #80]
+  add	x29, sp, #80
+  mov	x21, x1
+  mov	x19, x0
+  sbfiz	x0, x21, #3, #32
+  bl	_malloc
+  mov	x20, x0
+  cmp	w21, #1
+  b.lt	LBB0_7
+
+- Edges:
+  NO_JUMP -> 52
+  JUMP -> 176
+
+============================================================
+BLOCK 52
+- Instructions:
+  mov	x22, #0
+  mov	w23, w21
+  adrp	x21, l_.str
+  add	x21, x21, l_.str
+  b	LBB0_4
+
+- Edges:
+  JUMP -> 124
+
+============================================================
+BLOCK 72
+- Instructions:
+  mov	w24, #0
+
+- Edges:
+  NO_JUMP -> 76
+
+============================================================
+BLOCK 76
+- Instructions:
+  mov	w0, #100
+  bl	_malloc
+  str	x0, [x20, x22, lsl #3]
+  stp	x24, x24, [sp, #8]
+  str	x24, [sp]
+  mov	w1, #0
+  mov	w2, #100
+  mov	x3, x21
+  bl	___sprintf_chk
+  add	x22, x22, #1
+  cmp	x22, x23
+  b.eq	LBB0_7
+
+- Edges:
+  NO_JUMP -> 124
+  JUMP -> 176
+
+============================================================
+BLOCK 124
+- Instructions:
+  ldr	x9, [x19, x22, lsl #3]
+  ldrb	w8, [x9]
+  cbz	w8, LBB0_2
+
+- Edges:
+  NO_JUMP -> 136
+  JUMP -> 72
+
+============================================================
+BLOCK 136
+- Instructions:
+  mov	w24, #0
+  add	x9, x9, #1
+
+- Edges:
+  NO_JUMP -> 144
+
+============================================================
+BLOCK 144
+- Instructions:
+  sub	w10, w8, #48
+  cmp	w10, #10
+  cset	w10, lo
+  and	w8, w10, w8
+  add	w24, w24, w8
+  ldrb	w8, [x9], #1
+  cbnz	w8, LBB0_6
+
+- Edges:
+  NO_JUMP -> 172
+  JUMP -> 144
+
+============================================================
+BLOCK 172
+- Instructions:
+  b	LBB0_3
+
+- Edges:
+  JUMP -> 76
+
+============================================================
+BLOCK 176
+- Instructions:
+  mov	x0, x20
+  ldp	x29, x30, [sp, #80]
+  ldp	x20, x19, [sp, #64]
+  ldp	x22, x21, [sp, #48]
+  ldp	x24, x23, [sp, #32]
+  add	sp, sp, #96
+  ret
+
+- Edges: (none)

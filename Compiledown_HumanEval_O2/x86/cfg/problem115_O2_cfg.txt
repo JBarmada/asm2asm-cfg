@@ -1,0 +1,103 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 0
+- Instructions:
+  movq	(%rdi), %rax
+  cmpl	$2, %esi
+  jl	.LBB0_5
+
+- Edges:
+  NO_JUMP -> 12
+  JUMP -> 164
+
+============================================================
+BLOCK 12
+- Instructions:
+  movl	%esi, %r8d
+  decq	%r8
+  cmpl	$2, %esi
+  jne	.LBB0_6
+
+- Edges:
+  NO_JUMP -> 28
+  JUMP -> 40
+
+============================================================
+BLOCK 28
+- Instructions:
+  movl	$1, %edx
+  movq	%rax, %rsi
+  jmp	.LBB0_3
+
+- Edges:
+  JUMP -> 128
+
+============================================================
+BLOCK 40
+- Instructions:
+  movq	%r8, %r9
+  andq	$-2, %r9
+  negq	%r9
+  movl	$1, %edx
+  movq	%rax, %rsi
+
+- Edges:
+  NO_JUMP -> 60
+
+============================================================
+BLOCK 60
+- Instructions:
+  movq	%rsi, %rcx
+  sarq	$63, %rcx
+  andq	%rsi, %rcx
+  addq	(%rdi,%rdx,8), %rcx
+  cmpq	%rax, %rcx
+  cmovlq	%rcx, %rax
+  movq	%rcx, %rsi
+  sarq	$63, %rsi
+  andq	%rcx, %rsi
+  addq	8(%rdi,%rdx,8), %rsi
+  cmpq	%rax, %rsi
+  cmovlq	%rsi, %rax
+  leaq	(%r9,%rdx), %rcx
+  addq	$2, %rcx
+  addq	$2, %rdx
+  cmpq	$1, %rcx
+  jne	.LBB0_7
+
+- Edges:
+  NO_JUMP -> 128
+  JUMP -> 60
+
+============================================================
+BLOCK 128
+- Instructions:
+  testb	$1, %r8b
+  je	.LBB0_5
+
+- Edges:
+  NO_JUMP -> 136
+  JUMP -> 164
+
+============================================================
+BLOCK 136
+- Instructions:
+  movq	%rsi, %rcx
+  sarq	$63, %rcx
+  andq	%rsi, %rcx
+  addq	(%rdi,%rdx,8), %rcx
+  cmpq	%rax, %rcx
+  cmovgeq	%rax, %rcx
+  movq	%rcx, %rax
+
+- Edges:
+  NO_JUMP -> 164
+
+============================================================
+BLOCK 164
+- Instructions:
+  retq
+
+- Edges: (none)

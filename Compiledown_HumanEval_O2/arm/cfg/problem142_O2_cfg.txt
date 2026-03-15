@@ -1,0 +1,395 @@
+Function: _func0
+Basic blocks: 22
+
+============================================================
+BLOCK 0
+- Instructions:
+  stp	d13, d12, [sp, #-112]!
+  stp	d11, d10, [sp, #16]
+  stp	d9, d8, [sp, #32]
+  stp	x24, x23, [sp, #48]
+  stp	x22, x21, [sp, #64]
+  stp	x20, x19, [sp, #80]
+  stp	x29, x30, [sp, #96]
+  add	x29, sp, #96
+  mov	x19, x0
+  bl	_strlen
+  cmp	w0, #5
+  b.lt	LBB0_2
+
+- Edges:
+  NO_JUMP -> 48
+  JUMP -> 60
+
+============================================================
+BLOCK 48
+- Instructions:
+  ldrsb	w8, [x19]
+  cmp	w8, #65
+  b.ge	LBB0_4
+
+- Edges:
+  NO_JUMP -> 60
+  JUMP -> 100
+
+============================================================
+BLOCK 60
+- Instructions:
+  adrp	x0, l_.str
+  add	x0, x0, l_.str
+
+- Edges:
+  NO_JUMP -> 68
+
+============================================================
+BLOCK 68
+- Instructions:
+  ldp	x29, x30, [sp, #96]
+  ldp	x20, x19, [sp, #80]
+  ldp	x22, x21, [sp, #64]
+  ldp	x24, x23, [sp, #48]
+  ldp	d9, d8, [sp, #32]
+  ldp	d11, d10, [sp, #16]
+  ldp	d13, d12, [sp], #112
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 100
+- Instructions:
+  mov	x22, x0
+  and	w8, w8, #0xff
+  sub	w9, w8, #91
+  adrp	x0, l_.str
+  add	x0, x0, l_.str
+  cmp	w8, #122
+  ccmp	w9, #6, #0, ls
+  b.lo	LBB0_3
+
+- Edges:
+  NO_JUMP -> 132
+  JUMP -> 68
+
+============================================================
+BLOCK 132
+- Instructions:
+  mov	x23, x0
+  and	x21, x22, #0x7fffffff
+  add	x8, x19, x21
+  sub	x20, x8, #4
+  adrp	x1, l_.str.1
+  add	x1, x1, l_.str.1
+  mov	x0, x20
+  bl	_strcmp
+  cbz	w0, LBB0_8
+
+- Edges:
+  NO_JUMP -> 168
+  JUMP -> 208
+
+============================================================
+BLOCK 168
+- Instructions:
+  adrp	x1, l_.str.2
+  add	x1, x1, l_.str.2
+  mov	x0, x20
+  bl	_strcmp
+  cbz	w0, LBB0_8
+
+- Edges:
+  NO_JUMP -> 188
+  JUMP -> 208
+
+============================================================
+BLOCK 188
+- Instructions:
+  adrp	x1, l_.str.3
+  add	x1, x1, l_.str.3
+  mov	x0, x20
+  bl	_strcmp
+  cbnz	w0, LBB0_2
+
+- Edges:
+  NO_JUMP -> 208
+  JUMP -> 60
+
+============================================================
+BLOCK 208
+- Instructions:
+  cmp	x21, #4
+  b.hs	LBB0_10
+
+- Edges:
+  NO_JUMP -> 216
+  JUMP -> 236
+
+============================================================
+BLOCK 216
+- Instructions:
+  mov	x8, #0
+  mov	w10, #0
+  mov	w11, #0
+  mov	x0, x23
+  b	LBB0_19
+
+- Edges:
+  JUMP -> 840
+
+============================================================
+BLOCK 236
+- Instructions:
+  cmp	x21, #32
+  mov	x0, x23
+  b.hs	LBB0_12
+
+- Edges:
+  NO_JUMP -> 248
+  JUMP -> 264
+
+============================================================
+BLOCK 248
+- Instructions:
+  mov	w10, #0
+  mov	w11, #0
+  mov	x8, #0
+  b	LBB0_16
+
+- Edges:
+  JUMP -> 708
+
+============================================================
+BLOCK 264
+- Instructions:
+  movi.2d	v0, #0000000000000000
+  and	x9, x22, #0x1f
+  movi.16b	v1, #208
+  sub	x8, x21, x9
+  movi.16b	v2, #10
+  add	x10, x19, #16
+  movi.4s	v5, #1
+  movi.16b	v6, #46
+  mov	x11, x8
+  movi.2d	v19, #0000000000000000
+  movi.2d	v7, #0000000000000000
+  movi.2d	v21, #0000000000000000
+  movi.2d	v22, #0000000000000000
+  movi.2d	v26, #0000000000000000
+  movi.2d	v23, #0000000000000000
+  movi.2d	v27, #0000000000000000
+  movi.2d	v3, #0000000000000000
+  movi.2d	v16, #0000000000000000
+  movi.2d	v4, #0000000000000000
+  movi.2d	v17, #0000000000000000
+  movi.2d	v18, #0000000000000000
+  movi.2d	v24, #0000000000000000
+  movi.2d	v20, #0000000000000000
+  movi.2d	v25, #0000000000000000
+
+- Edges:
+  NO_JUMP -> 360
+
+============================================================
+BLOCK 360
+- Instructions:
+  ldp	q28, q29, [x10, #-16]
+  add.16b	v30, v28, v1
+  add.16b	v31, v29, v1
+  cmhi.16b	v30, v2, v30
+  ushll.8h	v8, v30, #0
+  ushll.4s	v9, v8, #0
+  and.16b	v9, v9, v5
+  ushll2.4s	v8, v8, #0
+  and.16b	v8, v8, v5
+  ushll2.8h	v30, v30, #0
+  ushll.4s	v10, v30, #0
+  and.16b	v10, v10, v5
+  ushll2.4s	v30, v30, #0
+  and.16b	v30, v30, v5
+  cmhi.16b	v31, v2, v31
+  ushll.8h	v11, v31, #0
+  ushll.4s	v12, v11, #0
+  and.16b	v12, v12, v5
+  ushll2.4s	v11, v11, #0
+  and.16b	v11, v11, v5
+  ushll2.8h	v31, v31, #0
+  ushll.4s	v13, v31, #0
+  and.16b	v13, v13, v5
+  ushll2.4s	v31, v31, #0
+  and.16b	v31, v31, v5
+  add.4s	v21, v21, v30
+  add.4s	v7, v7, v10
+  add.4s	v19, v19, v8
+  add.4s	v0, v0, v9
+  add.4s	v27, v27, v31
+  add.4s	v23, v23, v13
+  add.4s	v26, v26, v11
+  add.4s	v22, v22, v12
+  cmeq.16b	v28, v28, v6
+  ushll.8h	v30, v28, #0
+  ushll.4s	v31, v30, #0
+  and.16b	v31, v31, v5
+  ushll2.4s	v30, v30, #0
+  and.16b	v30, v30, v5
+  ushll2.8h	v28, v28, #0
+  ushll.4s	v8, v28, #0
+  and.16b	v8, v8, v5
+  ushll2.4s	v28, v28, #0
+  and.16b	v28, v28, v5
+  cmeq.16b	v29, v29, v6
+  ushll.8h	v9, v29, #0
+  ushll.4s	v10, v9, #0
+  and.16b	v10, v10, v5
+  ushll2.4s	v9, v9, #0
+  and.16b	v9, v9, v5
+  ushll2.8h	v29, v29, #0
+  ushll.4s	v11, v29, #0
+  and.16b	v11, v11, v5
+  ushll2.4s	v29, v29, #0
+  and.16b	v29, v29, v5
+  add.4s	v17, v17, v28
+  add.4s	v4, v4, v8
+  add.4s	v16, v16, v30
+  add.4s	v3, v3, v31
+  add.4s	v25, v25, v29
+  add.4s	v20, v20, v11
+  add.4s	v24, v24, v9
+  add	x10, x10, #32
+  add.4s	v18, v18, v10
+  subs	x11, x11, #32
+  b.ne	LBB0_13
+
+- Edges:
+  NO_JUMP -> 624
+  JUMP -> 360
+
+============================================================
+BLOCK 624
+- Instructions:
+  add.4s	v1, v26, v19
+  add.4s	v2, v27, v21
+  add.4s	v0, v22, v0
+  add.4s	v5, v23, v7
+  add.4s	v0, v0, v5
+  add.4s	v1, v1, v2
+  add.4s	v0, v0, v1
+  addv.4s	s0, v0
+  fmov	w10, s0
+  add.4s	v0, v24, v16
+  add.4s	v1, v25, v17
+  add.4s	v2, v18, v3
+  add.4s	v3, v20, v4
+  add.4s	v2, v2, v3
+  add.4s	v0, v0, v1
+  add.4s	v0, v2, v0
+  addv.4s	s0, v0
+  fmov	w11, s0
+  cbz	x9, LBB0_21
+
+- Edges:
+  NO_JUMP -> 700
+  JUMP -> 880
+
+============================================================
+BLOCK 700
+- Instructions:
+  cmp	x9, #3
+  b.ls	LBB0_19
+
+- Edges:
+  NO_JUMP -> 708
+  JUMP -> 840
+
+============================================================
+BLOCK 708
+- Instructions:
+  mov	x13, x8
+  and	x9, x22, #0x3
+  add	x12, x19, x8
+  sub	x8, x21, x9
+  movi.2d	v0, #0000000000000000
+  movi.2d	v1, #0000000000000000
+  mov.s	v1[0], w10
+  mov.s	v0[0], w11
+  add	x10, x13, x9
+  sub	x10, x10, x21
+  movi.4h	v2, #208
+  movi.4h	v3, #10
+  movi.4s	v4, #1
+  movi.4h	v5, #46
+
+- Edges:
+  NO_JUMP -> 764
+
+============================================================
+BLOCK 764
+- Instructions:
+  ldr	s6, [x12], #4
+  ushll.8h	v7, v6, #0
+  uaddw.8h	v6, v2, v6
+  bic.4h	v6, #1, lsl #8
+  cmhi.4h	v6, v3, v6
+  ushll.4s	v6, v6, #0
+  and.16b	v6, v6, v4
+  add.4s	v1, v1, v6
+  cmeq.4h	v6, v7, v5
+  ushll.4s	v6, v6, #0
+  and.16b	v6, v6, v4
+  add.4s	v0, v0, v6
+  adds	x10, x10, #4
+  b.ne	LBB0_17
+
+- Edges:
+  NO_JUMP -> 820
+  JUMP -> 764
+
+============================================================
+BLOCK 820
+- Instructions:
+  addv.4s	s1, v1
+  fmov	w10, s1
+  addv.4s	s0, v0
+  fmov	w11, s0
+  cbz	x9, LBB0_21
+
+- Edges:
+  NO_JUMP -> 840
+  JUMP -> 880
+
+============================================================
+BLOCK 840
+- Instructions:
+  add	x9, x19, x8
+  sub	x8, x21, x8
+
+- Edges:
+  NO_JUMP -> 848
+
+============================================================
+BLOCK 848
+- Instructions:
+  ldrb	w12, [x9], #1
+  sub	w13, w12, #48
+  cmp	w13, #10
+  cinc	w10, w10, lo
+  cmp	w12, #46
+  cinc	w11, w11, eq
+  subs	x8, x8, #1
+  b.ne	LBB0_20
+
+- Edges:
+  NO_JUMP -> 880
+  JUMP -> 848
+
+============================================================
+BLOCK 880
+- Instructions:
+  cmp	w11, #1
+  ccmp	w10, #3, #2, eq
+  adrp	x8, l_.str.4
+  add	x8, x8, l_.str.4
+  csel	x0, x0, x8, hi
+  b	LBB0_3
+
+- Edges:
+  JUMP -> 68

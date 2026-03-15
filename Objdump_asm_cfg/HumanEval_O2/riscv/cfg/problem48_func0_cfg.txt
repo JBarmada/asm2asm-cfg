@@ -1,0 +1,132 @@
+Function: func0
+Basic blocks: 11
+
+============================================================
+BLOCK 2232
+- Instructions:
+  blez	a1,902 <func0+0x4a>
+
+- Edges:
+  NO_JUMP -> 2236
+  JUMP -> 2306
+
+============================================================
+BLOCK 2236
+- Instructions:
+  li	a6,0
+  add	a7,a0,4
+  li	t0,1
+  j	8ce <func0+0x16>
+
+- Edges:
+  JUMP -> 2254
+
+============================================================
+BLOCK 2246
+- Instructions:
+  add	t0,t0,1
+  add	a7,a7,4
+  beq	a6,a1,902 <func0+0x4a>
+
+- Edges:
+  NO_JUMP -> 2254
+  JUMP -> 2306
+
+============================================================
+BLOCK 2254
+- Instructions:
+  mv	a2,a6
+  add	a6,a6,1
+  bgeu	a6,a1,8c6 <func0+0xe>
+
+- Edges:
+  NO_JUMP -> 2262
+  JUMP -> 2246
+
+============================================================
+BLOCK 2262
+- Instructions:
+  sll	a2,a2,0x2
+  add	a5,a0,a2
+  mv	a4,a1
+  mv	a2,a7
+  j	8ea <func0+0x32>
+
+- Edges:
+  JUMP -> 2282
+
+============================================================
+BLOCK 2274
+- Instructions:
+  add	a4,a4,-1
+  add	a2,a2,4
+  beq	t0,a4,8c6 <func0+0xe>
+
+- Edges:
+  NO_JUMP -> 2282
+  JUMP -> 2246
+
+============================================================
+BLOCK 2282
+- Instructions:
+  flw	ft0,0(a5)
+  flw	ft1,0(a2)
+  flt.s	a3,ft1,ft0
+  beqz	a3,8e2 <func0+0x2a>
+
+- Edges:
+  NO_JUMP -> 2296
+  JUMP -> 2274
+
+============================================================
+BLOCK 2296
+- Instructions:
+  fsw	ft1,0(a5)
+  fsw	ft0,0(a2)
+  j	8e2 <func0+0x2a>
+
+- Edges:
+  JUMP -> 2274
+
+============================================================
+BLOCK 2306
+- Instructions:
+  lui	a2,0x80000
+  addw	a2,a2,1 # ffffffff80000001 <__global_pointer$+0xffffffff7fffd801>
+  and	a2,a2,a1
+  li	a3,1
+  bne	a2,a3,91e <func0+0x66>
+
+- Edges:
+  NO_JUMP -> 2320
+  JUMP -> 2334
+
+============================================================
+BLOCK 2320
+- Instructions:
+  srlw	a1,a1,0x1
+  sll	a1,a1,0x2
+  add	a0,a0,a1
+  flw	fa0,0(a0)
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 2334
+- Instructions:
+  srlw	a2,a1,0x1f
+  addw	a1,a1,a2
+  sll	a1,a1,0x1
+  and	a1,a1,-4
+  add	a0,a0,a1
+  flw	ft0,0(a0)
+  flw	ft1,-4(a0)
+  auipc	a0,0x1
+  add	a0,a0,1866 # 207c <__SDATA_BEGIN__+0x2c>
+  flw	ft2,0(a0)
+  fadd.s	ft0,ft0,ft1
+  fmul.s	fa0,ft0,ft2
+  ret
+
+- Edges: (none)

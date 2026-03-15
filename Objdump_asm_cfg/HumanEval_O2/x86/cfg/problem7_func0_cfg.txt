@@ -1,0 +1,127 @@
+Function: func0
+Basic blocks: 11
+
+============================================================
+BLOCK 4848
+- Instructions:
+  push   %rbp
+  push   %r15
+  push   %r14
+  push   %r12
+  push   %rbx
+  mov    %rsi,%r14
+  mov    %rdi,%rbx
+  xor    %ecx,%ecx
+  xor    %ebp,%ebp
+  xor    %r15d,%r15d
+  xor    %eax,%eax
+  jmp    1317 <func0+0x27>
+
+- Edges:
+  JUMP -> 4887
+
+============================================================
+BLOCK 4873
+- Instructions:
+  nopl   0x0(%rax)
+
+- Edges:
+  NO_JUMP -> 4880
+
+============================================================
+BLOCK 4880
+- Instructions:
+  test   %edx,%edx
+  je     135d <func0+0x6d>
+
+- Edges:
+  NO_JUMP -> 4884
+  JUMP -> 4957
+
+============================================================
+BLOCK 4884
+- Instructions:
+  inc    %rbx
+
+- Edges:
+  NO_JUMP -> 4887
+
+============================================================
+BLOCK 4887
+- Instructions:
+  movzbl (%rbx),%edx
+  cmp    $0x28,%edx
+  je     1350 <func0+0x60>
+
+- Edges:
+  NO_JUMP -> 4895
+  JUMP -> 4944
+
+============================================================
+BLOCK 4895
+- Instructions:
+  cmp    $0x29,%edx
+  jne    1310 <func0+0x20>
+
+- Edges:
+  NO_JUMP -> 4900
+  JUMP -> 4880
+
+============================================================
+BLOCK 4900
+- Instructions:
+  dec    %ecx
+  jne    1314 <func0+0x24>
+
+- Edges:
+  NO_JUMP -> 4904
+  JUMP -> 4884
+
+============================================================
+BLOCK 4904
+- Instructions:
+  movslq %r15d,%r12
+  inc    %r15d
+  lea    0x4(,%r12,4),%rsi
+  mov    %rax,%rdi
+  call   1050 <realloc@plt>
+  mov    %ebp,(%rax,%r12,4)
+  xor    %ecx,%ecx
+  xor    %ebp,%ebp
+  jmp    1314 <func0+0x24>
+
+- Edges:
+  JUMP -> 4884
+
+============================================================
+BLOCK 4936
+- Instructions:
+  nopl   0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 4944
+
+============================================================
+BLOCK 4944
+- Instructions:
+  cmp    %ebp,%ecx
+  lea    0x1(%rcx),%ecx
+  cmovge %ecx,%ebp
+  inc    %rbx
+  jmp    1317 <func0+0x27>
+
+- Edges:
+  JUMP -> 4887
+
+============================================================
+BLOCK 4957
+- Instructions:
+  mov    %r15d,(%r14)
+  pop    %rbx
+  pop    %r12
+  pop    %r14
+  pop    %r15
+  pop    %rbp
+  ret
+
+- Edges: (none)

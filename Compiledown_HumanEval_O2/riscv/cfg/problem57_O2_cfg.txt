@@ -1,0 +1,68 @@
+Function: func0
+Basic blocks: 7
+
+============================================================
+BLOCK 0
+- Instructions:
+  li	a1, 0
+  li	a2, 60
+  j	.LBB0_3
+
+- Edges:
+  JUMP -> 36
+
+============================================================
+BLOCK 12
+- Instructions:
+  addiw	a1, a1, 1
+
+- Edges:
+  NO_JUMP -> 16
+
+============================================================
+BLOCK 16
+- Instructions:
+  addi	a3, a3, -62
+  seqz	a3, a3
+  subw	a1, a1, a3
+  addi	a0, a0, 1
+  bltz	a1, .LBB0_6
+
+- Edges:
+  NO_JUMP -> 36
+  JUMP -> 56
+
+============================================================
+BLOCK 36
+- Instructions:
+  lbu	a3, 0(a0)
+  beq	a3, a2, .LBB0_1
+
+- Edges:
+  NO_JUMP -> 44
+  JUMP -> 12
+
+============================================================
+BLOCK 44
+- Instructions:
+  bnez	a3, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 48
+  JUMP -> 16
+
+============================================================
+BLOCK 48
+- Instructions:
+  seqz	a0, a1
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 56
+- Instructions:
+  li	a0, 0
+  ret
+
+- Edges: (none)

@@ -1,0 +1,101 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 0
+- Instructions:
+  addi	sp, sp, -16
+  sd	ra, 8(sp)
+  sd	s0, 0(sp)
+  mv	s0, a0
+  call	strlen@plt
+  sext.w	a2, a0
+  li	a3, 2
+  li	a1, 1
+  blt	a2, a3, .LBB0_7
+
+- Edges:
+  NO_JUMP -> 36
+  JUMP -> 140
+
+============================================================
+BLOCK 36
+- Instructions:
+  lbu	a1, 0(s0)
+  addiw	a2, a0, -1
+  add	a2, a2, s0
+  lbu	a2, 0(a2)
+  bne	a1, a2, .LBB0_6
+
+- Edges:
+  NO_JUMP -> 56
+  JUMP -> 136
+
+============================================================
+BLOCK 56
+- Instructions:
+  li	a3, -1
+  slli	a6, a3, 32
+  srliw	a1, a0, 1
+  slli	a0, a0, 32
+  slli	a3, a3, 33
+  add	a0, a0, a3
+  li	a4, 1
+
+- Edges:
+  NO_JUMP -> 84
+
+============================================================
+BLOCK 84
+- Instructions:
+  mv	a3, a4
+  beq	a1, a4, .LBB0_5
+
+- Edges:
+  NO_JUMP -> 92
+  JUMP -> 124
+
+============================================================
+BLOCK 92
+- Instructions:
+  add	a4, s0, a3
+  lbu	a5, 0(a4)
+  srai	a4, a0, 32
+  add	a4, a4, s0
+  lbu	a2, 0(a4)
+  add	a0, a0, a6
+  addi	a4, a3, 1
+  beq	a5, a2, .LBB0_3
+
+- Edges:
+  NO_JUMP -> 124
+  JUMP -> 84
+
+============================================================
+BLOCK 124
+- Instructions:
+  sltu	a0, a3, a1
+  xori	a1, a0, 1
+  j	.LBB0_7
+
+- Edges:
+  JUMP -> 140
+
+============================================================
+BLOCK 136
+- Instructions:
+  li	a1, 0
+
+- Edges:
+  NO_JUMP -> 140
+
+============================================================
+BLOCK 140
+- Instructions:
+  mv	a0, a1
+  ld	ra, 8(sp)
+  ld	s0, 0(sp)
+  addi	sp, sp, 16
+  ret
+
+- Edges: (none)

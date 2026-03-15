@@ -1,0 +1,155 @@
+Function: _func0
+Basic blocks: 15
+
+============================================================
+BLOCK 0
+- Instructions:
+  cmp	w1, #1
+  b.lt	LBB0_13
+
+- Edges:
+  NO_JUMP -> 8
+  JUMP -> 160
+
+============================================================
+BLOCK 8
+- Instructions:
+  mov	x9, #0
+  mov	w8, #0
+  mov	w10, w1
+  b	LBB0_4
+
+- Edges:
+  JUMP -> 44
+
+============================================================
+BLOCK 24
+- Instructions:
+  cmp	w11, w8
+  csel	w8, w11, w8, gt
+
+- Edges:
+  NO_JUMP -> 32
+
+============================================================
+BLOCK 32
+- Instructions:
+  add	x9, x9, #1
+  cmp	x9, x10
+  b.eq	LBB0_9
+
+- Edges:
+  NO_JUMP -> 44
+  JUMP -> 104
+
+============================================================
+BLOCK 44
+- Instructions:
+  ldr	w11, [x0, x9, lsl #2]
+  cmp	w11, #2
+  b.lt	LBB0_3
+
+- Edges:
+  NO_JUMP -> 56
+  JUMP -> 32
+
+============================================================
+BLOCK 56
+- Instructions:
+  cmp	w11, #4
+  b.lo	LBB0_2
+
+- Edges:
+  NO_JUMP -> 64
+  JUMP -> 24
+
+============================================================
+BLOCK 64
+- Instructions:
+  mov	w12, #3
+
+- Edges:
+  NO_JUMP -> 68
+
+============================================================
+BLOCK 68
+- Instructions:
+  sub	w13, w12, #1
+  udiv	w14, w11, w13
+  msub	w13, w14, w13, w11
+  cbz	w13, LBB0_3
+
+- Edges:
+  NO_JUMP -> 84
+  JUMP -> 32
+
+============================================================
+BLOCK 84
+- Instructions:
+  mul	w13, w12, w12
+  add	w12, w12, #1
+  cmp	w13, w11
+  b.le	LBB0_7
+
+- Edges:
+  NO_JUMP -> 100
+  JUMP -> 68
+
+============================================================
+BLOCK 100
+- Instructions:
+  b	LBB0_2
+
+- Edges:
+  JUMP -> 24
+
+============================================================
+BLOCK 104
+- Instructions:
+  cmp	w8, #1
+  b.lt	LBB0_13
+
+- Edges:
+  NO_JUMP -> 112
+  JUMP -> 160
+
+============================================================
+BLOCK 112
+- Instructions:
+  mov	w0, #0
+  mov	w9, #52429
+  movk	w9, #52428, lsl #16
+  mov	w10, #10
+
+- Edges:
+  NO_JUMP -> 128
+
+============================================================
+BLOCK 128
+- Instructions:
+  umull	x11, w8, w9
+  lsr	x11, x11, #35
+  msub	w12, w11, w10, w8
+  add	w0, w12, w0
+  cmp	w8, #9
+  mov	x8, x11
+  b.hi	LBB0_11
+
+- Edges:
+  NO_JUMP -> 156
+  JUMP -> 128
+
+============================================================
+BLOCK 156
+- Instructions:
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 160
+- Instructions:
+  mov	w0, #0
+  ret
+
+- Edges: (none)

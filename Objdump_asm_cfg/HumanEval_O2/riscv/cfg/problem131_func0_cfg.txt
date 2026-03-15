@@ -1,0 +1,108 @@
+Function: func0
+Basic blocks: 9
+
+============================================================
+BLOCK 2952
+- Instructions:
+  add	sp,sp,-32
+  sd	ra,24(sp)
+  sd	s0,16(sp)
+  sd	s1,8(sp)
+  mv	s0,a0
+  addw	s1,a0,1
+  sll	a0,s1,0x2
+  jal	660 <malloc@plt>
+
+- Edges:
+  JUMP -> 1632
+
+============================================================
+BLOCK 2974
+- Instructions:
+  li	a1,1
+  sw	a1,0(a0)
+  beqz	s0,bae <func0+0x26>
+
+- Edges:
+  NO_JUMP -> 2980
+  JUMP -> 2990
+
+============================================================
+BLOCK 2980
+- Instructions:
+  li	a2,3
+  li	a1,2
+  sw	a2,4(a0)
+  bge	s0,a1,bb8 <func0+0x30>
+
+- Edges:
+  NO_JUMP -> 2990
+  JUMP -> 3000
+
+============================================================
+BLOCK 2990
+- Instructions:
+  ld	ra,24(sp)
+  ld	s0,16(sp)
+  ld	s1,8(sp)
+  add	sp,sp,32
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 3000
+- Instructions:
+  sll	a3,s1,0x20
+  srl	a3,a3,0x20
+  j	bdc <func0+0x54>
+
+- Edges:
+  JUMP -> 3036
+
+============================================================
+BLOCK 3008
+- Instructions:
+  add	a5,a4,a0
+  lw	a5,-8(a5)
+  add	a1,a1,1
+  srlw	s1,a1,0x1
+  addw	a2,a2,s1
+  addw	a2,a2,a5
+  addw	a2,a2,1
+
+- Edges:
+  NO_JUMP -> 3028
+
+============================================================
+BLOCK 3028
+- Instructions:
+  add	a4,a4,a0
+  sw	a2,0(a4)
+  beq	a1,a3,bae <func0+0x26>
+
+- Edges:
+  NO_JUMP -> 3036
+  JUMP -> 2990
+
+============================================================
+BLOCK 3036
+- Instructions:
+  and	a5,a1,1
+  sll	a4,a1,0x2
+  bnez	a5,bc0 <func0+0x38>
+
+- Edges:
+  NO_JUMP -> 3046
+  JUMP -> 3008
+
+============================================================
+BLOCK 3046
+- Instructions:
+  srlw	a2,a1,0x1
+  addw	a2,a2,1
+  add	a1,a1,1
+  j	bd4 <func0+0x4c>
+
+- Edges:
+  JUMP -> 3028

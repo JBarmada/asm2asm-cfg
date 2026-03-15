@@ -1,0 +1,110 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 4848
+- Instructions:
+  push   %rbp
+  push   %rbx
+  push   %rax
+  mov    %edi,%ebp
+  movslq %edi,%rbx
+  lea    0x0(,%rbx,4),%rdi
+  call   1050 <malloc@plt>
+  test   %ebx,%ebx
+  jle    1381 <func0+0x91>
+
+- Edges:
+  NO_JUMP -> 4873
+  JUMP -> 4993
+
+============================================================
+BLOCK 4873
+- Instructions:
+  mov    %ebp,%r8d
+  cmp    $0x1,%ebp
+  jne    131f <func0+0x2f>
+
+- Edges:
+  NO_JUMP -> 4881
+  JUMP -> 4895
+
+============================================================
+BLOCK 4881
+- Instructions:
+  xor    %edx,%edx
+  mov    $0x1,%esi
+  mov    $0x1,%edi
+  jmp    136b <func0+0x7b>
+
+- Edges:
+  JUMP -> 4971
+
+============================================================
+BLOCK 4895
+- Instructions:
+  mov    %r8d,%ecx
+  and    $0xfffffffe,%ecx
+  neg    %rcx
+  xor    %edx,%edx
+  mov    $0x1,%esi
+  mov    $0x1,%edi
+  mov    $0x2,%ebx
+  nopl   0x0(%rax)
+
+- Edges:
+  NO_JUMP -> 4928
+
+============================================================
+BLOCK 4928
+- Instructions:
+  lea    -0x1(%rbx),%ebp
+  add    %ebx,%edx
+  dec    %edx
+  mov    %edx,-0x4(%rax,%rdi,4)
+  add    %ebx,%edx
+  imul   %ebx,%esi
+  imul   %ebp,%esi
+  mov    %esi,(%rax,%rdi,4)
+  add    $0x2,%ebx
+  lea    (%rcx,%rdi,1),%rbp
+  add    $0x2,%rbp
+  add    $0x2,%rdi
+  cmp    $0x1,%rbp
+  jne    1340 <func0+0x50>
+
+- Edges:
+  NO_JUMP -> 4971
+  JUMP -> 4928
+
+============================================================
+BLOCK 4971
+- Instructions:
+  test   $0x1,%r8b
+  je     1381 <func0+0x91>
+
+- Edges:
+  NO_JUMP -> 4977
+  JUMP -> 4993
+
+============================================================
+BLOCK 4977
+- Instructions:
+  add    %edi,%edx
+  imul   %edi,%esi
+  test   $0x1,%dil
+  cmovne %edx,%esi
+  mov    %esi,-0x4(%rax,%rdi,4)
+
+- Edges:
+  NO_JUMP -> 4993
+
+============================================================
+BLOCK 4993
+- Instructions:
+  add    $0x8,%rsp
+  pop    %rbx
+  pop    %rbp
+  ret
+
+- Edges: (none)

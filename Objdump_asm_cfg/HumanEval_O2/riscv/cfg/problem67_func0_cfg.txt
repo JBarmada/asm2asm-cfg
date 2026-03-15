@@ -1,0 +1,72 @@
+Function: func0
+Basic blocks: 7
+
+============================================================
+BLOCK 2128
+- Instructions:
+  lbu	a2,0(a0)
+  beqz	a2,87e <func0+0x2e>
+
+- Edges:
+  NO_JUMP -> 2134
+  JUMP -> 2174
+
+============================================================
+BLOCK 2134
+- Instructions:
+  mv	a1,a0
+  li	a0,0
+  add	a1,a1,1
+  li	a3,26
+  j	86e <func0+0x1e>
+
+- Edges:
+  JUMP -> 2158
+
+============================================================
+BLOCK 2144
+- Instructions:
+  zext.b	a4,a2
+  lbu	a2,0(a1)
+  addw	a0,a0,a4
+  add	a1,a1,1
+  beqz	a2,880 <func0+0x30>
+
+- Edges:
+  NO_JUMP -> 2158
+  JUMP -> 2176
+
+============================================================
+BLOCK 2158
+- Instructions:
+  addw	a4,a2,-65
+  zext.b	a4,a4
+  bltu	a4,a3,860 <func0+0x10>
+
+- Edges:
+  NO_JUMP -> 2170
+  JUMP -> 2144
+
+============================================================
+BLOCK 2170
+- Instructions:
+  li	a2,0
+  j	860 <func0+0x10>
+
+- Edges:
+  JUMP -> 2144
+
+============================================================
+BLOCK 2174
+- Instructions:
+  li	a0,0
+
+- Edges:
+  NO_JUMP -> 2176
+
+============================================================
+BLOCK 2176
+- Instructions:
+  ret
+
+- Edges: (none)

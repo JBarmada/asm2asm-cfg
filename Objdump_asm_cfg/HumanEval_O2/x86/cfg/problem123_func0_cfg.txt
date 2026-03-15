@@ -1,0 +1,219 @@
+Function: func0
+Basic blocks: 15
+
+============================================================
+BLOCK 4864
+- Instructions:
+  test   %esi,%esi
+  jle    1318 <func0+0x18>
+
+- Edges:
+  NO_JUMP -> 4868
+  JUMP -> 4888
+
+============================================================
+BLOCK 4868
+- Instructions:
+  mov    %esi,%r10d
+  xor    %r9d,%r9d
+  cmp    $0x8,%esi
+  jae    131b <func0+0x1b>
+
+- Edges:
+  NO_JUMP -> 4879
+  JUMP -> 4891
+
+============================================================
+BLOCK 4879
+- Instructions:
+  xor    %esi,%esi
+  xor    %eax,%eax
+  jmp    1490 <func0+0x190>
+
+- Edges:
+  JUMP -> 5264
+
+============================================================
+BLOCK 4888
+- Instructions:
+  xor    %eax,%eax
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 4891
+- Instructions:
+  mov    %r10d,%esi
+  and    $0xfffffff8,%esi
+  lea    -0x8(%rsi),%rax
+  mov    %rax,%r8
+  shr    $0x3,%r8
+  inc    %r8
+  test   %rax,%rax
+  je     14ab <func0+0x1ab>
+
+- Edges:
+  NO_JUMP -> 4920
+  JUMP -> 5291
+
+============================================================
+BLOCK 4920
+- Instructions:
+  mov    %r8,%rdx
+  and    $0xfffffffffffffffe,%rdx
+  pxor   %xmm0,%xmm0
+  xor    %eax,%eax
+  movdqa 0xdf2(%rip),%xmm8        # 2140 <_IO_stdin_used+0x140>
+  movdqa 0xdf9(%rip),%xmm9        # 2150 <_IO_stdin_used+0x150>
+  movdqa 0xe00(%rip),%xmm10        # 2160 <_IO_stdin_used+0x160>
+  pxor   %xmm1,%xmm1
+  data16 data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 4976
+
+============================================================
+BLOCK 4976
+- Instructions:
+  movdqu (%rdi,%rax,4),%xmm3
+  movdqu 0x10(%rdi,%rax,4),%xmm4
+  movdqu 0x20(%rdi,%rax,4),%xmm6
+  movdqu 0x30(%rdi,%rax,4),%xmm11
+  movdqa %xmm3,%xmm7
+  paddd  %xmm8,%xmm7
+  movdqa %xmm4,%xmm2
+  paddd  %xmm8,%xmm2
+  pxor   %xmm9,%xmm7
+  movdqa %xmm10,%xmm5
+  pcmpgtd %xmm7,%xmm5
+  pxor   %xmm9,%xmm2
+  movdqa %xmm10,%xmm7
+  pcmpgtd %xmm2,%xmm7
+  pand   %xmm3,%xmm5
+  paddd  %xmm0,%xmm5
+  pand   %xmm4,%xmm7
+  paddd  %xmm1,%xmm7
+  movdqa %xmm6,%xmm1
+  paddd  %xmm8,%xmm1
+  movdqa %xmm11,%xmm2
+  paddd  %xmm8,%xmm2
+  pxor   %xmm9,%xmm1
+  movdqa %xmm10,%xmm0
+  pcmpgtd %xmm1,%xmm0
+  pxor   %xmm9,%xmm2
+  movdqa %xmm10,%xmm1
+  pcmpgtd %xmm2,%xmm1
+  pand   %xmm6,%xmm0
+  paddd  %xmm5,%xmm0
+  pand   %xmm11,%xmm1
+  paddd  %xmm7,%xmm1
+  add    $0x10,%rax
+  add    $0xfffffffffffffffe,%rdx
+  jne    1370 <func0+0x70>
+
+- Edges:
+  NO_JUMP -> 5140
+  JUMP -> 4976
+
+============================================================
+BLOCK 5140
+- Instructions:
+  test   $0x1,%r8b
+  je     1470 <func0+0x170>
+
+- Edges:
+  NO_JUMP -> 5146
+  JUMP -> 5232
+
+============================================================
+BLOCK 5146
+- Instructions:
+  movdqu (%rdi,%rax,4),%xmm2
+  movdqu 0x10(%rdi,%rax,4),%xmm3
+  movdqa 0xd13(%rip),%xmm4        # 2140 <_IO_stdin_used+0x140>
+  movdqa %xmm2,%xmm5
+  paddd  %xmm4,%xmm5
+  paddd  %xmm3,%xmm4
+  movdqa 0xd0e(%rip),%xmm8        # 2150 <_IO_stdin_used+0x150>
+  pxor   %xmm8,%xmm5
+  movdqa 0xd11(%rip),%xmm7        # 2160 <_IO_stdin_used+0x160>
+  movdqa %xmm7,%xmm6
+  pcmpgtd %xmm5,%xmm6
+  pxor   %xmm8,%xmm4
+  pcmpgtd %xmm4,%xmm7
+  pand   %xmm2,%xmm6
+  paddd  %xmm6,%xmm0
+  pand   %xmm3,%xmm7
+  paddd  %xmm7,%xmm1
+
+- Edges:
+  NO_JUMP -> 5232
+
+============================================================
+BLOCK 5232
+- Instructions:
+  paddd  %xmm1,%xmm0
+  pshufd $0xee,%xmm0,%xmm1
+  paddd  %xmm0,%xmm1
+  pshufd $0x55,%xmm1,%xmm0
+  paddd  %xmm1,%xmm0
+  movd   %xmm0,%eax
+  cmp    %r10,%rsi
+  je     14aa <func0+0x1aa>
+
+- Edges:
+  NO_JUMP -> 5263
+  JUMP -> 5290
+
+============================================================
+BLOCK 5263
+- Instructions:
+  nop
+
+- Edges:
+  NO_JUMP -> 5264
+
+============================================================
+BLOCK 5264
+- Instructions:
+  mov    (%rdi,%rsi,4),%edx
+  lea    0x63(%rdx),%ecx
+  cmp    $0xc7,%ecx
+  cmovae %r9d,%edx
+  add    %edx,%eax
+  inc    %rsi
+  cmp    %rsi,%r10
+  jne    1490 <func0+0x190>
+
+- Edges:
+  NO_JUMP -> 5290
+  JUMP -> 5264
+
+============================================================
+BLOCK 5290
+- Instructions:
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 5291
+- Instructions:
+  pxor   %xmm0,%xmm0
+  xor    %eax,%eax
+  pxor   %xmm1,%xmm1
+  test   $0x1,%r8b
+  jne    141a <func0+0x11a>
+
+- Edges:
+  NO_JUMP -> 5311
+  JUMP -> 5146
+
+============================================================
+BLOCK 5311
+- Instructions:
+  jmp    1470 <func0+0x170>
+
+- Edges:
+  JUMP -> 5232

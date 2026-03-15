@@ -1,0 +1,111 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 0
+- Instructions:
+  addi	sp, sp, -64
+  sd	ra, 56(sp)
+  sd	s0, 48(sp)
+  sd	s1, 40(sp)
+  sd	s2, 32(sp)
+  sd	s3, 24(sp)
+  sd	s4, 16(sp)
+  sd	s5, 8(sp)
+  sd	s6, 0(sp)
+  sb	zero, 0(a1)
+  blez	a0, .LBB0_6
+
+- Edges:
+  NO_JUMP -> 44
+  JUMP -> 160
+
+============================================================
+BLOCK 44
+- Instructions:
+  mv	s2, a1
+  mv	s1, a0
+  li	s3, 0
+  auipc	s4, %pcrel_hi(.L__const.func0.num)
+  addi	s4, s4, %pcrel_lo(.LBB0_7)
+  auipc	s5, %pcrel_hi(.Lreltable.func0)
+  addi	s5, s5, %pcrel_lo(.LBB0_8)
+  j	.LBB0_3
+
+- Edges:
+  JUMP -> 92
+
+============================================================
+BLOCK 76
+- Instructions:
+  sext.w	a0, s1
+  sgtz	a1, a0
+  addw	s3, s3, a1
+  blez	a0, .LBB0_6
+
+- Edges:
+  NO_JUMP -> 92
+  JUMP -> 160
+
+============================================================
+BLOCK 92
+- Instructions:
+  slli	a0, s3, 32
+  srli	a1, a0, 30
+  add	a1, a1, s4
+  lw	s0, 0(a1)
+  sext.w	a1, s1
+  blt	a1, s0, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 116
+  JUMP -> 76
+
+============================================================
+BLOCK 116
+- Instructions:
+  srli	a0, a0, 32
+  slli	a0, a0, 2
+  add	a0, a0, s5
+  lw	a0, 0(a0)
+  add	s6, s5, a0
+
+- Edges:
+  NO_JUMP -> 136
+
+============================================================
+BLOCK 136
+- Instructions:
+  mv	a0, s2
+  mv	a1, s6
+  call	strcat@plt
+  subw	s1, s1, s0
+  bge	s1, s0, .LBB0_5
+
+- Edges:
+  NO_JUMP -> 156
+  JUMP -> 136
+
+============================================================
+BLOCK 156
+- Instructions:
+  j	.LBB0_2
+
+- Edges:
+  JUMP -> 76
+
+============================================================
+BLOCK 160
+- Instructions:
+  ld	ra, 56(sp)
+  ld	s0, 48(sp)
+  ld	s1, 40(sp)
+  ld	s2, 32(sp)
+  ld	s3, 24(sp)
+  ld	s4, 16(sp)
+  ld	s5, 8(sp)
+  ld	s6, 0(sp)
+  addi	sp, sp, 64
+  ret
+
+- Edges: (none)

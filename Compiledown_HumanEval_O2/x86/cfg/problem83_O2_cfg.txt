@@ -1,0 +1,86 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 0
+- Instructions:
+  pushq	%rax
+  callq	strlen@PLT
+  movq	%rax, %rcx
+  cmpl	$2, %ecx
+  jge	.LBB0_2
+
+- Edges:
+  NO_JUMP -> 20
+  JUMP -> 32
+
+============================================================
+BLOCK 20
+- Instructions:
+  xorl	%eax, %eax
+
+- Edges:
+  NO_JUMP -> 24
+
+============================================================
+BLOCK 24
+- Instructions:
+  popq	%rcx
+  retq
+
+- Edges: (none)
+
+============================================================
+BLOCK 32
+- Instructions:
+  movb	$1, %al
+  cmpl	$4, %ecx
+  jb	.LBB0_7
+
+- Edges:
+  NO_JUMP -> 44
+  JUMP -> 24
+
+============================================================
+BLOCK 44
+- Instructions:
+  movl	$2, %esi
+
+- Edges:
+  NO_JUMP -> 48
+
+============================================================
+BLOCK 48
+- Instructions:
+  movl	%ecx, %eax
+  cltd
+  idivl	%esi
+  testl	%edx, %edx
+  je	.LBB0_6
+
+- Edges:
+  NO_JUMP -> 68
+  JUMP -> 88
+
+============================================================
+BLOCK 68
+- Instructions:
+  incl	%esi
+  movl	%esi, %eax
+  imull	%esi, %eax
+  cmpl	%ecx, %eax
+  jle	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 88
+  JUMP -> 48
+
+============================================================
+BLOCK 88
+- Instructions:
+  testl	%edx, %edx
+  setne	%al
+  popq	%rcx
+  retq
+
+- Edges: (none)

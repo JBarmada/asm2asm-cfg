@@ -1,0 +1,72 @@
+Function: func0
+Basic blocks: 7
+
+============================================================
+BLOCK 1972
+- Instructions:
+  li	a3,2
+  blt	a1,a3,7de <func0+0x2a>
+
+- Edges:
+  NO_JUMP -> 1978
+  JUMP -> 2014
+
+============================================================
+BLOCK 1978
+- Instructions:
+  mv	a2,a0
+  li	a0,0
+  addw	a1,a1,-2
+  srlw	a1,a1,0x1
+  add	a1,a1,1
+  add	a2,a2,4
+  j	7d0 <func0+0x1c>
+
+- Edges:
+  JUMP -> 2000
+
+============================================================
+BLOCK 1994
+- Instructions:
+  add	a1,a1,-1
+  add	a2,a2,8
+  beqz	a1,7e0 <func0+0x2c>
+
+- Edges:
+  NO_JUMP -> 2000
+  JUMP -> 2016
+
+============================================================
+BLOCK 2000
+- Instructions:
+  lwu	a3,0(a2)
+  and	a4,a3,1
+  bnez	a4,7ca <func0+0x16>
+
+- Edges:
+  NO_JUMP -> 2010
+  JUMP -> 1994
+
+============================================================
+BLOCK 2010
+- Instructions:
+  addw	a0,a0,a3
+  j	7ca <func0+0x16>
+
+- Edges:
+  JUMP -> 1994
+
+============================================================
+BLOCK 2014
+- Instructions:
+  li	a0,0
+
+- Edges:
+  NO_JUMP -> 2016
+
+============================================================
+BLOCK 2016
+- Instructions:
+  ret
+
+- Edges: (none)

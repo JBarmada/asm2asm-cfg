@@ -1,0 +1,286 @@
+Function: func0
+Basic blocks: 21
+
+============================================================
+BLOCK 0
+- Instructions:
+  addi	sp, sp, -272
+  sd	ra, 264(sp)
+  sd	s0, 256(sp)
+  sd	s1, 248(sp)
+  sd	s2, 240(sp)
+  sd	s3, 232(sp)
+  sd	s4, 224(sp)
+  sd	s5, 216(sp)
+  mv	s1, a0
+  lbu	a2, 0(a0)
+  li	a0, 47
+  mv	s5, a1
+  bne	a2, a0, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 52
+  JUMP -> 64
+
+============================================================
+BLOCK 52
+- Instructions:
+  li	s0, 0
+  li	a1, 0
+  j	.LBB0_5
+
+- Edges:
+  JUMP -> 104
+
+============================================================
+BLOCK 64
+- Instructions:
+  li	a1, 0
+  addi	a3, s1, 1
+  addi	a4, sp, 115
+
+- Edges:
+  NO_JUMP -> 76
+
+============================================================
+BLOCK 76
+- Instructions:
+  add	a5, a4, a1
+  sb	a2, 0(a5)
+  add	a2, a3, a1
+  lbu	a2, 0(a2)
+  addi	a1, a1, 1
+  bne	a2, a0, .LBB0_3
+
+- Edges:
+  NO_JUMP -> 100
+  JUMP -> 76
+
+============================================================
+BLOCK 100
+- Instructions:
+  mv	s0, a1
+
+- Edges:
+  NO_JUMP -> 104
+
+============================================================
+BLOCK 104
+- Instructions:
+  li	a0, -1
+  srli	s4, a0, 32
+  addi	a0, sp, 115
+  add	a0, a0, a1
+  sb	zero, 0(a0)
+  addi	a0, sp, 115
+  li	a2, 10
+  li	a1, 0
+  call	strtol@plt
+  addiw	a1, s0, 1
+  slli	a1, a1, 32
+  srli	a1, a1, 32
+  add	a1, a1, s1
+  lbu	a1, 0(a1)
+  mv	s2, a0
+  beqz	a1, .LBB0_9
+
+- Edges:
+  NO_JUMP -> 168
+  JUMP -> 224
+
+============================================================
+BLOCK 168
+- Instructions:
+  li	a3, 0
+  slli	a0, s0, 32
+  srli	a0, a0, 32
+  add	a0, a0, s1
+  addi	a0, a0, 2
+  addi	a2, sp, 14
+
+- Edges:
+  NO_JUMP -> 192
+
+============================================================
+BLOCK 192
+- Instructions:
+  add	a4, a2, a3
+  sb	a1, 0(a4)
+  add	a1, a0, a3
+  lbu	a1, 0(a1)
+  addi	a3, a3, 1
+  bnez	a1, .LBB0_7
+
+- Edges:
+  NO_JUMP -> 216
+  JUMP -> 192
+
+============================================================
+BLOCK 216
+- Instructions:
+  and	a0, a3, s4
+  j	.LBB0_10
+
+- Edges:
+  JUMP -> 228
+
+============================================================
+BLOCK 224
+- Instructions:
+  li	a0, 0
+
+- Edges:
+  NO_JUMP -> 228
+
+============================================================
+BLOCK 228
+- Instructions:
+  addi	a1, sp, 14
+  add	a0, a0, a1
+  sb	zero, 0(a0)
+  addi	a0, sp, 14
+  li	a2, 10
+  li	a1, 0
+  call	strtol@plt
+  lbu	a2, 0(s5)
+  li	a1, 47
+  mv	s3, a0
+  bne	a2, a1, .LBB0_12
+
+- Edges:
+  NO_JUMP -> 272
+  JUMP -> 284
+
+============================================================
+BLOCK 272
+- Instructions:
+  li	s0, 0
+  li	a0, 0
+  j	.LBB0_15
+
+- Edges:
+  JUMP -> 324
+
+============================================================
+BLOCK 284
+- Instructions:
+  li	a0, 0
+  addi	a3, s5, 1
+  addi	a4, sp, 115
+
+- Edges:
+  NO_JUMP -> 296
+
+============================================================
+BLOCK 296
+- Instructions:
+  add	a5, a4, a0
+  sb	a2, 0(a5)
+  add	a2, a3, a0
+  lbu	a2, 0(a2)
+  addi	a0, a0, 1
+  bne	a2, a1, .LBB0_13
+
+- Edges:
+  NO_JUMP -> 320
+  JUMP -> 296
+
+============================================================
+BLOCK 320
+- Instructions:
+  mv	s0, a0
+
+- Edges:
+  NO_JUMP -> 324
+
+============================================================
+BLOCK 324
+- Instructions:
+  addi	a1, sp, 115
+  add	a0, a0, a1
+  sb	zero, 0(a0)
+  addi	a0, sp, 115
+  li	a2, 10
+  li	a1, 0
+  call	strtol@plt
+  addiw	a1, s0, 1
+  slli	a1, a1, 32
+  srli	a1, a1, 32
+  add	a1, a1, s5
+  lbu	a1, 0(a1)
+  mv	s1, a0
+  beqz	a1, .LBB0_19
+
+- Edges:
+  NO_JUMP -> 380
+  JUMP -> 436
+
+============================================================
+BLOCK 380
+- Instructions:
+  li	a3, 0
+  slli	a0, s0, 32
+  srli	a0, a0, 32
+  add	a0, a0, s5
+  addi	a0, a0, 2
+  addi	a2, sp, 14
+
+- Edges:
+  NO_JUMP -> 404
+
+============================================================
+BLOCK 404
+- Instructions:
+  add	a4, a2, a3
+  sb	a1, 0(a4)
+  add	a1, a0, a3
+  lbu	a1, 0(a1)
+  addi	a3, a3, 1
+  bnez	a1, .LBB0_17
+
+- Edges:
+  NO_JUMP -> 428
+  JUMP -> 404
+
+============================================================
+BLOCK 428
+- Instructions:
+  and	a0, a3, s4
+  j	.LBB0_20
+
+- Edges:
+  JUMP -> 440
+
+============================================================
+BLOCK 436
+- Instructions:
+  li	a0, 0
+
+- Edges:
+  NO_JUMP -> 440
+
+============================================================
+BLOCK 440
+- Instructions:
+  addi	a1, sp, 14
+  add	a0, a0, a1
+  sb	zero, 0(a0)
+  addi	a0, sp, 14
+  li	a2, 10
+  li	a1, 0
+  call	strtol@plt
+  mulw	a1, s1, s2
+  mulw	a0, a0, s3
+  remw	a0, a1, a0
+  seqz	a0, a0
+  ld	ra, 264(sp)
+  ld	s0, 256(sp)
+  ld	s1, 248(sp)
+  ld	s2, 240(sp)
+  ld	s3, 232(sp)
+  ld	s4, 224(sp)
+  ld	s5, 216(sp)
+  addi	sp, sp, 272
+  ret
+
+- Edges: (none)

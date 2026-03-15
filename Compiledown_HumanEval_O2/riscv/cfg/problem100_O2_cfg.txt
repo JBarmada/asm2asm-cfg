@@ -1,0 +1,52 @@
+Function: func0
+Basic blocks: 4
+
+============================================================
+BLOCK 0
+- Instructions:
+  addi	sp, sp, -16
+  sd	ra, 8(sp)
+  li	a1, 0
+  call	strtod@plt
+  fmv.d.x	ft0, zero
+  flt.d	a0, fa0, ft0
+  beqz	a0, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 28
+  JUMP -> 52
+
+============================================================
+BLOCK 28
+- Instructions:
+  auipc	a0, %pcrel_hi(.LCPI0_1)
+  addi	a0, a0, %pcrel_lo(.LBB0_4)
+  fld	ft0, 0(a0)
+  fadd.d	fa0, fa0, ft0
+  call	ceil@plt
+  j	.LBB0_3
+
+- Edges:
+  JUMP -> 72
+
+============================================================
+BLOCK 52
+- Instructions:
+  auipc	a0, %pcrel_hi(.LCPI0_0)
+  addi	a0, a0, %pcrel_lo(.LBB0_5)
+  fld	ft0, 0(a0)
+  fadd.d	fa0, fa0, ft0
+  call	floor@plt
+
+- Edges:
+  NO_JUMP -> 72
+
+============================================================
+BLOCK 72
+- Instructions:
+  fcvt.w.d	a0, fa0, rtz
+  ld	ra, 8(sp)
+  addi	sp, sp, 16
+  ret
+
+- Edges: (none)

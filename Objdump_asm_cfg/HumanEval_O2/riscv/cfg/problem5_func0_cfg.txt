@@ -1,0 +1,93 @@
+Function: func0
+Basic blocks: 9
+
+============================================================
+BLOCK 2016
+- Instructions:
+  blez	a1,826 <func0+0x46>
+
+- Edges:
+  NO_JUMP -> 2020
+  JUMP -> 2086
+
+============================================================
+BLOCK 2020
+- Instructions:
+  fmv.w.x	ft1,zero
+  mv	a2,a1
+  mv	a3,a0
+
+- Edges:
+  NO_JUMP -> 2028
+
+============================================================
+BLOCK 2028
+- Instructions:
+  flw	ft0,0(a3)
+  fadd.s	ft1,ft1,ft0
+  add	a2,a2,-1
+  add	a3,a3,4
+  bnez	a2,7ec <func0+0xc>
+
+- Edges:
+  NO_JUMP -> 2042
+  JUMP -> 2028
+
+============================================================
+BLOCK 2042
+- Instructions:
+  fcvt.s.w	ft0,a1
+  blez	a1,82a <func0+0x4a>
+
+- Edges:
+  NO_JUMP -> 2050
+  JUMP -> 2090
+
+============================================================
+BLOCK 2050
+- Instructions:
+  fdiv.s	ft2,ft1,ft0
+  fmv.w.x	ft1,zero
+
+- Edges:
+  NO_JUMP -> 2058
+
+============================================================
+BLOCK 2058
+- Instructions:
+  flw	ft3,0(a0)
+  fsub.s	ft3,ft3,ft2
+  fabs.s	ft3,ft3
+  fadd.s	ft1,ft1,ft3
+  add	a1,a1,-1
+  add	a0,a0,4
+  bnez	a1,80a <func0+0x2a>
+
+- Edges:
+  NO_JUMP -> 2080
+  JUMP -> 2058
+
+============================================================
+BLOCK 2080
+- Instructions:
+  fdiv.s	fa0,ft1,ft0
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 2086
+- Instructions:
+  fcvt.s.w	ft0,a1
+
+- Edges:
+  NO_JUMP -> 2090
+
+============================================================
+BLOCK 2090
+- Instructions:
+  fmv.w.x	ft1,zero
+  fdiv.s	fa0,ft1,ft0
+  ret
+
+- Edges: (none)

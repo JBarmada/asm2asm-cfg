@@ -1,0 +1,98 @@
+Function: _func0
+Basic blocks: 6
+
+============================================================
+BLOCK 4294968568
+- Instructions:
+  sub	sp, sp, #0x1c0
+  stp	x28, x27, [sp, #0x1a0]
+  stp	x29, x30, [sp, #0x1b0]
+  add	x29, sp, #0x1b0
+  adrp	x8, 0x100004000 <___stack_chk_guard+0x100004000>
+  ldr	x8, [x8, #0x10]
+  ldr	x8, [x8]
+  stur	x8, [x29, #-0x18]
+  movi.2d	v0, #0000000000000000
+  stp	q0, q0, [sp, #0x170]
+  stp	q0, q0, [sp, #0x150]
+  stp	q0, q0, [sp, #0x130]
+  stp	q0, q0, [sp, #0x110]
+  stp	q0, q0, [sp, #0xf0]
+  stp	q0, q0, [sp, #0xd0]
+  stp	q0, q0, [sp, #0xb0]
+  stp	q0, q0, [sp, #0x90]
+  stp	q0, q0, [sp, #0x70]
+  stp	q0, q0, [sp, #0x50]
+  stp	q0, q0, [sp, #0x30]
+  stp	q0, q0, [sp, #0x10]
+  str	q0, [sp]
+  mov	w8, #0x1                ; =1
+  str	w8, [sp, #0x8]
+  cmp	w0, #0x3
+  b.lt	0x100000594 <_func0+0x9c>
+
+- Edges:
+  NO_JUMP -> 4294968672
+  JUMP -> 4294968724
+
+============================================================
+BLOCK 4294968672
+- Instructions:
+  mov	w11, #0x0               ; =0
+  add	w9, w0, #0x1
+  mov	x8, sp
+  orr	x8, x8, #0xc
+  sub	x9, x9, #0x3
+  mov	w10, #0x1               ; =1
+
+- Edges:
+  NO_JUMP -> 4294968696
+
+============================================================
+BLOCK 4294968696
+- Instructions:
+  ldur	w12, [x8, #-0x8]
+  add	w10, w10, w11
+  add	w10, w12, w10
+  str	w10, [x8], #0x4
+  mov	x11, x12
+  subs	x9, x9, #0x1
+  b.ne	0x100000578 <_func0+0x80>
+
+- Edges:
+  NO_JUMP -> 4294968724
+  JUMP -> 4294968696
+
+============================================================
+BLOCK 4294968724
+- Instructions:
+  mov	x8, sp
+  ldr	w0, [x8, w0, sxtw #2]
+  ldur	x8, [x29, #-0x18]
+  adrp	x9, 0x100004000 <___stack_chk_guard+0x100004000>
+  ldr	x9, [x9, #0x10]
+  ldr	x9, [x9]
+  cmp	x9, x8
+  b.ne	0x1000005c4 <_func0+0xcc>
+
+- Edges:
+  NO_JUMP -> 4294968756
+  JUMP -> 4294968772
+
+============================================================
+BLOCK 4294968756
+- Instructions:
+  ldp	x29, x30, [sp, #0x1b0]
+  ldp	x28, x27, [sp, #0x1a0]
+  add	sp, sp, #0x1c0
+  ret
+
+- Edges:
+  NO_JUMP -> 4294968772
+
+============================================================
+BLOCK 4294968772
+- Instructions:
+  bl	0x1000006ec <___stack_chk_guard+0x1000006ec>
+
+- Edges: (none)

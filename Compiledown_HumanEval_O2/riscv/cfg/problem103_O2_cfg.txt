@@ -1,0 +1,45 @@
+Function: func0
+Basic blocks: 4
+
+============================================================
+BLOCK 0
+- Instructions:
+  mv	a2, a0
+  li	a0, -1
+  blt	a1, a2, .LBB0_3
+
+- Edges:
+  NO_JUMP -> 12
+  JUMP -> 52
+
+============================================================
+BLOCK 12
+- Instructions:
+  xor	a3, a1, a2
+  lui	a2, 524288
+  addiw	a2, a2, 1
+  and	a2, a2, a1
+  xori	a4, a2, 1
+  or	a3, a3, a4
+  beqz	a3, .LBB0_3
+
+- Edges:
+  NO_JUMP -> 40
+  JUMP -> 52
+
+============================================================
+BLOCK 40
+- Instructions:
+  addi	a0, a2, -1
+  seqz	a0, a0
+  subw	a0, a1, a0
+
+- Edges:
+  NO_JUMP -> 52
+
+============================================================
+BLOCK 52
+- Instructions:
+  ret
+
+- Edges: (none)

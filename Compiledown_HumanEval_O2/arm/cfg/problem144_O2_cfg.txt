@@ -1,0 +1,241 @@
+Function: _func0
+Basic blocks: 22
+
+============================================================
+BLOCK 0
+- Instructions:
+  stp	x24, x23, [sp, #-64]!
+  stp	x22, x21, [sp, #16]
+  stp	x20, x19, [sp, #32]
+  stp	x29, x30, [sp, #48]
+  add	x29, sp, #48
+  mov	x19, x1
+  mov	x20, x0
+  mov	x23, #0
+  mov	w22, #0
+  mov	w21, #0
+  mov	w24, #32
+  b	LBB0_3
+
+- Edges:
+  JUMP -> 76
+
+============================================================
+BLOCK 48
+- Instructions:
+  add	x0, x19, w21, sxtw
+  mov	w2, w22
+  sub	x1, x8, x2
+  bl	_memcpy
+  add	w21, w21, w22
+
+- Edges:
+  NO_JUMP -> 68
+
+============================================================
+BLOCK 68
+- Instructions:
+  mov	w22, #0
+  add	x23, x23, #1
+
+- Edges:
+  NO_JUMP -> 76
+
+============================================================
+BLOCK 76
+- Instructions:
+  add	x8, x20, x23
+  ldrb	w9, [x8]
+  cmp	w9, #32
+  b.eq	LBB0_6
+
+- Edges:
+  NO_JUMP -> 92
+  JUMP -> 108
+
+============================================================
+BLOCK 92
+- Instructions:
+  cbz	w9, LBB0_13
+
+- Edges:
+  NO_JUMP -> 96
+  JUMP -> 180
+
+============================================================
+BLOCK 96
+- Instructions:
+  add	w22, w22, #1
+  add	x23, x23, #1
+  b	LBB0_3
+
+- Edges:
+  JUMP -> 76
+
+============================================================
+BLOCK 108
+- Instructions:
+  cmp	w22, #2
+  b.lt	LBB0_2
+
+- Edges:
+  NO_JUMP -> 116
+  JUMP -> 68
+
+============================================================
+BLOCK 116
+- Instructions:
+  cmp	w22, #4
+  b.lo	LBB0_11
+
+- Edges:
+  NO_JUMP -> 124
+  JUMP -> 160
+
+============================================================
+BLOCK 124
+- Instructions:
+  mov	w9, #3
+
+- Edges:
+  NO_JUMP -> 128
+
+============================================================
+BLOCK 128
+- Instructions:
+  sub	w10, w9, #1
+  udiv	w11, w22, w10
+  msub	w10, w11, w10, w22
+  cbz	w10, LBB0_2
+
+- Edges:
+  NO_JUMP -> 144
+  JUMP -> 68
+
+============================================================
+BLOCK 144
+- Instructions:
+  mul	w10, w9, w9
+  add	w9, w9, #1
+  cmp	w10, w22
+  b.le	LBB0_9
+
+- Edges:
+  NO_JUMP -> 160
+  JUMP -> 128
+
+============================================================
+BLOCK 160
+- Instructions:
+  cmp	w21, #1
+  b.lt	LBB0_1
+
+- Edges:
+  NO_JUMP -> 168
+  JUMP -> 48
+
+============================================================
+BLOCK 168
+- Instructions:
+  strb	w24, [x19, w21, uxtw]
+  add	w21, w21, #1
+  b	LBB0_1
+
+- Edges:
+  JUMP -> 48
+
+============================================================
+BLOCK 180
+- Instructions:
+  cmp	w22, #2
+  b.lt	LBB0_21
+
+- Edges:
+  NO_JUMP -> 188
+  JUMP -> 272
+
+============================================================
+BLOCK 188
+- Instructions:
+  cmp	w22, #4
+  b.lo	LBB0_18
+
+- Edges:
+  NO_JUMP -> 196
+  JUMP -> 232
+
+============================================================
+BLOCK 196
+- Instructions:
+  mov	w9, #3
+
+- Edges:
+  NO_JUMP -> 200
+
+============================================================
+BLOCK 200
+- Instructions:
+  sub	w10, w9, #1
+  udiv	w11, w22, w10
+  msub	w10, w11, w10, w22
+  cbz	w10, LBB0_21
+
+- Edges:
+  NO_JUMP -> 216
+  JUMP -> 272
+
+============================================================
+BLOCK 216
+- Instructions:
+  mul	w10, w9, w9
+  add	w9, w9, #1
+  cmp	w10, w22
+  b.le	LBB0_16
+
+- Edges:
+  NO_JUMP -> 232
+  JUMP -> 200
+
+============================================================
+BLOCK 232
+- Instructions:
+  cmp	w21, #1
+  b.lt	LBB0_20
+
+- Edges:
+  NO_JUMP -> 240
+  JUMP -> 252
+
+============================================================
+BLOCK 240
+- Instructions:
+  mov	w9, #32
+  strb	w9, [x19, w21, uxtw]
+  add	w21, w21, #1
+
+- Edges:
+  NO_JUMP -> 252
+
+============================================================
+BLOCK 252
+- Instructions:
+  add	x0, x19, w21, sxtw
+  mov	w2, w22
+  sub	x1, x8, x2
+  bl	_memcpy
+  add	w21, w21, w22
+
+- Edges:
+  NO_JUMP -> 272
+
+============================================================
+BLOCK 272
+- Instructions:
+  strb	wzr, [x19, w21, sxtw]
+  ldp	x29, x30, [sp, #48]
+  ldp	x20, x19, [sp, #32]
+  ldp	x22, x21, [sp, #16]
+  ldp	x24, x23, [sp], #64
+  ret
+
+- Edges: (none)

@@ -1,0 +1,258 @@
+Function: _func0
+Basic blocks: 24
+
+============================================================
+BLOCK 0
+- Instructions:
+  ldr	d1, [x0]
+  mov	w8, w1
+  fmov	d2, d1
+  cmp	w1, #2
+  b.lt	LBB0_5
+
+- Edges:
+  NO_JUMP -> 20
+  JUMP -> 72
+
+============================================================
+BLOCK 20
+- Instructions:
+  mov	w9, #1
+  movi	d0, #0000000000000000
+  fmov	d2, d1
+
+- Edges:
+  NO_JUMP -> 32
+
+============================================================
+BLOCK 32
+- Instructions:
+  fmov	d3, #1.00000000
+  mov	x10, x9
+
+- Edges:
+  NO_JUMP -> 40
+
+============================================================
+BLOCK 40
+- Instructions:
+  fmul	d3, d3, d0
+  subs	x10, x10, #1
+  b.ne	LBB0_3
+
+- Edges:
+  NO_JUMP -> 52
+  JUMP -> 40
+
+============================================================
+BLOCK 52
+- Instructions:
+  ldr	d4, [x0, x9, lsl #3]
+  fmadd	d2, d4, d3, d2
+  add	x9, x9, #1
+  cmp	x9, x8
+  b.ne	LBB0_2
+
+- Edges:
+  NO_JUMP -> 72
+  JUMP -> 32
+
+============================================================
+BLOCK 72
+- Instructions:
+  fabs	d3, d2
+  movi	d0, #0000000000000000
+  mov	x9, #60813
+  movk	x9, #41141, lsl #16
+  movk	x9, #50935, lsl #32
+  movk	x9, #16048, lsl #48
+  fmov	d4, x9
+  fcmp	d3, d4
+  b.le	LBB0_21
+
+- Edges:
+  NO_JUMP -> 108
+  JUMP -> 304
+
+============================================================
+BLOCK 108
+- Instructions:
+  fmov	d3, x9
+  mov	x9, #-9223372036854775808
+  b	LBB0_10
+
+- Edges:
+  JUMP -> 148
+
+============================================================
+BLOCK 120
+- Instructions:
+  fmov	d4, x9
+  fdiv	d2, d2, d4
+  fadd	d0, d0, d2
+
+- Edges:
+  NO_JUMP -> 132
+
+============================================================
+BLOCK 132
+- Instructions:
+  fmov	d2, d1
+
+- Edges:
+  NO_JUMP -> 136
+
+============================================================
+BLOCK 136
+- Instructions:
+  fabs	d4, d2
+  fcmp	d4, d3
+  b.le	LBB0_21
+
+- Edges:
+  NO_JUMP -> 148
+  JUMP -> 304
+
+============================================================
+BLOCK 148
+- Instructions:
+  cmp	w1, #2
+  b.lt	LBB0_7
+
+- Edges:
+  NO_JUMP -> 156
+  JUMP -> 120
+
+============================================================
+BLOCK 156
+- Instructions:
+  mov	x10, #0
+  movi	d4, #0000000000000000
+  mov	w11, #1
+  b	LBB0_13
+
+- Edges:
+  JUMP -> 204
+
+============================================================
+BLOCK 172
+- Instructions:
+  ucvtf	d6, w11
+  ldr	d7, [x0, x11, lsl #3]
+  fmul	d6, d7, d6
+  fmadd	d4, d6, d5, d4
+  add	x11, x11, #1
+  add	x10, x10, #1
+  cmp	x11, x8
+  b.eq	LBB0_16
+
+- Edges:
+  NO_JUMP -> 204
+  JUMP -> 236
+
+============================================================
+BLOCK 204
+- Instructions:
+  fmov	d5, #1.00000000
+  cmp	x11, #2
+  b.lo	LBB0_12
+
+- Edges:
+  NO_JUMP -> 216
+  JUMP -> 172
+
+============================================================
+BLOCK 216
+- Instructions:
+  mov	x12, x10
+
+- Edges:
+  NO_JUMP -> 220
+
+============================================================
+BLOCK 220
+- Instructions:
+  fmul	d5, d0, d5
+  subs	x12, x12, #1
+  b.ne	LBB0_15
+
+- Edges:
+  NO_JUMP -> 232
+  JUMP -> 220
+
+============================================================
+BLOCK 232
+- Instructions:
+  b	LBB0_12
+
+- Edges:
+  JUMP -> 172
+
+============================================================
+BLOCK 236
+- Instructions:
+  fdiv	d2, d2, d4
+  fsub	d0, d0, d2
+  cmp	w1, #2
+  b.lt	LBB0_8
+
+- Edges:
+  NO_JUMP -> 252
+  JUMP -> 132
+
+============================================================
+BLOCK 252
+- Instructions:
+  mov	w10, #1
+  fmov	d2, d1
+
+- Edges:
+  NO_JUMP -> 260
+
+============================================================
+BLOCK 260
+- Instructions:
+  fmov	d4, #1.00000000
+  mov	x11, x10
+
+- Edges:
+  NO_JUMP -> 268
+
+============================================================
+BLOCK 268
+- Instructions:
+  fmul	d4, d0, d4
+  subs	x11, x11, #1
+  b.ne	LBB0_19
+
+- Edges:
+  NO_JUMP -> 280
+  JUMP -> 268
+
+============================================================
+BLOCK 280
+- Instructions:
+  ldr	d5, [x0, x10, lsl #3]
+  fmadd	d2, d5, d4, d2
+  add	x10, x10, #1
+  cmp	x10, x8
+  b.ne	LBB0_18
+
+- Edges:
+  NO_JUMP -> 300
+  JUMP -> 260
+
+============================================================
+BLOCK 300
+- Instructions:
+  b	LBB0_9
+
+- Edges:
+  JUMP -> 136
+
+============================================================
+BLOCK 304
+- Instructions:
+  ret
+
+- Edges: (none)

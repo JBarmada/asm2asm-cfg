@@ -1,0 +1,23 @@
+Function: _func0
+Basic blocks: 1
+
+============================================================
+BLOCK 4294968624
+- Instructions:
+  ldrb	w9, [x0]
+  cbz	w9, 0x100000564 <_func0+0x34>
+  mov	x8, x0
+  mov	w0, #0x0                ; =0
+  add	x8, x8, #0x1
+  sub	w10, w9, #0x41
+  and	w10, w10, #0xff
+  cmp	w10, #0x1a
+  csel	w9, w9, wzr, lo
+  add	w0, w0, w9, sxtb
+  ldrb	w9, [x8], #0x1
+  cbnz	w9, 0x100000544 <_func0+0x14>
+  ret
+  mov	w0, #0x0                ; =0
+  ret
+
+- Edges: (none)

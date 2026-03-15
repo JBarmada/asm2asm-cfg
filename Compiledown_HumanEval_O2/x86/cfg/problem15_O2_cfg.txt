@@ -1,0 +1,94 @@
+Function: func0
+Basic blocks: 4
+
+============================================================
+BLOCK 0
+- Instructions:
+  pushq	%rbp
+  pushq	%r15
+  pushq	%r14
+  pushq	%r13
+  pushq	%r12
+  pushq	%rbx
+  subq	$24, %rsp
+  movq	%rsi, 16(%rsp)
+  movq	%rdi, %r12
+  callq	strlen@PLT
+  movq	%rax, %rbp
+  movq	%rax, %rbx
+  shlq	$32, %rbx
+  movq	%rbx, %rdi
+  sarq	$29, %rdi
+  callq	malloc@PLT
+  movq	%rax, %r13
+  movabsq	$4294967296, %rdi
+  addq	%rbx, %rdi
+  sarq	$32, %rdi
+  callq	malloc@PLT
+  movq	%rax, %rbx
+  movb	$0, (%rax)
+  testl	%ebp, %ebp
+  movq	%rbp, 8(%rsp)
+  jle	.LBB0_3
+
+- Edges:
+  NO_JUMP -> 104
+  JUMP -> 196
+
+============================================================
+BLOCK 104
+- Instructions:
+  movl	%ebp, %r14d
+  xorl	%r15d, %r15d
+
+- Edges:
+  NO_JUMP -> 112
+
+============================================================
+BLOCK 112
+- Instructions:
+  movq	%rbx, %rdi
+  callq	strlen@PLT
+  movq	%rax, %rbp
+  leaq	2(%rax), %rsi
+  movq	%rbx, %rdi
+  callq	realloc@PLT
+  movq	%rax, %rbx
+  movzbl	(%r12,%r15), %eax
+  movb	%al, (%rbx,%rbp)
+  movb	$0, 1(%rbx,%rbp)
+  movq	%rbx, %rdi
+  callq	strlen@PLT
+  leaq	1(%rax), %rdi
+  callq	malloc@PLT
+  movq	%rax, (%r13,%r15,8)
+  movq	%rax, %rdi
+  movq	%rbx, %rsi
+  callq	strcpy@PLT
+  incq	%r15
+  cmpq	%r15, %r14
+  jne	.LBB0_2
+
+- Edges:
+  NO_JUMP -> 196
+  JUMP -> 112
+
+============================================================
+BLOCK 196
+- Instructions:
+  movq	%rbx, %rdi
+  callq	free@PLT
+  movq	16(%rsp), %rax
+  movq	8(%rsp), %rcx
+  movl	%ecx, (%rax)
+  movq	%r13, %rax
+  addq	$24, %rsp
+  popq	%rbx
+  popq	%r12
+  popq	%r13
+  popq	%r14
+  popq	%r15
+  popq	%rbp
+  retq
+
+- Edges: (none)

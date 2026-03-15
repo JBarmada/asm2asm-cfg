@@ -1,0 +1,159 @@
+Function: func0
+Basic blocks: 15
+
+============================================================
+BLOCK 0
+- Instructions:
+  testl	%esi, %esi
+  jle	.LBB0_1
+
+- Edges:
+  NO_JUMP -> 8
+  JUMP -> 176
+
+============================================================
+BLOCK 8
+- Instructions:
+  movl	%esi, %r8d
+  xorl	%r10d, %r10d
+  xorl	%r9d, %r9d
+  jmp	.LBB0_7
+
+- Edges:
+  JUMP -> 44
+
+============================================================
+BLOCK 24
+- Instructions:
+  cmpl	%r9d, %ecx
+  cmovgl	%ecx, %r9d
+
+- Edges:
+  NO_JUMP -> 32
+
+============================================================
+BLOCK 32
+- Instructions:
+  incq	%r10
+  cmpq	%r8, %r10
+  je	.LBB0_2
+
+- Edges:
+  NO_JUMP -> 44
+  JUMP -> 112
+
+============================================================
+BLOCK 44
+- Instructions:
+  movl	(%rdi,%r10,4), %ecx
+  cmpl	$2, %ecx
+  jl	.LBB0_13
+
+- Edges:
+  NO_JUMP -> 56
+  JUMP -> 32
+
+============================================================
+BLOCK 56
+- Instructions:
+  cmpl	$4, %ecx
+  jb	.LBB0_12
+
+- Edges:
+  NO_JUMP -> 64
+  JUMP -> 24
+
+============================================================
+BLOCK 64
+- Instructions:
+  movl	$2, %esi
+
+- Edges:
+  NO_JUMP -> 68
+
+============================================================
+BLOCK 68
+- Instructions:
+  movl	%ecx, %eax
+  cltd
+  idivl	%esi
+  testl	%edx, %edx
+  je	.LBB0_13
+
+- Edges:
+  NO_JUMP -> 88
+  JUMP -> 32
+
+============================================================
+BLOCK 88
+- Instructions:
+  incl	%esi
+  movl	%esi, %eax
+  imull	%esi, %eax
+  cmpl	%ecx, %eax
+  jle	.LBB0_10
+
+- Edges:
+  NO_JUMP -> 108
+  JUMP -> 68
+
+============================================================
+BLOCK 108
+- Instructions:
+  jmp	.LBB0_12
+
+- Edges:
+  JUMP -> 24
+
+============================================================
+BLOCK 112
+- Instructions:
+  xorl	%eax, %eax
+  testl	%r9d, %r9d
+  jle	.LBB0_5
+
+- Edges:
+  NO_JUMP -> 124
+  JUMP -> 172
+
+============================================================
+BLOCK 124
+- Instructions:
+  movl	$3435973837, %ecx
+
+- Edges:
+  NO_JUMP -> 128
+
+============================================================
+BLOCK 128
+- Instructions:
+  movl	%r9d, %edx
+  imulq	%rcx, %rdx
+  shrq	$35, %rdx
+  leal	(%rdx,%rdx), %esi
+  leal	(%rsi,%rsi,4), %esi
+  movl	%r9d, %edi
+  subl	%esi, %edi
+  addl	%edi, %eax
+  cmpl	$9, %r9d
+  movl	%edx, %r9d
+  ja	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 172
+  JUMP -> 128
+
+============================================================
+BLOCK 172
+- Instructions:
+  retq
+
+- Edges: (none)
+
+============================================================
+BLOCK 176
+- Instructions:
+  xorl	%eax, %eax
+  retq
+
+- Edges: (none)

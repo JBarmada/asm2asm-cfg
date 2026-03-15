@@ -1,0 +1,94 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 4896
+- Instructions:
+  push   %rbx
+  mov    %esi,%r8d
+  shr    $0x1f,%r8d
+  add    %esi,%r8d
+  sar    %r8d
+  xor    %r10d,%r10d
+  cmp    $0x2,%esi
+  jl     136a <func0+0x4a>
+
+- Edges:
+  NO_JUMP -> 4918
+  JUMP -> 4970
+
+============================================================
+BLOCK 4918
+- Instructions:
+  mov    %r8d,%r9d
+  lea    -0x1(%rsi),%r11d
+  xor    %ecx,%ecx
+  xor    %r10d,%r10d
+  data16 data16 data16 data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 4944
+
+============================================================
+BLOCK 4944
+- Instructions:
+  mov    (%rdi,%rcx,4),%eax
+  movslq %r11d,%rbx
+  cmp    (%rdi,%rbx,4),%eax
+  jne    1384 <func0+0x64>
+
+- Edges:
+  NO_JUMP -> 4955
+  JUMP -> 4996
+
+============================================================
+BLOCK 4955
+- Instructions:
+  lea    (%r10,%rax,2),%r10d
+  inc    %rcx
+  dec    %r11d
+  cmp    %rcx,%r9
+  jne    1350 <func0+0x30>
+
+- Edges:
+  NO_JUMP -> 4970
+  JUMP -> 4944
+
+============================================================
+BLOCK 4970
+- Instructions:
+  and    $0x80000001,%esi
+  cmp    $0x1,%esi
+  jne    137c <func0+0x5c>
+
+- Edges:
+  NO_JUMP -> 4981
+  JUMP -> 4988
+
+============================================================
+BLOCK 4981
+- Instructions:
+  movslq %r8d,%rax
+  add    (%rdi,%rax,4),%r10d
+
+- Edges:
+  NO_JUMP -> 4988
+
+============================================================
+BLOCK 4988
+- Instructions:
+  cmp    %edx,%r10d
+  setle  %al
+  pop    %rbx
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 4996
+- Instructions:
+  xor    %eax,%eax
+  pop    %rbx
+  ret
+
+- Edges: (none)

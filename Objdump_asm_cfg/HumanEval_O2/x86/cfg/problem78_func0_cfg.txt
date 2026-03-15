@@ -1,0 +1,37 @@
+Function: func0
+Basic blocks: 3
+
+============================================================
+BLOCK 4848
+- Instructions:
+  mov    %edi,%eax
+  neg    %eax
+  cmovs  %edi,%eax
+  xor    %ecx,%ecx
+  nopl   0x0(%rax)
+
+- Edges:
+  NO_JUMP -> 4864
+
+============================================================
+BLOCK 4864
+- Instructions:
+  mov    %ecx,%edx
+  imul   %ecx,%edx
+  imul   %ecx,%edx
+  inc    %ecx
+  cmp    %eax,%edx
+  jb     1300 <func0+0x10>
+
+- Edges:
+  NO_JUMP -> 4878
+  JUMP -> 4864
+
+============================================================
+BLOCK 4878
+- Instructions:
+  setbe  %al
+  movzbl %al,%eax
+  ret
+
+- Edges: (none)

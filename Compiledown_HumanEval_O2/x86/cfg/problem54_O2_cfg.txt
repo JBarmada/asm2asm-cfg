@@ -1,0 +1,10 @@
+Function: func0
+Basic blocks: 1
+
+============================================================
+BLOCK 0
+- Instructions:
+  leal	(%rdi,%rsi), %eax
+  retq
+
+- Edges: (none)

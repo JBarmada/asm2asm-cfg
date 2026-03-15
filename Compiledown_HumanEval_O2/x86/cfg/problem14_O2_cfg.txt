@@ -1,0 +1,50 @@
+Function: func0
+Basic blocks: 5
+
+============================================================
+BLOCK 0
+- Instructions:
+  movl	%edi, %eax
+  testl	%esi, %esi
+  je	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 12
+  JUMP -> 44
+
+============================================================
+BLOCK 12
+- Instructions:
+  movl	%esi, %edx
+
+- Edges:
+  NO_JUMP -> 16
+
+============================================================
+BLOCK 16
+- Instructions:
+  movl	%edx, %ecx
+  cltd
+  idivl	%ecx
+  movl	%ecx, %eax
+  testl	%edx, %edx
+  jne	.LBB0_2
+
+- Edges:
+  NO_JUMP -> 40
+  JUMP -> 16
+
+============================================================
+BLOCK 40
+- Instructions:
+  movl	%ecx, %eax
+
+- Edges:
+  NO_JUMP -> 44
+
+============================================================
+BLOCK 44
+- Instructions:
+  retq
+
+- Edges: (none)

@@ -1,0 +1,87 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 0
+- Instructions:
+  cmpl	%edx, %edi
+  cmovgl	%edi, %edx
+  cmpl	%ecx, %esi
+  cmovll	%esi, %ecx
+  subl	%edx, %ecx
+  leaq	.L.str(%rip), %rsi
+  cmpl	$2, %ecx
+  jge	.LBB0_1
+
+- Edges:
+  NO_JUMP -> 32
+  JUMP -> 40
+
+============================================================
+BLOCK 32
+- Instructions:
+  movq	%rsi, %rax
+  retq
+
+- Edges: (none)
+
+============================================================
+BLOCK 40
+- Instructions:
+  leaq	.L.str.1(%rip), %r8
+  cmpl	$4, %ecx
+  jae	.LBB0_5
+
+- Edges:
+  NO_JUMP -> 52
+  JUMP -> 60
+
+============================================================
+BLOCK 52
+- Instructions:
+  movq	%r8, %rax
+  retq
+
+- Edges: (none)
+
+============================================================
+BLOCK 60
+- Instructions:
+  movl	$2, %edi
+
+- Edges:
+  NO_JUMP -> 64
+
+============================================================
+BLOCK 64
+- Instructions:
+  movl	%ecx, %eax
+  cltd
+  idivl	%edi
+  testl	%edx, %edx
+  je	.LBB0_7
+
+- Edges:
+  NO_JUMP -> 84
+  JUMP -> 32
+
+============================================================
+BLOCK 84
+- Instructions:
+  incl	%edi
+  movl	%edi, %eax
+  imull	%edi, %eax
+  cmpl	%ecx, %eax
+  jle	.LBB0_6
+
+- Edges:
+  NO_JUMP -> 104
+  JUMP -> 64
+
+============================================================
+BLOCK 104
+- Instructions:
+  movq	%r8, %rax
+  retq
+
+- Edges: (none)

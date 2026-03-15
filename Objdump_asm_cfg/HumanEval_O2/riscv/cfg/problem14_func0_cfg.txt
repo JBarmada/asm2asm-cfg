@@ -1,0 +1,39 @@
+Function: func0
+Basic blocks: 4
+
+============================================================
+BLOCK 1916
+- Instructions:
+  beqz	a1,78e <func0+0x12>
+
+- Edges:
+  NO_JUMP -> 1918
+  JUMP -> 1934
+
+============================================================
+BLOCK 1918
+- Instructions:
+  mv	a2,a1
+  remw	a1,a0,a1
+  mv	a0,a2
+  bnez	a1,77e <func0+0x2>
+
+- Edges:
+  NO_JUMP -> 1928
+  JUMP -> 1918
+
+============================================================
+BLOCK 1928
+- Instructions:
+  sext.w	a0,a2
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 1934
+- Instructions:
+  sext.w	a0,a0
+  ret
+
+- Edges: (none)

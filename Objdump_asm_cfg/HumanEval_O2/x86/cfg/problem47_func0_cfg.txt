@@ -1,0 +1,106 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 4608
+- Instructions:
+  sub    $0x118,%rsp
+  movaps 0xe52(%rip),%xmm0        # 2060 <_IO_stdin_used+0x60>
+  movaps %xmm0,-0x80(%rsp)
+  cmp    $0x4,%edi
+  jl     12ae <func0+0xae>
+
+- Edges:
+  NO_JUMP -> 4636
+  JUMP -> 4782
+
+============================================================
+BLOCK 4636
+- Instructions:
+  lea    0x1(%rdi),%r8d
+  cmp    $0x5,%r8d
+  jne    1232 <func0+0x32>
+
+- Edges:
+  NO_JUMP -> 4646
+  JUMP -> 4658
+
+============================================================
+BLOCK 4646
+- Instructions:
+  mov    $0x4,%ecx
+  xor    %r10d,%r10d
+  xor    %edx,%edx
+  jmp    1293 <func0+0x93>
+
+- Edges:
+  JUMP -> 4755
+
+============================================================
+BLOCK 4658
+- Instructions:
+  lea    -0x4(%r8),%r9
+  and    $0xfffffffffffffffe,%r9
+  neg    %r9
+  mov    $0x4,%ecx
+  xor    %esi,%esi
+  xor    %edx,%edx
+  cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 4688
+
+============================================================
+BLOCK 4688
+- Instructions:
+  mov    -0x88(%rsp,%rcx,4),%eax
+  mov    -0x84(%rsp,%rcx,4),%r10d
+  add    %eax,%edx
+  add    %esi,%edx
+  add    -0x90(%rsp,%rcx,4),%edx
+  mov    %edx,-0x80(%rsp,%rcx,4)
+  add    %r10d,%edx
+  add    %eax,%edx
+  add    -0x8c(%rsp,%rcx,4),%edx
+  mov    %edx,-0x7c(%rsp,%rcx,4)
+  lea    (%r9,%rcx,1),%rax
+  add    $0x2,%rax
+  add    $0x2,%rcx
+  mov    %r10d,%esi
+  cmp    $0x4,%rax
+  jne    1250 <func0+0x50>
+
+- Edges:
+  NO_JUMP -> 4755
+  JUMP -> 4688
+
+============================================================
+BLOCK 4755
+- Instructions:
+  test   $0x1,%r8b
+  je     12ae <func0+0xae>
+
+- Edges:
+  NO_JUMP -> 4761
+  JUMP -> 4782
+
+============================================================
+BLOCK 4761
+- Instructions:
+  add    -0x88(%rsp,%rcx,4),%edx
+  add    %r10d,%edx
+  add    -0x90(%rsp,%rcx,4),%edx
+  mov    %edx,-0x80(%rsp,%rcx,4)
+
+- Edges:
+  NO_JUMP -> 4782
+
+============================================================
+BLOCK 4782
+- Instructions:
+  movslq %edi,%rax
+  mov    -0x80(%rsp,%rax,4),%eax
+  add    $0x118,%rsp
+  ret
+
+- Edges: (none)

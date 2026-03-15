@@ -1,0 +1,121 @@
+Function: func0
+Basic blocks: 9
+
+============================================================
+BLOCK 0
+- Instructions:
+  pushq	%rbx
+  subq	$4000, %rsp
+  movl	%edi, %ebx
+  movq	%rsp, %rdi
+  movl	$4000, %edx
+  xorl	%esi, %esi
+  callq	memset@PLT
+  movl	$1, 4(%rsp)
+  cmpl	$2, %ebx
+  jl	.LBB0_6
+
+- Edges:
+  NO_JUMP -> 40
+  JUMP -> 188
+
+============================================================
+BLOCK 40
+- Instructions:
+  movl	%ebx, %ecx
+  leaq	-1(%rcx), %rdx
+  addq	$-2, %rcx
+  movl	%edx, %eax
+  andl	$3, %eax
+  cmpq	$3, %rcx
+  jae	.LBB0_7
+
+- Edges:
+  NO_JUMP -> 68
+  JUMP -> 80
+
+============================================================
+BLOCK 68
+- Instructions:
+  movl	$2, %esi
+  movl	$1, %ecx
+  jmp	.LBB0_3
+
+- Edges:
+  JUMP -> 152
+
+============================================================
+BLOCK 80
+- Instructions:
+  andq	$-4, %rdx
+  negq	%rdx
+  movl	$2, %esi
+  movl	$1, %ecx
+
+- Edges:
+  NO_JUMP -> 96
+
+============================================================
+BLOCK 96
+- Instructions:
+  addl	-8(%rsp,%rsi,4), %ecx
+  movl	%ecx, (%rsp,%rsi,4)
+  movl	-4(%rsp,%rsi,4), %edi
+  addl	%ecx, %edi
+  movl	%edi, 4(%rsp,%rsi,4)
+  addl	%edi, %ecx
+  movl	%ecx, 8(%rsp,%rsi,4)
+  addl	%edi, %ecx
+  movl	%ecx, 12(%rsp,%rsi,4)
+  leaq	(%rdx,%rsi), %rdi
+  addq	$4, %rdi
+  addq	$4, %rsi
+  cmpq	$2, %rdi
+  jne	.LBB0_8
+
+- Edges:
+  NO_JUMP -> 152
+  JUMP -> 96
+
+============================================================
+BLOCK 152
+- Instructions:
+  testq	%rax, %rax
+  je	.LBB0_6
+
+- Edges:
+  NO_JUMP -> 160
+  JUMP -> 188
+
+============================================================
+BLOCK 160
+- Instructions:
+  leaq	(%rsp,%rsi,4), %rdx
+  xorl	%esi, %esi
+
+- Edges:
+  NO_JUMP -> 168
+
+============================================================
+BLOCK 168
+- Instructions:
+  addl	-8(%rdx,%rsi,4), %ecx
+  movl	%ecx, (%rdx,%rsi,4)
+  incq	%rsi
+  cmpq	%rsi, %rax
+  jne	.LBB0_5
+
+- Edges:
+  NO_JUMP -> 188
+  JUMP -> 168
+
+============================================================
+BLOCK 188
+- Instructions:
+  movslq	%ebx, %rax
+  movl	(%rsp,%rax,4), %eax
+  addq	$4000, %rsp
+  popq	%rbx
+  retq
+
+- Edges: (none)

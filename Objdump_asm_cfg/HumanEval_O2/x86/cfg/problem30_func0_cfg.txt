@@ -1,0 +1,114 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 4880
+- Instructions:
+  push   %rbp
+  push   %r15
+  push   %r14
+  push   %r13
+  push   %r12
+  push   %rbx
+  sub    $0x18,%rsp
+  mov    %rcx,%rbp
+  mov    %rdx,%r12
+  mov    %esi,%r15d
+  mov    %rdi,0x10(%rsp)
+  mov    %rdx,%rdi
+  call   1050 <strlen@plt>
+  mov    %rax,%r14
+  movslq %r15d,%rbx
+  lea    0x0(,%rbx,8),%rdi
+  call   1080 <malloc@plt>
+  mov    %rbp,0x8(%rsp)
+  mov    %rax,0x0(%rbp)
+  test   %ebx,%ebx
+  jle    13a6 <func0+0x96>
+
+- Edges:
+  NO_JUMP -> 4948
+  JUMP -> 5030
+
+============================================================
+BLOCK 4948
+- Instructions:
+  movslq %r14d,%r13
+  mov    %r15d,%r14d
+  xor    %r15d,%r15d
+  xor    %ebp,%ebp
+  jmp    1378 <func0+0x68>
+
+- Edges:
+  JUMP -> 4984
+
+============================================================
+BLOCK 4961
+- Instructions:
+  data16 data16 data16 data16 data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 4976
+
+============================================================
+BLOCK 4976
+- Instructions:
+  inc    %r15
+  cmp    %r15,%r14
+  je     13a8 <func0+0x98>
+
+- Edges:
+  NO_JUMP -> 4984
+  JUMP -> 5032
+
+============================================================
+BLOCK 4984
+- Instructions:
+  mov    0x10(%rsp),%rax
+  mov    (%rax,%r15,8),%rbx
+  mov    %rbx,%rdi
+  mov    %r12,%rsi
+  mov    %r13,%rdx
+  call   1040 <strncmp@plt>
+  test   %eax,%eax
+  jne    1370 <func0+0x60>
+
+- Edges:
+  NO_JUMP -> 5011
+  JUMP -> 4976
+
+============================================================
+BLOCK 5011
+- Instructions:
+  mov    0x8(%rsp),%rax
+  mov    (%rax),%rax
+  movslq %ebp,%rcx
+  inc    %ebp
+  mov    %rbx,(%rax,%rcx,8)
+  jmp    1370 <func0+0x60>
+
+- Edges:
+  JUMP -> 4976
+
+============================================================
+BLOCK 5030
+- Instructions:
+  xor    %ebp,%ebp
+
+- Edges:
+  NO_JUMP -> 5032
+
+============================================================
+BLOCK 5032
+- Instructions:
+  mov    %ebp,%eax
+  add    $0x18,%rsp
+  pop    %rbx
+  pop    %r12
+  pop    %r13
+  pop    %r14
+  pop    %r15
+  pop    %rbp
+  ret
+
+- Edges: (none)

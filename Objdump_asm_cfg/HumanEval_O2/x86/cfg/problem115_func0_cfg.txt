@@ -1,0 +1,104 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 5488
+- Instructions:
+  mov    (%rdi),%rax
+  cmp    $0x2,%esi
+  jl     160b <func0+0x9b>
+
+- Edges:
+  NO_JUMP -> 5500
+  JUMP -> 5643
+
+============================================================
+BLOCK 5500
+- Instructions:
+  mov    %esi,%r8d
+  dec    %r8
+  cmp    $0x2,%esi
+  jne    1591 <func0+0x21>
+
+- Edges:
+  NO_JUMP -> 5511
+  JUMP -> 5521
+
+============================================================
+BLOCK 5511
+- Instructions:
+  mov    $0x1,%edx
+  mov    %rax,%rsi
+  jmp    15ed <func0+0x7d>
+
+- Edges:
+  JUMP -> 5613
+
+============================================================
+BLOCK 5521
+- Instructions:
+  mov    %r8,%r9
+  and    $0xfffffffffffffffe,%r9
+  neg    %r9
+  mov    $0x1,%edx
+  mov    %rax,%rsi
+  data16 data16 data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5552
+
+============================================================
+BLOCK 5552
+- Instructions:
+  mov    %rsi,%rcx
+  sar    $0x3f,%rcx
+  and    %rsi,%rcx
+  add    (%rdi,%rdx,8),%rcx
+  cmp    %rax,%rcx
+  cmovl  %rcx,%rax
+  mov    %rcx,%rsi
+  sar    $0x3f,%rsi
+  and    %rcx,%rsi
+  add    0x8(%rdi,%rdx,8),%rsi
+  cmp    %rax,%rsi
+  cmovl  %rsi,%rax
+  lea    (%r9,%rdx,1),%rcx
+  add    $0x2,%rcx
+  add    $0x2,%rdx
+  cmp    $0x1,%rcx
+  jne    15b0 <func0+0x40>
+
+- Edges:
+  NO_JUMP -> 5613
+  JUMP -> 5552
+
+============================================================
+BLOCK 5613
+- Instructions:
+  test   $0x1,%r8b
+  je     160b <func0+0x9b>
+
+- Edges:
+  NO_JUMP -> 5619
+  JUMP -> 5643
+
+============================================================
+BLOCK 5619
+- Instructions:
+  mov    %rsi,%rcx
+  sar    $0x3f,%rcx
+  and    %rsi,%rcx
+  add    (%rdi,%rdx,8),%rcx
+  cmp    %rax,%rcx
+  cmovge %rax,%rcx
+  mov    %rcx,%rax
+
+- Edges:
+  NO_JUMP -> 5643
+
+============================================================
+BLOCK 5643
+- Instructions:
+  ret
+
+- Edges: (none)

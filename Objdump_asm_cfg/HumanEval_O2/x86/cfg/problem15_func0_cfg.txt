@@ -1,0 +1,95 @@
+Function: func0
+Basic blocks: 4
+
+============================================================
+BLOCK 5216
+- Instructions:
+  push   %rbp
+  push   %r15
+  push   %r14
+  push   %r13
+  push   %r12
+  push   %rbx
+  sub    $0x18,%rsp
+  mov    %rsi,0x10(%rsp)
+  mov    %rdi,%r12
+  call   1050 <strlen@plt>
+  mov    %rax,%rbp
+  mov    %rax,%rbx
+  shl    $0x20,%rbx
+  mov    %rbx,%rdi
+  sar    $0x1d,%rdi
+  call   1080 <malloc@plt>
+  mov    %rax,%r13
+  movabs $0x100000000,%rdi
+  add    %rbx,%rdi
+  sar    $0x20,%rdi
+  call   1080 <malloc@plt>
+  mov    %rax,%rbx
+  movb   $0x0,(%rax)
+  test   %ebp,%ebp
+  mov    %rbp,0x8(%rsp)
+  jle    1510 <func0+0xb0>
+
+- Edges:
+  NO_JUMP -> 5305
+  JUMP -> 5392
+
+============================================================
+BLOCK 5305
+- Instructions:
+  mov    %ebp,%r14d
+  xor    %r15d,%r15d
+  nop
+
+- Edges:
+  NO_JUMP -> 5312
+
+============================================================
+BLOCK 5312
+- Instructions:
+  mov    %rbx,%rdi
+  call   1050 <strlen@plt>
+  mov    %rax,%rbp
+  lea    0x2(%rax),%rsi
+  mov    %rbx,%rdi
+  call   1090 <realloc@plt>
+  mov    %rax,%rbx
+  movzbl (%r12,%r15,1),%eax
+  mov    %al,(%rbx,%rbp,1)
+  movb   $0x0,0x1(%rbx,%rbp,1)
+  mov    %rbx,%rdi
+  call   1050 <strlen@plt>
+  lea    0x1(%rax),%rdi
+  call   1080 <malloc@plt>
+  mov    %rax,0x0(%r13,%r15,8)
+  mov    %rax,%rdi
+  mov    %rbx,%rsi
+  call   1040 <strcpy@plt>
+  inc    %r15
+  cmp    %r15,%r14
+  jne    14c0 <func0+0x60>
+
+- Edges:
+  NO_JUMP -> 5392
+  JUMP -> 5312
+
+============================================================
+BLOCK 5392
+- Instructions:
+  mov    %rbx,%rdi
+  call   1030 <free@plt>
+  mov    0x10(%rsp),%rax
+  mov    0x8(%rsp),%rcx
+  mov    %ecx,(%rax)
+  mov    %r13,%rax
+  add    $0x18,%rsp
+  pop    %rbx
+  pop    %r12
+  pop    %r13
+  pop    %r14
+  pop    %r15
+  pop    %rbp
+  ret
+
+- Edges: (none)

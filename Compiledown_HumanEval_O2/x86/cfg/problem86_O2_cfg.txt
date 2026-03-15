@@ -1,0 +1,133 @@
+Function: func0
+Basic blocks: 9
+
+============================================================
+BLOCK 0
+- Instructions:
+  xorl	%eax, %eax
+  cmpl	$2, %esi
+  jl	.LBB0_8
+
+- Edges:
+  NO_JUMP -> 12
+  JUMP -> 256
+
+============================================================
+BLOCK 12
+- Instructions:
+  addl	$-2, %esi
+  xorl	%r9d, %r9d
+  cmpl	$16, %esi
+  jae	.LBB0_3
+
+- Edges:
+  NO_JUMP -> 28
+  JUMP -> 44
+
+============================================================
+BLOCK 28
+- Instructions:
+  movl	$1, %r8d
+  xorl	%edx, %edx
+  xorl	%eax, %eax
+  jmp	.LBB0_6
+
+- Edges:
+  JUMP -> 204
+
+============================================================
+BLOCK 44
+- Instructions:
+  movl	%esi, %edx
+  shrl	%edx
+  incl	%edx
+  movl	%edx, %r8d
+  andl	$7, %r8d
+  movl	$8, %eax
+  cmovneq	%r8, %rax
+  subq	%rax, %rdx
+  leaq	(%rdx,%rdx), %r8
+  incq	%r8
+  pxor	%xmm0, %xmm0
+  xorl	%eax, %eax
+  movaps	.LCPI0_0(%rip), %xmm3
+  pxor	%xmm2, %xmm2
+  pxor	%xmm1, %xmm1
+
+- Edges:
+  NO_JUMP -> 104
+
+============================================================
+BLOCK 104
+- Instructions:
+  movups	4(%rdi,%rax,8), %xmm4
+  movups	20(%rdi,%rax,8), %xmm5
+  shufps	$136, %xmm5, %xmm4
+  movups	36(%rdi,%rax,8), %xmm5
+  movups	52(%rdi,%rax,8), %xmm6
+  shufps	$136, %xmm6, %xmm5
+  movaps	%xmm4, %xmm6
+  andps	%xmm3, %xmm6
+  movaps	%xmm5, %xmm7
+  andps	%xmm3, %xmm7
+  pcmpeqd	%xmm0, %xmm6
+  pand	%xmm4, %xmm6
+  paddd	%xmm6, %xmm2
+  pcmpeqd	%xmm0, %xmm7
+  pand	%xmm5, %xmm7
+  paddd	%xmm7, %xmm1
+  addq	$8, %rax
+  cmpq	%rax, %rdx
+  jne	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 180
+  JUMP -> 104
+
+============================================================
+BLOCK 180
+- Instructions:
+  paddd	%xmm2, %xmm1
+  pshufd	$238, %xmm1, %xmm0
+  paddd	%xmm1, %xmm0
+  pshufd	$85, %xmm0, %xmm1
+  paddd	%xmm0, %xmm1
+  movd	%xmm1, %eax
+
+- Edges:
+  NO_JUMP -> 204
+
+============================================================
+BLOCK 204
+- Instructions:
+  movl	%esi, %esi
+  shrq	%rsi
+  subq	%rdx, %rsi
+  incq	%rsi
+  leaq	(%rdi,%r8,4), %rdx
+  xorl	%edi, %edi
+
+- Edges:
+  NO_JUMP -> 228
+
+============================================================
+BLOCK 228
+- Instructions:
+  movl	(%rdx,%rdi,8), %ecx
+  testb	$1, %cl
+  cmovnel	%r9d, %ecx
+  addl	%ecx, %eax
+  incq	%rdi
+  cmpq	%rdi, %rsi
+  jne	.LBB0_7
+
+- Edges:
+  NO_JUMP -> 256
+  JUMP -> 228
+
+============================================================
+BLOCK 256
+- Instructions:
+  retq
+
+- Edges: (none)

@@ -1,0 +1,108 @@
+Function: func0
+Basic blocks: 10
+
+============================================================
+BLOCK 5472
+- Instructions:
+  test   %esi,%esi
+  jle    15b7 <func0+0x57>
+
+- Edges:
+  NO_JUMP -> 5476
+  JUMP -> 5559
+
+============================================================
+BLOCK 5476
+- Instructions:
+  mov    %esi,%r8d
+  xor    %esi,%esi
+  xor    %r10d,%r10d
+  xor    %r9d,%r9d
+  jmp    159a <func0+0x3a>
+
+- Edges:
+  JUMP -> 5530
+
+============================================================
+BLOCK 5489
+- Instructions:
+  data16 data16 data16 data16 data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5504
+
+============================================================
+BLOCK 5504
+- Instructions:
+  cmp    %r9d,%ecx
+  mov    %r9d,%eax
+  cmovg  %ecx,%eax
+  test   %r9d,%r9d
+  cmove  %ecx,%eax
+  mov    %eax,%r9d
+
+- Edges:
+  NO_JUMP -> 5522
+
+============================================================
+BLOCK 5522
+- Instructions:
+  inc    %rsi
+  cmp    %rsi,%r8
+  je     15bd <func0+0x5d>
+
+- Edges:
+  NO_JUMP -> 5530
+  JUMP -> 5565
+
+============================================================
+BLOCK 5530
+- Instructions:
+  mov    (%rdi,%rsi,4),%ecx
+  test   %ecx,%ecx
+  js     1580 <func0+0x20>
+
+- Edges:
+  NO_JUMP -> 5537
+  JUMP -> 5504
+
+============================================================
+BLOCK 5537
+- Instructions:
+  je     1592 <func0+0x32>
+
+- Edges:
+  NO_JUMP -> 5539
+  JUMP -> 5522
+
+============================================================
+BLOCK 5539
+- Instructions:
+  cmp    %r10d,%ecx
+  mov    %r10d,%eax
+  cmovl  %ecx,%eax
+  test   %r10d,%r10d
+  cmove  %ecx,%eax
+  mov    %eax,%r10d
+  jmp    1592 <func0+0x32>
+
+- Edges:
+  JUMP -> 5522
+
+============================================================
+BLOCK 5559
+- Instructions:
+  xor    %r9d,%r9d
+  xor    %r10d,%r10d
+
+- Edges:
+  NO_JUMP -> 5565
+
+============================================================
+BLOCK 5565
+- Instructions:
+  mov    %r9d,(%rdx)
+  mov    %r10d,0x4(%rdx)
+  ret
+
+- Edges: (none)

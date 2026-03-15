@@ -1,0 +1,133 @@
+Function: func0
+Basic blocks: 12
+
+============================================================
+BLOCK 0
+- Instructions:
+  mv	a6, a3
+  mv	a7, a0
+  blez	a2, .LBB0_9
+
+- Edges:
+  NO_JUMP -> 12
+  JUMP -> 144
+
+============================================================
+BLOCK 12
+- Instructions:
+  li	t2, 0
+  li	t0, 0
+  li	t1, -1000
+  j	.LBB0_3
+
+- Edges:
+  JUMP -> 44
+
+============================================================
+BLOCK 28
+- Instructions:
+  addi	t2, t2, 1
+  mv	t1, t3
+  mv	t0, a3
+  beq	t2, a2, .LBB0_10
+
+- Edges:
+  NO_JUMP -> 44
+  JUMP -> 148
+
+============================================================
+BLOCK 44
+- Instructions:
+  slli	a0, t2, 3
+  add	a0, a0, a1
+  ld	a3, 0(a0)
+  lbu	a4, 0(a3)
+  beqz	a4, .LBB0_7
+
+- Edges:
+  NO_JUMP -> 64
+  JUMP -> 124
+
+============================================================
+BLOCK 64
+- Instructions:
+  li	t3, 0
+  addi	a0, a3, 1
+
+- Edges:
+  NO_JUMP -> 72
+
+============================================================
+BLOCK 72
+- Instructions:
+  addiw	a5, a4, -65
+  andi	a5, a5, 255
+  sltiu	a5, a5, 26
+  addw	t3, t3, a5
+  addiw	a5, a4, -97
+  lbu	a4, 0(a0)
+  andi	a5, a5, 255
+  sltiu	a5, a5, 26
+  subw	t3, t3, a5
+  addi	a0, a0, 1
+  bnez	a4, .LBB0_5
+
+- Edges:
+  NO_JUMP -> 116
+  JUMP -> 72
+
+============================================================
+BLOCK 116
+- Instructions:
+  blt	t1, t3, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 120
+  JUMP -> 28
+
+============================================================
+BLOCK 120
+- Instructions:
+  j	.LBB0_8
+
+- Edges:
+  JUMP -> 132
+
+============================================================
+BLOCK 124
+- Instructions:
+  li	t3, 0
+  blt	t1, t3, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 132
+  JUMP -> 28
+
+============================================================
+BLOCK 132
+- Instructions:
+  mv	a3, t0
+  mv	t3, t1
+  j	.LBB0_2
+
+- Edges:
+  JUMP -> 28
+
+============================================================
+BLOCK 144
+- Instructions:
+  li	a3, 0
+
+- Edges:
+  NO_JUMP -> 148
+
+============================================================
+BLOCK 148
+- Instructions:
+  auipc	a1, %pcrel_hi(.L.str)
+  addi	a1, a1, %pcrel_lo(.LBB0_11)
+  mv	a0, a6
+  mv	a2, a7
+  tail	sprintf@plt
+
+- Edges: (none)

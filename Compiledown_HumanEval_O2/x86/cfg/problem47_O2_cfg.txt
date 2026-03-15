@@ -1,0 +1,105 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 0
+- Instructions:
+  subq	$280, %rsp
+  movaps	.LCPI0_0(%rip), %xmm0
+  movaps	%xmm0, -128(%rsp)
+  cmpl	$4, %edi
+  jl	.LBB0_5
+
+- Edges:
+  NO_JUMP -> 20
+  JUMP -> 160
+
+============================================================
+BLOCK 20
+- Instructions:
+  leal	1(%rdi), %r8d
+  cmpl	$5, %r8d
+  jne	.LBB0_6
+
+- Edges:
+  NO_JUMP -> 32
+  JUMP -> 48
+
+============================================================
+BLOCK 32
+- Instructions:
+  movl	$4, %ecx
+  xorl	%r10d, %r10d
+  xorl	%edx, %edx
+  jmp	.LBB0_3
+
+- Edges:
+  JUMP -> 136
+
+============================================================
+BLOCK 48
+- Instructions:
+  leaq	-4(%r8), %r9
+  andq	$-2, %r9
+  negq	%r9
+  movl	$4, %ecx
+  xorl	%esi, %esi
+  xorl	%edx, %edx
+
+- Edges:
+  NO_JUMP -> 72
+
+============================================================
+BLOCK 72
+- Instructions:
+  movl	-136(%rsp,%rcx,4), %eax
+  movl	-132(%rsp,%rcx,4), %r10d
+  addl	%eax, %edx
+  addl	%esi, %edx
+  addl	-144(%rsp,%rcx,4), %edx
+  movl	%edx, -128(%rsp,%rcx,4)
+  addl	%r10d, %edx
+  addl	%eax, %edx
+  addl	-140(%rsp,%rcx,4), %edx
+  movl	%edx, -124(%rsp,%rcx,4)
+  leaq	(%r9,%rcx), %rax
+  addq	$2, %rax
+  addq	$2, %rcx
+  movl	%r10d, %esi
+  cmpq	$4, %rax
+  jne	.LBB0_7
+
+- Edges:
+  NO_JUMP -> 136
+  JUMP -> 72
+
+============================================================
+BLOCK 136
+- Instructions:
+  testb	$1, %r8b
+  je	.LBB0_5
+
+- Edges:
+  NO_JUMP -> 144
+  JUMP -> 160
+
+============================================================
+BLOCK 144
+- Instructions:
+  addl	-136(%rsp,%rcx,4), %edx
+  addl	%r10d, %edx
+  addl	-144(%rsp,%rcx,4), %edx
+  movl	%edx, -128(%rsp,%rcx,4)
+
+- Edges:
+  NO_JUMP -> 160
+
+============================================================
+BLOCK 160
+- Instructions:
+  movslq	%edi, %rax
+  movl	-128(%rsp,%rax,4), %eax
+  addq	$280, %rsp
+  retq
+
+- Edges: (none)

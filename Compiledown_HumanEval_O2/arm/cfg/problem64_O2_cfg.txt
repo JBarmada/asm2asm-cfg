@@ -1,0 +1,97 @@
+Function: _func0
+Basic blocks: 6
+
+============================================================
+BLOCK 0
+- Instructions:
+  sub	sp, sp, #448
+  stp	x28, x27, [sp, #416]
+  stp	x29, x30, [sp, #432]
+  add	x29, sp, #432
+  adrp	x8, ___stack_chk_guard
+  ldr	x8, [x8, ___stack_chk_guard
+  ldr	x8, [x8]
+  stur	x8, [x29, #-24]
+  movi.2d	v0, #0000000000000000
+  stp	q0, q0, [sp, #368]
+  stp	q0, q0, [sp, #336]
+  stp	q0, q0, [sp, #304]
+  stp	q0, q0, [sp, #272]
+  stp	q0, q0, [sp, #240]
+  stp	q0, q0, [sp, #208]
+  stp	q0, q0, [sp, #176]
+  stp	q0, q0, [sp, #144]
+  stp	q0, q0, [sp, #112]
+  stp	q0, q0, [sp, #80]
+  stp	q0, q0, [sp, #48]
+  stp	q0, q0, [sp, #16]
+  str	q0, [sp]
+  mov	w8, #1
+  str	w8, [sp, #8]
+  cmp	w0, #3
+  b.lt	LBB0_3
+
+- Edges:
+  NO_JUMP -> 104
+  JUMP -> 156
+
+============================================================
+BLOCK 104
+- Instructions:
+  mov	w11, #0
+  add	w9, w0, #1
+  mov	x8, sp
+  orr	x8, x8, #0xc
+  sub	x9, x9, #3
+  mov	w10, #1
+
+- Edges:
+  NO_JUMP -> 128
+
+============================================================
+BLOCK 128
+- Instructions:
+  ldur	w12, [x8, #-8]
+  add	w10, w10, w11
+  add	w10, w12, w10
+  str	w10, [x8], #4
+  mov	x11, x12
+  subs	x9, x9, #1
+  b.ne	LBB0_2
+
+- Edges:
+  NO_JUMP -> 156
+  JUMP -> 128
+
+============================================================
+BLOCK 156
+- Instructions:
+  mov	x8, sp
+  ldr	w0, [x8, w0, sxtw #2]
+  ldur	x8, [x29, #-24]
+  adrp	x9, ___stack_chk_guard
+  ldr	x9, [x9, ___stack_chk_guard
+  ldr	x9, [x9]
+  cmp	x9, x8
+  b.ne	LBB0_5
+
+- Edges:
+  NO_JUMP -> 188
+  JUMP -> 204
+
+============================================================
+BLOCK 188
+- Instructions:
+  ldp	x29, x30, [sp, #432]
+  ldp	x28, x27, [sp, #416]
+  add	sp, sp, #448
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 204
+- Instructions:
+  bl	___stack_chk_fail
+
+- Edges: (none)

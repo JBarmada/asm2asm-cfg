@@ -1,0 +1,145 @@
+Function: _func0
+Basic blocks: 13
+
+============================================================
+BLOCK 0
+- Instructions:
+  cmp	w1, #1
+  b.lt	LBB0_9
+
+- Edges:
+  NO_JUMP -> 8
+  JUMP -> 172
+
+============================================================
+BLOCK 8
+- Instructions:
+  mov	x11, #0
+  add	x8, x0, #8
+  mov	w9, #1
+  mov	w10, #2
+  mov	w13, #1
+  mov	w12, w1
+
+- Edges:
+  NO_JUMP -> 32
+
+============================================================
+BLOCK 32
+- Instructions:
+  add	x14, x11, #1
+  mov	x16, x10
+  mov	x17, x8
+  mov	x3, x9
+  cmp	x14, x12
+  cset	w15, lo
+  b.lo	LBB0_5
+
+- Edges:
+  NO_JUMP -> 60
+  JUMP -> 112
+
+============================================================
+BLOCK 60
+- Instructions:
+  add	x9, x9, #1
+  add	x8, x8, #4
+  add	w10, w10, #1
+  mov	x11, x14
+  mov	x13, x15
+  cmp	x14, x12
+  b.ne	LBB0_2
+
+- Edges:
+  NO_JUMP -> 88
+  JUMP -> 32
+
+============================================================
+BLOCK 88
+- Instructions:
+  b	LBB0_9
+
+- Edges:
+  JUMP -> 172
+
+============================================================
+BLOCK 92
+- Instructions:
+  add	x17, x17, #4
+  add	w16, w16, #1
+  mov	x3, x2
+  cmp	x2, x12
+  b.eq	LBB0_3
+
+- Edges:
+  NO_JUMP -> 112
+  JUMP -> 60
+
+============================================================
+BLOCK 112
+- Instructions:
+  add	x2, x3, #1
+  cmp	w2, w1
+  b.ge	LBB0_4
+
+- Edges:
+  NO_JUMP -> 124
+  JUMP -> 92
+
+============================================================
+BLOCK 124
+- Instructions:
+  ldr	w4, [x0, x11, lsl #2]
+  ldr	w3, [x0, x3, lsl #2]
+  add	w3, w3, w4
+  mov	x4, x16
+  mov	x5, x17
+
+- Edges:
+  NO_JUMP -> 144
+
+============================================================
+BLOCK 144
+- Instructions:
+  ldr	w6, [x5], #4
+  cmn	w3, w6
+  b.eq	LBB0_10
+
+- Edges:
+  NO_JUMP -> 156
+  JUMP -> 176
+
+============================================================
+BLOCK 156
+- Instructions:
+  add	w4, w4, #1
+  cmp	w4, w1
+  b.lt	LBB0_7
+
+- Edges:
+  NO_JUMP -> 168
+  JUMP -> 144
+
+============================================================
+BLOCK 168
+- Instructions:
+  b	LBB0_4
+
+- Edges:
+  JUMP -> 92
+
+============================================================
+BLOCK 172
+- Instructions:
+  mov	w13, #0
+
+- Edges:
+  NO_JUMP -> 176
+
+============================================================
+BLOCK 176
+- Instructions:
+  and	w0, w13, #0x1
+  ret
+
+- Edges: (none)

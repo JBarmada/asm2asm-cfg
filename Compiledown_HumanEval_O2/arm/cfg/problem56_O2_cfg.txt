@@ -1,0 +1,85 @@
+Function: _func0
+Basic blocks: 6
+
+============================================================
+BLOCK 0
+- Instructions:
+  stp	x28, x27, [sp, #-48]!
+  stp	x20, x19, [sp, #16]
+  stp	x29, x30, [sp, #32]
+  add	x29, sp, #32
+  sub	sp, sp, #4016
+  mov	x19, x0
+  adrp	x8, ___stack_chk_guard
+  ldr	x8, [x8, ___stack_chk_guard
+  ldr	x8, [x8]
+  stur	x8, [x29, #-40]
+  add	x20, sp, #8
+  add	x0, sp, #8
+  mov	w1, #4000
+  bl	_bzero
+  mov	w8, #1
+  str	w8, [sp, #12]
+  cmp	w19, #2
+  b.lt	LBB0_3
+
+- Edges:
+  NO_JUMP -> 72
+  JUMP -> 108
+
+============================================================
+BLOCK 72
+- Instructions:
+  add	w9, w19, #1
+  add	x8, x20, #8
+  sub	x9, x9, #2
+  mov	w10, #1
+
+- Edges:
+  NO_JUMP -> 88
+
+============================================================
+BLOCK 88
+- Instructions:
+  ldur	w11, [x8, #-8]
+  add	w10, w11, w10
+  str	w10, [x8], #4
+  subs	x9, x9, #1
+  b.ne	LBB0_2
+
+- Edges:
+  NO_JUMP -> 108
+  JUMP -> 88
+
+============================================================
+BLOCK 108
+- Instructions:
+  ldr	w0, [x20, w19, sxtw #2]
+  ldur	x8, [x29, #-40]
+  adrp	x9, ___stack_chk_guard
+  ldr	x9, [x9, ___stack_chk_guard
+  ldr	x9, [x9]
+  cmp	x9, x8
+  b.ne	LBB0_5
+
+- Edges:
+  NO_JUMP -> 136
+  JUMP -> 156
+
+============================================================
+BLOCK 136
+- Instructions:
+  add	sp, sp, #4016
+  ldp	x29, x30, [sp, #32]
+  ldp	x20, x19, [sp, #16]
+  ldp	x28, x27, [sp], #48
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 156
+- Instructions:
+  bl	___stack_chk_fail
+
+- Edges: (none)

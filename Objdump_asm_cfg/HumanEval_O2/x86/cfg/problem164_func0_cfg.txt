@@ -1,0 +1,171 @@
+Function: func0
+Basic blocks: 16
+
+============================================================
+BLOCK 4928
+- Instructions:
+  cmp    %edi,%esi
+  mov    %edi,%r8d
+  cmovg  %esi,%r8d
+  movl   $0x0,(%rcx)
+  cmovl  %esi,%edi
+  lea    0x1(%r8),%r9d
+  mov    %r9d,%eax
+  sub    %edi,%eax
+  mov    %edi,%esi
+  test   $0x1,%al
+  je     137b <func0+0x3b>
+
+- Edges:
+  NO_JUMP -> 4961
+  JUMP -> 4987
+
+============================================================
+BLOCK 4961
+- Instructions:
+  cmp    $0x9,%edi
+  jg     1378 <func0+0x38>
+
+- Edges:
+  NO_JUMP -> 4966
+  JUMP -> 4984
+
+============================================================
+BLOCK 4966
+- Instructions:
+  mov    %edi,%eax
+  and    $0x1,%eax
+  jne    1378 <func0+0x38>
+
+- Edges:
+  NO_JUMP -> 4973
+  JUMP -> 4984
+
+============================================================
+BLOCK 4973
+- Instructions:
+  movslq (%rcx),%rax
+  lea    0x1(%rax),%esi
+  mov    %esi,(%rcx)
+  mov    %edi,(%rdx,%rax,4)
+
+- Edges:
+  NO_JUMP -> 4984
+
+============================================================
+BLOCK 4984
+- Instructions:
+  lea    0x1(%rdi),%esi
+
+- Edges:
+  NO_JUMP -> 4987
+
+============================================================
+BLOCK 4987
+- Instructions:
+  cmp    %edi,%r8d
+  jne    1381 <func0+0x41>
+
+- Edges:
+  NO_JUMP -> 4992
+  JUMP -> 4993
+
+============================================================
+BLOCK 4992
+- Instructions:
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 4993
+- Instructions:
+  mov    %esi,%r8d
+  and    $0x1,%r8d
+  jmp    1398 <func0+0x58>
+
+- Edges:
+  JUMP -> 5016
+
+============================================================
+BLOCK 5002
+- Instructions:
+  nopw   0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5008
+
+============================================================
+BLOCK 5008
+- Instructions:
+  add    $0x2,%esi
+  cmp    %esi,%r9d
+  je     1380 <func0+0x40>
+
+- Edges:
+  NO_JUMP -> 5016
+  JUMP -> 4992
+
+============================================================
+BLOCK 5016
+- Instructions:
+  cmp    $0x9,%esi
+  jg     13ad <func0+0x6d>
+
+- Edges:
+  NO_JUMP -> 5021
+  JUMP -> 5037
+
+============================================================
+BLOCK 5021
+- Instructions:
+  test   %r8d,%r8d
+  jne    13ad <func0+0x6d>
+
+- Edges:
+  NO_JUMP -> 5026
+  JUMP -> 5037
+
+============================================================
+BLOCK 5026
+- Instructions:
+  movslq (%rcx),%rax
+  lea    0x1(%rax),%edi
+  mov    %edi,(%rcx)
+  mov    %esi,(%rdx,%rax,4)
+
+- Edges:
+  NO_JUMP -> 5037
+
+============================================================
+BLOCK 5037
+- Instructions:
+  lea    0x1(%rsi),%eax
+  cmp    $0x9,%eax
+  jg     1390 <func0+0x50>
+
+- Edges:
+  NO_JUMP -> 5045
+  JUMP -> 5008
+
+============================================================
+BLOCK 5045
+- Instructions:
+  test   %r8d,%r8d
+  je     1390 <func0+0x50>
+
+- Edges:
+  NO_JUMP -> 5050
+  JUMP -> 5008
+
+============================================================
+BLOCK 5050
+- Instructions:
+  movslq (%rcx),%r10
+  lea    0x1(%r10),%edi
+  mov    %edi,(%rcx)
+  mov    %eax,(%rdx,%r10,4)
+  jmp    1390 <func0+0x50>
+
+- Edges:
+  JUMP -> 5008

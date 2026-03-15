@@ -1,0 +1,84 @@
+Function: _func0
+Basic blocks: 7
+
+============================================================
+BLOCK 4294968852
+- Instructions:
+  cmp	w0, w2
+  csel	w8, w0, w2, gt
+  cmp	w1, w3
+  csel	w9, w1, w3, lt
+  sub	w8, w9, w8
+  cmp	w8, #0x2
+  b.ge	0x10000063c <_func0+0x28>
+
+- Edges:
+  NO_JUMP -> 4294968880
+  JUMP -> 4294968892
+
+============================================================
+BLOCK 4294968880
+- Instructions:
+  adrp	x0, 0x100000000 <_strcmp+0x100000000>
+  add	x0, x0, #0x930
+  ret
+
+- Edges:
+  NO_JUMP -> 4294968892
+
+============================================================
+BLOCK 4294968892
+- Instructions:
+  cmp	w8, #0x4
+  b.hs	0x100000650 <_func0+0x3c>
+
+- Edges:
+  NO_JUMP -> 4294968900
+  JUMP -> 4294968912
+
+============================================================
+BLOCK 4294968900
+- Instructions:
+  adrp	x0, 0x100000000 <_strcmp+0x100000000>
+  add	x0, x0, #0x83f
+  ret
+
+- Edges:
+  NO_JUMP -> 4294968912
+
+============================================================
+BLOCK 4294968912
+- Instructions:
+  mov	w10, #0x3               ; =3
+  adrp	x9, 0x100000000 <_strcmp+0x100000000>
+  add	x9, x9, #0x930
+  adrp	x0, 0x100000000 <_strcmp+0x100000000>
+  add	x0, x0, #0x83f
+
+- Edges:
+  NO_JUMP -> 4294968932
+
+============================================================
+BLOCK 4294968932
+- Instructions:
+  sub	w11, w10, #0x1
+  udiv	w12, w8, w11
+  msub	w11, w12, w11, w8
+  cbz	w11, 0x100000688 <_func0+0x74>
+  mul	w11, w10, w10
+  add	w10, w10, #0x1
+  cmp	w11, w8
+  b.le	0x100000664 <_func0+0x50>
+
+- Edges:
+  NO_JUMP -> 4294968964
+  JUMP -> 4294968932
+
+============================================================
+BLOCK 4294968964
+- Instructions:
+  ret
+  mov	x0, x9
+  ret
+
+- Edges: (none)

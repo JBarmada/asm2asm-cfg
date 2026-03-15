@@ -1,0 +1,104 @@
+Function: func0
+Basic blocks: 10
+
+============================================================
+BLOCK 5296
+- Instructions:
+  test   %esi,%esi
+  jle    1503 <func0+0x53>
+
+- Edges:
+  NO_JUMP -> 5300
+  JUMP -> 5379
+
+============================================================
+BLOCK 5300
+- Instructions:
+  mov    %esi,%r9d
+  xor    %edx,%edx
+  mov    $0xaaaaaaab,%r8d
+  xor    %eax,%eax
+  jmp    14e0 <func0+0x30>
+
+- Edges:
+  JUMP -> 5344
+
+============================================================
+BLOCK 5315
+- Instructions:
+  data16 data16 data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5328
+
+============================================================
+BLOCK 5328
+- Instructions:
+  mov    (%rdi,%rdx,4),%ecx
+  imul   %ecx,%ecx
+
+- Edges:
+  NO_JUMP -> 5334
+
+============================================================
+BLOCK 5334
+- Instructions:
+  add    %ecx,%eax
+  inc    %rdx
+  cmp    %rdx,%r9
+  je     1505 <func0+0x55>
+
+- Edges:
+  NO_JUMP -> 5344
+  JUMP -> 5381
+
+============================================================
+BLOCK 5344
+- Instructions:
+  mov    %edx,%esi
+  imul   %r8,%rsi
+  shr    $0x21,%rsi
+  lea    (%rsi,%rsi,2),%esi
+  cmp    %esi,%edx
+  je     14d0 <func0+0x20>
+
+- Edges:
+  NO_JUMP -> 5361
+  JUMP -> 5328
+
+============================================================
+BLOCK 5361
+- Instructions:
+  mov    (%rdi,%rdx,4),%ecx
+  test   $0x3,%dl
+  jne    14d6 <func0+0x26>
+
+- Edges:
+  NO_JUMP -> 5369
+  JUMP -> 5334
+
+============================================================
+BLOCK 5369
+- Instructions:
+  mov    %ecx,%esi
+  imul   %ecx,%esi
+  imul   %esi,%ecx
+  jmp    14d6 <func0+0x26>
+
+- Edges:
+  JUMP -> 5334
+
+============================================================
+BLOCK 5379
+- Instructions:
+  xor    %eax,%eax
+
+- Edges:
+  NO_JUMP -> 5381
+
+============================================================
+BLOCK 5381
+- Instructions:
+  ret
+
+- Edges: (none)

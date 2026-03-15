@@ -1,0 +1,150 @@
+Function: func0
+Basic blocks: 11
+
+============================================================
+BLOCK 0
+- Instructions:
+  addi	sp, sp, -64
+  sd	ra, 56(sp)
+  sd	s0, 48(sp)
+  sd	s1, 40(sp)
+  sd	s2, 32(sp)
+  sh	zero, 24(sp)
+  sd	zero, 16(sp)
+  sh	zero, 8(sp)
+  sd	zero, 0(sp)
+  lbu	s0, 0(a0)
+  mv	s2, a1
+  beqz	s0, .LBB0_10
+
+- Edges:
+  NO_JUMP -> 48
+  JUMP -> 200
+
+============================================================
+BLOCK 48
+- Instructions:
+  mv	s1, a0
+  call	__ctype_b_loc@plt
+  li	a5, 0
+  li	a2, 0
+  ld	a0, 0(a0)
+  addi	a1, s1, 1
+  addi	a6, sp, 16
+  mv	a3, sp
+  j	.LBB0_4
+
+- Edges:
+  JUMP -> 104
+
+============================================================
+BLOCK 84
+- Instructions:
+  mv	a2, a4
+
+- Edges:
+  NO_JUMP -> 88
+
+============================================================
+BLOCK 88
+- Instructions:
+  lbu	s0, 0(a1)
+  addi	a1, a1, 1
+  mv	a5, s1
+  beqz	s0, .LBB0_10
+
+- Edges:
+  NO_JUMP -> 104
+  JUMP -> 200
+
+============================================================
+BLOCK 104
+- Instructions:
+  andi	a4, s0, 255
+  slli	a4, a4, 1
+  add	a4, a4, a0
+  lbu	a4, 1(a4)
+  andi	a4, a4, 8
+  bnez	a4, .LBB0_7
+
+- Edges:
+  NO_JUMP -> 128
+  JUMP -> 164
+
+============================================================
+BLOCK 128
+- Instructions:
+  li	s1, 0
+  seqz	a4, a2
+  sgtz	s0, a5
+  and	s0, s0, a4
+  li	a4, 1
+  bnez	s0, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 152
+  JUMP -> 84
+
+============================================================
+BLOCK 152
+- Instructions:
+  mv	a4, a2
+  mv	s1, a5
+  j	.LBB0_2
+
+- Edges:
+  JUMP -> 84
+
+============================================================
+BLOCK 164
+- Instructions:
+  addiw	s1, a5, 1
+  beqz	a2, .LBB0_9
+
+- Edges:
+  NO_JUMP -> 172
+  JUMP -> 188
+
+============================================================
+BLOCK 172
+- Instructions:
+  add	a2, a3, a5
+  sb	s0, 0(a2)
+  li	a2, 1
+  j	.LBB0_3
+
+- Edges:
+  JUMP -> 88
+
+============================================================
+BLOCK 188
+- Instructions:
+  add	a4, a6, a5
+  sb	s0, 0(a4)
+  j	.LBB0_3
+
+- Edges:
+  JUMP -> 88
+
+============================================================
+BLOCK 200
+- Instructions:
+  addi	a0, sp, 16
+  li	a2, 10
+  li	a1, 0
+  call	strtol@plt
+  mv	s1, a0
+  mv	a0, sp
+  li	a2, 10
+  li	a1, 0
+  call	strtol@plt
+  addw	a0, a0, s1
+  subw	a0, s2, a0
+  ld	ra, 56(sp)
+  ld	s0, 48(sp)
+  ld	s1, 40(sp)
+  ld	s2, 32(sp)
+  addi	sp, sp, 64
+  ret
+
+- Edges: (none)

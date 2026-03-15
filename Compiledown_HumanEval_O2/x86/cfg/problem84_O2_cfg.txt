@@ -1,0 +1,219 @@
+Function: func0
+Basic blocks: 18
+
+============================================================
+BLOCK 0
+- Instructions:
+  testl	%edi, %edi
+  jle	.LBB0_1
+
+- Edges:
+  NO_JUMP -> 8
+  JUMP -> 56
+
+============================================================
+BLOCK 8
+- Instructions:
+  movl	$1, %eax
+  cmpl	$1, %edi
+  je	.LBB0_17
+
+- Edges:
+  NO_JUMP -> 20
+  JUMP -> 328
+
+============================================================
+BLOCK 20
+- Instructions:
+  movl	$18, %eax
+  cmpl	$3, %edi
+  jb	.LBB0_17
+
+- Edges:
+  NO_JUMP -> 32
+  JUMP -> 328
+
+============================================================
+BLOCK 32
+- Instructions:
+  leal	-2(%rdi), %r8d
+  cmpl	$8, %r8d
+  jae	.LBB0_6
+
+- Edges:
+  NO_JUMP -> 44
+  JUMP -> 64
+
+============================================================
+BLOCK 44
+- Instructions:
+  movl	$18, %eax
+  movl	$2, %ecx
+  jmp	.LBB0_15
+
+- Edges:
+  JUMP -> 308
+
+============================================================
+BLOCK 56
+- Instructions:
+  xorl	%eax, %eax
+  retq
+
+- Edges: (none)
+
+============================================================
+BLOCK 64
+- Instructions:
+  movl	%r8d, %ecx
+  andl	$-8, %ecx
+  leal	-8(%rcx), %edx
+  movl	%edx, %esi
+  shrl	$3, %esi
+  incl	%esi
+  movl	%esi, %eax
+  andl	$7, %eax
+  cmpl	$56, %edx
+  jae	.LBB0_8
+
+- Edges:
+  NO_JUMP -> 104
+  JUMP -> 116
+
+============================================================
+BLOCK 104
+- Instructions:
+  movdqa	.LCPI0_0(%rip), %xmm0
+  movdqa	.LCPI0_1(%rip), %xmm1
+  jmp	.LBB0_10
+
+- Edges:
+  JUMP -> 188
+
+============================================================
+BLOCK 116
+- Instructions:
+  andl	$-8, %esi
+  movdqa	.LCPI0_0(%rip), %xmm0
+  movdqa	.LCPI0_1(%rip), %xmm1
+  movdqa	.LCPI0_2(%rip), %xmm2
+
+- Edges:
+  NO_JUMP -> 132
+
+============================================================
+BLOCK 132
+- Instructions:
+  pshufd	$245, %xmm1, %xmm3
+  pmuludq	%xmm2, %xmm1
+  pshufd	$232, %xmm1, %xmm1
+  pmuludq	%xmm2, %xmm3
+  pshufd	$232, %xmm3, %xmm3
+  punpckldq	%xmm3, %xmm1
+  pshufd	$245, %xmm0, %xmm3
+  pmuludq	%xmm2, %xmm0
+  pshufd	$232, %xmm0, %xmm0
+  pmuludq	%xmm2, %xmm3
+  pshufd	$232, %xmm3, %xmm3
+  punpckldq	%xmm3, %xmm0
+  addl	$-8, %esi
+  jne	.LBB0_9
+
+- Edges:
+  NO_JUMP -> 188
+  JUMP -> 132
+
+============================================================
+BLOCK 188
+- Instructions:
+  testl	%eax, %eax
+  je	.LBB0_13
+
+- Edges:
+  NO_JUMP -> 196
+  JUMP -> 256
+
+============================================================
+BLOCK 196
+- Instructions:
+  movdqa	.LCPI0_3(%rip), %xmm2
+
+- Edges:
+  NO_JUMP -> 200
+
+============================================================
+BLOCK 200
+- Instructions:
+  pshufd	$245, %xmm1, %xmm3
+  pmuludq	%xmm2, %xmm1
+  pshufd	$232, %xmm1, %xmm1
+  pmuludq	%xmm2, %xmm3
+  pshufd	$232, %xmm3, %xmm3
+  punpckldq	%xmm3, %xmm1
+  pshufd	$245, %xmm0, %xmm3
+  pmuludq	%xmm2, %xmm0
+  pshufd	$232, %xmm0, %xmm0
+  pmuludq	%xmm2, %xmm3
+  pshufd	$232, %xmm3, %xmm3
+  punpckldq	%xmm3, %xmm0
+  decl	%eax
+  jne	.LBB0_12
+
+- Edges:
+  NO_JUMP -> 256
+  JUMP -> 200
+
+============================================================
+BLOCK 256
+- Instructions:
+  pshufd	$245, %xmm1, %xmm2
+  pshufd	$245, %xmm0, %xmm3
+  pmuludq	%xmm2, %xmm3
+  pmuludq	%xmm1, %xmm0
+  pshufd	$238, %xmm0, %xmm1
+  pmuludq	%xmm0, %xmm1
+  pshufd	$170, %xmm3, %xmm0
+  pmuludq	%xmm3, %xmm0
+  pmuludq	%xmm1, %xmm0
+  movd	%xmm0, %eax
+  cmpl	%ecx, %r8d
+  je	.LBB0_17
+
+- Edges:
+  NO_JUMP -> 304
+  JUMP -> 328
+
+============================================================
+BLOCK 304
+- Instructions:
+  orl	$2, %ecx
+
+- Edges:
+  NO_JUMP -> 308
+
+============================================================
+BLOCK 308
+- Instructions:
+  subl	%ecx, %edi
+
+- Edges:
+  NO_JUMP -> 312
+
+============================================================
+BLOCK 312
+- Instructions:
+  addl	%eax, %eax
+  leal	(%rax,%rax,4), %eax
+  decl	%edi
+  jne	.LBB0_16
+
+- Edges:
+  NO_JUMP -> 328
+  JUMP -> 312
+
+============================================================
+BLOCK 328
+- Instructions:
+  retq
+
+- Edges: (none)

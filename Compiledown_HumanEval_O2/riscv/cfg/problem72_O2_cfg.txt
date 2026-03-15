@@ -1,0 +1,88 @@
+Function: func0
+Basic blocks: 6
+
+============================================================
+BLOCK 0
+- Instructions:
+  addi	sp, sp, -16
+  sd	ra, 8(sp)
+  fsd	fs0, 0(sp)
+  fadd.s	ft0, fa0, fa1
+  fle.s	a0, ft0, fa2
+  fadd.s	ft1, fa0, fa2
+  fle.s	a1, ft1, fa1
+  or	a0, a0, a1
+  fadd.s	ft1, fa1, fa2
+  fle.s	a1, ft1, fa0
+  or	a0, a0, a1
+  bnez	a0, .LBB0_3
+
+- Edges:
+  NO_JUMP -> 48
+  JUMP -> 132
+
+============================================================
+BLOCK 48
+- Instructions:
+  auipc	a0, %pcrel_hi(.LCPI0_1)
+  addi	a0, a0, %pcrel_lo(.LBB0_6)
+  flw	ft1, 0(a0)
+  fadd.s	ft0, ft0, fa2
+  fmul.s	ft0, ft0, ft1
+  fsub.s	ft1, ft0, fa0
+  fmul.s	ft1, ft0, ft1
+  fsub.s	ft2, ft0, fa1
+  fmul.s	ft1, ft2, ft1
+  fsub.s	ft0, ft0, fa2
+  fmul.s	ft0, ft0, ft1
+  fsqrt.s	fa0, ft0
+  feq.s	a0, fa0, fa0
+  beqz	a0, .LBB0_5
+
+- Edges:
+  NO_JUMP -> 104
+  JUMP -> 160
+
+============================================================
+BLOCK 104
+- Instructions:
+  auipc	a0, %pcrel_hi(.LCPI0_2)
+  addi	a0, a0, %pcrel_lo(.LBB0_7)
+  flw	fs0, 0(a0)
+  fmul.s	fa0, fa0, fs0
+  call	roundf@plt
+  fdiv.s	fa0, fa0, fs0
+  j	.LBB0_4
+
+- Edges:
+  JUMP -> 144
+
+============================================================
+BLOCK 132
+- Instructions:
+  auipc	a0, %pcrel_hi(.LCPI0_0)
+  addi	a0, a0, %pcrel_lo(.LBB0_8)
+  flw	fa0, 0(a0)
+
+- Edges:
+  NO_JUMP -> 144
+
+============================================================
+BLOCK 144
+- Instructions:
+  ld	ra, 8(sp)
+  fld	fs0, 0(sp)
+  addi	sp, sp, 16
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 160
+- Instructions:
+  fmv.s	fa0, ft0
+  call	sqrtf@plt
+  j	.LBB0_2
+
+- Edges:
+  JUMP -> 104

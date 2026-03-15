@@ -1,0 +1,640 @@
+Function: func0
+Basic blocks: 21
+
+============================================================
+BLOCK 0
+- Instructions:
+  pushq	%rbp
+  pushq	%rbx
+  pushq	%rax
+  movl	%esi, %ebp
+  movq	%rdi, %rbx
+  callq	strlen@PLT
+  testq	%rax, %rax
+  je	.LBB0_17
+
+- Edges:
+  NO_JUMP -> 32
+  JUMP -> 1908
+
+============================================================
+BLOCK 32
+- Instructions:
+  xorl	%ecx, %ecx
+  testl	%ebp, %ebp
+  sete	%cl
+  shll	$4, %ecx
+  orl	$-92, %ecx
+  cmpq	$8, %rax
+  jae	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 60
+  JUMP -> 68
+
+============================================================
+BLOCK 60
+- Instructions:
+  xorl	%edx, %edx
+  jmp	.LBB0_3
+
+- Edges:
+  JUMP -> 1840
+
+============================================================
+BLOCK 68
+- Instructions:
+  movd	%ecx, %xmm8
+  cmpq	$16, %rax
+  jae	.LBB0_6
+
+- Edges:
+  NO_JUMP -> 80
+  JUMP -> 364
+
+============================================================
+BLOCK 80
+- Instructions:
+  xorl	%edx, %edx
+
+- Edges:
+  NO_JUMP -> 84
+
+============================================================
+BLOCK 84
+- Instructions:
+  movq	%rdx, %rsi
+  movq	%rax, %rdx
+  andq	$-8, %rdx
+  pshufd	$0, %xmm8, %xmm0
+  movdqa	.LCPI0_0(%rip), %xmm1
+  movdqa	.LCPI0_1(%rip), %xmm2
+  movdqa	.LCPI0_2(%rip), %xmm3
+  movdqa	.LCPI0_4(%rip), %xmm8
+
+- Edges:
+  NO_JUMP -> 116
+
+============================================================
+BLOCK 116
+- Instructions:
+  movq	(%rbx,%rsi), %xmm5
+  punpcklbw	%xmm5, %xmm6
+  punpcklwd	%xmm6, %xmm5
+  psrad	$24, %xmm5
+  punpckhwd	%xmm6, %xmm6
+  psrad	$24, %xmm6
+  paddd	%xmm0, %xmm6
+  paddd	%xmm0, %xmm5
+  movdqa	%xmm5, %xmm7
+  pmuludq	%xmm1, %xmm7
+  pshufd	$237, %xmm7, %xmm7
+  pshufd	$245, %xmm5, %xmm4
+  pmuludq	%xmm1, %xmm4
+  pshufd	$237, %xmm4, %xmm4
+  punpckldq	%xmm4, %xmm7
+  pxor	%xmm4, %xmm4
+  pcmpgtd	%xmm5, %xmm4
+  pand	%xmm1, %xmm4
+  psubd	%xmm4, %xmm7
+  movdqa	%xmm7, %xmm4
+  psrld	$31, %xmm4
+  psrld	$3, %xmm7
+  paddd	%xmm4, %xmm7
+  pshufd	$245, %xmm7, %xmm4
+  pmuludq	%xmm2, %xmm7
+  pshufd	$232, %xmm7, %xmm7
+  pmuludq	%xmm2, %xmm4
+  pshufd	$232, %xmm4, %xmm4
+  punpckldq	%xmm4, %xmm7
+  psubd	%xmm7, %xmm5
+  movdqa	%xmm6, %xmm4
+  pmuludq	%xmm1, %xmm4
+  pshufd	$237, %xmm4, %xmm4
+  pshufd	$245, %xmm6, %xmm7
+  pmuludq	%xmm1, %xmm7
+  pshufd	$237, %xmm7, %xmm7
+  punpckldq	%xmm7, %xmm4
+  pxor	%xmm7, %xmm7
+  pcmpgtd	%xmm6, %xmm7
+  pand	%xmm1, %xmm7
+  psubd	%xmm7, %xmm4
+  movdqa	%xmm4, %xmm7
+  psrld	$31, %xmm7
+  psrld	$3, %xmm4
+  paddd	%xmm7, %xmm4
+  pshufd	$245, %xmm4, %xmm7
+  pmuludq	%xmm2, %xmm4
+  pshufd	$232, %xmm4, %xmm4
+  pmuludq	%xmm2, %xmm7
+  pshufd	$232, %xmm7, %xmm7
+  punpckldq	%xmm7, %xmm4
+  psubd	%xmm4, %xmm6
+  pand	%xmm3, %xmm6
+  pand	%xmm3, %xmm5
+  packuswb	%xmm6, %xmm5
+  packuswb	%xmm5, %xmm5
+  paddb	%xmm8, %xmm5
+  movq	%xmm5, (%rbx,%rsi)
+  addq	$8, %rsi
+  cmpq	%rsi, %rdx
+  jne	.LBB0_15
+
+- Edges:
+  NO_JUMP -> 360
+  JUMP -> 116
+
+============================================================
+BLOCK 360
+- Instructions:
+  jmp	.LBB0_16
+
+- Edges:
+  JUMP -> 1900
+
+============================================================
+BLOCK 364
+- Instructions:
+  movq	%rax, %rdx
+  andq	$-16, %rdx
+  pshufd	$0, %xmm8, %xmm12
+  leaq	-16(%rdx), %rsi
+  movq	%rsi, %rbp
+  shrq	$4, %rbp
+  incq	%rbp
+  testq	%rsi, %rsi
+  je	.LBB0_7
+
+- Edges:
+  NO_JUMP -> 400
+  JUMP -> 1824
+
+============================================================
+BLOCK 400
+- Instructions:
+  movq	%rbp, %rdi
+  andq	$-2, %rdi
+  xorl	%esi, %esi
+  movdqa	.LCPI0_0(%rip), %xmm2
+  movdqa	.LCPI0_1(%rip), %xmm3
+  movdqa	.LCPI0_2(%rip), %xmm10
+  movdqa	.LCPI0_3(%rip), %xmm9
+
+- Edges:
+  NO_JUMP -> 428
+
+============================================================
+BLOCK 428
+- Instructions:
+  movdqu	(%rbx,%rsi), %xmm4
+  movdqu	16(%rbx,%rsi), %xmm11
+  punpcklbw	%xmm4, %xmm0
+  punpcklwd	%xmm0, %xmm6
+  psrad	$24, %xmm6
+  punpckhwd	%xmm0, %xmm0
+  psrad	$24, %xmm0
+  punpckhbw	%xmm4, %xmm4
+  punpcklwd	%xmm4, %xmm5
+  psrad	$24, %xmm5
+  punpckhwd	%xmm4, %xmm4
+  psrad	$24, %xmm4
+  paddd	%xmm12, %xmm4
+  paddd	%xmm12, %xmm5
+  paddd	%xmm12, %xmm0
+  paddd	%xmm12, %xmm6
+  movdqa	%xmm6, %xmm7
+  pmuludq	%xmm2, %xmm7
+  pshufd	$237, %xmm7, %xmm7
+  pshufd	$245, %xmm6, %xmm1
+  pmuludq	%xmm2, %xmm1
+  pshufd	$237, %xmm1, %xmm1
+  punpckldq	%xmm1, %xmm7
+  pxor	%xmm1, %xmm1
+  pcmpgtd	%xmm6, %xmm1
+  pand	%xmm2, %xmm1
+  psubd	%xmm1, %xmm7
+  movdqa	%xmm7, %xmm1
+  psrld	$31, %xmm1
+  psrld	$3, %xmm7
+  paddd	%xmm1, %xmm7
+  pshufd	$245, %xmm7, %xmm1
+  pmuludq	%xmm3, %xmm7
+  pshufd	$232, %xmm7, %xmm7
+  pmuludq	%xmm3, %xmm1
+  pshufd	$232, %xmm1, %xmm1
+  punpckldq	%xmm1, %xmm7
+  psubd	%xmm7, %xmm6
+  movdqa	%xmm0, %xmm1
+  pmuludq	%xmm2, %xmm1
+  pshufd	$237, %xmm1, %xmm1
+  pshufd	$245, %xmm0, %xmm7
+  pmuludq	%xmm2, %xmm7
+  pshufd	$237, %xmm7, %xmm7
+  punpckldq	%xmm7, %xmm1
+  pxor	%xmm7, %xmm7
+  pcmpgtd	%xmm0, %xmm7
+  pand	%xmm2, %xmm7
+  psubd	%xmm7, %xmm1
+  movdqa	%xmm1, %xmm7
+  psrld	$31, %xmm7
+  psrld	$3, %xmm1
+  paddd	%xmm7, %xmm1
+  pshufd	$245, %xmm1, %xmm7
+  pmuludq	%xmm3, %xmm1
+  pshufd	$232, %xmm1, %xmm1
+  pmuludq	%xmm3, %xmm7
+  pshufd	$232, %xmm7, %xmm7
+  punpckldq	%xmm7, %xmm1
+  psubd	%xmm1, %xmm0
+  movdqa	%xmm5, %xmm1
+  pmuludq	%xmm2, %xmm1
+  pshufd	$237, %xmm1, %xmm1
+  pshufd	$245, %xmm5, %xmm7
+  pmuludq	%xmm2, %xmm7
+  pshufd	$237, %xmm7, %xmm7
+  punpckldq	%xmm7, %xmm1
+  pxor	%xmm7, %xmm7
+  pcmpgtd	%xmm5, %xmm7
+  pand	%xmm2, %xmm7
+  psubd	%xmm7, %xmm1
+  movdqa	%xmm1, %xmm7
+  psrld	$31, %xmm7
+  psrld	$3, %xmm1
+  paddd	%xmm7, %xmm1
+  pshufd	$245, %xmm1, %xmm7
+  pmuludq	%xmm3, %xmm1
+  pshufd	$232, %xmm1, %xmm1
+  pmuludq	%xmm3, %xmm7
+  pshufd	$232, %xmm7, %xmm7
+  punpckldq	%xmm7, %xmm1
+  psubd	%xmm1, %xmm5
+  movdqa	%xmm4, %xmm1
+  pmuludq	%xmm2, %xmm1
+  pshufd	$237, %xmm1, %xmm1
+  pshufd	$245, %xmm4, %xmm7
+  pmuludq	%xmm2, %xmm7
+  pshufd	$237, %xmm7, %xmm7
+  punpckldq	%xmm7, %xmm1
+  pxor	%xmm7, %xmm7
+  pcmpgtd	%xmm4, %xmm7
+  pand	%xmm2, %xmm7
+  psubd	%xmm7, %xmm1
+  movdqa	%xmm1, %xmm7
+  psrld	$31, %xmm7
+  psrld	$3, %xmm1
+  paddd	%xmm7, %xmm1
+  pshufd	$245, %xmm1, %xmm7
+  pmuludq	%xmm3, %xmm1
+  pshufd	$232, %xmm1, %xmm1
+  pmuludq	%xmm3, %xmm7
+  pshufd	$232, %xmm7, %xmm7
+  punpckldq	%xmm7, %xmm1
+  psubd	%xmm1, %xmm4
+  pand	%xmm10, %xmm4
+  pand	%xmm10, %xmm5
+  packuswb	%xmm4, %xmm5
+  pand	%xmm10, %xmm0
+  pand	%xmm10, %xmm6
+  packuswb	%xmm0, %xmm6
+  packuswb	%xmm5, %xmm6
+  paddb	%xmm9, %xmm6
+  movdqu	%xmm6, (%rbx,%rsi)
+  punpcklbw	%xmm11, %xmm0
+  punpcklwd	%xmm0, %xmm7
+  psrad	$24, %xmm7
+  punpckhwd	%xmm0, %xmm0
+  psrad	$24, %xmm0
+  punpckhbw	%xmm11, %xmm1
+  punpcklwd	%xmm1, %xmm5
+  psrad	$24, %xmm5
+  punpckhwd	%xmm1, %xmm4
+  psrad	$24, %xmm4
+  paddd	%xmm12, %xmm4
+  paddd	%xmm12, %xmm5
+  paddd	%xmm12, %xmm0
+  paddd	%xmm12, %xmm7
+  movdqa	%xmm7, %xmm1
+  pmuludq	%xmm2, %xmm1
+  pshufd	$237, %xmm1, %xmm1
+  pshufd	$245, %xmm7, %xmm6
+  pmuludq	%xmm2, %xmm6
+  pshufd	$237, %xmm6, %xmm6
+  punpckldq	%xmm6, %xmm1
+  pxor	%xmm6, %xmm6
+  pcmpgtd	%xmm7, %xmm6
+  pand	%xmm2, %xmm6
+  psubd	%xmm6, %xmm1
+  movdqa	%xmm1, %xmm6
+  psrld	$31, %xmm6
+  psrld	$3, %xmm1
+  paddd	%xmm6, %xmm1
+  pshufd	$245, %xmm1, %xmm6
+  pmuludq	%xmm3, %xmm1
+  pshufd	$232, %xmm1, %xmm1
+  pmuludq	%xmm3, %xmm6
+  pshufd	$232, %xmm6, %xmm6
+  punpckldq	%xmm6, %xmm1
+  psubd	%xmm1, %xmm7
+  movdqa	%xmm0, %xmm1
+  pmuludq	%xmm2, %xmm1
+  pshufd	$237, %xmm1, %xmm1
+  pshufd	$245, %xmm0, %xmm6
+  pmuludq	%xmm2, %xmm6
+  pshufd	$237, %xmm6, %xmm6
+  punpckldq	%xmm6, %xmm1
+  pxor	%xmm6, %xmm6
+  pcmpgtd	%xmm0, %xmm6
+  pand	%xmm2, %xmm6
+  psubd	%xmm6, %xmm1
+  movdqa	%xmm1, %xmm6
+  psrld	$31, %xmm6
+  psrld	$3, %xmm1
+  paddd	%xmm6, %xmm1
+  pshufd	$245, %xmm1, %xmm6
+  pmuludq	%xmm3, %xmm1
+  pshufd	$232, %xmm1, %xmm1
+  pmuludq	%xmm3, %xmm6
+  pshufd	$232, %xmm6, %xmm6
+  punpckldq	%xmm6, %xmm1
+  psubd	%xmm1, %xmm0
+  movdqa	%xmm5, %xmm1
+  pmuludq	%xmm2, %xmm1
+  pshufd	$237, %xmm1, %xmm1
+  pshufd	$245, %xmm5, %xmm6
+  pmuludq	%xmm2, %xmm6
+  pshufd	$237, %xmm6, %xmm6
+  punpckldq	%xmm6, %xmm1
+  pxor	%xmm6, %xmm6
+  pcmpgtd	%xmm5, %xmm6
+  pand	%xmm2, %xmm6
+  psubd	%xmm6, %xmm1
+  movdqa	%xmm1, %xmm6
+  psrld	$31, %xmm6
+  psrld	$3, %xmm1
+  paddd	%xmm6, %xmm1
+  pshufd	$245, %xmm1, %xmm6
+  pmuludq	%xmm3, %xmm1
+  pshufd	$232, %xmm1, %xmm1
+  pmuludq	%xmm3, %xmm6
+  pshufd	$232, %xmm6, %xmm6
+  punpckldq	%xmm6, %xmm1
+  psubd	%xmm1, %xmm5
+  movdqa	%xmm4, %xmm1
+  pmuludq	%xmm2, %xmm1
+  pshufd	$237, %xmm1, %xmm1
+  pshufd	$245, %xmm4, %xmm6
+  pmuludq	%xmm2, %xmm6
+  pshufd	$237, %xmm6, %xmm6
+  punpckldq	%xmm6, %xmm1
+  pxor	%xmm6, %xmm6
+  pcmpgtd	%xmm4, %xmm6
+  pand	%xmm2, %xmm6
+  psubd	%xmm6, %xmm1
+  movdqa	%xmm1, %xmm6
+  psrld	$31, %xmm6
+  psrld	$3, %xmm1
+  paddd	%xmm6, %xmm1
+  pshufd	$245, %xmm1, %xmm6
+  pmuludq	%xmm3, %xmm1
+  pshufd	$232, %xmm1, %xmm1
+  pmuludq	%xmm3, %xmm6
+  pshufd	$232, %xmm6, %xmm6
+  punpckldq	%xmm6, %xmm1
+  psubd	%xmm1, %xmm4
+  pand	%xmm10, %xmm4
+  pand	%xmm10, %xmm5
+  packuswb	%xmm4, %xmm5
+  pand	%xmm10, %xmm0
+  pand	%xmm10, %xmm7
+  packuswb	%xmm0, %xmm7
+  packuswb	%xmm5, %xmm7
+  paddb	%xmm9, %xmm7
+  movdqu	%xmm7, 16(%rbx,%rsi)
+  addq	$32, %rsi
+  addq	$-2, %rdi
+  jne	.LBB0_9
+
+- Edges:
+  NO_JUMP -> 1336
+  JUMP -> 428
+
+============================================================
+BLOCK 1336
+- Instructions:
+  testb	$1, %bpl
+  je	.LBB0_12
+
+- Edges:
+  NO_JUMP -> 1344
+  JUMP -> 1804
+
+============================================================
+BLOCK 1344
+- Instructions:
+  movdqu	(%rbx,%rsi), %xmm0
+  punpcklbw	%xmm0, %xmm1
+  punpcklwd	%xmm1, %xmm2
+  psrad	$24, %xmm2
+  punpckhwd	%xmm1, %xmm3
+  psrad	$24, %xmm3
+  punpckhbw	%xmm0, %xmm0
+  punpcklwd	%xmm0, %xmm4
+  psrad	$24, %xmm4
+  punpckhwd	%xmm0, %xmm0
+  psrad	$24, %xmm0
+  paddd	%xmm12, %xmm0
+  paddd	%xmm12, %xmm4
+  paddd	%xmm12, %xmm3
+  paddd	%xmm12, %xmm2
+  movdqa	.LCPI0_0(%rip), %xmm1
+  movdqa	%xmm2, %xmm5
+  pmuludq	%xmm1, %xmm5
+  pshufd	$237, %xmm5, %xmm7
+  pshufd	$245, %xmm2, %xmm5
+  pmuludq	%xmm1, %xmm5
+  pshufd	$237, %xmm5, %xmm5
+  punpckldq	%xmm5, %xmm7
+  pxor	%xmm5, %xmm5
+  pxor	%xmm6, %xmm6
+  pcmpgtd	%xmm2, %xmm6
+  pand	%xmm1, %xmm6
+  psubd	%xmm6, %xmm7
+  movdqa	%xmm7, %xmm6
+  psrld	$31, %xmm6
+  psrld	$3, %xmm7
+  paddd	%xmm6, %xmm7
+  movdqa	.LCPI0_1(%rip), %xmm9
+  pshufd	$245, %xmm7, %xmm6
+  pmuludq	%xmm9, %xmm7
+  pshufd	$232, %xmm7, %xmm7
+  pmuludq	%xmm9, %xmm6
+  pshufd	$232, %xmm6, %xmm6
+  punpckldq	%xmm6, %xmm7
+  psubd	%xmm7, %xmm2
+  movdqa	%xmm3, %xmm6
+  pmuludq	%xmm1, %xmm6
+  pshufd	$237, %xmm6, %xmm6
+  pshufd	$245, %xmm3, %xmm7
+  pmuludq	%xmm1, %xmm7
+  pshufd	$237, %xmm7, %xmm7
+  punpckldq	%xmm7, %xmm6
+  pxor	%xmm7, %xmm7
+  pcmpgtd	%xmm3, %xmm7
+  pand	%xmm1, %xmm7
+  psubd	%xmm7, %xmm6
+  movdqa	%xmm6, %xmm7
+  psrld	$31, %xmm7
+  psrld	$3, %xmm6
+  paddd	%xmm7, %xmm6
+  pshufd	$245, %xmm6, %xmm7
+  pmuludq	%xmm9, %xmm6
+  pshufd	$232, %xmm6, %xmm6
+  pmuludq	%xmm9, %xmm7
+  pshufd	$232, %xmm7, %xmm7
+  punpckldq	%xmm7, %xmm6
+  psubd	%xmm6, %xmm3
+  movdqa	%xmm4, %xmm6
+  pmuludq	%xmm1, %xmm6
+  pshufd	$237, %xmm6, %xmm6
+  pshufd	$245, %xmm4, %xmm7
+  pmuludq	%xmm1, %xmm7
+  pshufd	$237, %xmm7, %xmm7
+  punpckldq	%xmm7, %xmm6
+  pxor	%xmm7, %xmm7
+  pcmpgtd	%xmm4, %xmm7
+  pand	%xmm1, %xmm7
+  psubd	%xmm7, %xmm6
+  movdqa	%xmm6, %xmm7
+  psrld	$31, %xmm7
+  psrld	$3, %xmm6
+  paddd	%xmm7, %xmm6
+  pshufd	$245, %xmm6, %xmm7
+  pmuludq	%xmm9, %xmm6
+  pshufd	$232, %xmm6, %xmm6
+  pmuludq	%xmm9, %xmm7
+  pshufd	$232, %xmm7, %xmm7
+  punpckldq	%xmm7, %xmm6
+  psubd	%xmm6, %xmm4
+  movdqa	%xmm0, %xmm6
+  pmuludq	%xmm1, %xmm6
+  pshufd	$237, %xmm6, %xmm6
+  pshufd	$245, %xmm0, %xmm7
+  pmuludq	%xmm1, %xmm7
+  pshufd	$237, %xmm7, %xmm7
+  punpckldq	%xmm7, %xmm6
+  pcmpgtd	%xmm0, %xmm5
+  pand	%xmm1, %xmm5
+  psubd	%xmm5, %xmm6
+  movdqa	%xmm6, %xmm1
+  psrld	$31, %xmm1
+  psrld	$3, %xmm6
+  paddd	%xmm1, %xmm6
+  pshufd	$245, %xmm6, %xmm1
+  pmuludq	%xmm9, %xmm6
+  pshufd	$232, %xmm6, %xmm5
+  pmuludq	%xmm9, %xmm1
+  pshufd	$232, %xmm1, %xmm1
+  punpckldq	%xmm1, %xmm5
+  psubd	%xmm5, %xmm0
+  movdqa	.LCPI0_2(%rip), %xmm1
+  pand	%xmm1, %xmm0
+  pand	%xmm1, %xmm4
+  packuswb	%xmm0, %xmm4
+  pand	%xmm1, %xmm3
+  pand	%xmm1, %xmm2
+  packuswb	%xmm3, %xmm2
+  packuswb	%xmm4, %xmm2
+  paddb	.LCPI0_3(%rip), %xmm2
+  movdqu	%xmm2, (%rbx,%rsi)
+
+- Edges:
+  NO_JUMP -> 1804
+
+============================================================
+BLOCK 1804
+- Instructions:
+  cmpq	%rdx, %rax
+  je	.LBB0_17
+
+- Edges:
+  NO_JUMP -> 1812
+  JUMP -> 1908
+
+============================================================
+BLOCK 1812
+- Instructions:
+  testb	$8, %al
+  jne	.LBB0_14
+
+- Edges:
+  NO_JUMP -> 1820
+  JUMP -> 84
+
+============================================================
+BLOCK 1820
+- Instructions:
+  jmp	.LBB0_3
+
+- Edges:
+  JUMP -> 1840
+
+============================================================
+BLOCK 1824
+- Instructions:
+  xorl	%esi, %esi
+  testb	$1, %bpl
+  jne	.LBB0_11
+
+- Edges:
+  NO_JUMP -> 1836
+  JUMP -> 1344
+
+============================================================
+BLOCK 1836
+- Instructions:
+  jmp	.LBB0_12
+
+- Edges:
+  JUMP -> 1804
+
+============================================================
+BLOCK 1840
+- Instructions:
+  movsbl	(%rbx,%rdx), %esi
+  addl	%ecx, %esi
+  movslq	%esi, %rsi
+  imulq	$1321528399, %rsi, %rdi
+  movq	%rdi, %rbp
+  shrq	$63, %rbp
+  sarq	$35, %rdi
+  addl	%ebp, %edi
+  leal	(%rdi,%rdi,4), %ebp
+  leal	(%rbp,%rbp,4), %ebp
+  addl	%edi, %ebp
+  subl	%ebp, %esi
+  addb	$97, %sil
+  movb	%sil, (%rbx,%rdx)
+  incq	%rdx
+
+- Edges:
+  NO_JUMP -> 1900
+
+============================================================
+BLOCK 1900
+- Instructions:
+  cmpq	%rdx, %rax
+  jne	.LBB0_3
+
+- Edges:
+  NO_JUMP -> 1908
+  JUMP -> 1840
+
+============================================================
+BLOCK 1908
+- Instructions:
+  addq	$8, %rsp
+  popq	%rbx
+  popq	%rbp
+  retq
+
+- Edges: (none)

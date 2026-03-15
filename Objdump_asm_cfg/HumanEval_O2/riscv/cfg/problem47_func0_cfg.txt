@@ -1,0 +1,62 @@
+Function: func0
+Basic blocks: 4
+
+============================================================
+BLOCK 1904
+- Instructions:
+  add	sp,sp,-400
+  sw	zero,0(sp)
+  sw	zero,4(sp)
+  li	a1,2
+  sw	a1,8(sp)
+  li	a1,4
+  sw	zero,12(sp)
+  blt	a0,a1,7ac <func0+0x3c>
+
+- Edges:
+  NO_JUMP -> 1922
+  JUMP -> 1964
+
+============================================================
+BLOCK 1922
+- Instructions:
+  li	a4,0
+  li	a1,0
+  addw	a2,a0,1
+  sll	a2,a2,0x20
+  srl	a3,a2,0x20
+  add	a2,sp,8
+  add	a3,a3,-4
+
+- Edges:
+  NO_JUMP -> 1940
+
+============================================================
+BLOCK 1940
+- Instructions:
+  lw	a5,0(a2)
+  lw	a6,-8(a2)
+  addw	a1,a1,a5
+  addw	a1,a1,a4
+  addw	a1,a1,a6
+  sw	a1,8(a2)
+  add	a3,a3,-1
+  add	a2,a2,4
+  mv	a4,a5
+  bnez	a3,794 <func0+0x24>
+
+- Edges:
+  NO_JUMP -> 1964
+  JUMP -> 1940
+
+============================================================
+BLOCK 1964
+- Instructions:
+  sll	a0,a0,0x2
+  mv	a1,sp
+  add	a0,a0,a1
+  lw	a0,0(a0)
+  add	sp,sp,400
+  ret
+
+- Edges: (none)

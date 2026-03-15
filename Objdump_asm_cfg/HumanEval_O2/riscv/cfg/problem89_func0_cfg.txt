@@ -1,0 +1,230 @@
+Function: func0
+Basic blocks: 20
+
+============================================================
+BLOCK 2820
+- Instructions:
+  add	sp,sp,-64
+  sd	ra,56(sp)
+  sd	s0,48(sp)
+  sd	s1,40(sp)
+  sd	s2,32(sp)
+  sd	s3,24(sp)
+  sd	s4,16(sp)
+  sd	s5,8(sp)
+  sd	s6,0(sp)
+  mv	s4,a2
+  sw	a1,0(a3)
+  beqz	a1,bae <func0+0xaa>
+
+- Edges:
+  NO_JUMP -> 2844
+  JUMP -> 2990
+
+============================================================
+BLOCK 2844
+- Instructions:
+  mv	s6,a1
+  mv	s2,a0
+  sll	s3,a1,0x2
+  mv	a0,s3
+  jal	6e0 <malloc@plt>
+
+- Edges:
+  JUMP -> 1760
+
+============================================================
+BLOCK 2858
+- Instructions:
+  sd	a0,0(s4)
+  beqz	a0,bc6 <func0+0xc2>
+
+- Edges:
+  NO_JUMP -> 2864
+  JUMP -> 3014
+
+============================================================
+BLOCK 2864
+- Instructions:
+  mv	s5,a0
+  blez	s6,b40 <func0+0x3c>
+
+- Edges:
+  NO_JUMP -> 2870
+  JUMP -> 2880
+
+============================================================
+BLOCK 2870
+- Instructions:
+  mv	a0,s5
+  mv	a1,s2
+  mv	a2,s3
+  jal	6f0 <memcpy@plt>
+
+- Edges:
+  JUMP -> 1776
+
+============================================================
+BLOCK 2880
+- Instructions:
+  li	a0,2
+  blt	s6,a0,bb2 <func0+0xae>
+
+- Edges:
+  NO_JUMP -> 2886
+  JUMP -> 2994
+
+============================================================
+BLOCK 2886
+- Instructions:
+  lw	a0,0(s2)
+  addw	a1,s6,-1
+  sll	a2,a1,0x2
+  add	a2,a2,s2
+  lw	a2,0(a2)
+  li	a7,0
+  addw	a0,a0,a2
+  lui	a2,0x80000
+  addw	a2,a2,1 # ffffffff80000001 <__global_pointer$+0xffffffff7fffd801>
+  and	a0,a0,a2
+  sll	a1,a1,0x20
+  srl	a6,a1,0x20
+  add	t0,s5,4
+  li	a4,1
+  li	a5,1
+  j	b7a <func0+0x76>
+
+- Edges:
+  JUMP -> 2938
+
+============================================================
+BLOCK 2930
+- Instructions:
+  add	a5,a5,1
+  add	t0,t0,4
+  beq	a7,a6,bb2 <func0+0xae>
+
+- Edges:
+  NO_JUMP -> 2938
+  JUMP -> 2994
+
+============================================================
+BLOCK 2938
+- Instructions:
+  mv	a1,a7
+  add	a7,a7,1
+  bge	a7,s6,b72 <func0+0x6e>
+
+- Edges:
+  NO_JUMP -> 2946
+  JUMP -> 2930
+
+============================================================
+BLOCK 2946
+- Instructions:
+  sll	a1,a1,0x2
+  add	s1,s5,a1
+  mv	s0,s6
+  mv	a3,t0
+  j	b9a <func0+0x96>
+
+- Edges:
+  JUMP -> 2970
+
+============================================================
+BLOCK 2958
+- Instructions:
+  sw	a2,0(s1)
+  sw	a1,0(a3)
+
+- Edges:
+  NO_JUMP -> 2962
+
+============================================================
+BLOCK 2962
+- Instructions:
+  add	s0,s0,-1
+  add	a3,a3,4
+  beq	a5,s0,b72 <func0+0x6e>
+
+- Edges:
+  NO_JUMP -> 2970
+  JUMP -> 2930
+
+============================================================
+BLOCK 2970
+- Instructions:
+  lw	a1,0(s1)
+  lw	a2,0(a3)
+  bne	a0,a4,ba8 <func0+0xa4>
+
+- Edges:
+  NO_JUMP -> 2978
+  JUMP -> 2984
+
+============================================================
+BLOCK 2978
+- Instructions:
+  blt	a2,a1,b8e <func0+0x8a>
+
+- Edges:
+  NO_JUMP -> 2982
+  JUMP -> 2958
+
+============================================================
+BLOCK 2982
+- Instructions:
+  j	b92 <func0+0x8e>
+
+- Edges:
+  JUMP -> 2962
+
+============================================================
+BLOCK 2984
+- Instructions:
+  blt	a1,a2,b8e <func0+0x8a>
+
+- Edges:
+  NO_JUMP -> 2988
+  JUMP -> 2958
+
+============================================================
+BLOCK 2988
+- Instructions:
+  j	b92 <func0+0x8e>
+
+- Edges:
+  JUMP -> 2962
+
+============================================================
+BLOCK 2990
+- Instructions:
+  sd	zero,0(s4)
+
+- Edges:
+  NO_JUMP -> 2994
+
+============================================================
+BLOCK 2994
+- Instructions:
+  ld	ra,56(sp)
+  ld	s0,48(sp)
+  ld	s1,40(sp)
+  ld	s2,32(sp)
+  ld	s3,24(sp)
+  ld	s4,16(sp)
+  ld	s5,8(sp)
+  ld	s6,0(sp)
+  add	sp,sp,64
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 3014
+- Instructions:
+  li	a0,1
+  jal	710 <exit@plt>
+
+- Edges:
+  JUMP -> 1808

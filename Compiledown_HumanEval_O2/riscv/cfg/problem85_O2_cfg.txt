@@ -1,0 +1,176 @@
+Function: func0
+Basic blocks: 15
+
+============================================================
+BLOCK 0
+- Instructions:
+  addi	sp, sp, -32
+  sd	ra, 24(sp)
+  sd	s0, 16(sp)
+  mv	a2, a0
+  auipc	a1, %pcrel_hi(.L.str)
+  addi	a1, a1, %pcrel_lo(.LBB0_14)
+  addi	a0, sp, 10
+  call	sprintf@plt
+  lbu	a0, 10(sp)
+  beqz	a0, .LBB0_10
+
+- Edges:
+  NO_JUMP -> 40
+  JUMP -> 208
+
+============================================================
+BLOCK 40
+- Instructions:
+  li	s0, 0
+  addi	a1, sp, 11
+
+- Edges:
+  NO_JUMP -> 48
+
+============================================================
+BLOCK 48
+- Instructions:
+  andi	a2, a0, 255
+  lbu	a0, 0(a1)
+  addw	a2, a2, s0
+  addiw	s0, a2, -48
+  addi	a1, a1, 1
+  bnez	a0, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 72
+  JUMP -> 48
+
+============================================================
+BLOCK 72
+- Instructions:
+  li	a0, 33
+  call	malloc@plt
+  beqz	s0, .LBB0_11
+
+- Edges:
+  NO_JUMP -> 84
+  JUMP -> 216
+
+============================================================
+BLOCK 84
+- Instructions:
+  li	a1, 0
+  blez	s0, .LBB0_12
+
+- Edges:
+  NO_JUMP -> 92
+  JUMP -> 228
+
+============================================================
+BLOCK 92
+- Instructions:
+  li	a2, 2
+
+- Edges:
+  NO_JUMP -> 96
+
+============================================================
+BLOCK 96
+- Instructions:
+  mv	a3, s0
+  andi	a4, s0, 1
+  ori	a4, a4, 48
+  add	a5, a0, a1
+  addi	a1, a1, 1
+  sb	a4, 0(a5)
+  srliw	s0, s0, 1
+  bgeu	a3, a2, .LBB0_6
+
+- Edges:
+  NO_JUMP -> 128
+  JUMP -> 96
+
+============================================================
+BLOCK 128
+- Instructions:
+  add	a2, a0, a1
+  li	a3, 1
+  slli	a3, a3, 32
+  addi	a3, a3, -2
+  and	a3, a3, a1
+  sb	zero, 0(a2)
+  beqz	a3, .LBB0_13
+
+- Edges:
+  NO_JUMP -> 156
+  JUMP -> 236
+
+============================================================
+BLOCK 156
+- Instructions:
+  li	a2, 0
+  addi	a3, a1, -1
+  srli	a6, a1, 1
+
+- Edges:
+  NO_JUMP -> 168
+
+============================================================
+BLOCK 168
+- Instructions:
+  add	a4, a0, a2
+  add	a5, a0, a3
+  lb	s0, 0(a5)
+  lb	a1, 0(a4)
+  sb	s0, 0(a4)
+  sb	a1, 0(a5)
+  addi	a2, a2, 1
+  addi	a3, a3, -1
+  bne	a6, a2, .LBB0_9
+
+- Edges:
+  NO_JUMP -> 204
+  JUMP -> 168
+
+============================================================
+BLOCK 204
+- Instructions:
+  j	.LBB0_13
+
+- Edges:
+  JUMP -> 236
+
+============================================================
+BLOCK 208
+- Instructions:
+  li	a0, 33
+  call	malloc@plt
+
+- Edges:
+  NO_JUMP -> 216
+
+============================================================
+BLOCK 216
+- Instructions:
+  li	a1, 48
+  sb	a1, 0(a0)
+  li	a1, 1
+
+- Edges:
+  NO_JUMP -> 228
+
+============================================================
+BLOCK 228
+- Instructions:
+  add	a1, a1, a0
+  sb	zero, 0(a1)
+
+- Edges:
+  NO_JUMP -> 236
+
+============================================================
+BLOCK 236
+- Instructions:
+  ld	ra, 24(sp)
+  ld	s0, 16(sp)
+  addi	sp, sp, 32
+  ret
+
+- Edges: (none)

@@ -1,0 +1,110 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 4800
+- Instructions:
+  push   %rbp
+  push   %rbx
+  sub    $0x198,%rsp
+  mov    %edi,%ebx
+  mov    %rsp,%rdi
+  xor    %ebp,%ebp
+  mov    $0x190,%edx
+  xor    %esi,%esi
+  call   1040 <memset@plt>
+  movl   $0x1,0x8(%rsp)
+  cmp    $0x3,%ebx
+  jl     135a <func0+0x9a>
+
+- Edges:
+  NO_JUMP -> 4841
+  JUMP -> 4954
+
+============================================================
+BLOCK 4841
+- Instructions:
+  mov    %ebx,%r8d
+  jne    12fa <func0+0x3a>
+
+- Edges:
+  NO_JUMP -> 4846
+  JUMP -> 4858
+
+============================================================
+BLOCK 4846
+- Instructions:
+  mov    $0x3,%ecx
+  mov    $0x1,%edx
+  jmp    134b <func0+0x8b>
+
+- Edges:
+  JUMP -> 4939
+
+============================================================
+BLOCK 4858
+- Instructions:
+  lea    -0x2(%r8),%rsi
+  and    $0xfffffffffffffffe,%rsi
+  neg    %rsi
+  mov    $0x3,%ecx
+  mov    $0x1,%edx
+  xor    %edi,%edi
+  data16 data16 data16 data16 data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 4896
+
+============================================================
+BLOCK 4896
+- Instructions:
+  mov    -0x8(%rsp,%rcx,4),%eax
+  mov    -0x4(%rsp,%rcx,4),%ebp
+  add    %eax,%edx
+  add    %edi,%edx
+  mov    %edx,(%rsp,%rcx,4)
+  add    %ebp,%edx
+  add    %eax,%edx
+  mov    %edx,0x4(%rsp,%rcx,4)
+  lea    (%rsi,%rcx,1),%rax
+  add    $0x2,%rax
+  add    $0x2,%rcx
+  mov    %ebp,%edi
+  cmp    $0x3,%rax
+  jne    1320 <func0+0x60>
+
+- Edges:
+  NO_JUMP -> 4939
+  JUMP -> 4896
+
+============================================================
+BLOCK 4939
+- Instructions:
+  test   $0x1,%r8b
+  je     135a <func0+0x9a>
+
+- Edges:
+  NO_JUMP -> 4945
+  JUMP -> 4954
+
+============================================================
+BLOCK 4945
+- Instructions:
+  add    -0x8(%rsp,%rcx,4),%edx
+  add    %ebp,%edx
+  mov    %edx,(%rsp,%rcx,4)
+
+- Edges:
+  NO_JUMP -> 4954
+
+============================================================
+BLOCK 4954
+- Instructions:
+  movslq %ebx,%rax
+  mov    (%rsp,%rax,4),%eax
+  add    $0x198,%rsp
+  pop    %rbx
+  pop    %rbp
+  ret
+
+- Edges: (none)

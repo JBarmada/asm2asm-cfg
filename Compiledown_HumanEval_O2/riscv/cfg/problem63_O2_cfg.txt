@@ -1,0 +1,44 @@
+Function: func0
+Basic blocks: 4
+
+============================================================
+BLOCK 0
+- Instructions:
+  li	a3, 2
+  blt	a1, a3, .LBB0_3
+
+- Edges:
+  NO_JUMP -> 8
+  JUMP -> 48
+
+============================================================
+BLOCK 8
+- Instructions:
+  addi	a0, a0, 4
+  li	a3, 1
+
+- Edges:
+  NO_JUMP -> 16
+
+============================================================
+BLOCK 16
+- Instructions:
+  flw	ft0, 0(a0)
+  fcvt.s.w	ft1, a3
+  fmul.s	ft0, ft0, ft1
+  fsw	ft0, 0(a2)
+  addi	a3, a3, 1
+  addi	a0, a0, 4
+  addi	a2, a2, 4
+  bne	a1, a3, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 48
+  JUMP -> 16
+
+============================================================
+BLOCK 48
+- Instructions:
+  ret
+
+- Edges: (none)

@@ -1,0 +1,65 @@
+Function: func0
+Basic blocks: 5
+
+============================================================
+BLOCK 2492
+- Instructions:
+  fmul.s	ft0,fa1,fa1
+  fmadd.s	ft1,fa0,fa0,ft0
+  auipc	a0,0x1
+  add	a0,a0,1748 # 2098 <__SDATA_BEGIN__+0x48>
+  fld	ft0,0(a0)
+  fnmsub.s	ft1,fa2,fa2,ft1
+  fabs.s	ft1,ft1
+  fcvt.d.s	ft1,ft1
+  flt.d	a1,ft1,ft0
+  li	a0,1
+  bnez	a1,a16 <func0+0x5a>
+
+- Edges:
+  NO_JUMP -> 2532
+  JUMP -> 2582
+
+============================================================
+BLOCK 2532
+- Instructions:
+  fmul.s	ft1,fa2,fa2
+  fmadd.s	ft2,fa0,fa0,ft1
+  fnmsub.s	ft2,fa1,fa1,ft2
+  fabs.s	ft2,ft2
+  fcvt.d.s	ft2,ft2
+  flt.d	a1,ft2,ft0
+  bnez	a1,a16 <func0+0x5a>
+
+- Edges:
+  NO_JUMP -> 2558
+  JUMP -> 2582
+
+============================================================
+BLOCK 2558
+- Instructions:
+  fmadd.s	ft1,fa1,fa1,ft1
+  fnmsub.s	ft1,fa0,fa0,ft1
+  fabs.s	ft1,ft1
+  fcvt.d.s	ft1,ft1
+  flt.d	a1,ft1,ft0
+  bnez	a1,a16 <func0+0x5a>
+
+- Edges:
+  NO_JUMP -> 2580
+  JUMP -> 2582
+
+============================================================
+BLOCK 2580
+- Instructions:
+  li	a0,0
+
+- Edges:
+  NO_JUMP -> 2582
+
+============================================================
+BLOCK 2582
+- Instructions:
+  ret
+
+- Edges: (none)

@@ -1,0 +1,86 @@
+Function: func0
+Basic blocks: 7
+
+============================================================
+BLOCK 4992
+- Instructions:
+  push   %rbp
+  push   %r15
+  push   %r14
+  push   %rbx
+  push   %rax
+  mov    %rdi,%r15
+  movzbl (%rdi),%ebp
+  test   %bpl,%bpl
+  je     13c9 <func0+0x49>
+
+- Edges:
+  NO_JUMP -> 5010
+  JUMP -> 5065
+
+============================================================
+BLOCK 5010
+- Instructions:
+  lea    0x1(%r15),%rbx
+  lea    0xd7e(%rip),%r14        # 211b <_IO_stdin_used+0x11b>
+  jmp    13ab <func0+0x2b>
+
+- Edges:
+  JUMP -> 5035
+
+============================================================
+BLOCK 5023
+- Instructions:
+  nop
+
+- Edges:
+  NO_JUMP -> 5024
+
+============================================================
+BLOCK 5024
+- Instructions:
+  movzbl (%rbx),%ebp
+  inc    %rbx
+  test   %bpl,%bpl
+  je     13c9 <func0+0x49>
+
+- Edges:
+  NO_JUMP -> 5035
+  JUMP -> 5065
+
+============================================================
+BLOCK 5035
+- Instructions:
+  movsbl %bpl,%esi
+  mov    $0xb,%edx
+  mov    %r14,%rdi
+  call   1040 <memchr@plt>
+  test   %rax,%rax
+  jne    13a0 <func0+0x20>
+
+- Edges:
+  NO_JUMP -> 5057
+  JUMP -> 5024
+
+============================================================
+BLOCK 5057
+- Instructions:
+  mov    %bpl,(%r15)
+  inc    %r15
+  jmp    13a0 <func0+0x20>
+
+- Edges:
+  JUMP -> 5024
+
+============================================================
+BLOCK 5065
+- Instructions:
+  movb   $0x0,(%r15)
+  add    $0x8,%rsp
+  pop    %rbx
+  pop    %r14
+  pop    %r15
+  pop    %rbp
+  ret
+
+- Edges: (none)

@@ -1,0 +1,94 @@
+Function: _func0
+Basic blocks: 6
+
+============================================================
+BLOCK 4294968640
+- Instructions:
+  stp	x22, x21, [sp, #-0x30]!
+  stp	x20, x19, [sp, #0x10]
+  stp	x29, x30, [sp, #0x20]
+  add	x29, sp, #0x20
+  mov	x19, x0
+  bl	0x1000007b0 <_strlen+0x1000007b0>
+  cbz	w0, 0x1000005f8 <_func0+0xb8>
+  lsl	x20, x0, #32
+  mov	x8, #-0x100000000       ; =-4294967296
+  add	x8, x20, x8
+  asr	x8, x8, #32
+  ldrsb	x8, [x19, x8]
+  tbnz	x8, #0x3f, 0x1000005c0 <_func0+0x80>
+  adrp	x9, 0x100004000 <_strlen+0x100004000>
+  ldr	x9, [x9]
+  add	x8, x9, x8, lsl #2
+  ldr	w8, [x8, #0x3c]
+  and	w8, w8, #0x100
+  cbz	w8, 0x1000005dc <_func0+0x9c>
+  cmp	w0, #0x1
+  b.eq	0x1000005f8 <_func0+0xb8>
+
+- Edges:
+  NO_JUMP -> 4294968724
+  JUMP -> 4294968824
+
+============================================================
+BLOCK 4294968724
+- Instructions:
+  mov	x8, #-0x200000000       ; =-8589934592
+  add	x8, x20, x8
+  asr	x8, x8, #32
+  ldrsb	x8, [x19, x8]
+  tbnz	x8, #0x3f, 0x1000005e4 <_func0+0xa4>
+  adrp	x9, 0x100004000 <_strlen+0x100004000>
+  ldr	x9, [x9]
+  add	x8, x9, x8, lsl #2
+  ldr	w8, [x8, #0x3c]
+  and	w0, w8, #0x100
+  b	0x1000005f0 <_func0+0xb0>
+
+- Edges:
+  JUMP -> 4294968816
+
+============================================================
+BLOCK 4294968768
+- Instructions:
+  mov	x21, x0
+  and	w0, w8, #0xff
+  mov	w1, #0x100              ; =256
+  bl	0x1000007a4 <_strlen+0x1000007a4>
+  mov	x8, x0
+  mov	x0, x21
+  cbnz	w8, 0x10000058c <_func0+0x4c>
+  mov	w0, #0x0                ; =0
+  b	0x1000005f8 <_func0+0xb8>
+
+- Edges:
+  JUMP -> 4294968824
+
+============================================================
+BLOCK 4294968804
+- Instructions:
+  and	w0, w8, #0xff
+  mov	w1, #0x100              ; =256
+  bl	0x1000007a4 <_strlen+0x1000007a4>
+
+- Edges:
+  NO_JUMP -> 4294968816
+
+============================================================
+BLOCK 4294968816
+- Instructions:
+  cmp	w0, #0x0
+  cset	w0, eq
+
+- Edges:
+  NO_JUMP -> 4294968824
+
+============================================================
+BLOCK 4294968824
+- Instructions:
+  ldp	x29, x30, [sp, #0x20]
+  ldp	x20, x19, [sp, #0x10]
+  ldp	x22, x21, [sp], #0x30
+  ret
+
+- Edges: (none)

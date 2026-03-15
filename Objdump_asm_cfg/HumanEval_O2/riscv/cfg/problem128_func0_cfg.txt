@@ -1,0 +1,113 @@
+Function: func0
+Basic blocks: 12
+
+============================================================
+BLOCK 2260
+- Instructions:
+  blt	a2,a0,8da <func0+0x6>
+
+- Edges:
+  NO_JUMP -> 2264
+  JUMP -> 2266
+
+============================================================
+BLOCK 2264
+- Instructions:
+  mv	a0,a2
+
+- Edges:
+  NO_JUMP -> 2266
+
+============================================================
+BLOCK 2266
+- Instructions:
+  blt	a1,a3,8e0 <func0+0xc>
+
+- Edges:
+  NO_JUMP -> 2270
+  JUMP -> 2272
+
+============================================================
+BLOCK 2270
+- Instructions:
+  mv	a1,a3
+
+- Edges:
+  NO_JUMP -> 2272
+
+============================================================
+BLOCK 2272
+- Instructions:
+  subw	a1,a1,a0
+  li	a2,2
+  auipc	a0,0x0
+  add	a0,a0,60 # 920 <_IO_stdin_used+0x4>
+  bge	a1,a2,8f2 <func0+0x1e>
+
+- Edges:
+  NO_JUMP -> 2288
+  JUMP -> 2290
+
+============================================================
+BLOCK 2288
+- Instructions:
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 2290
+- Instructions:
+  li	a3,4
+  auipc	a2,0x0
+  add	a2,a2,151 # 98b <_IO_stdin_used+0x6f>
+  bgeu	a1,a3,904 <func0+0x30>
+
+- Edges:
+  NO_JUMP -> 2304
+  JUMP -> 2308
+
+============================================================
+BLOCK 2304
+- Instructions:
+  mv	a0,a2
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 2308
+- Instructions:
+  li	a3,2
+
+- Edges:
+  NO_JUMP -> 2310
+
+============================================================
+BLOCK 2310
+- Instructions:
+  remw	a4,a1,a3
+  beqz	a4,8f0 <func0+0x1c>
+
+- Edges:
+  NO_JUMP -> 2316
+  JUMP -> 2288
+
+============================================================
+BLOCK 2316
+- Instructions:
+  addw	a3,a3,1
+  mulw	a4,a3,a3
+  bge	a1,a4,906 <func0+0x32>
+
+- Edges:
+  NO_JUMP -> 2326
+  JUMP -> 2310
+
+============================================================
+BLOCK 2326
+- Instructions:
+  mv	a0,a2
+  ret
+
+- Edges: (none)

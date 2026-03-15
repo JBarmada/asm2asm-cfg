@@ -1,0 +1,162 @@
+Function: func0
+Basic blocks: 13
+
+============================================================
+BLOCK 2724
+- Instructions:
+  add	sp,sp,-80
+  sd	ra,72(sp)
+  sd	s0,64(sp)
+  sd	s1,56(sp)
+  sd	s2,48(sp)
+  sd	s3,40(sp)
+  sd	s4,32(sp)
+  sd	s5,24(sp)
+  sd	s6,16(sp)
+  sd	s7,8(sp)
+  mv	s2,a1
+  mv	s5,a0
+  li	a0,-1
+  srl	s0,a0,0x20
+  mv	a0,s5
+  jal	770 <strlen@plt>
+
+- Edges:
+  JUMP -> 1904
+
+============================================================
+BLOCK 2760
+- Instructions:
+  mv	s4,a0
+  sext.w	s6,a0
+  sll	s1,a0,0x20
+  sra	a0,s1,0x1d
+  jal	760 <malloc@plt>
+
+- Edges:
+  JUMP -> 1888
+
+============================================================
+BLOCK 2778
+- Instructions:
+  mv	s3,a0
+  or	a0,s1,s0
+  add	a0,a0,1
+  sra	a0,a0,0x20
+  jal	760 <malloc@plt>
+
+- Edges:
+  JUMP -> 1888
+
+============================================================
+BLOCK 2792
+- Instructions:
+  mv	s1,a0
+  sb	zero,0(a0)
+  blez	s6,b38 <func0+0x94>
+
+- Edges:
+  NO_JUMP -> 2802
+  JUMP -> 2872
+
+============================================================
+BLOCK 2802
+- Instructions:
+  and	s7,s4,s0
+  mv	s0,s3
+
+- Edges:
+  NO_JUMP -> 2808
+
+============================================================
+BLOCK 2808
+- Instructions:
+  mv	a0,s1
+  jal	770 <strlen@plt>
+
+- Edges:
+  JUMP -> 1904
+
+============================================================
+BLOCK 2814
+- Instructions:
+  mv	s6,a0
+  add	a1,a0,2
+  mv	a0,s1
+  jal	7a0 <realloc@plt>
+
+- Edges:
+  JUMP -> 1952
+
+============================================================
+BLOCK 2826
+- Instructions:
+  lb	a1,0(s5)
+  mv	s1,a0
+  add	a0,a0,s6
+  sb	a1,0(a0)
+  sb	zero,1(a0)
+  mv	a0,s1
+  jal	770 <strlen@plt>
+
+- Edges:
+  JUMP -> 1904
+
+============================================================
+BLOCK 2848
+- Instructions:
+  add	a0,a0,1
+  jal	760 <malloc@plt>
+
+- Edges:
+  JUMP -> 1888
+
+============================================================
+BLOCK 2854
+- Instructions:
+  sd	a0,0(s0)
+  mv	a1,s1
+  jal	780 <strcpy@plt>
+
+- Edges:
+  JUMP -> 1920
+
+============================================================
+BLOCK 2862
+- Instructions:
+  add	s0,s0,8
+  add	s7,s7,-1
+  add	s5,s5,1
+  bnez	s7,af8 <func0+0x54>
+
+- Edges:
+  NO_JUMP -> 2872
+  JUMP -> 2808
+
+============================================================
+BLOCK 2872
+- Instructions:
+  mv	a0,s1
+  jal	7c0 <free@plt>
+
+- Edges:
+  JUMP -> 1984
+
+============================================================
+BLOCK 2878
+- Instructions:
+  sw	s4,0(s2)
+  mv	a0,s3
+  ld	ra,72(sp)
+  ld	s0,64(sp)
+  ld	s1,56(sp)
+  ld	s2,48(sp)
+  ld	s3,40(sp)
+  ld	s4,32(sp)
+  ld	s5,24(sp)
+  ld	s6,16(sp)
+  ld	s7,8(sp)
+  add	sp,sp,80
+  ret
+
+- Edges: (none)

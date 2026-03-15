@@ -1,0 +1,207 @@
+Function: _func0
+Basic blocks: 15
+
+============================================================
+BLOCK 0
+- Instructions:
+  sub	sp, sp, #112
+  stp	x28, x27, [sp, #16]
+  stp	x26, x25, [sp, #32]
+  stp	x24, x23, [sp, #48]
+  stp	x22, x21, [sp, #64]
+  stp	x20, x19, [sp, #80]
+  stp	x29, x30, [sp, #96]
+  add	x29, sp, #96
+  str	x2, [sp, #8]
+  mov	x20, x1
+  mov	x21, x0
+  bl	_strlen
+  add	x22, x0, #1
+  mov	x0, x22
+  bl	_malloc
+  mov	x23, x0
+  mov	x27, #0
+  mov	x24, #0
+  mov	w25, #0
+  mov	w19, #0
+  mov	w28, #0
+  b	LBB0_3
+
+- Edges:
+  JUMP -> 108
+
+============================================================
+BLOCK 88
+- Instructions:
+  mov	w25, #0
+  add	w19, w27, #1
+
+- Edges:
+  NO_JUMP -> 96
+
+============================================================
+BLOCK 96
+- Instructions:
+  add	x27, x27, #1
+  cmp	x22, x27
+  b.eq	LBB0_14
+
+- Edges:
+  NO_JUMP -> 108
+  JUMP -> 328
+
+============================================================
+BLOCK 108
+- Instructions:
+  ldrsb	w26, [x21, x27]
+  tbnz	w26, #31, LBB0_5
+
+- Edges:
+  NO_JUMP -> 116
+  JUMP -> 140
+
+============================================================
+BLOCK 116
+- Instructions:
+  adrp	x8, __DefaultRuneLocale
+  ldr	x8, [x8, __DefaultRuneLocale
+  add	x8, x8, w26, uxtw #2
+  ldr	w8, [x8, #60]
+  and	w0, w8, #0x4000
+  b	LBB0_6
+
+- Edges:
+  JUMP -> 152
+
+============================================================
+BLOCK 140
+- Instructions:
+  mov	x0, x26
+  mov	w1, #16384
+  bl	___maskrune
+
+- Edges:
+  NO_JUMP -> 152
+
+============================================================
+BLOCK 152
+- Instructions:
+  cmp	w26, #0
+  ccmp	w0, #0, #0, ne
+  b.eq	LBB0_9
+
+- Edges:
+  NO_JUMP -> 164
+  JUMP -> 236
+
+============================================================
+BLOCK 164
+- Instructions:
+  cmp	w25, w20
+  b.ne	LBB0_1
+
+- Edges:
+  NO_JUMP -> 172
+  JUMP -> 88
+
+============================================================
+BLOCK 172
+- Instructions:
+  sub	w8, w27, w19
+  strb	wzr, [x23, w8, sxtw]
+  add	w19, w28, #1
+  sbfiz	x1, x19, #3, #32
+  mov	x0, x24
+  bl	_realloc
+  mov	x24, x0
+  mov	x0, x23
+  bl	_strlen
+  add	x0, x0, #1
+  bl	_malloc
+  str	x0, [x24, w28, sxtw #3]
+  mov	x1, x23
+  bl	_strcpy
+  mov	x28, x19
+  b	LBB0_1
+
+- Edges:
+  JUMP -> 88
+
+============================================================
+BLOCK 236
+- Instructions:
+  sub	w8, w27, w19
+  strb	w26, [x23, w8, sxtw]
+  ldrsb	w26, [x21, x27]
+  adrp	x0, l_.str
+  add	x0, x0, l_.str
+  mov	x1, x26
+  mov	w2, #11
+  bl	_memchr
+  cbnz	x0, LBB0_2
+
+- Edges:
+  NO_JUMP -> 272
+  JUMP -> 96
+
+============================================================
+BLOCK 272
+- Instructions:
+  sxtw	x8, w26
+  tbnz	w8, #31, LBB0_12
+
+- Edges:
+  NO_JUMP -> 280
+  JUMP -> 304
+
+============================================================
+BLOCK 280
+- Instructions:
+  adrp	x9, __DefaultRuneLocale
+  ldr	x9, [x9, __DefaultRuneLocale
+  add	x8, x9, x8, lsl #2
+  ldr	w8, [x8, #60]
+  and	w0, w8, #0x100
+  b	LBB0_13
+
+- Edges:
+  JUMP -> 316
+
+============================================================
+BLOCK 304
+- Instructions:
+  and	w0, w26, #0xff
+  mov	w1, #256
+  bl	___maskrune
+
+- Edges:
+  NO_JUMP -> 316
+
+============================================================
+BLOCK 316
+- Instructions:
+  cmp	w0, #0
+  cinc	w25, w25, ne
+  b	LBB0_2
+
+- Edges:
+  JUMP -> 96
+
+============================================================
+BLOCK 328
+- Instructions:
+  mov	x0, x23
+  bl	_free
+  ldr	x8, [sp, #8]
+  str	w28, [x8]
+  mov	x0, x24
+  ldp	x29, x30, [sp, #96]
+  ldp	x20, x19, [sp, #80]
+  ldp	x22, x21, [sp, #64]
+  ldp	x24, x23, [sp, #48]
+  ldp	x26, x25, [sp, #32]
+  ldp	x28, x27, [sp, #16]
+  add	sp, sp, #112
+  ret
+
+- Edges: (none)

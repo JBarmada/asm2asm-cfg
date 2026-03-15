@@ -1,0 +1,29 @@
+Function: _func0
+Basic blocks: 3
+
+============================================================
+BLOCK 0
+- Instructions:
+  mov	x8, x0
+  mov	w0, #-1
+
+- Edges:
+  NO_JUMP -> 8
+
+============================================================
+BLOCK 8
+- Instructions:
+  ldrb	w9, [x8], #1
+  add	w0, w0, #1
+  cbnz	w9, LBB0_1
+
+- Edges:
+  NO_JUMP -> 20
+  JUMP -> 8
+
+============================================================
+BLOCK 20
+- Instructions:
+  ret
+
+- Edges: (none)

@@ -1,0 +1,47 @@
+Function: _func0
+Basic blocks: 4
+
+============================================================
+BLOCK 4294969136
+- Instructions:
+  mov	x8, x0
+  ldr	x0, [x0]
+  cmp	w1, #0x2
+  b.lt	0x10000076c <_func0+0x3c>
+
+- Edges:
+  NO_JUMP -> 4294969152
+  JUMP -> 4294969196
+
+============================================================
+BLOCK 4294969152
+- Instructions:
+  mov	w9, w1
+  add	x8, x8, #0x8
+  sub	x9, x9, #0x1
+  mov	x10, x0
+
+- Edges:
+  NO_JUMP -> 4294969168
+
+============================================================
+BLOCK 4294969168
+- Instructions:
+  ldr	x11, [x8], #0x8
+  and	x10, x10, x10, asr #63
+  add	x10, x11, x10
+  cmp	x10, x0
+  csel	x0, x10, x0, lt
+  subs	x9, x9, #0x1
+  b.ne	0x100000750 <_func0+0x20>
+
+- Edges:
+  NO_JUMP -> 4294969196
+  JUMP -> 4294969168
+
+============================================================
+BLOCK 4294969196
+- Instructions:
+  ret
+
+- Edges: (none)

@@ -1,0 +1,125 @@
+Function: _func0
+Basic blocks: 11
+
+============================================================
+BLOCK 0
+- Instructions:
+  cmp	w1, #1
+  b.lt	LBB0_8
+
+- Edges:
+  NO_JUMP -> 8
+  JUMP -> 112
+
+============================================================
+BLOCK 8
+- Instructions:
+  mov	x11, #0
+  mov	w8, w1
+  add	x9, x0, #4
+  sub	x10, x8, #1
+  b	LBB0_3
+
+- Edges:
+  JUMP -> 48
+
+============================================================
+BLOCK 28
+- Instructions:
+  add	x9, x9, #4
+  sub	x10, x10, #1
+  mov	x11, x12
+  cmp	x12, x8
+  b.eq	LBB0_8
+
+- Edges:
+  NO_JUMP -> 48
+  JUMP -> 112
+
+============================================================
+BLOCK 48
+- Instructions:
+  add	x12, x11, #1
+  cmp	x12, x8
+  b.hs	LBB0_2
+
+- Edges:
+  NO_JUMP -> 60
+  JUMP -> 28
+
+============================================================
+BLOCK 60
+- Instructions:
+  mov	x13, x10
+  mov	x14, x9
+  b	LBB0_6
+
+- Edges:
+  JUMP -> 84
+
+============================================================
+BLOCK 72
+- Instructions:
+  add	x14, x14, #4
+  subs	x13, x13, #1
+  b.eq	LBB0_2
+
+- Edges:
+  NO_JUMP -> 84
+  JUMP -> 28
+
+============================================================
+BLOCK 84
+- Instructions:
+  ldr	s0, [x0, x11, lsl #2]
+  ldr	s1, [x14]
+  fcmp	s0, s1
+  b.le	LBB0_5
+
+- Edges:
+  NO_JUMP -> 100
+  JUMP -> 72
+
+============================================================
+BLOCK 100
+- Instructions:
+  str	s1, [x0, x11, lsl #2]
+  str	s0, [x14]
+  b	LBB0_5
+
+- Edges:
+  JUMP -> 72
+
+============================================================
+BLOCK 112
+- Instructions:
+  and	w8, w1, #0x80000001
+  cmp	w8, #1
+  b.ne	LBB0_10
+
+- Edges:
+  NO_JUMP -> 124
+  JUMP -> 136
+
+============================================================
+BLOCK 124
+- Instructions:
+  lsr	w8, w1, #1
+  ldr	s0, [x0, w8, uxtw #2]
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 136
+- Instructions:
+  add	w8, w1, w1, lsr #31
+  asr	w8, w8, #1
+  add	x8, x0, w8, sxtw #2
+  ldp	s1, s0, [x8, #-4]
+  fadd	s0, s0, s1
+  fmov	s1, #0.50000000
+  fmul	s0, s0, s1
+  ret
+
+- Edges: (none)

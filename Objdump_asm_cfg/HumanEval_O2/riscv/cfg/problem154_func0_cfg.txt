@@ -1,0 +1,134 @@
+Function: func0
+Basic blocks: 12
+
+============================================================
+BLOCK 3492
+- Instructions:
+  mv	a6,a3
+  mv	a7,a0
+  blez	a2,e0e <func0+0x6a>
+
+- Edges:
+  NO_JUMP -> 3500
+  JUMP -> 3598
+
+============================================================
+BLOCK 3500
+- Instructions:
+  li	t2,0
+  li	t0,0
+  li	t1,-1000
+  j	dc0 <func0+0x1c>
+
+- Edges:
+  JUMP -> 3520
+
+============================================================
+BLOCK 3510
+- Instructions:
+  add	t2,t2,1
+  mv	t1,t3
+  mv	t0,a3
+  beq	t2,a2,e10 <func0+0x6c>
+
+- Edges:
+  NO_JUMP -> 3520
+  JUMP -> 3600
+
+============================================================
+BLOCK 3520
+- Instructions:
+  sll	a0,t2,0x3
+  add	a0,a0,a1
+  ld	a3,0(a0)
+  lbu	a4,0(a3)
+  beqz	a4,e02 <func0+0x5e>
+
+- Edges:
+  NO_JUMP -> 3534
+  JUMP -> 3586
+
+============================================================
+BLOCK 3534
+- Instructions:
+  li	t3,0
+  add	a0,a3,1
+
+- Edges:
+  NO_JUMP -> 3540
+
+============================================================
+BLOCK 3540
+- Instructions:
+  addw	a5,a4,-65
+  zext.b	a5,a5
+  sltiu	a5,a5,26
+  addw	t3,t3,a5
+  addw	a5,a4,-97
+  lbu	a4,0(a0)
+  zext.b	a5,a5
+  sltiu	a5,a5,26
+  subw	t3,t3,a5
+  add	a0,a0,1
+  bnez	a4,dd4 <func0+0x30>
+
+- Edges:
+  NO_JUMP -> 3580
+  JUMP -> 3540
+
+============================================================
+BLOCK 3580
+- Instructions:
+  blt	t1,t3,db6 <func0+0x12>
+
+- Edges:
+  NO_JUMP -> 3584
+  JUMP -> 3510
+
+============================================================
+BLOCK 3584
+- Instructions:
+  j	e08 <func0+0x64>
+
+- Edges:
+  JUMP -> 3592
+
+============================================================
+BLOCK 3586
+- Instructions:
+  li	t3,0
+  blt	t1,t3,db6 <func0+0x12>
+
+- Edges:
+  NO_JUMP -> 3592
+  JUMP -> 3510
+
+============================================================
+BLOCK 3592
+- Instructions:
+  mv	a3,t0
+  mv	t3,t1
+  j	db6 <func0+0x12>
+
+- Edges:
+  JUMP -> 3510
+
+============================================================
+BLOCK 3598
+- Instructions:
+  li	a3,0
+
+- Edges:
+  NO_JUMP -> 3600
+
+============================================================
+BLOCK 3600
+- Instructions:
+  auipc	a1,0x0
+  add	a1,a1,701 # 10cd <_IO_stdin_used+0x2ad>
+  mv	a0,a6
+  mv	a2,a7
+  j	950 <sprintf@plt>
+
+- Edges:
+  JUMP -> 2384

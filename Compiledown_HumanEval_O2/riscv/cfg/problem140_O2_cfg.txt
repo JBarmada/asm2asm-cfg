@@ -1,0 +1,51 @@
+Function: func0
+Basic blocks: 5
+
+============================================================
+BLOCK 0
+- Instructions:
+  blez	a0, .LBB0_4
+
+- Edges:
+  NO_JUMP -> 4
+  JUMP -> 48
+
+============================================================
+BLOCK 4
+- Instructions:
+  addiw	a0, a0, 1
+  slli	a0, a0, 32
+  srli	a1, a0, 32
+  li	a2, 1
+  li	a0, 1
+  li	a3, 1
+
+- Edges:
+  NO_JUMP -> 28
+
+============================================================
+BLOCK 28
+- Instructions:
+  mul	a3, a3, a2
+  addi	a2, a2, 1
+  mul	a0, a3, a0
+  bne	a1, a2, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 44
+  JUMP -> 28
+
+============================================================
+BLOCK 44
+- Instructions:
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 48
+- Instructions:
+  li	a0, 1
+  ret
+
+- Edges: (none)

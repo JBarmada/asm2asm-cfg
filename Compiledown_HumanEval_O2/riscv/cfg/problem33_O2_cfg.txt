@@ -1,0 +1,274 @@
+Function: func0
+Basic blocks: 25
+
+============================================================
+BLOCK 0
+- Instructions:
+  fld	ft0, 0(a0)
+  li	a2, 2
+  auipc	a3, %pcrel_hi(.LCPI0_0)
+  addi	a3, a3, %pcrel_lo(.LBB0_23)
+  fmv.d	ft1, ft0
+  blt	a1, a2, .LBB0_5
+
+- Edges:
+  NO_JUMP -> 24
+  JUMP -> 92
+
+============================================================
+BLOCK 24
+- Instructions:
+  fld	ft2, 0(a3)
+  li	a2, 1
+  fmv.d.x	ft3, zero
+  fmv.d	ft1, ft0
+
+- Edges:
+  NO_JUMP -> 40
+
+============================================================
+BLOCK 40
+- Instructions:
+  li	a4, 0
+  fmv.d	ft4, ft2
+
+- Edges:
+  NO_JUMP -> 48
+
+============================================================
+BLOCK 48
+- Instructions:
+  addiw	a4, a4, 1
+  slli	a5, a4, 32
+  srli	a5, a5, 32
+  fmul.d	ft4, ft4, ft3
+  bltu	a5, a2, .LBB0_3
+
+- Edges:
+  NO_JUMP -> 68
+  JUMP -> 48
+
+============================================================
+BLOCK 68
+- Instructions:
+  slli	a4, a2, 3
+  add	a4, a4, a0
+  fld	ft5, 0(a4)
+  addi	a2, a2, 1
+  fmadd.d	ft1, ft5, ft4, ft1
+  bne	a2, a1, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 92
+  JUMP -> 40
+
+============================================================
+BLOCK 92
+- Instructions:
+  auipc	a2, %pcrel_hi(.LCPI0_1)
+  addi	a2, a2, %pcrel_lo(.LBB0_24)
+  fld	ft2, 0(a2)
+  fabs.d	ft3, ft1
+  flt.d	a2, ft2, ft3
+  beqz	a2, .LBB0_21
+
+- Edges:
+  NO_JUMP -> 116
+  JUMP -> 336
+
+============================================================
+BLOCK 116
+- Instructions:
+  slli	a2, a1, 32
+  srli	a2, a2, 32
+  fld	ft3, 0(a3)
+  fmv.d.x	ft4, zero
+  li	a6, 2
+  fneg.d	ft5, ft4
+  fmv.d	fa0, ft4
+  j	.LBB0_10
+
+- Edges:
+  JUMP -> 172
+
+============================================================
+BLOCK 148
+- Instructions:
+  fdiv.d	ft1, ft1, ft5
+  fadd.d	fa0, fa0, ft1
+
+- Edges:
+  NO_JUMP -> 156
+
+============================================================
+BLOCK 156
+- Instructions:
+  fmv.d	ft1, ft0
+
+- Edges:
+  NO_JUMP -> 160
+
+============================================================
+BLOCK 160
+- Instructions:
+  fabs.d	ft6, ft1
+  flt.d	a4, ft2, ft6
+  beqz	a4, .LBB0_22
+
+- Edges:
+  NO_JUMP -> 172
+  JUMP -> 340
+
+============================================================
+BLOCK 172
+- Instructions:
+  blt	a1, a6, .LBB0_7
+
+- Edges:
+  NO_JUMP -> 176
+  JUMP -> 148
+
+============================================================
+BLOCK 176
+- Instructions:
+  li	a4, 1
+  fmv.d	ft6, ft4
+  j	.LBB0_13
+
+- Edges:
+  JUMP -> 220
+
+============================================================
+BLOCK 188
+- Instructions:
+  slli	a5, a4, 3
+  add	a5, a5, a0
+  fld	fa1, 0(a5)
+  fcvt.d.w	fa2, a4
+  fmul.d	fa1, fa1, fa2
+  addi	a4, a4, 1
+  fmadd.d	ft6, fa1, ft7, ft6
+  beq	a4, a2, .LBB0_16
+
+- Edges:
+  NO_JUMP -> 220
+  JUMP -> 260
+
+============================================================
+BLOCK 220
+- Instructions:
+  fmv.d	ft7, ft3
+  bltu	a4, a6, .LBB0_12
+
+- Edges:
+  NO_JUMP -> 228
+  JUMP -> 188
+
+============================================================
+BLOCK 228
+- Instructions:
+  li	a5, 1
+  fmv.d	ft7, ft3
+
+- Edges:
+  NO_JUMP -> 236
+
+============================================================
+BLOCK 236
+- Instructions:
+  addiw	a5, a5, 1
+  slli	a3, a5, 32
+  srli	a3, a3, 32
+  fmul.d	ft7, fa0, ft7
+  bltu	a3, a4, .LBB0_15
+
+- Edges:
+  NO_JUMP -> 256
+  JUMP -> 236
+
+============================================================
+BLOCK 256
+- Instructions:
+  j	.LBB0_12
+
+- Edges:
+  JUMP -> 188
+
+============================================================
+BLOCK 260
+- Instructions:
+  fdiv.d	ft1, ft1, ft6
+  fsub.d	fa0, fa0, ft1
+  blt	a1, a6, .LBB0_8
+
+- Edges:
+  NO_JUMP -> 272
+  JUMP -> 156
+
+============================================================
+BLOCK 272
+- Instructions:
+  li	a4, 1
+  fmv.d	ft1, ft0
+
+- Edges:
+  NO_JUMP -> 280
+
+============================================================
+BLOCK 280
+- Instructions:
+  li	a5, 0
+  fmv.d	ft6, ft3
+
+- Edges:
+  NO_JUMP -> 288
+
+============================================================
+BLOCK 288
+- Instructions:
+  addiw	a5, a5, 1
+  slli	a3, a5, 32
+  srli	a3, a3, 32
+  fmul.d	ft6, fa0, ft6
+  bltu	a3, a4, .LBB0_19
+
+- Edges:
+  NO_JUMP -> 308
+  JUMP -> 288
+
+============================================================
+BLOCK 308
+- Instructions:
+  slli	a3, a4, 3
+  add	a3, a3, a0
+  fld	ft7, 0(a3)
+  addi	a4, a4, 1
+  fmadd.d	ft1, ft7, ft6, ft1
+  bne	a4, a2, .LBB0_18
+
+- Edges:
+  NO_JUMP -> 332
+  JUMP -> 280
+
+============================================================
+BLOCK 332
+- Instructions:
+  j	.LBB0_9
+
+- Edges:
+  JUMP -> 160
+
+============================================================
+BLOCK 336
+- Instructions:
+  fmv.d.x	fa0, zero
+
+- Edges:
+  NO_JUMP -> 340
+
+============================================================
+BLOCK 340
+- Instructions:
+  ret
+
+- Edges: (none)

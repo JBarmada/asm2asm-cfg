@@ -1,0 +1,243 @@
+Function: func0
+Basic blocks: 19
+
+============================================================
+BLOCK 2640
+- Instructions:
+  add	sp,sp,-32
+  sd	ra,24(sp)
+  sd	s0,16(sp)
+  mv	s0,a0
+  jal	680 <strlen@plt>
+
+- Edges:
+  JUMP -> 1664
+
+============================================================
+BLOCK 2652
+- Instructions:
+  li	a1,10
+  bne	a0,a1,b0a <func0+0xba>
+
+- Edges:
+  NO_JUMP -> 2658
+  JUMP -> 2826
+
+============================================================
+BLOCK 2658
+- Instructions:
+  lbu	a0,0(s0)
+  addw	a1,a0,-58
+  zext.b	a1,a1
+  li	a2,246
+  bltu	a1,a2,b0a <func0+0xba>
+
+- Edges:
+  NO_JUMP -> 2678
+  JUMP -> 2826
+
+============================================================
+BLOCK 2678
+- Instructions:
+  lbu	a1,1(s0)
+  addw	a3,a1,-58
+  zext.b	a3,a3
+  bltu	a3,a2,b0a <func0+0xba>
+
+- Edges:
+  NO_JUMP -> 2694
+  JUMP -> 2826
+
+============================================================
+BLOCK 2694
+- Instructions:
+  lbu	a2,2(s0)
+  li	a3,45
+  bne	a2,a3,b0a <func0+0xba>
+
+- Edges:
+  NO_JUMP -> 2706
+  JUMP -> 2826
+
+============================================================
+BLOCK 2706
+- Instructions:
+  lbu	a2,3(s0)
+  addw	a3,a2,-58
+  zext.b	a3,a3
+  li	a4,246
+  bltu	a3,a4,b0a <func0+0xba>
+
+- Edges:
+  NO_JUMP -> 2726
+  JUMP -> 2826
+
+============================================================
+BLOCK 2726
+- Instructions:
+  lbu	a3,4(s0)
+  addw	a5,a3,-58
+  zext.b	a5,a5
+  bltu	a5,a4,b0a <func0+0xba>
+
+- Edges:
+  NO_JUMP -> 2742
+  JUMP -> 2826
+
+============================================================
+BLOCK 2742
+- Instructions:
+  lbu	a4,5(s0)
+  li	a5,45
+  bne	a4,a5,b0a <func0+0xba>
+
+- Edges:
+  NO_JUMP -> 2754
+  JUMP -> 2826
+
+============================================================
+BLOCK 2754
+- Instructions:
+  lb	a4,6(s0)
+  addw	a4,a4,-58
+  zext.b	a5,a4
+  li	a4,246
+  bltu	a5,a4,b0a <func0+0xba>
+
+- Edges:
+  NO_JUMP -> 2774
+  JUMP -> 2826
+
+============================================================
+BLOCK 2774
+- Instructions:
+  lb	a5,7(s0)
+  addw	a5,a5,-58
+  zext.b	a5,a5
+  bltu	a5,a4,b0a <func0+0xba>
+
+- Edges:
+  NO_JUMP -> 2790
+  JUMP -> 2826
+
+============================================================
+BLOCK 2790
+- Instructions:
+  lb	a4,8(s0)
+  addw	a4,a4,-58
+  zext.b	a5,a4
+  li	a4,246
+  bltu	a5,a4,b0a <func0+0xba>
+
+- Edges:
+  NO_JUMP -> 2810
+  JUMP -> 2826
+
+============================================================
+BLOCK 2810
+- Instructions:
+  lb	a5,9(s0)
+  addw	a5,a5,-58
+  zext.b	a5,a5
+  bgeu	a5,a4,b14 <func0+0xc4>
+
+- Edges:
+  NO_JUMP -> 2826
+  JUMP -> 2836
+
+============================================================
+BLOCK 2826
+- Instructions:
+  li	a0,0
+
+- Edges:
+  NO_JUMP -> 2828
+
+============================================================
+BLOCK 2828
+- Instructions:
+  ld	ra,24(sp)
+  ld	s0,16(sp)
+  add	sp,sp,32
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 2836
+- Instructions:
+  sb	a0,13(sp)
+  sb	a1,14(sp)
+  sb	zero,15(sp)
+  sb	a2,10(sp)
+  sb	a3,11(sp)
+  sb	zero,12(sp)
+  add	a0,sp,13
+  li	a2,10
+  li	a1,0
+  jal	670 <strtol@plt>
+
+- Edges:
+  JUMP -> 1648
+
+============================================================
+BLOCK 2872
+- Instructions:
+  mv	s0,a0
+  add	a0,sp,10
+  li	a2,10
+  li	a1,0
+  jal	670 <strtol@plt>
+
+- Edges:
+  JUMP -> 1648
+
+============================================================
+BLOCK 2886
+- Instructions:
+  mv	a1,a0
+  addw	a0,s0,-13
+  sltiu	a0,a0,-12
+  addw	a2,a1,-32
+  sltiu	a2,a2,-31
+  or	a2,a2,a0
+  li	a0,0
+  bnez	a2,b0c <func0+0xbc>
+
+- Edges:
+  NO_JUMP -> 2910
+  JUMP -> 2828
+
+============================================================
+BLOCK 2910
+- Instructions:
+  sext.w	a1,a1
+  and	a0,s0,-3
+  sext.w	a0,a0
+  add	a2,a0,-4
+  seqz	a2,a2
+  add	a0,a0,-9
+  seqz	a0,a0
+  or	a0,a0,a2
+  add	a2,a1,-31
+  seqz	a2,a2
+  and	a2,a2,a0
+  li	a0,0
+  bnez	a2,b0c <func0+0xbc>
+
+- Edges:
+  NO_JUMP -> 2948
+  JUMP -> 2828
+
+============================================================
+BLOCK 2948
+- Instructions:
+  sext.w	a0,s0
+  add	a0,a0,-2
+  snez	a0,a0
+  sltiu	a1,a1,30
+  or	a0,a0,a1
+  j	b0c <func0+0xbc>
+
+- Edges:
+  JUMP -> 2828

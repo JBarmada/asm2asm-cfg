@@ -1,0 +1,109 @@
+Function: func0
+Basic blocks: 9
+
+============================================================
+BLOCK 5712
+- Instructions:
+  push   %rbp
+  push   %rbx
+  push   %rax
+  mov    %edi,%ebx
+  lea    0x1(%rbx),%ebp
+  movslq %ebp,%rdi
+  shl    $0x2,%rdi
+  call   1050 <malloc@plt>
+  movl   $0x1,(%rax)
+  test   %ebx,%ebx
+  je     167a <func0+0x2a>
+
+- Edges:
+  NO_JUMP -> 5742
+  JUMP -> 5754
+
+============================================================
+BLOCK 5742
+- Instructions:
+  movl   $0x3,0x4(%rax)
+  cmp    $0x2,%ebx
+  jge    1681 <func0+0x31>
+
+- Edges:
+  NO_JUMP -> 5754
+  JUMP -> 5761
+
+============================================================
+BLOCK 5754
+- Instructions:
+  add    $0x8,%rsp
+  pop    %rbx
+  pop    %rbp
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 5761
+- Instructions:
+  mov    %ebp,%ecx
+  mov    $0x2,%edx
+  mov    $0x3,%esi
+  jmp    16ae <func0+0x5e>
+
+- Edges:
+  JUMP -> 5806
+
+============================================================
+BLOCK 5775
+- Instructions:
+  nop
+
+- Edges:
+  NO_JUMP -> 5776
+
+============================================================
+BLOCK 5776
+- Instructions:
+  mov    -0x8(%rax,%rdx,4),%ebp
+  lea    0x1(%rdx),%rbx
+  mov    %ebx,%edi
+  shr    %edi
+  add    %esi,%edi
+  lea    (%rdi,%rbp,1),%esi
+  inc    %esi
+
+- Edges:
+  NO_JUMP -> 5795
+
+============================================================
+BLOCK 5795
+- Instructions:
+  mov    %esi,(%rax,%rdx,4)
+  mov    %rbx,%rdx
+  cmp    %rcx,%rbx
+  je     167a <func0+0x2a>
+
+- Edges:
+  NO_JUMP -> 5806
+  JUMP -> 5754
+
+============================================================
+BLOCK 5806
+- Instructions:
+  test   $0x1,%dl
+  jne    1690 <func0+0x40>
+
+- Edges:
+  NO_JUMP -> 5811
+  JUMP -> 5776
+
+============================================================
+BLOCK 5811
+- Instructions:
+  mov    %edx,%esi
+  shr    %esi
+  inc    %esi
+  lea    0x1(%rdx),%rbx
+  jmp    16a3 <func0+0x53>
+
+- Edges:
+  JUMP -> 5795

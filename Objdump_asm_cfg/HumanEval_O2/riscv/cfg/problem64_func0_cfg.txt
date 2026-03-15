@@ -1,0 +1,74 @@
+Function: func0
+Basic blocks: 5
+
+============================================================
+BLOCK 2108
+- Instructions:
+  add	sp,sp,-432
+  sd	ra,424(sp)
+  sd	s0,416(sp)
+  sd	s1,408(sp)
+  mv	s0,a0
+  add	a0,sp,8
+  li	a2,400
+  add	s1,sp,8
+  li	a1,0
+  jal	640 <memset@plt>
+
+- Edges:
+  JUMP -> 1600
+
+============================================================
+BLOCK 2132
+- Instructions:
+  li	a0,1
+  li	a1,3
+  sw	a0,16(sp)
+  blt	s0,a1,880 <func0+0x44>
+
+- Edges:
+  NO_JUMP -> 2142
+  JUMP -> 2176
+
+============================================================
+BLOCK 2142
+- Instructions:
+  li	a3,0
+  addw	a1,s0,1
+  sll	a1,a1,0x20
+  srl	a2,a1,0x20
+  add	a1,sp,20
+  add	a2,a2,-3
+
+- Edges:
+  NO_JUMP -> 2158
+
+============================================================
+BLOCK 2158
+- Instructions:
+  lw	a4,-8(a1)
+  addw	a0,a0,a4
+  addw	a0,a0,a3
+  sw	a0,0(a1)
+  add	a2,a2,-1
+  add	a1,a1,4
+  mv	a3,a4
+  bnez	a2,86e <func0+0x32>
+
+- Edges:
+  NO_JUMP -> 2176
+  JUMP -> 2158
+
+============================================================
+BLOCK 2176
+- Instructions:
+  sll	a0,s0,0x2
+  add	a0,a0,s1
+  lw	a0,0(a0)
+  ld	ra,424(sp)
+  ld	s0,416(sp)
+  ld	s1,408(sp)
+  add	sp,sp,432
+  ret
+
+- Edges: (none)

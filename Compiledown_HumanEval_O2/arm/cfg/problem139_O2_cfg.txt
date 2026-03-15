@@ -1,0 +1,12 @@
+Function: _func0
+Basic blocks: 1
+
+============================================================
+BLOCK 0
+- Instructions:
+  tst	w0, #0x1
+  ccmp	w0, #7, #4, eq
+  cset	w0, gt
+  ret
+
+- Edges: (none)

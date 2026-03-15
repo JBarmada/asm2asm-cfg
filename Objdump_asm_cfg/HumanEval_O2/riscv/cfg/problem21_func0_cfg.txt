@@ -1,0 +1,127 @@
+Function: func0
+Basic blocks: 11
+
+============================================================
+BLOCK 2520
+- Instructions:
+  flw	ft1,0(a0)
+  fsw	ft1,0(a2)
+  flw	ft0,4(a0)
+  fsw	ft0,4(a2)
+  blez	a1,a52 <func0+0x7a>
+
+- Edges:
+  NO_JUMP -> 2540
+  JUMP -> 2642
+
+============================================================
+BLOCK 2540
+- Instructions:
+  auipc	a3,0x1
+  add	a3,a3,1712 # 209c <__SDATA_BEGIN__+0x4c>
+  flw	ft2,0(a3)
+  li	a6,0
+  add	a7,a0,4
+  li	t0,1
+  j	a0a <func0+0x32>
+
+- Edges:
+  JUMP -> 2570
+
+============================================================
+BLOCK 2562
+- Instructions:
+  add	t0,t0,1
+  add	a7,a7,4
+  beq	a6,a1,a52 <func0+0x7a>
+
+- Edges:
+  NO_JUMP -> 2570
+  JUMP -> 2642
+
+============================================================
+BLOCK 2570
+- Instructions:
+  mv	a3,a6
+  add	a6,a6,1
+  bgeu	a6,a1,a02 <func0+0x2a>
+
+- Edges:
+  NO_JUMP -> 2578
+  JUMP -> 2562
+
+============================================================
+BLOCK 2578
+- Instructions:
+  sll	a3,a3,0x2
+  add	t1,a0,a3
+  mv	a3,a1
+  mv	a4,a7
+  j	a26 <func0+0x4e>
+
+- Edges:
+  JUMP -> 2598
+
+============================================================
+BLOCK 2590
+- Instructions:
+  add	a3,a3,-1
+  add	a4,a4,4
+  beq	t0,a3,a02 <func0+0x2a>
+
+- Edges:
+  NO_JUMP -> 2598
+  JUMP -> 2562
+
+============================================================
+BLOCK 2598
+- Instructions:
+  flw	ft3,0(t1)
+  flw	ft4,0(a4)
+  fsub.s	ft4,ft3,ft4
+  fabs.s	ft4,ft4
+  flt.s	a5,ft4,ft2
+  beqz	a5,a1e <func0+0x46>
+
+- Edges:
+  NO_JUMP -> 2620
+  JUMP -> 2590
+
+============================================================
+BLOCK 2620
+- Instructions:
+  fsw	ft3,0(a2)
+  flw	ft0,0(a4)
+  fsw	ft0,4(a2)
+  fmv.s	ft1,ft3
+  fmv.s	ft2,ft4
+  j	a1e <func0+0x46>
+
+- Edges:
+  JUMP -> 2590
+
+============================================================
+BLOCK 2642
+- Instructions:
+  flt.s	a0,ft0,ft1
+  beqz	a0,a60 <func0+0x88>
+
+- Edges:
+  NO_JUMP -> 2648
+  JUMP -> 2656
+
+============================================================
+BLOCK 2648
+- Instructions:
+  fsw	ft0,0(a2)
+  fsw	ft1,4(a2)
+
+- Edges:
+  NO_JUMP -> 2656
+
+============================================================
+BLOCK 2656
+- Instructions:
+  ret
+
+- Edges: (none)

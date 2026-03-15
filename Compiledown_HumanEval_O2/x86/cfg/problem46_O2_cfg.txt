@@ -1,0 +1,11 @@
+Function: func0
+Basic blocks: 1
+
+============================================================
+BLOCK 0
+- Instructions:
+  mulss	%xmm1, %xmm0
+  mulss	.LCPI0_0(%rip), %xmm0
+  retq
+
+- Edges: (none)

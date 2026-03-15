@@ -1,0 +1,73 @@
+Function: func0
+Basic blocks: 6
+
+============================================================
+BLOCK 2324
+- Instructions:
+  lbu	a5,0(a0)
+  beqz	a5,962 <func0+0x4e>
+
+- Edges:
+  NO_JUMP -> 2330
+  JUMP -> 2402
+
+============================================================
+BLOCK 2330
+- Instructions:
+  li	a4,0
+  add	a7,a0,1
+  lui	a2,0x5
+  addw	a2,a2,-315 # 4ec5 <__global_pointer$+0x26c5>
+  li	a6,26
+
+- Edges:
+  NO_JUMP -> 2344
+
+============================================================
+BLOCK 2344
+- Instructions:
+  zext.b	a3,a5
+  add	a3,a3,-93
+  mul	a5,a3,a2
+  srlw	a0,a5,0x1f
+  srl	a5,a5,0x13
+  addw	a0,a0,a5
+  mulw	a0,a0,a6
+  subw	a0,a3,a0
+  addw	a0,a0,97
+  add	a3,a1,a4
+  sb	a0,0(a3)
+  add	a0,a7,a4
+  lbu	a5,0(a0)
+  add	a3,a4,1
+  mv	a4,a3
+  bnez	a5,928 <func0+0x14>
+
+- Edges:
+  NO_JUMP -> 2400
+  JUMP -> 2344
+
+============================================================
+BLOCK 2400
+- Instructions:
+  j	964 <func0+0x50>
+
+- Edges:
+  JUMP -> 2404
+
+============================================================
+BLOCK 2402
+- Instructions:
+  li	a3,0
+
+- Edges:
+  NO_JUMP -> 2404
+
+============================================================
+BLOCK 2404
+- Instructions:
+  add	a0,a1,a3
+  sb	zero,0(a0)
+  ret
+
+- Edges: (none)

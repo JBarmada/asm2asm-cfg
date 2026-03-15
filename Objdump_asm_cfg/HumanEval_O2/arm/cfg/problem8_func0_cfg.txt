@@ -1,0 +1,86 @@
+Function: _func0
+Basic blocks: 6
+
+============================================================
+BLOCK 4294969168
+- Instructions:
+  stp	x26, x25, [sp, #-0x50]!
+  stp	x24, x23, [sp, #0x10]
+  stp	x22, x21, [sp, #0x20]
+  stp	x20, x19, [sp, #0x30]
+  stp	x29, x30, [sp, #0x40]
+  add	x29, sp, #0x40
+  mov	x19, x3
+  cmp	w1, #0x1
+  b.lt	0x1000007cc <_func0+0x7c>
+
+- Edges:
+  NO_JUMP -> 4294969204
+  JUMP -> 4294969292
+
+============================================================
+BLOCK 4294969204
+- Instructions:
+  mov	x20, x2
+  mov	x21, x0
+  mov	w23, #0x0               ; =0
+  mov	x22, #0x0               ; =0
+  mov	w24, w1
+  b	0x100000798 <_func0+0x48>
+
+- Edges:
+  JUMP -> 4294969240
+
+============================================================
+BLOCK 4294969228
+- Instructions:
+  add	x21, x21, #0x8
+  subs	x24, x24, #0x1
+  b.eq	0x1000007d4 <_func0+0x84>
+
+- Edges:
+  NO_JUMP -> 4294969240
+  JUMP -> 4294969300
+
+============================================================
+BLOCK 4294969240
+- Instructions:
+  ldr	x0, [x21]
+  mov	x1, x20
+  bl	0x1000008d0 <_strstr+0x1000008d0>
+  cbz	x0, 0x10000078c <_func0+0x3c>
+  add	w25, w23, #0x1
+  sbfiz	x1, x25, #3, #32
+  mov	x0, x22
+  bl	0x1000008b8 <_strstr+0x1000008b8>
+  mov	x22, x0
+  ldr	x8, [x21]
+  str	x8, [x0, w23, sxtw #3]
+  mov	x23, x25
+  b	0x10000078c <_func0+0x3c>
+
+- Edges:
+  JUMP -> 4294969228
+
+============================================================
+BLOCK 4294969292
+- Instructions:
+  mov	x22, #0x0               ; =0
+  mov	w23, #0x0               ; =0
+
+- Edges:
+  NO_JUMP -> 4294969300
+
+============================================================
+BLOCK 4294969300
+- Instructions:
+  str	w23, [x19]
+  mov	x0, x22
+  ldp	x29, x30, [sp, #0x40]
+  ldp	x20, x19, [sp, #0x30]
+  ldp	x22, x21, [sp, #0x20]
+  ldp	x24, x23, [sp, #0x10]
+  ldp	x26, x25, [sp], #0x50
+  ret
+
+- Edges: (none)

@@ -1,0 +1,67 @@
+Function: func0
+Basic blocks: 5
+
+============================================================
+BLOCK 5152
+- Instructions:
+  mulss  %xmm1,%xmm1
+  mulss  %xmm0,%xmm0
+  movaps %xmm0,%xmm3
+  addss  %xmm1,%xmm3
+  mulss  %xmm2,%xmm2
+  subss  %xmm2,%xmm3
+  andps  0xd22(%rip),%xmm3        # 2160 <_IO_stdin_used+0x160>
+  cvtss2sd %xmm3,%xmm4
+  mov    $0x1,%eax
+  movsd  0xd21(%rip),%xmm3        # 2170 <_IO_stdin_used+0x170>
+  ucomisd %xmm4,%xmm3
+  ja     148f <func0+0x6f>
+
+- Edges:
+  NO_JUMP -> 5205
+  JUMP -> 5263
+
+============================================================
+BLOCK 5205
+- Instructions:
+  movaps %xmm0,%xmm4
+  addss  %xmm2,%xmm4
+  subss  %xmm1,%xmm4
+  andps  0xcf9(%rip),%xmm4        # 2160 <_IO_stdin_used+0x160>
+  cvtss2sd %xmm4,%xmm4
+  ucomisd %xmm4,%xmm3
+  ja     148f <func0+0x6f>
+
+- Edges:
+  NO_JUMP -> 5233
+  JUMP -> 5263
+
+============================================================
+BLOCK 5233
+- Instructions:
+  addss  %xmm2,%xmm1
+  subss  %xmm0,%xmm1
+  andps  0xce0(%rip),%xmm1        # 2160 <_IO_stdin_used+0x160>
+  xorps  %xmm0,%xmm0
+  cvtss2sd %xmm1,%xmm0
+  ucomisd %xmm0,%xmm3
+  ja     148f <func0+0x6f>
+
+- Edges:
+  NO_JUMP -> 5261
+  JUMP -> 5263
+
+============================================================
+BLOCK 5261
+- Instructions:
+  xor    %eax,%eax
+
+- Edges:
+  NO_JUMP -> 5263
+
+============================================================
+BLOCK 5263
+- Instructions:
+  ret
+
+- Edges: (none)

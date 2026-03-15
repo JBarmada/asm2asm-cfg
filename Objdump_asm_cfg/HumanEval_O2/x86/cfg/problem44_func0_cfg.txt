@@ -1,0 +1,126 @@
+Function: func0
+Basic blocks: 12
+
+============================================================
+BLOCK 5120
+- Instructions:
+  push   %rbx
+  test   %esi,%esi
+  jle    1466 <func0+0x66>
+
+- Edges:
+  NO_JUMP -> 5125
+  JUMP -> 5222
+
+============================================================
+BLOCK 5125
+- Instructions:
+  mov    %esi,%r8d
+  mov    $0x1,%al
+  xor    %r10d,%r10d
+  mov    %r8,%r11
+  mov    %rdi,%rsi
+  jmp    142c <func0+0x2c>
+
+- Edges:
+  JUMP -> 5164
+
+============================================================
+BLOCK 5141
+- Instructions:
+  data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5152
+
+============================================================
+BLOCK 5152
+- Instructions:
+  add    $0x4,%rsi
+  dec    %r11
+  cmp    %r8,%r10
+  je     1468 <func0+0x68>
+
+- Edges:
+  NO_JUMP -> 5164
+  JUMP -> 5224
+
+============================================================
+BLOCK 5164
+- Instructions:
+  mov    %eax,%r9d
+  mov    %r10,%rcx
+  inc    %r10
+  cmp    %r8,%r10
+  setb   %al
+  jae    1420 <func0+0x20>
+
+- Edges:
+  NO_JUMP -> 5181
+  JUMP -> 5152
+
+============================================================
+BLOCK 5181
+- Instructions:
+  mov    (%rdi,%rcx,4),%ecx
+  mov    $0x1,%edx
+  data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5200
+
+============================================================
+BLOCK 5200
+- Instructions:
+  mov    (%rsi,%rdx,4),%ebx
+  add    %ecx,%ebx
+  je     1461 <func0+0x61>
+
+- Edges:
+  NO_JUMP -> 5207
+  JUMP -> 5217
+
+============================================================
+BLOCK 5207
+- Instructions:
+  inc    %rdx
+  cmp    %rdx,%r11
+  jne    1450 <func0+0x50>
+
+- Edges:
+  NO_JUMP -> 5215
+  JUMP -> 5200
+
+============================================================
+BLOCK 5215
+- Instructions:
+  jmp    1420 <func0+0x20>
+
+- Edges:
+  JUMP -> 5152
+
+============================================================
+BLOCK 5217
+- Instructions:
+  mov    %r9d,%eax
+  jmp    1468 <func0+0x68>
+
+- Edges:
+  JUMP -> 5224
+
+============================================================
+BLOCK 5222
+- Instructions:
+  xor    %eax,%eax
+
+- Edges:
+  NO_JUMP -> 5224
+
+============================================================
+BLOCK 5224
+- Instructions:
+  and    $0x1,%al
+  pop    %rbx
+  ret
+
+- Edges: (none)

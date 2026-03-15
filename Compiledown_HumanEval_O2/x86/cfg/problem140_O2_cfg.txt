@@ -1,0 +1,134 @@
+Function: func0
+Basic blocks: 10
+
+============================================================
+BLOCK 0
+- Instructions:
+  testl	%edi, %edi
+  jle	.LBB0_1
+
+- Edges:
+  NO_JUMP -> 8
+  JUMP -> 56
+
+============================================================
+BLOCK 8
+- Instructions:
+  movl	%edi, %r8d
+  leaq	-1(%r8), %rax
+  movl	%r8d, %r9d
+  andl	$7, %r9d
+  cmpq	$7, %rax
+  jae	.LBB0_8
+
+- Edges:
+  NO_JUMP -> 32
+  JUMP -> 64
+
+============================================================
+BLOCK 32
+- Instructions:
+  movl	$1, %edx
+  movl	$1, %eax
+  movl	$1, %edi
+  testq	%r9, %r9
+  jne	.LBB0_6
+
+- Edges:
+  NO_JUMP -> 52
+  JUMP -> 208
+
+============================================================
+BLOCK 52
+- Instructions:
+  jmp	.LBB0_7
+
+- Edges:
+  JUMP -> 228
+
+============================================================
+BLOCK 56
+- Instructions:
+  movl	$1, %eax
+  retq
+
+- Edges: (none)
+
+============================================================
+BLOCK 64
+- Instructions:
+  andl	$-8, %r8d
+  negq	%r8
+  movl	$1, %eax
+  movl	$8, %edx
+  movl	$1, %edi
+
+- Edges:
+  NO_JUMP -> 84
+
+============================================================
+BLOCK 84
+- Instructions:
+  leaq	-7(%rdx), %rsi
+  imulq	%rdi, %rsi
+  imulq	%rsi, %rax
+  leaq	-6(%rdx), %rdi
+  imulq	%rsi, %rdi
+  imulq	%rdi, %rax
+  leaq	-5(%rdx), %rsi
+  imulq	%rdi, %rsi
+  imulq	%rsi, %rax
+  leaq	-4(%rdx), %rdi
+  imulq	%rsi, %rdi
+  imulq	%rdi, %rax
+  leaq	-3(%rdx), %rsi
+  imulq	%rdi, %rsi
+  imulq	%rsi, %rax
+  leaq	-2(%rdx), %rcx
+  imulq	%rsi, %rcx
+  imulq	%rcx, %rax
+  leaq	-1(%rdx), %rdi
+  imulq	%rcx, %rdi
+  imulq	%rdi, %rax
+  imulq	%rdx, %rdi
+  imulq	%rdi, %rax
+  leaq	(%r8,%rdx), %rcx
+  addq	$8, %rcx
+  addq	$8, %rdx
+  cmpq	$8, %rcx
+  jne	.LBB0_9
+
+- Edges:
+  NO_JUMP -> 196
+  JUMP -> 84
+
+============================================================
+BLOCK 196
+- Instructions:
+  addq	$-7, %rdx
+  testq	%r9, %r9
+  je	.LBB0_7
+
+- Edges:
+  NO_JUMP -> 208
+  JUMP -> 228
+
+============================================================
+BLOCK 208
+- Instructions:
+  imulq	%rdx, %rdi
+  imulq	%rdi, %rax
+  incq	%rdx
+  decq	%r9
+  jne	.LBB0_6
+
+- Edges:
+  NO_JUMP -> 228
+  JUMP -> 208
+
+============================================================
+BLOCK 228
+- Instructions:
+  retq
+
+- Edges: (none)

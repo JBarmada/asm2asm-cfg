@@ -1,0 +1,11 @@
+Function: func0
+Basic blocks: 1
+
+============================================================
+BLOCK 4656
+- Instructions:
+  mov    %edi,%eax
+  imul   %edi,%eax
+  ret
+
+- Edges: (none)

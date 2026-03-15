@@ -1,0 +1,76 @@
+Function: func0
+Basic blocks: 6
+
+============================================================
+BLOCK 2568
+- Instructions:
+  add	sp,sp,-16
+  sd	ra,8(sp)
+  sd	s0,0(sp)
+  bge	a1,a0,a1c <func0+0x14>
+
+- Edges:
+  NO_JUMP -> 2578
+  JUMP -> 2588
+
+============================================================
+BLOCK 2578
+- Instructions:
+  auipc	a0,0x0
+  add	a0,a0,558 # c40 <_IO_stdin_used+0x1d4>
+  j	a62 <func0+0x5a>
+
+- Edges:
+  JUMP -> 2658
+
+============================================================
+BLOCK 2588
+- Instructions:
+  addw	s0,a1,a0
+  li	a0,33
+  jal	670 <malloc@plt>
+
+- Edges:
+  JUMP -> 1648
+
+============================================================
+BLOCK 2600
+- Instructions:
+  sb	zero,0(a0)
+  add	a1,a0,32
+  sb	zero,32(a0)
+  li	a2,3
+
+- Edges:
+  NO_JUMP -> 2614
+
+============================================================
+BLOCK 2614
+- Instructions:
+  mv	a3,s0
+  srlw	a0,s0,0x1f
+  addw	a0,a0,s0
+  sraw	s0,a0,0x1
+  srlw	a0,a0,0x1f
+  addw	a0,a0,s0
+  and	a0,a0,254
+  subw	a0,s0,a0
+  addw	a4,a0,48
+  add	a0,a1,-1
+  sb	a4,-1(a1)
+  mv	a1,a0
+  blt	a2,a3,a36 <func0+0x2e>
+
+- Edges:
+  NO_JUMP -> 2658
+  JUMP -> 2614
+
+============================================================
+BLOCK 2658
+- Instructions:
+  ld	ra,8(sp)
+  ld	s0,0(sp)
+  add	sp,sp,16
+  ret
+
+- Edges: (none)

@@ -1,0 +1,92 @@
+Function: func0
+Basic blocks: 7
+
+============================================================
+BLOCK 0
+- Instructions:
+  addi	sp, sp, -32
+  sd	ra, 24(sp)
+  sd	s0, 16(sp)
+  sd	s1, 8(sp)
+  sd	s2, 0(sp)
+  mv	s0, a1
+  mv	s2, a0
+  addiw	a0, a1, 1
+  li	a1, 4
+  call	calloc@plt
+  blez	s0, .LBB0_5
+
+- Edges:
+  NO_JUMP -> 44
+  JUMP -> 120
+
+============================================================
+BLOCK 44
+- Instructions:
+  li	a1, -1
+  j	.LBB0_3
+
+- Edges:
+  JUMP -> 68
+
+============================================================
+BLOCK 52
+- Instructions:
+  addi	s0, s0, -1
+  addi	s2, s2, 4
+  mv	a1, s1
+  beqz	s0, .LBB0_6
+
+- Edges:
+  NO_JUMP -> 68
+  JUMP -> 124
+
+============================================================
+BLOCK 68
+- Instructions:
+  lw	s1, 0(s2)
+  slli	a2, s1, 2
+  add	a2, a2, a0
+  lw	a3, 0(a2)
+  addiw	a3, a3, 1
+  slt	a4, a3, s1
+  xori	a4, a4, 1
+  slt	a5, a1, s1
+  and	a4, a4, a5
+  sw	a3, 0(a2)
+  bnez	a4, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 112
+  JUMP -> 52
+
+============================================================
+BLOCK 112
+- Instructions:
+  mv	s1, a1
+  j	.LBB0_2
+
+- Edges:
+  JUMP -> 52
+
+============================================================
+BLOCK 120
+- Instructions:
+  li	s1, -1
+
+- Edges:
+  NO_JUMP -> 124
+
+============================================================
+BLOCK 124
+- Instructions:
+  call	free@plt
+  mv	a0, s1
+  ld	ra, 24(sp)
+  ld	s0, 16(sp)
+  ld	s1, 8(sp)
+  ld	s2, 0(sp)
+  addi	sp, sp, 32
+  ret
+
+- Edges: (none)

@@ -1,0 +1,117 @@
+Function: _func0
+Basic blocks: 10
+
+============================================================
+BLOCK 0
+- Instructions:
+  stp	x24, x23, [sp, #-64]!
+  stp	x22, x21, [sp, #16]
+  stp	x20, x19, [sp, #32]
+  stp	x29, x30, [sp, #48]
+  add	x29, sp, #48
+  mov	x21, x3
+  mov	x19, x2
+  mov	x20, x0
+  cmp	w1, #1
+  b.lt	LBB0_6
+
+- Edges:
+  NO_JUMP -> 40
+  JUMP -> 116
+
+============================================================
+BLOCK 40
+- Instructions:
+  mov	w22, #0
+  mov	w23, w1
+  mov	x24, x20
+
+- Edges:
+  NO_JUMP -> 52
+
+============================================================
+BLOCK 52
+- Instructions:
+  ldr	x0, [x24], #8
+  bl	_strlen
+  add	w22, w22, w0
+  subs	x23, x23, #1
+  b.ne	LBB0_2
+
+- Edges:
+  NO_JUMP -> 72
+  JUMP -> 52
+
+============================================================
+BLOCK 72
+- Instructions:
+  cmp	w21, #1
+  b.lt	LBB0_7
+
+- Edges:
+  NO_JUMP -> 80
+  JUMP -> 128
+
+============================================================
+BLOCK 80
+- Instructions:
+  mov	w23, #0
+  mov	w21, w21
+  mov	x24, x19
+
+- Edges:
+  NO_JUMP -> 92
+
+============================================================
+BLOCK 92
+- Instructions:
+  ldr	x0, [x24], #8
+  bl	_strlen
+  add	w23, w23, w0
+  subs	x21, x21, #1
+  b.ne	LBB0_5
+
+- Edges:
+  NO_JUMP -> 112
+  JUMP -> 92
+
+============================================================
+BLOCK 112
+- Instructions:
+  b	LBB0_8
+
+- Edges:
+  JUMP -> 132
+
+============================================================
+BLOCK 116
+- Instructions:
+  mov	w22, #0
+  cmp	w21, #1
+  b.ge	LBB0_4
+
+- Edges:
+  NO_JUMP -> 128
+  JUMP -> 80
+
+============================================================
+BLOCK 128
+- Instructions:
+  mov	w23, #0
+
+- Edges:
+  NO_JUMP -> 132
+
+============================================================
+BLOCK 132
+- Instructions:
+  cmp	w22, w23
+  csel	x8, x19, x20, gt
+  csel	x0, x20, x8, lt
+  ldp	x29, x30, [sp, #48]
+  ldp	x20, x19, [sp, #32]
+  ldp	x22, x21, [sp, #16]
+  ldp	x24, x23, [sp], #64
+  ret
+
+- Edges: (none)

@@ -1,0 +1,35 @@
+Function: func0
+Basic blocks: 3
+
+============================================================
+BLOCK 0
+- Instructions:
+  li	a2, 0
+  blez	a1, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 8
+  JUMP -> 36
+
+============================================================
+BLOCK 8
+- Instructions:
+  flw	ft0, 0(a0)
+  fcvt.w.s	a3, ft0, rup
+  mulw	a3, a3, a3
+  addw	a2, a2, a3
+  addi	a1, a1, -1
+  addi	a0, a0, 4
+  bnez	a1, .LBB0_1
+
+- Edges:
+  NO_JUMP -> 36
+  JUMP -> 8
+
+============================================================
+BLOCK 36
+- Instructions:
+  mv	a0, a2
+  ret
+
+- Edges: (none)

@@ -1,0 +1,197 @@
+Function: func0
+Basic blocks: 18
+
+============================================================
+BLOCK 5040
+- Instructions:
+  push   %rbp
+  push   %r15
+  push   %r14
+  push   %r13
+  push   %r12
+  push   %rbx
+  push   %rax
+  test   %esi,%esi
+  je     1455 <func0+0xa5>
+
+- Edges:
+  NO_JUMP -> 5059
+  JUMP -> 5205
+
+============================================================
+BLOCK 5059
+- Instructions:
+  jle    1459 <func0+0xa9>
+
+- Edges:
+  NO_JUMP -> 5065
+  JUMP -> 5209
+
+============================================================
+BLOCK 5065
+- Instructions:
+  mov    %rdi,%r15
+  mov    %esi,%eax
+  mov    %rax,(%rsp)
+  xor    %r12d,%r12d
+  xor    %r13d,%r13d
+  xor    %ebx,%ebx
+  jmp    13e9 <func0+0x39>
+
+- Edges:
+  JUMP -> 5097
+
+============================================================
+BLOCK 5084
+- Instructions:
+  nopl   0x0(%rax)
+
+- Edges:
+  NO_JUMP -> 5088
+
+============================================================
+BLOCK 5088
+- Instructions:
+  inc    %r12
+  cmp    (%rsp),%r12
+  je     1459 <func0+0xa9>
+
+- Edges:
+  NO_JUMP -> 5097
+  JUMP -> 5209
+
+============================================================
+BLOCK 5097
+- Instructions:
+  mov    %r12,%rax
+  shl    $0x4,%rax
+  mov    (%r15,%rax,1),%rbp
+  movzbl 0x0(%rbp),%r14d
+  test   %r14b,%r14b
+  je     13e0 <func0+0x30>
+
+- Edges:
+  NO_JUMP -> 5118
+  JUMP -> 5088
+
+============================================================
+BLOCK 5118
+- Instructions:
+  call   1040 <__ctype_b_loc@plt>
+  mov    (%rax),%rcx
+  inc    %rbp
+  nopl   0x0(%rax)
+
+- Edges:
+  NO_JUMP -> 5136
+
+============================================================
+BLOCK 5136
+- Instructions:
+  movzbl %r14b,%eax
+  movzwl (%rcx,%rax,2),%edx
+  xor    %eax,%eax
+  test   $0x400,%edx
+  je     145e <func0+0xae>
+
+- Edges:
+  NO_JUMP -> 5154
+  JUMP -> 5214
+
+============================================================
+BLOCK 5154
+- Instructions:
+  test   $0x100,%edx
+  je     1430 <func0+0x80>
+
+- Edges:
+  NO_JUMP -> 5162
+  JUMP -> 5168
+
+============================================================
+BLOCK 5162
+- Instructions:
+  mov    $0x1,%r13d
+
+- Edges:
+  NO_JUMP -> 5168
+
+============================================================
+BLOCK 5168
+- Instructions:
+  test   $0x200,%edx
+  je     143d <func0+0x8d>
+
+- Edges:
+  NO_JUMP -> 5176
+  JUMP -> 5181
+
+============================================================
+BLOCK 5176
+- Instructions:
+  mov    $0x1,%ebx
+
+- Edges:
+  NO_JUMP -> 5181
+
+============================================================
+BLOCK 5181
+- Instructions:
+  lea    (%rbx,%r13,1),%edx
+  cmp    $0x2,%edx
+  je     145e <func0+0xae>
+
+- Edges:
+  NO_JUMP -> 5190
+  JUMP -> 5214
+
+============================================================
+BLOCK 5190
+- Instructions:
+  movzbl 0x0(%rbp),%r14d
+  inc    %rbp
+  test   %r14b,%r14b
+  jne    1410 <func0+0x60>
+
+- Edges:
+  NO_JUMP -> 5203
+  JUMP -> 5136
+
+============================================================
+BLOCK 5203
+- Instructions:
+  jmp    13e0 <func0+0x30>
+
+- Edges:
+  JUMP -> 5088
+
+============================================================
+BLOCK 5205
+- Instructions:
+  xor    %eax,%eax
+  jmp    145e <func0+0xae>
+
+- Edges:
+  JUMP -> 5214
+
+============================================================
+BLOCK 5209
+- Instructions:
+  mov    $0x1,%eax
+
+- Edges:
+  NO_JUMP -> 5214
+
+============================================================
+BLOCK 5214
+- Instructions:
+  add    $0x8,%rsp
+  pop    %rbx
+  pop    %r12
+  pop    %r13
+  pop    %r14
+  pop    %r15
+  pop    %rbp
+  ret
+
+- Edges: (none)

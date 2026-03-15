@@ -1,0 +1,28 @@
+Function: func0
+Basic blocks: 1
+
+============================================================
+BLOCK 0
+- Instructions:
+  movl	%edi, %ecx
+  negl	%ecx
+  cmovsl	%edi, %ecx
+  movl	$3435973837, %edx
+  movq	%rcx, %rax
+  imulq	%rdx, %rax
+  shrq	$35, %rax
+  addl	%eax, %eax
+  leal	(%rax,%rax,4), %eax
+  subl	%eax, %ecx
+  movl	%esi, %eax
+  negl	%eax
+  cmovsl	%esi, %eax
+  imulq	%rax, %rdx
+  shrq	$35, %rdx
+  addl	%edx, %edx
+  leal	(%rdx,%rdx,4), %edx
+  subl	%edx, %eax
+  imull	%ecx, %eax
+  retq
+
+- Edges: (none)

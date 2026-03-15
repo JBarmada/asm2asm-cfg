@@ -1,0 +1,104 @@
+Function: func0
+Basic blocks: 7
+
+============================================================
+BLOCK 5168
+- Instructions:
+  push   %r14
+  push   %rbx
+  push   %rax
+  mov    %rdi,%r14
+  call   1030 <strlen@plt>
+  test   %rax,%rax
+  je     14b3 <func0+0x83>
+
+- Edges:
+  NO_JUMP -> 5185
+  JUMP -> 5299
+
+============================================================
+BLOCK 5185
+- Instructions:
+  movzbl (%r14),%edx
+  xor    %ecx,%ecx
+  cmp    $0x5b,%dl
+  sete   %cl
+  xor    %esi,%esi
+  cmp    $0x5d,%dl
+  sete   %sil
+  sub    %esi,%ecx
+  xor    %r8d,%r8d
+  test   %ecx,%ecx
+  cmovle %r8d,%ecx
+  mov    $0x1,%edi
+  mov    %ecx,%esi
+  nopl   0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5232
+
+============================================================
+BLOCK 5232
+- Instructions:
+  mov    %rdi,%rdx
+  cmp    %rdi,%rax
+  je     14a9 <func0+0x79>
+
+- Edges:
+  NO_JUMP -> 5240
+  JUMP -> 5289
+
+============================================================
+BLOCK 5240
+- Instructions:
+  movzbl (%r14,%rdx,1),%ebx
+  xor    %edi,%edi
+  cmp    $0x5b,%bl
+  sete   %dil
+  add    %edi,%esi
+  xor    %edi,%edi
+  cmp    $0x5d,%bl
+  sete   %dil
+  sub    %edi,%esi
+  test   %esi,%esi
+  cmovle %r8d,%esi
+  cmp    %ecx,%esi
+  cmovg  %esi,%ecx
+  lea    -0x2(%rcx),%ebx
+  lea    0x1(%rdx),%rdi
+  cmp    %ebx,%esi
+  jg     1470 <func0+0x40>
+
+- Edges:
+  NO_JUMP -> 5289
+  JUMP -> 5232
+
+============================================================
+BLOCK 5289
+- Instructions:
+  xor    %ecx,%ecx
+  cmp    %rdx,%rax
+  seta   %cl
+  jmp    14b5 <func0+0x85>
+
+- Edges:
+  JUMP -> 5301
+
+============================================================
+BLOCK 5299
+- Instructions:
+  xor    %ecx,%ecx
+
+- Edges:
+  NO_JUMP -> 5301
+
+============================================================
+BLOCK 5301
+- Instructions:
+  mov    %ecx,%eax
+  add    $0x8,%rsp
+  pop    %rbx
+  pop    %r14
+  ret
+
+- Edges: (none)

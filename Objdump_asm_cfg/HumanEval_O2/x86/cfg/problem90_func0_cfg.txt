@@ -1,0 +1,65 @@
+Function: func0
+Basic blocks: 5
+
+============================================================
+BLOCK 5040
+- Instructions:
+  movzbl (%rdi),%ecx
+  test   %cl,%cl
+  je     13fc <func0+0x4c>
+
+- Edges:
+  NO_JUMP -> 5047
+  JUMP -> 5116
+
+============================================================
+BLOCK 5047
+- Instructions:
+  xor    %r8d,%r8d
+  nopw   0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5056
+
+============================================================
+BLOCK 5056
+- Instructions:
+  movsbl %cl,%ecx
+  add    $0xffffffa3,%ecx
+  imul   $0x4ec5,%ecx,%edx
+  mov    %edx,%eax
+  shr    $0x1f,%eax
+  shr    $0x13,%edx
+  add    %eax,%edx
+  lea    (%rdx,%rdx,4),%eax
+  lea    (%rax,%rax,4),%eax
+  add    %edx,%eax
+  sub    %eax,%ecx
+  add    $0x61,%cl
+  mov    %cl,(%rsi,%r8,1)
+  movzbl 0x1(%rdi,%r8,1),%ecx
+  inc    %r8
+  test   %cl,%cl
+  jne    13c0 <func0+0x10>
+
+- Edges:
+  NO_JUMP -> 5108
+  JUMP -> 5056
+
+============================================================
+BLOCK 5108
+- Instructions:
+  mov    %r8d,%eax
+  movb   $0x0,(%rsi,%rax,1)
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 5116
+- Instructions:
+  xor    %eax,%eax
+  movb   $0x0,(%rsi,%rax,1)
+  ret
+
+- Edges: (none)

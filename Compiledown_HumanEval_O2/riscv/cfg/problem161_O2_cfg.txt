@@ -1,0 +1,565 @@
+Function: func0
+Basic blocks: 46
+
+============================================================
+BLOCK 0
+- Instructions:
+  addi	sp, sp, -96
+  sd	ra, 88(sp)
+  sd	s0, 80(sp)
+  sd	s1, 72(sp)
+  sd	s2, 64(sp)
+  sd	s3, 56(sp)
+  sd	s4, 48(sp)
+  sd	s5, 40(sp)
+  sd	s6, 32(sp)
+  sd	s7, 24(sp)
+  sd	s8, 16(sp)
+  sd	s9, 8(sp)
+  mv	s1, a3
+  mv	s3, a2
+  mv	s4, a1
+  mv	s2, a0
+  slli	s5, a3, 2
+  mv	a0, s5
+  call	malloc@plt
+  mv	s6, a0
+  mv	a0, s5
+  call	malloc@plt
+  mv	s9, a0
+  blez	s1, .LBB0_3
+
+- Edges:
+  NO_JUMP -> 96
+  JUMP -> 136
+
+============================================================
+BLOCK 96
+- Instructions:
+  mv	a0, s6
+  mv	a1, s4
+  mv	a2, s5
+  call	memcpy@plt
+  li	a0, 0
+  mv	a1, s9
+
+- Edges:
+  NO_JUMP -> 120
+
+============================================================
+BLOCK 120
+- Instructions:
+  sw	a0, 0(a1)
+  addi	a0, a0, 1
+  addi	a1, a1, 4
+  bne	s1, a0, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 136
+  JUMP -> 120
+
+============================================================
+BLOCK 136
+- Instructions:
+  blez	s3, .LBB0_43
+
+- Edges:
+  NO_JUMP -> 140
+  JUMP -> 796
+
+============================================================
+BLOCK 140
+- Instructions:
+  li	s5, 0
+  auipc	s4, %pcrel_hi(.L.str)
+  addi	s4, s4, %pcrel_lo(.LBB0_44)
+  j	.LBB0_6
+
+- Edges:
+  JUMP -> 208
+
+============================================================
+BLOCK 156
+- Instructions:
+  slli	a1, s1, 2
+  add	s7, s6, a1
+  lw	a1, 0(s7)
+  slli	a0, a0, 2
+  add	a0, a0, s6
+  lw	a0, 0(a0)
+  fcvt.d.w	fa0, a1
+  fcvt.d.w	fa1, a0
+  call	pow@plt
+  fcvt.w.d	a0, fa0, rtz
+  sw	a0, 0(s7)
+  sw	s1, 0(s0)
+  beq	s5, s3, .LBB0_14
+
+- Edges:
+  NO_JUMP -> 208
+  JUMP -> 336
+
+============================================================
+BLOCK 208
+- Instructions:
+  slli	a0, s5, 3
+  add	a0, a0, s2
+  ld	a0, 0(a0)
+  mv	a1, s4
+  call	strcmp@plt
+  beqz	a0, .LBB0_8
+
+- Edges:
+  NO_JUMP -> 232
+  JUMP -> 244
+
+============================================================
+BLOCK 232
+- Instructions:
+  addi	s5, s5, 1
+  bne	s5, s3, .LBB0_6
+
+- Edges:
+  NO_JUMP -> 240
+  JUMP -> 208
+
+============================================================
+BLOCK 240
+- Instructions:
+  j	.LBB0_14
+
+- Edges:
+  JUMP -> 336
+
+============================================================
+BLOCK 244
+- Instructions:
+  slli	a0, s5, 2
+  add	a0, a0, s9
+  lw	s1, 0(a0)
+  slli	a1, s1, 2
+
+- Edges:
+  NO_JUMP -> 260
+
+============================================================
+BLOCK 260
+- Instructions:
+  add	a1, a1, s9
+  lw	a1, 0(a1)
+  beq	a1, s1, .LBB0_11
+
+- Edges:
+  NO_JUMP -> 272
+  JUMP -> 288
+
+============================================================
+BLOCK 272
+- Instructions:
+  mv	s1, a1
+  sw	a1, 0(a0)
+  slli	a1, a1, 2
+  j	.LBB0_9
+
+- Edges:
+  JUMP -> 260
+
+============================================================
+BLOCK 288
+- Instructions:
+  addi	s5, s5, 1
+  slli	a0, s5, 2
+  add	s0, s9, a0
+  lw	a0, 0(s0)
+  slli	a1, a0, 2
+
+- Edges:
+  NO_JUMP -> 308
+
+============================================================
+BLOCK 308
+- Instructions:
+  add	a1, a1, s9
+  lw	a1, 0(a1)
+  beq	a1, a0, .LBB0_5
+
+- Edges:
+  NO_JUMP -> 320
+  JUMP -> 156
+
+============================================================
+BLOCK 320
+- Instructions:
+  mv	a0, a1
+  sw	a1, 0(s0)
+  slli	a1, a1, 2
+  j	.LBB0_12
+
+- Edges:
+  JUMP -> 308
+
+============================================================
+BLOCK 336
+- Instructions:
+  blez	s3, .LBB0_43
+
+- Edges:
+  NO_JUMP -> 340
+  JUMP -> 796
+
+============================================================
+BLOCK 340
+- Instructions:
+  li	s8, 0
+  auipc	s4, %pcrel_hi(.L.str.1)
+  addi	s4, s4, %pcrel_lo(.LBB0_45)
+  auipc	s5, %pcrel_hi(.L.str.2)
+  addi	s5, s5, %pcrel_lo(.LBB0_46)
+  j	.LBB0_17
+
+- Edges:
+  JUMP -> 372
+
+============================================================
+BLOCK 364
+- Instructions:
+  addi	s8, s8, 1
+  beq	s8, s3, .LBB0_29
+
+- Edges:
+  NO_JUMP -> 372
+  JUMP -> 564
+
+============================================================
+BLOCK 372
+- Instructions:
+  slli	a0, s8, 3
+  add	a0, a0, s2
+  ld	s1, 0(a0)
+  mv	a0, s1
+  mv	a1, s4
+  call	strcmp@plt
+  mv	s7, a0
+  beqz	a0, .LBB0_19
+
+- Edges:
+  NO_JUMP -> 404
+  JUMP -> 420
+
+============================================================
+BLOCK 404
+- Instructions:
+  mv	a0, s1
+  mv	a1, s5
+  call	strcmp@plt
+  bnez	a0, .LBB0_16
+
+- Edges:
+  NO_JUMP -> 420
+  JUMP -> 364
+
+============================================================
+BLOCK 420
+- Instructions:
+  slli	a0, s8, 2
+  add	a1, s9, a0
+  lw	a0, 0(a1)
+  slli	a2, a0, 2
+
+- Edges:
+  NO_JUMP -> 436
+
+============================================================
+BLOCK 436
+- Instructions:
+  add	a2, a2, s9
+  lw	a2, 0(a2)
+  beq	a2, a0, .LBB0_22
+
+- Edges:
+  NO_JUMP -> 448
+  JUMP -> 464
+
+============================================================
+BLOCK 448
+- Instructions:
+  mv	a0, a2
+  sw	a2, 0(a1)
+  slli	a2, a2, 2
+  j	.LBB0_20
+
+- Edges:
+  JUMP -> 436
+
+============================================================
+BLOCK 464
+- Instructions:
+  addi	s8, s8, 1
+  slli	a1, s8, 2
+  add	a1, a1, s9
+  lw	a2, 0(a1)
+  slli	a3, a2, 2
+
+- Edges:
+  NO_JUMP -> 484
+
+============================================================
+BLOCK 484
+- Instructions:
+  add	a3, a3, s9
+  lw	a3, 0(a3)
+  beq	a3, a2, .LBB0_25
+
+- Edges:
+  NO_JUMP -> 496
+  JUMP -> 512
+
+============================================================
+BLOCK 496
+- Instructions:
+  mv	a2, a3
+  sw	a3, 0(a1)
+  slli	a3, a3, 2
+  j	.LBB0_23
+
+- Edges:
+  JUMP -> 484
+
+============================================================
+BLOCK 512
+- Instructions:
+  slli	a2, a2, 2
+  add	a2, a2, s6
+  lw	a3, 0(a2)
+  slli	a2, a0, 2
+  add	a2, a2, s6
+  lw	a4, 0(a2)
+  beqz	s7, .LBB0_27
+
+- Edges:
+  NO_JUMP -> 540
+  JUMP -> 548
+
+============================================================
+BLOCK 540
+- Instructions:
+  divw	a3, a4, a3
+  j	.LBB0_28
+
+- Edges:
+  JUMP -> 552
+
+============================================================
+BLOCK 548
+- Instructions:
+  mulw	a3, a4, a3
+
+- Edges:
+  NO_JUMP -> 552
+
+============================================================
+BLOCK 552
+- Instructions:
+  sw	a3, 0(a2)
+  sw	a0, 0(a1)
+  bne	s8, s3, .LBB0_17
+
+- Edges:
+  NO_JUMP -> 564
+  JUMP -> 372
+
+============================================================
+BLOCK 564
+- Instructions:
+  blez	s3, .LBB0_43
+
+- Edges:
+  NO_JUMP -> 568
+  JUMP -> 796
+
+============================================================
+BLOCK 568
+- Instructions:
+  li	s8, 0
+  auipc	s4, %pcrel_hi(.L.str.3)
+  addi	s4, s4, %pcrel_lo(.LBB0_47)
+  auipc	s5, %pcrel_hi(.L.str.4)
+  addi	s5, s5, %pcrel_lo(.LBB0_48)
+  j	.LBB0_32
+
+- Edges:
+  JUMP -> 620
+
+============================================================
+BLOCK 592
+- Instructions:
+  slli	a3, a0, 2
+  add	a3, a3, s6
+  lw	a4, 0(a3)
+  addw	a2, a2, a4
+  sw	a2, 0(a3)
+  sw	a0, 0(a1)
+  beq	s8, s3, .LBB0_43
+
+- Edges:
+  NO_JUMP -> 620
+  JUMP -> 796
+
+============================================================
+BLOCK 620
+- Instructions:
+  slli	a0, s8, 3
+  add	a0, a0, s2
+  ld	s1, 0(a0)
+  mv	a0, s1
+  mv	a1, s4
+  call	strcmp@plt
+  mv	s7, a0
+  beqz	a0, .LBB0_35
+
+- Edges:
+  NO_JUMP -> 652
+  JUMP -> 680
+
+============================================================
+BLOCK 652
+- Instructions:
+  mv	a0, s1
+  mv	a1, s5
+  call	strcmp@plt
+  beqz	a0, .LBB0_35
+
+- Edges:
+  NO_JUMP -> 668
+  JUMP -> 680
+
+============================================================
+BLOCK 668
+- Instructions:
+  addi	s8, s8, 1
+  bne	s8, s3, .LBB0_32
+
+- Edges:
+  NO_JUMP -> 676
+  JUMP -> 620
+
+============================================================
+BLOCK 676
+- Instructions:
+  j	.LBB0_43
+
+- Edges:
+  JUMP -> 796
+
+============================================================
+BLOCK 680
+- Instructions:
+  slli	a0, s8, 2
+  add	a1, s9, a0
+  lw	a0, 0(a1)
+  slli	a2, a0, 2
+
+- Edges:
+  NO_JUMP -> 696
+
+============================================================
+BLOCK 696
+- Instructions:
+  add	a2, a2, s9
+  lw	a2, 0(a2)
+  beq	a2, a0, .LBB0_38
+
+- Edges:
+  NO_JUMP -> 708
+  JUMP -> 724
+
+============================================================
+BLOCK 708
+- Instructions:
+  mv	a0, a2
+  sw	a2, 0(a1)
+  slli	a2, a2, 2
+  j	.LBB0_36
+
+- Edges:
+  JUMP -> 696
+
+============================================================
+BLOCK 724
+- Instructions:
+  addi	s8, s8, 1
+  slli	a1, s8, 2
+  add	a1, a1, s9
+  lw	a2, 0(a1)
+  slli	a3, a2, 2
+
+- Edges:
+  NO_JUMP -> 744
+
+============================================================
+BLOCK 744
+- Instructions:
+  add	a3, a3, s9
+  lw	a3, 0(a3)
+  beq	a3, a2, .LBB0_41
+
+- Edges:
+  NO_JUMP -> 756
+  JUMP -> 772
+
+============================================================
+BLOCK 756
+- Instructions:
+  mv	a2, a3
+  sw	a3, 0(a1)
+  slli	a3, a3, 2
+  j	.LBB0_39
+
+- Edges:
+  JUMP -> 744
+
+============================================================
+BLOCK 772
+- Instructions:
+  slli	a2, a2, 2
+  add	a2, a2, s6
+  lw	a2, 0(a2)
+  beqz	s7, .LBB0_31
+
+- Edges:
+  NO_JUMP -> 788
+  JUMP -> 592
+
+============================================================
+BLOCK 788
+- Instructions:
+  neg	a2, a2
+  j	.LBB0_31
+
+- Edges:
+  JUMP -> 592
+
+============================================================
+BLOCK 796
+- Instructions:
+  lw	s1, 0(s6)
+  mv	a0, s6
+  call	free@plt
+  mv	a0, s9
+  call	free@plt
+  mv	a0, s1
+  ld	ra, 88(sp)
+  ld	s0, 80(sp)
+  ld	s1, 72(sp)
+  ld	s2, 64(sp)
+  ld	s3, 56(sp)
+  ld	s4, 48(sp)
+  ld	s5, 40(sp)
+  ld	s6, 32(sp)
+  ld	s7, 24(sp)
+  ld	s8, 16(sp)
+  ld	s9, 8(sp)
+  addi	sp, sp, 96
+  ret
+
+- Edges: (none)

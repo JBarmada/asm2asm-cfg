@@ -1,0 +1,263 @@
+Function: _func0
+Basic blocks: 21
+
+============================================================
+BLOCK 0
+- Instructions:
+  sub	sp, sp, #64
+  stp	x29, x30, [sp, #48]
+  add	x29, sp, #48
+  adrp	x8, ___stack_chk_guard
+  ldr	x8, [x8, ___stack_chk_guard
+  ldr	x8, [x8]
+  stur	x8, [x29, #-8]
+  cmp	w0, #1
+  b.lt	LBB0_6
+
+- Edges:
+  NO_JUMP -> 36
+  JUMP -> 120
+
+============================================================
+BLOCK 36
+- Instructions:
+  mov	x12, #0
+  mov	w10, #1
+  add	x8, sp, #7
+
+- Edges:
+  NO_JUMP -> 48
+
+============================================================
+BLOCK 48
+- Instructions:
+  mov	x9, x10
+  sdiv	w11, w0, w1
+  msub	w10, w11, w1, w0
+  add	w10, w10, #48
+  strb	w10, [x8, x12]
+  add	x12, x12, #1
+  add	w10, w9, #1
+  mov	x0, x11
+  cmp	w11, #0
+  b.gt	LBB0_2
+
+- Edges:
+  NO_JUMP -> 88
+  JUMP -> 48
+
+============================================================
+BLOCK 88
+- Instructions:
+  cmp	w12, #1
+  b.lt	LBB0_6
+
+- Edges:
+  NO_JUMP -> 96
+  JUMP -> 120
+
+============================================================
+BLOCK 96
+- Instructions:
+  and	x8, x12, #0x7fffffff
+  cmp	x8, #8
+  b.hs	LBB0_7
+
+- Edges:
+  NO_JUMP -> 108
+  JUMP -> 128
+
+============================================================
+BLOCK 108
+- Instructions:
+  mov	x11, #0
+  mov	x10, x8
+  b	LBB0_16
+
+- Edges:
+  JUMP -> 332
+
+============================================================
+BLOCK 120
+- Instructions:
+  mov	x8, #0
+  b	LBB0_18
+
+- Edges:
+  JUMP -> 372
+
+============================================================
+BLOCK 128
+- Instructions:
+  cmp	x8, #64
+  b.hs	LBB0_9
+
+- Edges:
+  NO_JUMP -> 136
+  JUMP -> 144
+
+============================================================
+BLOCK 136
+- Instructions:
+  mov	x11, #0
+  b	LBB0_13
+
+- Edges:
+  JUMP -> 256
+
+============================================================
+BLOCK 144
+- Instructions:
+  and	x10, x12, #0x3f
+  sub	x11, x8, x10
+  mov	x13, x9
+  and	x15, x13, #0x7fffffff
+  and	x13, x13, #0x3f
+  sub	x13, x15, x13
+  add	x14, x2, #32
+  add	x16, sp, #7
+  add	x15, x16, x15
+  sub	x15, x15, #32
+
+- Edges:
+  NO_JUMP -> 184
+
+============================================================
+BLOCK 184
+- Instructions:
+  ldp	q1, q0, [x15]
+  rev64.16b	v0, v0
+  ext.16b	v0, v0, v0, #8
+  rev64.16b	v1, v1
+  ext.16b	v1, v1, v1, #8
+  ldp	q3, q2, [x15, #-32]
+  rev64.16b	v2, v2
+  ext.16b	v2, v2, v2, #8
+  rev64.16b	v3, v3
+  ext.16b	v3, v3, v3, #8
+  stp	q0, q1, [x14, #-32]
+  stp	q2, q3, [x14], #64
+  sub	x15, x15, #64
+  sub	x13, x13, #64
+  cbnz	x13, LBB0_10
+
+- Edges:
+  NO_JUMP -> 244
+  JUMP -> 184
+
+============================================================
+BLOCK 244
+- Instructions:
+  cbz	x10, LBB0_18
+
+- Edges:
+  NO_JUMP -> 248
+  JUMP -> 372
+
+============================================================
+BLOCK 248
+- Instructions:
+  cmp	x10, #7
+  b.ls	LBB0_16
+
+- Edges:
+  NO_JUMP -> 256
+  JUMP -> 332
+
+============================================================
+BLOCK 256
+- Instructions:
+  mov	x14, x11
+  and	x10, x12, #0x7
+  add	x12, x2, x11
+  sub	x11, x8, x10
+  add	x13, sp, #7
+  mov	x15, x9
+  and	x16, x15, #0x7fffffff
+  sub	x13, x13, x14
+  add	x13, x13, x16
+  sub	x13, x13, #8
+  and	x15, x15, #0x7
+  add	x14, x14, x15
+  sub	x14, x14, x16
+
+- Edges:
+  NO_JUMP -> 308
+
+============================================================
+BLOCK 308
+- Instructions:
+  ldr	d0, [x13], #-8
+  rev64.8b	v0, v0
+  str	d0, [x12], #8
+  adds	x14, x14, #8
+  b.ne	LBB0_14
+
+- Edges:
+  NO_JUMP -> 328
+  JUMP -> 308
+
+============================================================
+BLOCK 328
+- Instructions:
+  cbz	x10, LBB0_18
+
+- Edges:
+  NO_JUMP -> 332
+  JUMP -> 372
+
+============================================================
+BLOCK 332
+- Instructions:
+  add	x12, sp, #7
+  add	x10, x10, x12
+  sub	x10, x10, #1
+  add	x12, x2, x11
+  and	x9, x9, #0x7fffffff
+  sub	x9, x9, x11
+
+- Edges:
+  NO_JUMP -> 356
+
+============================================================
+BLOCK 356
+- Instructions:
+  ldrb	w11, [x10], #-1
+  strb	w11, [x12], #1
+  subs	x9, x9, #1
+  b.ne	LBB0_17
+
+- Edges:
+  NO_JUMP -> 372
+  JUMP -> 356
+
+============================================================
+BLOCK 372
+- Instructions:
+  strb	wzr, [x2, x8]
+  ldur	x8, [x29, #-8]
+  adrp	x9, ___stack_chk_guard
+  ldr	x9, [x9, ___stack_chk_guard
+  ldr	x9, [x9]
+  cmp	x9, x8
+  b.ne	LBB0_20
+
+- Edges:
+  NO_JUMP -> 400
+  JUMP -> 412
+
+============================================================
+BLOCK 400
+- Instructions:
+  ldp	x29, x30, [sp, #48]
+  add	sp, sp, #64
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 412
+- Instructions:
+  bl	___stack_chk_fail
+
+- Edges: (none)

@@ -1,0 +1,116 @@
+Function: func0
+Basic blocks: 9
+
+============================================================
+BLOCK 2564
+- Instructions:
+  add	sp,sp,-64
+  sd	ra,56(sp)
+  sd	s0,48(sp)
+  sd	s1,40(sp)
+  sd	s2,32(sp)
+  sd	s3,24(sp)
+  sd	s4,16(sp)
+  sd	s5,8(sp)
+  sd	s6,0(sp)
+  mv	s2,a3
+  mv	s3,a2
+  mv	s0,a1
+  mv	s1,a0
+  mv	a0,a2
+  jal	7c0 <strlen@plt>
+
+- Edges:
+  JUMP -> 1984
+
+============================================================
+BLOCK 2596
+- Instructions:
+  mv	s5,a0
+  sll	a0,s0,0x3
+  jal	7b0 <malloc@plt>
+
+- Edges:
+  JUMP -> 1968
+
+============================================================
+BLOCK 2606
+- Instructions:
+  sd	a0,0(s2)
+  li	s4,0
+  blez	s0,a64 <func0+0x60>
+
+- Edges:
+  NO_JUMP -> 2616
+  JUMP -> 2660
+
+============================================================
+BLOCK 2616
+- Instructions:
+  sext.w	s5,s5
+  j	a42 <func0+0x3e>
+
+- Edges:
+  JUMP -> 2626
+
+============================================================
+BLOCK 2620
+- Instructions:
+  add	s0,s0,-1
+  add	s1,s1,8
+  beqz	s0,a64 <func0+0x60>
+
+- Edges:
+  NO_JUMP -> 2626
+  JUMP -> 2660
+
+============================================================
+BLOCK 2626
+- Instructions:
+  ld	s6,0(s1)
+  mv	a0,s6
+  mv	a1,s3
+  mv	a2,s5
+  jal	7e0 <strncmp@plt>
+
+- Edges:
+  JUMP -> 2016
+
+============================================================
+BLOCK 2640
+- Instructions:
+  bnez	a0,a3c <func0+0x38>
+
+- Edges:
+  NO_JUMP -> 2642
+  JUMP -> 2620
+
+============================================================
+BLOCK 2642
+- Instructions:
+  ld	a0,0(s2)
+  sll	a1,s4,0x3
+  addw	s4,s4,1
+  add	a0,a0,a1
+  sd	s6,0(a0)
+  j	a3c <func0+0x38>
+
+- Edges:
+  JUMP -> 2620
+
+============================================================
+BLOCK 2660
+- Instructions:
+  mv	a0,s4
+  ld	ra,56(sp)
+  ld	s0,48(sp)
+  ld	s1,40(sp)
+  ld	s2,32(sp)
+  ld	s3,24(sp)
+  ld	s4,16(sp)
+  ld	s5,8(sp)
+  ld	s6,0(sp)
+  add	sp,sp,64
+  ret
+
+- Edges: (none)

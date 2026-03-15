@@ -1,0 +1,126 @@
+Function: _func0
+Basic blocks: 11
+
+============================================================
+BLOCK 0
+- Instructions:
+  ldr	s1, [x0]
+  str	s1, [x2]
+  ldr	s0, [x0, #4]
+  str	s0, [x2, #4]
+  cmp	w1, #1
+  b.lt	LBB0_8
+
+- Edges:
+  NO_JUMP -> 24
+  JUMP -> 152
+
+============================================================
+BLOCK 24
+- Instructions:
+  mov	x11, #0
+  mov	w8, w1
+  add	x9, x0, #4
+  sub	x10, x8, #1
+  mov	w12, #2139095039
+  fmov	s2, w12
+  b	LBB0_3
+
+- Edges:
+  JUMP -> 72
+
+============================================================
+BLOCK 52
+- Instructions:
+  add	x9, x9, #4
+  sub	x10, x10, #1
+  mov	x11, x12
+  cmp	x12, x8
+  b.eq	LBB0_8
+
+- Edges:
+  NO_JUMP -> 72
+  JUMP -> 152
+
+============================================================
+BLOCK 72
+- Instructions:
+  add	x12, x11, #1
+  cmp	x12, x8
+  b.hs	LBB0_2
+
+- Edges:
+  NO_JUMP -> 84
+  JUMP -> 52
+
+============================================================
+BLOCK 84
+- Instructions:
+  mov	x13, x10
+  mov	x14, x9
+  b	LBB0_6
+
+- Edges:
+  JUMP -> 108
+
+============================================================
+BLOCK 96
+- Instructions:
+  add	x14, x14, #4
+  subs	x13, x13, #1
+  b.eq	LBB0_2
+
+- Edges:
+  NO_JUMP -> 108
+  JUMP -> 52
+
+============================================================
+BLOCK 108
+- Instructions:
+  ldr	s3, [x0, x11, lsl #2]
+  ldr	s4, [x14]
+  fabd	s4, s3, s4
+  fcmp	s4, s2
+  b.pl	LBB0_5
+
+- Edges:
+  NO_JUMP -> 128
+  JUMP -> 96
+
+============================================================
+BLOCK 128
+- Instructions:
+  str	s3, [x2]
+  ldr	s0, [x14]
+  str	s0, [x2, #4]
+  fmov	s1, s3
+  fmov	s2, s4
+  b	LBB0_5
+
+- Edges:
+  JUMP -> 96
+
+============================================================
+BLOCK 152
+- Instructions:
+  fcmp	s1, s0
+  b.le	LBB0_10
+
+- Edges:
+  NO_JUMP -> 160
+  JUMP -> 164
+
+============================================================
+BLOCK 160
+- Instructions:
+  stp	s0, s1, [x2]
+
+- Edges:
+  NO_JUMP -> 164
+
+============================================================
+BLOCK 164
+- Instructions:
+  ret
+
+- Edges: (none)

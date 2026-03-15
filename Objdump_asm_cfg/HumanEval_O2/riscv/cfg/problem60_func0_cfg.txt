@@ -1,0 +1,78 @@
+Function: func0
+Basic blocks: 7
+
+============================================================
+BLOCK 1952
+- Instructions:
+  li	a1,4
+  bge	a0,a1,7aa <func0+0xa>
+
+- Edges:
+  NO_JUMP -> 1958
+  JUMP -> 1962
+
+============================================================
+BLOCK 1958
+- Instructions:
+  sext.w	a0,a0
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 1962
+- Instructions:
+  li	a1,2
+  j	7bc <func0+0x1c>
+
+- Edges:
+  JUMP -> 1980
+
+============================================================
+BLOCK 1966
+- Instructions:
+  addw	a1,a1,1
+  mulw	a2,a1,a1
+  sext.w	a3,a0
+  blt	a3,a2,7a6 <func0+0x6>
+
+- Edges:
+  NO_JUMP -> 1980
+  JUMP -> 1958
+
+============================================================
+BLOCK 1980
+- Instructions:
+  remw	a2,a0,a1
+  sext.w	a3,a0
+  snez	a2,a2
+  slt	a3,a1,a3
+  xor	a3,a3,1
+  or	a2,a2,a3
+  bnez	a2,7ae <func0+0xe>
+
+- Edges:
+  NO_JUMP -> 2004
+  JUMP -> 1966
+
+============================================================
+BLOCK 2004
+- Instructions:
+  divw	a0,a0,a1
+  remw	a2,a0,a1
+  seqz	a2,a2
+  slt	a3,a1,a0
+  and	a2,a2,a3
+  bnez	a2,7d4 <func0+0x34>
+
+- Edges:
+  NO_JUMP -> 2024
+  JUMP -> 2004
+
+============================================================
+BLOCK 2024
+- Instructions:
+  j	7ae <func0+0xe>
+
+- Edges:
+  JUMP -> 1966

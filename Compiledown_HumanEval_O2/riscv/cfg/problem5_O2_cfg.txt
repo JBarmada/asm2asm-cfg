@@ -1,0 +1,93 @@
+Function: func0
+Basic blocks: 9
+
+============================================================
+BLOCK 0
+- Instructions:
+  blez	a1, .LBB0_7
+
+- Edges:
+  NO_JUMP -> 4
+  JUMP -> 88
+
+============================================================
+BLOCK 4
+- Instructions:
+  fmv.w.x	ft1, zero
+  mv	a2, a1
+  mv	a3, a0
+
+- Edges:
+  NO_JUMP -> 16
+
+============================================================
+BLOCK 16
+- Instructions:
+  flw	ft0, 0(a3)
+  fadd.s	ft1, ft1, ft0
+  addi	a2, a2, -1
+  addi	a3, a3, 4
+  bnez	a2, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 36
+  JUMP -> 16
+
+============================================================
+BLOCK 36
+- Instructions:
+  fcvt.s.w	ft0, a1
+  blez	a1, .LBB0_8
+
+- Edges:
+  NO_JUMP -> 44
+  JUMP -> 92
+
+============================================================
+BLOCK 44
+- Instructions:
+  fdiv.s	ft2, ft1, ft0
+  fmv.w.x	ft1, zero
+
+- Edges:
+  NO_JUMP -> 52
+
+============================================================
+BLOCK 52
+- Instructions:
+  flw	ft3, 0(a0)
+  fsub.s	ft3, ft3, ft2
+  fabs.s	ft3, ft3
+  fadd.s	ft1, ft1, ft3
+  addi	a1, a1, -1
+  addi	a0, a0, 4
+  bnez	a1, .LBB0_5
+
+- Edges:
+  NO_JUMP -> 80
+  JUMP -> 52
+
+============================================================
+BLOCK 80
+- Instructions:
+  fdiv.s	fa0, ft1, ft0
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 88
+- Instructions:
+  fcvt.s.w	ft0, a1
+
+- Edges:
+  NO_JUMP -> 92
+
+============================================================
+BLOCK 92
+- Instructions:
+  fmv.w.x	ft1, zero
+  fdiv.s	fa0, ft1, ft0
+  ret
+
+- Edges: (none)

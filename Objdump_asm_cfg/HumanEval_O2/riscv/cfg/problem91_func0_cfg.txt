@@ -1,0 +1,105 @@
+Function: func0
+Basic blocks: 10
+
+============================================================
+BLOCK 2084
+- Instructions:
+  li	a3,2
+  li	a2,-1
+  blt	a1,a3,86e <func0+0x4a>
+
+- Edges:
+  NO_JUMP -> 2092
+  JUMP -> 2158
+
+============================================================
+BLOCK 2092
+- Instructions:
+  lui	a2,0x80000
+  addw	a6,a2,-1 # 7fffffff <__global_pointer$+0x7fffd7ff>
+  mv	a2,a6
+  j	83e <func0+0x1a>
+
+- Edges:
+  JUMP -> 2110
+
+============================================================
+BLOCK 2104
+- Instructions:
+  add	a1,a1,-1
+  add	a0,a0,4
+  beqz	a1,860 <func0+0x3c>
+
+- Edges:
+  NO_JUMP -> 2110
+  JUMP -> 2144
+
+============================================================
+BLOCK 2110
+- Instructions:
+  lw	a4,0(a0)
+  slt	a5,a4,a6
+  xor	a5,a5,1
+  xor	a3,a4,a2
+  seqz	a3,a3
+  or	a3,a3,a5
+  bnez	a3,856 <func0+0x32>
+
+- Edges:
+  NO_JUMP -> 2132
+  JUMP -> 2134
+
+============================================================
+BLOCK 2132
+- Instructions:
+  mv	a6,a4
+
+- Edges:
+  NO_JUMP -> 2134
+
+============================================================
+BLOCK 2134
+- Instructions:
+  bge	a4,a2,838 <func0+0x14>
+
+- Edges:
+  NO_JUMP -> 2138
+  JUMP -> 2104
+
+============================================================
+BLOCK 2138
+- Instructions:
+  mv	a6,a2
+  mv	a2,a4
+  j	838 <func0+0x14>
+
+- Edges:
+  JUMP -> 2104
+
+============================================================
+BLOCK 2144
+- Instructions:
+  lui	a0,0x80000
+  addw	a0,a0,-1 # 7fffffff <__global_pointer$+0x7fffd7ff>
+  li	a2,-1
+  beq	a6,a0,86e <func0+0x4a>
+
+- Edges:
+  NO_JUMP -> 2156
+  JUMP -> 2158
+
+============================================================
+BLOCK 2156
+- Instructions:
+  mv	a2,a6
+
+- Edges:
+  NO_JUMP -> 2158
+
+============================================================
+BLOCK 2158
+- Instructions:
+  mv	a0,a2
+  ret
+
+- Edges: (none)

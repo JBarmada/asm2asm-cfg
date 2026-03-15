@@ -1,0 +1,86 @@
+Function: func0
+Basic blocks: 8
+
+============================================================
+BLOCK 0
+- Instructions:
+  li	a6, 0
+  blez	a1, .LBB0_3
+
+- Edges:
+  NO_JUMP -> 8
+  JUMP -> 40
+
+============================================================
+BLOCK 8
+- Instructions:
+  mv	a5, a1
+
+- Edges:
+  NO_JUMP -> 12
+
+============================================================
+BLOCK 12
+- Instructions:
+  lw	a4, 0(a0)
+  not	a4, a4
+  andi	a4, a4, 1
+  addw	a6, a4, a6
+  addi	a5, a5, -1
+  addi	a0, a0, 4
+  bnez	a5, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 40
+  JUMP -> 12
+
+============================================================
+BLOCK 40
+- Instructions:
+  blez	a3, .LBB0_5
+
+- Edges:
+  NO_JUMP -> 44
+  JUMP -> 72
+
+============================================================
+BLOCK 44
+- Instructions:
+  lw	a0, 0(a2)
+  not	a0, a0
+  andi	a0, a0, 1
+  addw	a6, a0, a6
+  addi	a3, a3, -1
+  addi	a2, a2, 4
+  bnez	a3, .LBB0_4
+
+- Edges:
+  NO_JUMP -> 72
+  JUMP -> 44
+
+============================================================
+BLOCK 72
+- Instructions:
+  blt	a6, a1, .LBB0_7
+
+- Edges:
+  NO_JUMP -> 76
+  JUMP -> 88
+
+============================================================
+BLOCK 76
+- Instructions:
+  auipc	a0, %pcrel_hi(.L.str)
+  addi	a0, a0, %pcrel_lo(.LBB0_8)
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 88
+- Instructions:
+  auipc	a0, %pcrel_hi(.L.str.1)
+  addi	a0, a0, %pcrel_lo(.LBB0_9)
+  ret
+
+- Edges: (none)

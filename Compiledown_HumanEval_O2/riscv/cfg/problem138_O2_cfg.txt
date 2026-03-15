@@ -1,0 +1,14 @@
+Function: func0
+Basic blocks: 1
+
+============================================================
+BLOCK 0
+- Instructions:
+  andi	a1, a0, 1
+  seqz	a1, a1
+  slti	a0, a0, 8
+  xori	a0, a0, 1
+  and	a0, a0, a1
+  ret
+
+- Edges: (none)

@@ -1,0 +1,63 @@
+Function: func0
+Basic blocks: 6
+
+============================================================
+BLOCK 4656
+- Instructions:
+  mov    $0x1,%ecx
+  cmp    $0x4,%edi
+  jl     1254 <func0+0x24>
+
+- Edges:
+  NO_JUMP -> 4666
+  JUMP -> 4692
+
+============================================================
+BLOCK 4666
+- Instructions:
+  mov    $0x2,%esi
+  nop
+
+- Edges:
+  NO_JUMP -> 4672
+
+============================================================
+BLOCK 4672
+- Instructions:
+  mov    %edi,%eax
+  cltd
+  idiv   %esi
+  test   %edx,%edx
+  je     1256 <func0+0x26>
+
+- Edges:
+  NO_JUMP -> 4681
+  JUMP -> 4694
+
+============================================================
+BLOCK 4681
+- Instructions:
+  inc    %esi
+  mov    %esi,%eax
+  imul   %esi,%eax
+  cmp    %edi,%eax
+  jle    1240 <func0+0x10>
+
+- Edges:
+  NO_JUMP -> 4692
+  JUMP -> 4672
+
+============================================================
+BLOCK 4692
+- Instructions:
+  mov    %ecx,%eax
+
+- Edges:
+  NO_JUMP -> 4694
+
+============================================================
+BLOCK 4694
+- Instructions:
+  ret
+
+- Edges: (none)

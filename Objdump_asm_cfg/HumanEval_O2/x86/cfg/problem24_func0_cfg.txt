@@ -1,0 +1,30 @@
+Function: func0
+Basic blocks: 3
+
+============================================================
+BLOCK 4576
+- Instructions:
+  mov    $0xffffffff,%eax
+  data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 4592
+
+============================================================
+BLOCK 4592
+- Instructions:
+  inc    %eax
+  cmpb   $0x0,(%rdi)
+  lea    0x1(%rdi),%rdi
+  jne    11f0 <func0+0x10>
+
+- Edges:
+  NO_JUMP -> 4603
+  JUMP -> 4592
+
+============================================================
+BLOCK 4603
+- Instructions:
+  ret
+
+- Edges: (none)

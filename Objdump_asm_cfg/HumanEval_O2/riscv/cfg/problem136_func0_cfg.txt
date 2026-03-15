@@ -1,0 +1,66 @@
+Function: func0
+Basic blocks: 6
+
+============================================================
+BLOCK 2056
+- Instructions:
+  li	a2,2
+  li	a4,-1
+  blt	a1,a2,836 <func0+0x2e>
+
+- Edges:
+  NO_JUMP -> 2064
+  JUMP -> 2102
+
+============================================================
+BLOCK 2064
+- Instructions:
+  lw	a6,0(a0)
+  add	a0,a0,4
+  li	a5,-1
+  li	a3,1
+  j	826 <func0+0x1e>
+
+- Edges:
+  JUMP -> 2086
+
+============================================================
+BLOCK 2076
+- Instructions:
+  add	a3,a3,1
+  add	a0,a0,4
+  mv	a5,a4
+  beq	a1,a3,836 <func0+0x2e>
+
+- Edges:
+  NO_JUMP -> 2086
+  JUMP -> 2102
+
+============================================================
+BLOCK 2086
+- Instructions:
+  mv	a2,a6
+  lw	a6,0(a0)
+  mv	a4,a3
+  blt	a6,a2,81c <func0+0x14>
+
+- Edges:
+  NO_JUMP -> 2098
+  JUMP -> 2076
+
+============================================================
+BLOCK 2098
+- Instructions:
+  mv	a4,a5
+  j	81c <func0+0x14>
+
+- Edges:
+  JUMP -> 2076
+
+============================================================
+BLOCK 2102
+- Instructions:
+  sext.w	a0,a4
+  ret
+
+- Edges: (none)

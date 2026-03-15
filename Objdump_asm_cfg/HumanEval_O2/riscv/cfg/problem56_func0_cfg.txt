@@ -1,0 +1,74 @@
+Function: func0
+Basic blocks: 5
+
+============================================================
+BLOCK 2032
+- Instructions:
+  add	sp,sp,-2032
+  sd	ra,2024(sp)
+  sd	s0,2016(sp)
+  sd	s1,2008(sp)
+  add	sp,sp,-2000
+  mv	s0,a0
+  lui	a0,0x1
+  addw	a2,a0,-96 # fa0 <__FRAME_END__+0x698>
+  add	a0,sp,8
+  add	s1,sp,8
+  li	a1,0
+  jal	640 <memset@plt>
+
+- Edges:
+  JUMP -> 1600
+
+============================================================
+BLOCK 2070
+- Instructions:
+  li	a0,1
+  li	a1,2
+  sw	a0,12(sp)
+  blt	s0,a1,83c <func0+0x4c>
+
+- Edges:
+  NO_JUMP -> 2080
+  JUMP -> 2108
+
+============================================================
+BLOCK 2080
+- Instructions:
+  addw	a1,s0,1
+  sll	a1,a1,0x20
+  srl	a2,a1,0x20
+  add	a1,sp,16
+  add	a2,a2,-2
+
+- Edges:
+  NO_JUMP -> 2094
+
+============================================================
+BLOCK 2094
+- Instructions:
+  lw	a3,-8(a1)
+  addw	a0,a0,a3
+  sw	a0,0(a1)
+  add	a2,a2,-1
+  add	a1,a1,4
+  bnez	a2,82e <func0+0x3e>
+
+- Edges:
+  NO_JUMP -> 2108
+  JUMP -> 2094
+
+============================================================
+BLOCK 2108
+- Instructions:
+  sll	a0,s0,0x2
+  add	a0,a0,s1
+  lw	a0,0(a0)
+  add	sp,sp,2000
+  ld	ra,2024(sp)
+  ld	s0,2016(sp)
+  ld	s1,2008(sp)
+  add	sp,sp,2032
+  ret
+
+- Edges: (none)

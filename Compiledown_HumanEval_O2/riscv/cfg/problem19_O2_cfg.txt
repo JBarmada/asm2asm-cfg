@@ -1,0 +1,76 @@
+Function: func0
+Basic blocks: 4
+
+============================================================
+BLOCK 0
+- Instructions:
+  addi	sp, sp, -64
+  sd	ra, 56(sp)
+  sd	s0, 48(sp)
+  sd	s1, 40(sp)
+  sd	s2, 32(sp)
+  sd	s3, 24(sp)
+  sd	s4, 16(sp)
+  sd	s5, 8(sp)
+  mv	s2, a1
+  mv	s5, a0
+  call	strlen@plt
+  mv	s4, a0
+  sext.w	s0, a0
+  mv	a0, s2
+  call	strlen@plt
+  seqz	a1, s0
+  sext.w	s3, a0
+  slt	a2, s0, s3
+  or	a1, a1, a2
+  li	s0, 0
+  bnez	a1, .LBB0_3
+
+- Edges:
+  NO_JUMP -> 84
+  JUMP -> 140
+
+============================================================
+BLOCK 84
+- Instructions:
+  li	s0, 0
+  subw	a0, s4, a0
+  addiw	a0, a0, 1
+  slli	a0, a0, 32
+  srli	s1, a0, 32
+
+- Edges:
+  NO_JUMP -> 104
+
+============================================================
+BLOCK 104
+- Instructions:
+  mv	a0, s5
+  mv	a1, s2
+  mv	a2, s3
+  call	strncmp@plt
+  seqz	a0, a0
+  addw	s0, s0, a0
+  addi	s1, s1, -1
+  addi	s5, s5, 1
+  bnez	s1, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 140
+  JUMP -> 104
+
+============================================================
+BLOCK 140
+- Instructions:
+  mv	a0, s0
+  ld	ra, 56(sp)
+  ld	s0, 48(sp)
+  ld	s1, 40(sp)
+  ld	s2, 32(sp)
+  ld	s3, 24(sp)
+  ld	s4, 16(sp)
+  ld	s5, 8(sp)
+  addi	sp, sp, 64
+  ret
+
+- Edges: (none)

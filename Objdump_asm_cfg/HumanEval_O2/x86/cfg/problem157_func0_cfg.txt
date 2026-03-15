@@ -1,0 +1,113 @@
+Function: func0
+Basic blocks: 9
+
+============================================================
+BLOCK 5344
+- Instructions:
+  push   %rbp
+  push   %r15
+  push   %r14
+  push   %r13
+  push   %r12
+  push   %rbx
+  push   %rax
+  movb   $0x0,(%rsi)
+  test   %edi,%edi
+  jle    1555 <func0+0x75>
+
+- Edges:
+  NO_JUMP -> 5362
+  JUMP -> 5461
+
+============================================================
+BLOCK 5362
+- Instructions:
+  mov    %rsi,%r14
+  mov    %edi,%ebp
+  xor    %eax,%eax
+  lea    0xce0(%rip),%r12        # 21e0 <_IO_stdin_used+0x1e0>
+  jmp    151e <func0+0x3e>
+
+- Edges:
+  JUMP -> 5406
+
+============================================================
+BLOCK 5378
+- Instructions:
+  data16 data16 data16 data16 cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5392
+
+============================================================
+BLOCK 5392
+- Instructions:
+  xor    %eax,%eax
+  test   %ebp,%ebp
+  setg   %al
+  add    %r13d,%eax
+  test   %ebp,%ebp
+  jle    1555 <func0+0x75>
+
+- Edges:
+  NO_JUMP -> 5406
+  JUMP -> 5461
+
+============================================================
+BLOCK 5406
+- Instructions:
+  mov    %eax,%r13d
+  lea    0xcf8(%rip),%rax        # 2220 <_IO_stdin_used+0x220>
+  mov    (%rax,%r13,4),%r15d
+  cmp    %r15d,%ebp
+  jl     1510 <func0+0x30>
+
+- Edges:
+  NO_JUMP -> 5425
+  JUMP -> 5392
+
+============================================================
+BLOCK 5425
+- Instructions:
+  movslq (%r12,%r13,4),%rbx
+  add    %r12,%rbx
+  nopl   0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5440
+
+============================================================
+BLOCK 5440
+- Instructions:
+  mov    %r14,%rdi
+  mov    %rbx,%rsi
+  call   1040 <strcat@plt>
+  sub    %r15d,%ebp
+  cmp    %r15d,%ebp
+  jge    1540 <func0+0x60>
+
+- Edges:
+  NO_JUMP -> 5459
+  JUMP -> 5440
+
+============================================================
+BLOCK 5459
+- Instructions:
+  jmp    1510 <func0+0x30>
+
+- Edges:
+  JUMP -> 5392
+
+============================================================
+BLOCK 5461
+- Instructions:
+  add    $0x8,%rsp
+  pop    %rbx
+  pop    %r12
+  pop    %r13
+  pop    %r14
+  pop    %r15
+  pop    %rbp
+  ret
+
+- Edges: (none)

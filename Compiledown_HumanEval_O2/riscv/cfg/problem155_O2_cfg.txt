@@ -1,0 +1,115 @@
+Function: func0
+Basic blocks: 7
+
+============================================================
+BLOCK 0
+- Instructions:
+  addi	sp, sp, -80
+  sd	ra, 72(sp)
+  sd	s0, 64(sp)
+  sd	s1, 56(sp)
+  sd	s2, 48(sp)
+  sd	s3, 40(sp)
+  sd	s4, 32(sp)
+  sd	s5, 24(sp)
+  sd	s6, 16(sp)
+  sd	s7, 8(sp)
+  sd	s8, 0(sp)
+  mv	s3, a1
+  mv	s2, a0
+  mv	a0, a1
+  call	strlen@plt
+  mv	s1, a0
+  sext.w	s5, a0
+  slliw	a0, a0, 1
+  ori	a0, a0, 1
+  call	malloc@plt
+  mv	s4, a0
+  blez	s5, .LBB0_4
+
+- Edges:
+  NO_JUMP -> 88
+  JUMP -> 184
+
+============================================================
+BLOCK 88
+- Instructions:
+  li	s0, 0
+  add	s7, s4, s5
+  slli	a0, s1, 32
+  srli	s8, a0, 32
+  li	s6, 1
+  mv	s1, s5
+
+- Edges:
+  NO_JUMP -> 112
+
+============================================================
+BLOCK 112
+- Instructions:
+  add	a1, s3, s0
+  mv	a0, s4
+  mv	a2, s1
+  call	strncpy@plt
+  add	a0, s4, s1
+  mv	a1, s3
+  mv	a2, s0
+  call	strncpy@plt
+  sb	zero, 0(s7)
+  mv	a0, s2
+  mv	a1, s4
+  call	strstr@plt
+  bnez	a0, .LBB0_5
+
+- Edges:
+  NO_JUMP -> 164
+  JUMP -> 188
+
+============================================================
+BLOCK 164
+- Instructions:
+  addi	s0, s0, 1
+  slt	s6, s0, s5
+  addi	s1, s1, -1
+  bne	s8, s0, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 180
+  JUMP -> 112
+
+============================================================
+BLOCK 180
+- Instructions:
+  j	.LBB0_5
+
+- Edges:
+  JUMP -> 188
+
+============================================================
+BLOCK 184
+- Instructions:
+  li	s6, 0
+
+- Edges:
+  NO_JUMP -> 188
+
+============================================================
+BLOCK 188
+- Instructions:
+  mv	a0, s4
+  call	free@plt
+  andi	a0, s6, 1
+  ld	ra, 72(sp)
+  ld	s0, 64(sp)
+  ld	s1, 56(sp)
+  ld	s2, 48(sp)
+  ld	s3, 40(sp)
+  ld	s4, 32(sp)
+  ld	s5, 24(sp)
+  ld	s6, 16(sp)
+  ld	s7, 8(sp)
+  ld	s8, 0(sp)
+  addi	sp, sp, 80
+  ret
+
+- Edges: (none)

@@ -1,0 +1,121 @@
+Function: func0
+Basic blocks: 10
+
+============================================================
+BLOCK 0
+- Instructions:
+  addi	sp, sp, -32
+  sd	ra, 24(sp)
+  sd	s0, 16(sp)
+  sd	s1, 8(sp)
+  mv	s1, a1
+  mv	s0, a0
+  li	a0, 256
+  call	malloc@plt
+  li	a2, 4
+  sw	zero, 0(s1)
+  li	a1, 0
+  bge	s0, a2, .LBB0_4
+
+- Edges:
+  NO_JUMP -> 48
+  JUMP -> 104
+
+============================================================
+BLOCK 48
+- Instructions:
+  sext.w	a2, s0
+  li	a3, 1
+  bge	a3, a2, .LBB0_3
+
+- Edges:
+  NO_JUMP -> 60
+  JUMP -> 84
+
+============================================================
+BLOCK 60
+- Instructions:
+  addiw	a2, a1, 1
+  sw	a2, 0(s1)
+  sext.w	a1, a1
+  slli	a1, a1, 2
+  add	a1, a1, a0
+  sw	s0, 0(a1)
+
+- Edges:
+  NO_JUMP -> 84
+
+============================================================
+BLOCK 84
+- Instructions:
+  ld	ra, 24(sp)
+  ld	s0, 16(sp)
+  ld	s1, 8(sp)
+  addi	sp, sp, 32
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 104
+- Instructions:
+  li	a2, 2
+  j	.LBB0_6
+
+- Edges:
+  JUMP -> 128
+
+============================================================
+BLOCK 112
+- Instructions:
+  addiw	a2, a2, 1
+  mulw	a3, a2, a2
+  sext.w	a4, s0
+  blt	a4, a3, .LBB0_1
+
+- Edges:
+  NO_JUMP -> 128
+  JUMP -> 48
+
+============================================================
+BLOCK 128
+- Instructions:
+  remw	a3, s0, a2
+  bnez	a3, .LBB0_5
+
+- Edges:
+  NO_JUMP -> 136
+  JUMP -> 112
+
+============================================================
+BLOCK 136
+- Instructions:
+  sext.w	a1, a1
+  slli	a3, a1, 2
+  add	a3, a3, a0
+
+- Edges:
+  NO_JUMP -> 148
+
+============================================================
+BLOCK 148
+- Instructions:
+  divw	s0, s0, a2
+  addi	a1, a1, 1
+  sw	a2, 0(a3)
+  remw	a4, s0, a2
+  addi	a3, a3, 4
+  beqz	a4, .LBB0_8
+
+- Edges:
+  NO_JUMP -> 172
+  JUMP -> 148
+
+============================================================
+BLOCK 172
+- Instructions:
+  sw	a1, 0(s1)
+  j	.LBB0_5
+
+- Edges:
+  JUMP -> 112

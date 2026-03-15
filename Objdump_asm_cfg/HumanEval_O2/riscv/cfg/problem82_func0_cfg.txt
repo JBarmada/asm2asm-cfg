@@ -1,0 +1,360 @@
+Function: func0
+Basic blocks: 30
+
+============================================================
+BLOCK 2700
+- Instructions:
+  add	sp,sp,-32
+  sd	ra,24(sp)
+  sd	s0,16(sp)
+  sd	s1,8(sp)
+  sd	s2,0(sp)
+  mv	s0,a1
+  mv	s1,a0
+  sll	a0,a1,0x3
+  jal	6a0 <malloc@plt>
+
+- Edges:
+  JUMP -> 1696
+
+============================================================
+BLOCK 2722
+- Instructions:
+  blez	s0,c38 <func0+0x1ac>
+
+- Edges:
+  NO_JUMP -> 2726
+  JUMP -> 3128
+
+============================================================
+BLOCK 2726
+- Instructions:
+  auipc	a1,0x1
+  add	a1,a1,1482 # 2070 <__SDATA_BEGIN__+0x8>
+  fld	ft0,0(a1)
+  auipc	a1,0x1
+  add	a1,a1,1478 # 2078 <__SDATA_BEGIN__+0x10>
+  fld	ft1,0(a1)
+  auipc	a1,0x0
+  add	a1,a1,668 # d5a <_IO_stdin_used+0x116>
+  auipc	a2,0x1
+  add	a2,a2,1466 # 2080 <__SDATA_BEGIN__+0x18>
+  fld	ft2,0(a2)
+  auipc	a2,0x0
+  add	a2,a2,424 # c7a <_IO_stdin_used+0x36>
+  auipc	a3,0x1
+  add	a3,a3,1454 # 2088 <__SDATA_BEGIN__+0x20>
+  fld	ft3,0(a3)
+  auipc	s2,0x0
+  add	s2,s2,565 # d1b <_IO_stdin_used+0xd7>
+  auipc	a4,0x1
+  add	a4,a4,1442 # 2090 <__SDATA_BEGIN__+0x28>
+  fld	ft4,0(a4)
+  auipc	t6,0x0
+  add	t6,t6,377 # c73 <_IO_stdin_used+0x2f>
+  auipc	a4,0x1
+  add	a4,a4,1430 # 2098 <__SDATA_BEGIN__+0x30>
+  fld	ft5,0(a4)
+  auipc	t5,0x0
+  add	t5,t5,590 # d5c <_IO_stdin_used+0x118>
+  auipc	a4,0x1
+  add	a4,a4,1418 # 20a0 <__SDATA_BEGIN__+0x38>
+  fld	ft6,0(a4)
+  auipc	a6,0x0
+  add	a6,a6,573 # d5f <_IO_stdin_used+0x11b>
+  auipc	a4,0x1
+  add	a4,a4,1406 # 20a8 <__SDATA_BEGIN__+0x40>
+  fld	ft7,0(a4)
+  auipc	a7,0x0
+  add	a7,a7,322 # c78 <_IO_stdin_used+0x34>
+  auipc	a4,0x1
+  add	a4,a4,1394 # 20b0 <__SDATA_BEGIN__+0x48>
+  fld	fa0,0(a4)
+  auipc	t0,0x0
+  add	t0,t0,301 # c75 <_IO_stdin_used+0x31>
+  auipc	a4,0x1
+  add	a4,a4,1384 # 20b8 <__SDATA_BEGIN__+0x50>
+  fld	fa1,0(a4)
+  auipc	t1,0x0
+  add	t1,t1,349 # cb7 <_IO_stdin_used+0x73>
+  auipc	a4,0x1
+  add	a4,a4,1374 # 20c0 <__SDATA_BEGIN__+0x58>
+  fld	fa2,0(a4)
+  auipc	t2,0x0
+  add	t2,t2,429 # d19 <_IO_stdin_used+0xd5>
+  auipc	a4,0x1
+  add	a4,a4,1364 # 20c8 <__SDATA_BEGIN__+0x60>
+  fld	fa3,0(a4)
+  auipc	t3,0x0
+  add	t3,t3,346 # cd8 <_IO_stdin_used+0x94>
+  auipc	t4,0x0
+  add	t4,t4,371 # cf9 <_IO_stdin_used+0xb5>
+  auipc	a5,0x0
+  add	a5,a5,226 # c70 <_IO_stdin_used+0x2c>
+  mv	a4,a0
+  j	ba4 <func0+0x118>
+
+- Edges:
+  JUMP -> 2980
+
+============================================================
+BLOCK 2970
+- Instructions:
+  sd	a5,0(a4)
+
+- Edges:
+  NO_JUMP -> 2972
+
+============================================================
+BLOCK 2972
+- Instructions:
+  add	a4,a4,8
+  add	s0,s0,-1
+  add	s1,s1,4
+  beqz	s0,c38 <func0+0x1ac>
+
+- Edges:
+  NO_JUMP -> 2980
+  JUMP -> 3128
+
+============================================================
+BLOCK 2980
+- Instructions:
+  flw	fa4,0(s1)
+  fcvt.d.s	fa4,fa4
+  fle.d	a3,ft0,fa4
+  bnez	a3,b9a <func0+0x10e>
+
+- Edges:
+  NO_JUMP -> 2994
+  JUMP -> 2970
+
+============================================================
+BLOCK 2994
+- Instructions:
+  flt.d	a3,ft1,fa4
+  beqz	a3,bbc <func0+0x130>
+
+- Edges:
+  NO_JUMP -> 3000
+  JUMP -> 3004
+
+============================================================
+BLOCK 3000
+- Instructions:
+  sd	a1,0(a4)
+  j	b9c <func0+0x110>
+
+- Edges:
+  JUMP -> 2972
+
+============================================================
+BLOCK 3004
+- Instructions:
+  flt.d	a3,ft2,fa4
+  beqz	a3,bc6 <func0+0x13a>
+
+- Edges:
+  NO_JUMP -> 3010
+  JUMP -> 3014
+
+============================================================
+BLOCK 3010
+- Instructions:
+  sd	a2,0(a4)
+  j	b9c <func0+0x110>
+
+- Edges:
+  JUMP -> 2972
+
+============================================================
+BLOCK 3014
+- Instructions:
+  flt.d	a3,ft3,fa4
+  beqz	a3,bd2 <func0+0x146>
+
+- Edges:
+  NO_JUMP -> 3020
+  JUMP -> 3026
+
+============================================================
+BLOCK 3020
+- Instructions:
+  sd	s2,0(a4)
+  j	b9c <func0+0x110>
+
+- Edges:
+  JUMP -> 2972
+
+============================================================
+BLOCK 3026
+- Instructions:
+  flt.d	a3,ft4,fa4
+  beqz	a3,bde <func0+0x152>
+
+- Edges:
+  NO_JUMP -> 3032
+  JUMP -> 3038
+
+============================================================
+BLOCK 3032
+- Instructions:
+  sd	t6,0(a4)
+  j	b9c <func0+0x110>
+
+- Edges:
+  JUMP -> 2972
+
+============================================================
+BLOCK 3038
+- Instructions:
+  flt.d	a3,ft5,fa4
+  beqz	a3,bea <func0+0x15e>
+
+- Edges:
+  NO_JUMP -> 3044
+  JUMP -> 3050
+
+============================================================
+BLOCK 3044
+- Instructions:
+  sd	t5,0(a4)
+  j	b9c <func0+0x110>
+
+- Edges:
+  JUMP -> 2972
+
+============================================================
+BLOCK 3050
+- Instructions:
+  flt.d	a3,ft6,fa4
+  beqz	a3,bf6 <func0+0x16a>
+
+- Edges:
+  NO_JUMP -> 3056
+  JUMP -> 3062
+
+============================================================
+BLOCK 3056
+- Instructions:
+  sd	a6,0(a4)
+  j	b9c <func0+0x110>
+
+- Edges:
+  JUMP -> 2972
+
+============================================================
+BLOCK 3062
+- Instructions:
+  flt.d	a3,ft7,fa4
+  beqz	a3,c02 <func0+0x176>
+
+- Edges:
+  NO_JUMP -> 3068
+  JUMP -> 3074
+
+============================================================
+BLOCK 3068
+- Instructions:
+  sd	a7,0(a4)
+  j	b9c <func0+0x110>
+
+- Edges:
+  JUMP -> 2972
+
+============================================================
+BLOCK 3074
+- Instructions:
+  flt.d	a3,fa0,fa4
+  beqz	a3,c0e <func0+0x182>
+
+- Edges:
+  NO_JUMP -> 3080
+  JUMP -> 3086
+
+============================================================
+BLOCK 3080
+- Instructions:
+  sd	t0,0(a4)
+  j	b9c <func0+0x110>
+
+- Edges:
+  JUMP -> 2972
+
+============================================================
+BLOCK 3086
+- Instructions:
+  flt.d	a3,fa1,fa4
+  beqz	a3,c1a <func0+0x18e>
+
+- Edges:
+  NO_JUMP -> 3092
+  JUMP -> 3098
+
+============================================================
+BLOCK 3092
+- Instructions:
+  sd	t1,0(a4)
+  j	b9c <func0+0x110>
+
+- Edges:
+  JUMP -> 2972
+
+============================================================
+BLOCK 3098
+- Instructions:
+  flt.d	a3,fa2,fa4
+  beqz	a3,c26 <func0+0x19a>
+
+- Edges:
+  NO_JUMP -> 3104
+  JUMP -> 3110
+
+============================================================
+BLOCK 3104
+- Instructions:
+  sd	t2,0(a4)
+  j	b9c <func0+0x110>
+
+- Edges:
+  JUMP -> 2972
+
+============================================================
+BLOCK 3110
+- Instructions:
+  flt.d	a3,fa3,fa4
+  beqz	a3,c32 <func0+0x1a6>
+
+- Edges:
+  NO_JUMP -> 3116
+  JUMP -> 3122
+
+============================================================
+BLOCK 3116
+- Instructions:
+  sd	t3,0(a4)
+  j	b9c <func0+0x110>
+
+- Edges:
+  JUMP -> 2972
+
+============================================================
+BLOCK 3122
+- Instructions:
+  sd	t4,0(a4)
+  j	b9c <func0+0x110>
+
+- Edges:
+  JUMP -> 2972
+
+============================================================
+BLOCK 3128
+- Instructions:
+  ld	ra,24(sp)
+  ld	s0,16(sp)
+  ld	s1,8(sp)
+  ld	s2,0(sp)
+  add	sp,sp,32
+  ret
+
+- Edges: (none)

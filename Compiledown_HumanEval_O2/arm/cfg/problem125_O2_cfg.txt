@@ -1,0 +1,223 @@
+Function: _func0
+Basic blocks: 18
+
+============================================================
+BLOCK 0
+- Instructions:
+  sub	sp, sp, #48
+  stp	x20, x19, [sp, #16]
+  stp	x29, x30, [sp, #32]
+  add	x29, sp, #32
+  mov	x19, x0
+  bl	_strlen
+  cmp	x0, #10
+  b.ne	LBB0_11
+
+- Edges:
+  NO_JUMP -> 32
+  JUMP -> 184
+
+============================================================
+BLOCK 32
+- Instructions:
+  ldrb	w8, [x19]
+  sub	w9, w8, #58
+  cmn	w9, #10
+  b.lo	LBB0_11
+
+- Edges:
+  NO_JUMP -> 48
+  JUMP -> 184
+
+============================================================
+BLOCK 48
+- Instructions:
+  ldrb	w9, [x19, #1]
+  sub	w10, w9, #58
+  cmn	w10, #10
+  b.lo	LBB0_11
+
+- Edges:
+  NO_JUMP -> 64
+  JUMP -> 184
+
+============================================================
+BLOCK 64
+- Instructions:
+  ldrb	w10, [x19, #2]
+  cmp	w10, #45
+  b.ne	LBB0_11
+
+- Edges:
+  NO_JUMP -> 76
+  JUMP -> 184
+
+============================================================
+BLOCK 76
+- Instructions:
+  ldrb	w10, [x19, #3]
+  sub	w11, w10, #58
+  cmn	w11, #10
+  b.lo	LBB0_11
+
+- Edges:
+  NO_JUMP -> 92
+  JUMP -> 184
+
+============================================================
+BLOCK 92
+- Instructions:
+  ldrb	w11, [x19, #4]
+  sub	w12, w11, #58
+  cmn	w12, #10
+  b.lo	LBB0_11
+
+- Edges:
+  NO_JUMP -> 108
+  JUMP -> 184
+
+============================================================
+BLOCK 108
+- Instructions:
+  ldrb	w12, [x19, #5]
+  cmp	w12, #45
+  b.ne	LBB0_11
+
+- Edges:
+  NO_JUMP -> 120
+  JUMP -> 184
+
+============================================================
+BLOCK 120
+- Instructions:
+  ldrb	w12, [x19, #6]
+  sub	w12, w12, #58
+  cmn	w12, #10
+  b.lo	LBB0_11
+
+- Edges:
+  NO_JUMP -> 136
+  JUMP -> 184
+
+============================================================
+BLOCK 136
+- Instructions:
+  ldrb	w12, [x19, #7]
+  sub	w12, w12, #58
+  cmn	w12, #10
+  b.lo	LBB0_11
+
+- Edges:
+  NO_JUMP -> 152
+  JUMP -> 184
+
+============================================================
+BLOCK 152
+- Instructions:
+  ldrb	w12, [x19, #8]
+  sub	w12, w12, #58
+  cmn	w12, #10
+  b.lo	LBB0_11
+
+- Edges:
+  NO_JUMP -> 168
+  JUMP -> 184
+
+============================================================
+BLOCK 168
+- Instructions:
+  ldrb	w12, [x19, #9]
+  sub	w12, w12, #58
+  cmn	w12, #10
+  b.hs	LBB0_13
+
+- Edges:
+  NO_JUMP -> 184
+  JUMP -> 204
+
+============================================================
+BLOCK 184
+- Instructions:
+  mov	w0, #0
+
+- Edges:
+  NO_JUMP -> 188
+
+============================================================
+BLOCK 188
+- Instructions:
+  ldp	x29, x30, [sp, #32]
+  ldp	x20, x19, [sp, #16]
+  add	sp, sp, #48
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 204
+- Instructions:
+  strb	w8, [sp, #13]
+  strb	w9, [sp, #14]
+  strb	wzr, [sp, #15]
+  strb	w10, [sp, #10]
+  strb	w11, [sp, #11]
+  strb	wzr, [sp, #12]
+  add	x0, sp, #13
+  bl	_atoi
+  mov	x19, x0
+  add	x0, sp, #10
+  bl	_atoi
+  mov	x8, x0
+  mov	w0, #0
+  sub	w9, w19, #13
+  cmn	w9, #12
+  b.lo	LBB0_12
+
+- Edges:
+  NO_JUMP -> 268
+  JUMP -> 188
+
+============================================================
+BLOCK 268
+- Instructions:
+  sub	w9, w8, #32
+  cmn	w9, #31
+  b.lo	LBB0_12
+
+- Edges:
+  NO_JUMP -> 280
+  JUMP -> 188
+
+============================================================
+BLOCK 280
+- Instructions:
+  mov	w9, #13
+  and	w9, w19, w9
+  cmp	w9, #9
+  ccmp	w9, #4, #4, ne
+  b.ne	LBB0_17
+
+- Edges:
+  NO_JUMP -> 300
+  JUMP -> 308
+
+============================================================
+BLOCK 300
+- Instructions:
+  cmp	w8, #31
+  b.eq	LBB0_11
+
+- Edges:
+  NO_JUMP -> 308
+  JUMP -> 184
+
+============================================================
+BLOCK 308
+- Instructions:
+  cmp	w19, #2
+  ccmp	w8, #30, #0, eq
+  cset	w0, lo
+  b	LBB0_12
+
+- Edges:
+  JUMP -> 188

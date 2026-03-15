@@ -1,0 +1,108 @@
+Function: func0
+Basic blocks: 9
+
+============================================================
+BLOCK 2684
+- Instructions:
+  add	sp,sp,-48
+  blez	a0,ae4 <func0+0x68>
+
+- Edges:
+  NO_JUMP -> 2690
+  JUMP -> 2788
+
+============================================================
+BLOCK 2690
+- Instructions:
+  li	a3,0
+  li	a4,1
+  add	a6,sp,15
+
+- Edges:
+  NO_JUMP -> 2698
+
+============================================================
+BLOCK 2698
+- Instructions:
+  mv	a7,a4
+  divw	a5,a0,a1
+  mulw	a4,a5,a1
+  subw	a0,a0,a4
+  addw	a0,a0,48
+  add	a4,a6,a3
+  add	a3,a3,1
+  sb	a0,0(a4)
+  addw	a4,a7,1
+  mv	a0,a5
+  bgtz	a5,a8a <func0+0xe>
+
+- Edges:
+  NO_JUMP -> 2734
+  JUMP -> 2698
+
+============================================================
+BLOCK 2734
+- Instructions:
+  sext.w	a0,a3
+  blez	a0,ae4 <func0+0x68>
+
+- Edges:
+  NO_JUMP -> 2742
+  JUMP -> 2788
+
+============================================================
+BLOCK 2742
+- Instructions:
+  sll	a0,a7,0x20
+  srl	a0,a0,0x20
+  add	a6,sp,15
+  mv	a4,a2
+  mv	a5,a3
+
+- Edges:
+  NO_JUMP -> 2756
+
+============================================================
+BLOCK 2756
+- Instructions:
+  addw	a5,a5,-1
+  sll	a1,a5,0x20
+  srl	a1,a1,0x20
+  add	a1,a1,a6
+  lb	a1,0(a1)
+  sb	a1,0(a4)
+  add	a0,a0,-1
+  add	a4,a4,1
+  bnez	a0,ac4 <func0+0x48>
+
+- Edges:
+  NO_JUMP -> 2780
+  JUMP -> 2756
+
+============================================================
+BLOCK 2780
+- Instructions:
+  sll	a0,a3,0x20
+  srl	a0,a0,0x20
+  j	ae6 <func0+0x6a>
+
+- Edges:
+  JUMP -> 2790
+
+============================================================
+BLOCK 2788
+- Instructions:
+  li	a0,0
+
+- Edges:
+  NO_JUMP -> 2790
+
+============================================================
+BLOCK 2790
+- Instructions:
+  add	a0,a0,a2
+  sb	zero,0(a0)
+  add	sp,sp,48
+  ret
+
+- Edges: (none)

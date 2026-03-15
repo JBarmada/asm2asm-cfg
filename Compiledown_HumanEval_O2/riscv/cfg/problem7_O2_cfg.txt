@@ -1,0 +1,136 @@
+Function: func0
+Basic blocks: 11
+
+============================================================
+BLOCK 0
+- Instructions:
+  addi	sp, sp, -64
+  sd	ra, 56(sp)
+  sd	s0, 48(sp)
+  sd	s1, 40(sp)
+  sd	s2, 32(sp)
+  sd	s3, 24(sp)
+  sd	s4, 16(sp)
+  sd	s5, 8(sp)
+  sd	s6, 0(sp)
+  mv	s2, a1
+  mv	s1, a0
+  li	a2, 0
+  li	s6, 0
+  li	s3, 0
+  li	a0, 0
+  li	s5, 40
+  li	s4, 41
+  j	.LBB0_3
+
+- Edges:
+  JUMP -> 88
+
+============================================================
+BLOCK 72
+- Instructions:
+  addiw	a1, a2, -1
+  beqz	a1, .LBB0_9
+
+- Edges:
+  NO_JUMP -> 80
+  JUMP -> 128
+
+============================================================
+BLOCK 80
+- Instructions:
+  addi	s1, s1, 1
+  mv	a2, a1
+
+- Edges:
+  NO_JUMP -> 88
+
+============================================================
+BLOCK 88
+- Instructions:
+  lbu	a1, 0(s1)
+  beq	a1, s5, .LBB0_7
+
+- Edges:
+  NO_JUMP -> 96
+  JUMP -> 112
+
+============================================================
+BLOCK 96
+- Instructions:
+  beq	a1, s4, .LBB0_1
+
+- Edges:
+  NO_JUMP -> 100
+  JUMP -> 72
+
+============================================================
+BLOCK 100
+- Instructions:
+  beqz	a1, .LBB0_10
+
+- Edges:
+  NO_JUMP -> 104
+  JUMP -> 168
+
+============================================================
+BLOCK 104
+- Instructions:
+  mv	a1, a2
+  j	.LBB0_2
+
+- Edges:
+  JUMP -> 80
+
+============================================================
+BLOCK 112
+- Instructions:
+  addiw	a1, a2, 1
+  blt	a2, s6, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 120
+  JUMP -> 80
+
+============================================================
+BLOCK 120
+- Instructions:
+  mv	s6, a1
+  j	.LBB0_2
+
+- Edges:
+  JUMP -> 80
+
+============================================================
+BLOCK 128
+- Instructions:
+  addiw	s0, s3, 1
+  slli	a1, s0, 2
+  call	realloc@plt
+  li	a1, 0
+  slli	a2, s3, 2
+  add	a2, a2, a0
+  sw	s6, 0(a2)
+  mv	s3, s0
+  li	s6, 0
+  j	.LBB0_2
+
+- Edges:
+  JUMP -> 80
+
+============================================================
+BLOCK 168
+- Instructions:
+  sw	s3, 0(s2)
+  ld	ra, 56(sp)
+  ld	s0, 48(sp)
+  ld	s1, 40(sp)
+  ld	s2, 32(sp)
+  ld	s3, 24(sp)
+  ld	s4, 16(sp)
+  ld	s5, 8(sp)
+  ld	s6, 0(sp)
+  addi	sp, sp, 64
+  ret
+
+- Edges: (none)

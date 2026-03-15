@@ -1,0 +1,42 @@
+Function: _func0
+Basic blocks: 3
+
+============================================================
+BLOCK 4294968708
+- Instructions:
+  frinta	s3, s0
+  frinta	s4, s1
+  frinta	s5, s2
+  fcmp	s3, s0
+  fccmp	s4, s1, #0x0, eq
+  fccmp	s5, s2, #0x0, eq
+  b.eq	0x1000005a8 <_func0+0x24>
+
+- Edges:
+  NO_JUMP -> 4294968736
+  JUMP -> 4294968744
+
+============================================================
+BLOCK 4294968736
+- Instructions:
+  mov	w0, #0x0                ; =0
+  ret
+
+- Edges:
+  NO_JUMP -> 4294968744
+
+============================================================
+BLOCK 4294968744
+- Instructions:
+  fadd	s3, s0, s1
+  fcmp	s3, s2
+  cset	w8, eq
+  fadd	s3, s0, s2
+  fcmp	s3, s1
+  csinc	w8, w8, wzr, ne
+  fadd	s1, s1, s2
+  fcmp	s1, s0
+  csinc	w0, w8, wzr, ne
+  ret
+
+- Edges: (none)

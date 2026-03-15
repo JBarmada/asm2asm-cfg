@@ -1,0 +1,86 @@
+Function: _func0
+Basic blocks: 6
+
+============================================================
+BLOCK 4294968536
+- Instructions:
+  stp	x28, x27, [sp, #-0x30]!
+  stp	x20, x19, [sp, #0x10]
+  stp	x29, x30, [sp, #0x20]
+  add	x29, sp, #0x20
+  sub	sp, sp, #0xfb0
+  mov	x19, x0
+  adrp	x8, 0x100004000 <_bzero+0x100004000>
+  ldr	x8, [x8, #0x10]
+  ldr	x8, [x8]
+  stur	x8, [x29, #-0x28]
+  add	x20, sp, #0x8
+  add	x0, sp, #0x8
+  mov	w1, #0xfa0              ; =4000
+  bl	0x100000658 <_bzero+0x100000658>
+  mov	w8, #0x1                ; =1
+  str	w8, [sp, #0xc]
+  cmp	w19, #0x2
+  b.lt	0x100000544 <_func0+0x6c>
+
+- Edges:
+  NO_JUMP -> 4294968608
+  JUMP -> 4294968644
+
+============================================================
+BLOCK 4294968608
+- Instructions:
+  add	w9, w19, #0x1
+  add	x8, x20, #0x8
+  sub	x9, x9, #0x2
+  mov	w10, #0x1               ; =1
+
+- Edges:
+  NO_JUMP -> 4294968624
+
+============================================================
+BLOCK 4294968624
+- Instructions:
+  ldur	w11, [x8, #-0x8]
+  add	w10, w11, w10
+  str	w10, [x8], #0x4
+  subs	x9, x9, #0x1
+  b.ne	0x100000530 <_func0+0x58>
+
+- Edges:
+  NO_JUMP -> 4294968644
+  JUMP -> 4294968624
+
+============================================================
+BLOCK 4294968644
+- Instructions:
+  ldr	w0, [x20, w19, sxtw #2]
+  ldur	x8, [x29, #-0x28]
+  adrp	x9, 0x100004000 <_bzero+0x100004000>
+  ldr	x9, [x9, #0x10]
+  ldr	x9, [x9]
+  cmp	x9, x8
+  b.ne	0x100000574 <_func0+0x9c>
+
+- Edges:
+  NO_JUMP -> 4294968672
+  JUMP -> 4294968692
+
+============================================================
+BLOCK 4294968672
+- Instructions:
+  add	sp, sp, #0xfb0
+  ldp	x29, x30, [sp, #0x20]
+  ldp	x20, x19, [sp, #0x10]
+  ldp	x28, x27, [sp], #0x30
+  ret
+
+- Edges:
+  NO_JUMP -> 4294968692
+
+============================================================
+BLOCK 4294968692
+- Instructions:
+  bl	0x10000064c <_bzero+0x10000064c>
+
+- Edges: (none)

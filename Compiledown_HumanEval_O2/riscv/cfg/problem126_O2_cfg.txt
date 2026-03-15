@@ -1,0 +1,134 @@
+Function: func0
+Basic blocks: 12
+
+============================================================
+BLOCK 0
+- Instructions:
+  beqz	a1, .LBB0_8
+
+- Edges:
+  NO_JUMP -> 4
+  JUMP -> 144
+
+============================================================
+BLOCK 4
+- Instructions:
+  li	a2, 2
+  blt	a1, a2, .LBB0_9
+
+- Edges:
+  NO_JUMP -> 12
+  JUMP -> 156
+
+============================================================
+BLOCK 12
+- Instructions:
+  lw	t2, 0(a0)
+  lw	a3, 4(a0)
+  li	t1, 1
+  blt	a3, t2, .LBB0_10
+
+- Edges:
+  NO_JUMP -> 28
+  JUMP -> 160
+
+============================================================
+BLOCK 28
+- Instructions:
+  li	a4, 0
+  li	a2, -1
+  srli	t0, a2, 32
+  addi	a5, a0, 8
+  addi	a6, a1, -2
+  li	a7, 1
+  li	t1, 1
+
+- Edges:
+  NO_JUMP -> 56
+
+============================================================
+BLOCK 56
+- Instructions:
+  mv	t4, a3
+  addi	t3, a4, 1
+  sltu	a3, a7, t3
+  xor	a2, t4, t2
+  seqz	a2, a2
+  and	a2, a2, a3
+  beqz	a2, .LBB0_6
+
+- Edges:
+  NO_JUMP -> 84
+  JUMP -> 108
+
+============================================================
+BLOCK 84
+- Instructions:
+  add	a2, a4, t0
+  and	a2, a2, t0
+  slli	a2, a2, 2
+  add	a2, a2, a0
+  lw	a2, 0(a2)
+  beq	t2, a2, .LBB0_10
+
+- Edges:
+  NO_JUMP -> 108
+  JUMP -> 160
+
+============================================================
+BLOCK 108
+- Instructions:
+  addi	a2, a4, 2
+  sltu	t1, a2, a1
+  beq	a6, a4, .LBB0_10
+
+- Edges:
+  NO_JUMP -> 120
+  JUMP -> 160
+
+============================================================
+BLOCK 120
+- Instructions:
+  lw	a3, 0(a5)
+  addi	a5, a5, 4
+  mv	a4, t3
+  mv	t2, t4
+  bge	a3, t4, .LBB0_4
+
+- Edges:
+  NO_JUMP -> 140
+  JUMP -> 56
+
+============================================================
+BLOCK 140
+- Instructions:
+  j	.LBB0_10
+
+- Edges:
+  JUMP -> 160
+
+============================================================
+BLOCK 144
+- Instructions:
+  li	a0, 1
+  andi	a0, a0, 1
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 156
+- Instructions:
+  li	t1, 0
+
+- Edges:
+  NO_JUMP -> 160
+
+============================================================
+BLOCK 160
+- Instructions:
+  xori	a0, t1, 1
+  andi	a0, a0, 1
+  ret
+
+- Edges: (none)

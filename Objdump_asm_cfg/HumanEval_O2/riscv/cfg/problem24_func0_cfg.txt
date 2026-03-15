@@ -1,0 +1,30 @@
+Function: func0
+Basic blocks: 3
+
+============================================================
+BLOCK 1872
+- Instructions:
+  li	a1,0
+
+- Edges:
+  NO_JUMP -> 1874
+
+============================================================
+BLOCK 1874
+- Instructions:
+  add	a2,a0,a1
+  lbu	a2,0(a2)
+  add	a1,a1,1
+  bnez	a2,752 <func0+0x2>
+
+- Edges:
+  NO_JUMP -> 1886
+  JUMP -> 1874
+
+============================================================
+BLOCK 1886
+- Instructions:
+  addw	a0,a1,-1
+  ret
+
+- Edges: (none)

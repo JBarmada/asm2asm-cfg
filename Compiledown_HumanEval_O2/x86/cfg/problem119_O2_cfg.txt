@@ -1,0 +1,119 @@
+Function: func0
+Basic blocks: 9
+
+============================================================
+BLOCK 0
+- Instructions:
+  pushq	%rbp
+  pushq	%r15
+  pushq	%r14
+  pushq	%r12
+  pushq	%rbx
+  movq	%rdi, %r15
+  callq	strlen@PLT
+  addl	$-2, %eax
+  testl	%eax, %eax
+  jle	.LBB0_6
+
+- Edges:
+  NO_JUMP -> 40
+  JUMP -> 164
+
+============================================================
+BLOCK 40
+- Instructions:
+  movl	%eax, %ebx
+  movl	$4294967295, %r12d
+  addq	%rbx, %r12
+  incq	%rbx
+  leaq	.L.str(%rip), %r14
+  jmp	.LBB0_2
+
+- Edges:
+  JUMP -> 80
+
+============================================================
+BLOCK 64
+- Instructions:
+  decq	%r12
+  decq	%rbx
+  cmpq	$1, %rbx
+  jle	.LBB0_6
+
+- Edges:
+  NO_JUMP -> 80
+  JUMP -> 164
+
+============================================================
+BLOCK 80
+- Instructions:
+  movzbl	-1(%r15,%rbx), %ebp
+  movsbl	%bpl, %esi
+  movl	$11, %edx
+  movq	%r14, %rdi
+  callq	memchr@PLT
+  testq	%rax, %rax
+  je	.LBB0_5
+
+- Edges:
+  NO_JUMP -> 108
+  JUMP -> 64
+
+============================================================
+BLOCK 108
+- Instructions:
+  movsbl	(%r15,%rbx), %esi
+  movl	$11, %edx
+  movq	%r14, %rdi
+  callq	memchr@PLT
+  testq	%rax, %rax
+  jne	.LBB0_5
+
+- Edges:
+  NO_JUMP -> 132
+  JUMP -> 64
+
+============================================================
+BLOCK 132
+- Instructions:
+  movl	%r12d, %eax
+  movsbl	(%r15,%rax), %esi
+  movl	$11, %edx
+  movq	%r14, %rdi
+  callq	memchr@PLT
+  testq	%rax, %rax
+  jne	.LBB0_5
+
+- Edges:
+  NO_JUMP -> 160
+  JUMP -> 64
+
+============================================================
+BLOCK 160
+- Instructions:
+  jmp	.LBB0_7
+
+- Edges:
+  JUMP -> 168
+
+============================================================
+BLOCK 164
+- Instructions:
+  xorl	%ebp, %ebp
+
+- Edges:
+  NO_JUMP -> 168
+
+============================================================
+BLOCK 168
+- Instructions:
+  movb	%bpl, func0.out(%rip)
+  leaq	func0.out(%rip), %rax
+  popq	%rbx
+  popq	%r12
+  popq	%r14
+  popq	%r15
+  popq	%rbp
+  retq
+
+- Edges: (none)

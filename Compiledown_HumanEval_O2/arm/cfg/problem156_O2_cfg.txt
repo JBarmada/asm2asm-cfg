@@ -1,0 +1,40 @@
+Function: _func0
+Basic blocks: 3
+
+============================================================
+BLOCK 0
+- Instructions:
+  mov	w8, #0
+  mov	w9, #0
+  cmp	w0, #0
+  cneg	w10, w0, mi
+  mov	w11, #52429
+  movk	w11, #52428, lsl #16
+
+- Edges:
+  NO_JUMP -> 24
+
+============================================================
+BLOCK 24
+- Instructions:
+  umull	x12, w10, w11
+  and	w13, w10, #0x1
+  lsr	x12, x12, #35
+  eor	w14, w13, #0x1
+  add	w8, w14, w8
+  add	w9, w13, w9
+  cmp	w10, #9
+  mov	x10, x12
+  b.hi	LBB0_1
+
+- Edges:
+  NO_JUMP -> 60
+  JUMP -> 24
+
+============================================================
+BLOCK 60
+- Instructions:
+  stp	w8, w9, [x1]
+  ret
+
+- Edges: (none)

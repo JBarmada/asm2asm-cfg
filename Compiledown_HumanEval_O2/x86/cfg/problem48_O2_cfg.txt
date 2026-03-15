@@ -1,0 +1,126 @@
+Function: func0
+Basic blocks: 11
+
+============================================================
+BLOCK 0
+- Instructions:
+  testl	%esi, %esi
+  jle	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 8
+  JUMP -> 108
+
+============================================================
+BLOCK 8
+- Instructions:
+  movl	%esi, %r8d
+  xorl	%r9d, %r9d
+  movq	%r8, %r10
+  movq	%rdi, %rdx
+  jmp	.LBB0_2
+
+- Edges:
+  JUMP -> 44
+
+============================================================
+BLOCK 28
+- Instructions:
+  addq	$4, %rdx
+  decq	%r10
+  cmpq	%r8, %r9
+  je	.LBB0_4
+
+- Edges:
+  NO_JUMP -> 44
+  JUMP -> 108
+
+============================================================
+BLOCK 44
+- Instructions:
+  movq	%r9, %rax
+  incq	%r9
+  cmpq	%r8, %r9
+  jae	.LBB0_3
+
+- Edges:
+  NO_JUMP -> 60
+  JUMP -> 28
+
+============================================================
+BLOCK 60
+- Instructions:
+  movl	$1, %ecx
+  jmp	.LBB0_7
+
+- Edges:
+  JUMP -> 80
+
+============================================================
+BLOCK 68
+- Instructions:
+  incq	%rcx
+  cmpq	%rcx, %r10
+  je	.LBB0_3
+
+- Edges:
+  NO_JUMP -> 80
+  JUMP -> 28
+
+============================================================
+BLOCK 80
+- Instructions:
+  movss	(%rdi,%rax,4), %xmm0
+  movss	(%rdx,%rcx,4), %xmm1
+  ucomiss	%xmm1, %xmm0
+  jbe	.LBB0_9
+
+- Edges:
+  NO_JUMP -> 96
+  JUMP -> 68
+
+============================================================
+BLOCK 96
+- Instructions:
+  movss	%xmm1, (%rdi,%rax,4)
+  movss	%xmm0, (%rdx,%rcx,4)
+  jmp	.LBB0_9
+
+- Edges:
+  JUMP -> 68
+
+============================================================
+BLOCK 108
+- Instructions:
+  movl	%esi, %eax
+  andl	$-2147483647, %eax
+  cmpl	$1, %eax
+  jne	.LBB0_10
+
+- Edges:
+  NO_JUMP -> 124
+  JUMP -> 136
+
+============================================================
+BLOCK 124
+- Instructions:
+  shrl	%esi
+  movss	(%rdi,%rsi,4), %xmm0
+  retq
+
+- Edges: (none)
+
+============================================================
+BLOCK 136
+- Instructions:
+  movl	%esi, %eax
+  shrl	$31, %eax
+  addl	%esi, %eax
+  sarl	%eax
+  cltq
+  movss	(%rdi,%rax,4), %xmm0
+  addss	-4(%rdi,%rax,4), %xmm0
+  mulss	.LCPI0_0(%rip), %xmm0
+  retq
+
+- Edges: (none)

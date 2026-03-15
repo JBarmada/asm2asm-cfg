@@ -1,0 +1,66 @@
+Function: func0
+Basic blocks: 6
+
+============================================================
+BLOCK 2224
+- Instructions:
+  add	sp,sp,-16
+  sd	ra,8(sp)
+  li	a1,0
+  jal	6f0 <strtod@plt>
+
+- Edges:
+  JUMP -> 1776
+
+============================================================
+BLOCK 2234
+- Instructions:
+  fmv.d.x	ft0,zero
+  flt.d	a0,fa0,ft0
+  beqz	a0,8da <func0+0x2a>
+
+- Edges:
+  NO_JUMP -> 2244
+  JUMP -> 2266
+
+============================================================
+BLOCK 2244
+- Instructions:
+  auipc	a0,0x1
+  add	a0,a0,1964 # 2070 <__SDATA_BEGIN__+0x8>
+  fld	ft0,0(a0)
+  fadd.d	fa0,fa0,ft0
+  jal	6c0 <ceil@plt>
+
+- Edges:
+  JUMP -> 1728
+
+============================================================
+BLOCK 2264
+- Instructions:
+  j	8ee <func0+0x3e>
+
+- Edges:
+  JUMP -> 2286
+
+============================================================
+BLOCK 2266
+- Instructions:
+  auipc	a0,0x1
+  add	a0,a0,1934 # 2068 <__SDATA_BEGIN__>
+  fld	ft0,0(a0)
+  fadd.d	fa0,fa0,ft0
+  jal	6d0 <floor@plt>
+
+- Edges:
+  JUMP -> 1744
+
+============================================================
+BLOCK 2286
+- Instructions:
+  fcvt.w.d	a0,fa0,rtz
+  ld	ra,8(sp)
+  add	sp,sp,16
+  ret
+
+- Edges: (none)

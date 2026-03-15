@@ -1,0 +1,35 @@
+Function: func0
+Basic blocks: 1
+
+============================================================
+BLOCK 2088
+- Instructions:
+  sraw	a2,a0,0x1f
+  xor	a0,a0,a2
+  subw	a0,a0,a2
+  sll	a2,a0,0x20
+  srl	a2,a2,0x20
+  lui	a3,0xcd
+  addw	a3,a3,-819 # ccccd <__global_pointer$+0xca4cd>
+  sll	a3,a3,0xc
+  add	a3,a3,-819
+  mul	a2,a2,a3
+  srl	a2,a2,0x23
+  li	a4,10
+  mulw	a2,a2,a4
+  subw	a0,a0,a2
+  sraw	a2,a1,0x1f
+  xor	a1,a1,a2
+  subw	a1,a1,a2
+  sll	a2,a1,0x20
+  srl	a2,a2,0x20
+  mul	a2,a2,a3
+  srl	a2,a2,0x23
+  mulw	a2,a2,a4
+  subw	a1,a1,a2
+  mulw	a0,a1,a0
+  sll	a0,a0,0x20
+  srl	a0,a0,0x20
+  ret
+
+- Edges: (none)

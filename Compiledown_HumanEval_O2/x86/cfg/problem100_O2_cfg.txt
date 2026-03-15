@@ -1,0 +1,44 @@
+Function: func0
+Basic blocks: 4
+
+============================================================
+BLOCK 0
+- Instructions:
+  pushq	%rax
+  xorl	%esi, %esi
+  callq	strtod@PLT
+  xorpd	%xmm1, %xmm1
+  ucomisd	%xmm0, %xmm1
+  jbe	.LBB0_2
+
+- Edges:
+  NO_JUMP -> 24
+  JUMP -> 36
+
+============================================================
+BLOCK 24
+- Instructions:
+  addsd	.LCPI0_1(%rip), %xmm0
+  callq	ceil@PLT
+  jmp	.LBB0_3
+
+- Edges:
+  JUMP -> 44
+
+============================================================
+BLOCK 36
+- Instructions:
+  addsd	.LCPI0_0(%rip), %xmm0
+  callq	floor@PLT
+
+- Edges:
+  NO_JUMP -> 44
+
+============================================================
+BLOCK 44
+- Instructions:
+  cvttsd2si	%xmm0, %eax
+  popq	%rcx
+  retq
+
+- Edges: (none)

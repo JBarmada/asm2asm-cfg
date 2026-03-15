@@ -1,0 +1,133 @@
+Function: func0
+Basic blocks: 9
+
+============================================================
+BLOCK 0
+- Instructions:
+  pushq	%rbp
+  pushq	%r15
+  pushq	%r14
+  pushq	%r13
+  pushq	%r12
+  pushq	%rbx
+  pushq	%rax
+  movl	%esi, %ebp
+  movq	%rdi, %r14
+  movslq	%esi, %rbx
+  leaq	(,%rbx,8), %rdi
+  callq	malloc@PLT
+  movq	%rax, %r12
+  testl	%ebx, %ebx
+  jle	.LBB0_8
+
+- Edges:
+  NO_JUMP -> 60
+  JUMP -> 220
+
+============================================================
+BLOCK 60
+- Instructions:
+  movl	%ebp, %r13d
+  leaq	.L.str(%rip), %r15
+  xorl	%ebx, %ebx
+  jmp	.LBB0_2
+
+- Edges:
+  JUMP -> 128
+
+============================================================
+BLOCK 76
+- Instructions:
+  movl	$100, %edi
+  callq	malloc@PLT
+  movq	%rax, (%r12,%rbx,8)
+  movq	%rax, %rdi
+  movq	%r15, %rsi
+  movl	%ebp, %edx
+  movl	%ebp, %ecx
+  movl	%ebp, %r8d
+  xorl	%eax, %eax
+  callq	sprintf@PLT
+  incq	%rbx
+  cmpq	%r13, %rbx
+  je	.LBB0_8
+
+- Edges:
+  NO_JUMP -> 128
+  JUMP -> 220
+
+============================================================
+BLOCK 128
+- Instructions:
+  movq	(%r14,%rbx,8), %rax
+  movzbl	(%rax), %ecx
+  movl	$0, %ebp
+  testb	%cl, %cl
+  je	.LBB0_7
+
+- Edges:
+  NO_JUMP -> 148
+  JUMP -> 76
+
+============================================================
+BLOCK 148
+- Instructions:
+  incq	%rax
+  xorl	%ebp, %ebp
+  jmp	.LBB0_4
+
+- Edges:
+  JUMP -> 176
+
+============================================================
+BLOCK 160
+- Instructions:
+  movzbl	(%rax), %ecx
+  incq	%rax
+  testb	%cl, %cl
+  je	.LBB0_7
+
+- Edges:
+  NO_JUMP -> 176
+  JUMP -> 76
+
+============================================================
+BLOCK 176
+- Instructions:
+  leal	-48(%rcx), %edx
+  cmpb	$9, %dl
+  ja	.LBB0_6
+
+- Edges:
+  NO_JUMP -> 188
+  JUMP -> 160
+
+============================================================
+BLOCK 188
+- Instructions:
+  movzbl	%cl, %ecx
+  addl	$-48, %ecx
+  andl	$-2147483647, %ecx
+  xorl	%edx, %edx
+  cmpl	$1, %ecx
+  sete	%dl
+  addl	%edx, %ebp
+  jmp	.LBB0_6
+
+- Edges:
+  JUMP -> 160
+
+============================================================
+BLOCK 220
+- Instructions:
+  movq	%r12, %rax
+  addq	$8, %rsp
+  popq	%rbx
+  popq	%r12
+  popq	%r13
+  popq	%r14
+  popq	%r15
+  popq	%rbp
+  retq
+
+- Edges: (none)

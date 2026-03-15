@@ -1,0 +1,32 @@
+Function: func0
+Basic blocks: 3
+
+============================================================
+BLOCK 2024
+- Instructions:
+  blez	a1,7f8 <func0+0x10>
+
+- Edges:
+  NO_JUMP -> 2028
+  JUMP -> 2040
+
+============================================================
+BLOCK 2028
+- Instructions:
+  lw	a2,0(a0)
+  addw	a2,a2,1
+  sw	a2,0(a0)
+  add	a1,a1,-1
+  add	a0,a0,4
+  bnez	a1,7ec <func0+0x4>
+
+- Edges:
+  NO_JUMP -> 2040
+  JUMP -> 2028
+
+============================================================
+BLOCK 2040
+- Instructions:
+  ret
+
+- Edges: (none)

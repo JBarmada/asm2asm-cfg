@@ -1,0 +1,36 @@
+Function: func0
+Basic blocks: 3
+
+============================================================
+BLOCK 2096
+- Instructions:
+  li	a4,0
+  li	a3,1
+  blez	a1,846 <func0+0x16>
+
+- Edges:
+  NO_JUMP -> 2104
+  JUMP -> 2118
+
+============================================================
+BLOCK 2104
+- Instructions:
+  lw	a5,0(a0)
+  addw	a4,a4,a5
+  mulw	a3,a5,a3
+  add	a1,a1,-1
+  add	a0,a0,4
+  bnez	a1,838 <func0+0x8>
+
+- Edges:
+  NO_JUMP -> 2118
+  JUMP -> 2104
+
+============================================================
+BLOCK 2118
+- Instructions:
+  sw	a4,0(a2)
+  sw	a3,4(a2)
+  ret
+
+- Edges: (none)

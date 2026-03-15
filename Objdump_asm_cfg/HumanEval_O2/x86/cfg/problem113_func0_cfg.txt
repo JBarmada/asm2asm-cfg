@@ -1,0 +1,222 @@
+Function: func0
+Basic blocks: 18
+
+============================================================
+BLOCK 5424
+- Instructions:
+  push   %rbp
+  push   %r15
+  push   %r14
+  push   %r13
+  push   %r12
+  push   %rbx
+  push   %rax
+  mov    %rcx,%r14
+  mov    %rdx,%r15
+  mov    %rsi,%r13
+  mov    %rdi,%rbp
+  call   1050 <strlen@plt>
+  inc    %eax
+  movslq %eax,%rdi
+  call   1070 <malloc@plt>
+  mov    %rax,%r12
+  movzbl 0x0(%rbp),%edx
+  test   %dl,%dl
+  je     15a0 <func0+0x70>
+
+- Edges:
+  NO_JUMP -> 5473
+  JUMP -> 5536
+
+============================================================
+BLOCK 5473
+- Instructions:
+  movzbl 0x0(%r13),%ebx
+  inc    %r13
+  xor    %esi,%esi
+  xor    %ecx,%ecx
+  jmp    1585 <func0+0x55>
+
+- Edges:
+  JUMP -> 5509
+
+============================================================
+BLOCK 5487
+- Instructions:
+  nop
+
+- Edges:
+  NO_JUMP -> 5488
+
+============================================================
+BLOCK 5488
+- Instructions:
+  movslq %ecx,%rax
+  inc    %ecx
+  mov    %dl,(%r12,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5497
+
+============================================================
+BLOCK 5497
+- Instructions:
+  movzbl 0x1(%rbp,%rsi,1),%edx
+  inc    %rsi
+  test   %dl,%dl
+  je     15a2 <func0+0x72>
+
+- Edges:
+  NO_JUMP -> 5509
+  JUMP -> 5538
+
+============================================================
+BLOCK 5509
+- Instructions:
+  mov    %r13,%rdi
+  mov    %ebx,%eax
+  test   %bl,%bl
+  je     1570 <func0+0x40>
+
+- Edges:
+  NO_JUMP -> 5518
+  JUMP -> 5488
+
+============================================================
+BLOCK 5518
+- Instructions:
+  xchg   %ax,%ax
+
+- Edges:
+  NO_JUMP -> 5520
+
+============================================================
+BLOCK 5520
+- Instructions:
+  cmp    %al,%dl
+  je     1579 <func0+0x49>
+
+- Edges:
+  NO_JUMP -> 5524
+  JUMP -> 5497
+
+============================================================
+BLOCK 5524
+- Instructions:
+  movzbl (%rdi),%eax
+  inc    %rdi
+  test   %al,%al
+  jne    1590 <func0+0x60>
+
+- Edges:
+  NO_JUMP -> 5534
+  JUMP -> 5520
+
+============================================================
+BLOCK 5534
+- Instructions:
+  jmp    1570 <func0+0x40>
+
+- Edges:
+  JUMP -> 5488
+
+============================================================
+BLOCK 5536
+- Instructions:
+  xor    %ecx,%ecx
+
+- Edges:
+  NO_JUMP -> 5538
+
+============================================================
+BLOCK 5538
+- Instructions:
+  movslq %ecx,%rax
+  movb   $0x0,(%r12,%rax,1)
+  mov    %r12,%rdi
+  call   1050 <strlen@plt>
+  lea    0xb18(%rip),%rbp        # 20d1 <_IO_stdin_used+0xd1>
+  cmp    $0x2,%eax
+  jl     1602 <func0+0xd2>
+
+- Edges:
+  NO_JUMP -> 5566
+  JUMP -> 5634
+
+============================================================
+BLOCK 5566
+- Instructions:
+  movabs $0xffffffff00000000,%rcx
+  mov    %eax,%edx
+  shr    %edx
+  shl    $0x20,%rax
+  add    %rcx,%rax
+  xor    %esi,%esi
+  lea    0xa31(%rip),%r8        # 200d <_IO_stdin_used+0xd>
+  nopl   0x0(%rax)
+
+- Edges:
+  NO_JUMP -> 5600
+
+============================================================
+BLOCK 5600
+- Instructions:
+  movzbl (%r12,%rsi,1),%ebx
+  mov    %rax,%rdi
+  sar    $0x20,%rdi
+  cmp    (%r12,%rdi,1),%bl
+  jne    15ff <func0+0xcf>
+
+- Edges:
+  NO_JUMP -> 5618
+  JUMP -> 5631
+
+============================================================
+BLOCK 5618
+- Instructions:
+  inc    %rsi
+  add    %rcx,%rax
+  cmp    %rsi,%rdx
+  jne    15e0 <func0+0xb0>
+
+- Edges:
+  NO_JUMP -> 5629
+  JUMP -> 5600
+
+============================================================
+BLOCK 5629
+- Instructions:
+  jmp    1602 <func0+0xd2>
+
+- Edges:
+  JUMP -> 5634
+
+============================================================
+BLOCK 5631
+- Instructions:
+  mov    %r8,%rbp
+
+- Edges:
+  NO_JUMP -> 5634
+
+============================================================
+BLOCK 5634
+- Instructions:
+  mov    %r15,%rdi
+  mov    %r12,%rsi
+  call   1040 <strcpy@plt>
+  mov    %r14,%rdi
+  mov    %rbp,%rsi
+  call   1040 <strcpy@plt>
+  mov    %r12,%rdi
+  add    $0x8,%rsp
+  pop    %rbx
+  pop    %r12
+  pop    %r13
+  pop    %r14
+  pop    %r15
+  pop    %rbp
+  jmp    1030 <free@plt>
+
+- Edges:
+  JUMP -> 4144

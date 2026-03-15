@@ -1,0 +1,29 @@
+Function: func0
+Basic blocks: 3
+
+============================================================
+BLOCK 0
+- Instructions:
+  movl	$-1, %eax
+
+- Edges:
+  NO_JUMP -> 4
+
+============================================================
+BLOCK 4
+- Instructions:
+  incl	%eax
+  cmpb	$0, (%rdi)
+  leaq	1(%rdi), %rdi
+  jne	.LBB0_1
+
+- Edges:
+  NO_JUMP -> 20
+  JUMP -> 4
+
+============================================================
+BLOCK 20
+- Instructions:
+  retq
+
+- Edges: (none)

@@ -1,0 +1,132 @@
+Function: func0
+Basic blocks: 11
+
+============================================================
+BLOCK 0
+- Instructions:
+  blez	a1, .LBB0_8
+
+- Edges:
+  NO_JUMP -> 4
+  JUMP -> 104
+
+============================================================
+BLOCK 4
+- Instructions:
+  li	a6, 0
+  addi	a7, a0, 4
+  li	t0, 1
+  j	.LBB0_3
+
+- Edges:
+  JUMP -> 32
+
+============================================================
+BLOCK 20
+- Instructions:
+  addi	t0, t0, 1
+  addi	a7, a7, 4
+  beq	a6, a1, .LBB0_8
+
+- Edges:
+  NO_JUMP -> 32
+  JUMP -> 104
+
+============================================================
+BLOCK 32
+- Instructions:
+  mv	a2, a6
+  addi	a6, a6, 1
+  bgeu	a6, a1, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 44
+  JUMP -> 20
+
+============================================================
+BLOCK 44
+- Instructions:
+  slli	a2, a2, 2
+  add	a5, a0, a2
+  mv	a4, a1
+  mv	a2, a7
+  j	.LBB0_6
+
+- Edges:
+  JUMP -> 76
+
+============================================================
+BLOCK 64
+- Instructions:
+  addi	a4, a4, -1
+  addi	a2, a2, 4
+  beq	t0, a4, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 76
+  JUMP -> 20
+
+============================================================
+BLOCK 76
+- Instructions:
+  flw	ft0, 0(a5)
+  flw	ft1, 0(a2)
+  flt.s	a3, ft1, ft0
+  beqz	a3, .LBB0_5
+
+- Edges:
+  NO_JUMP -> 92
+  JUMP -> 64
+
+============================================================
+BLOCK 92
+- Instructions:
+  fsw	ft1, 0(a5)
+  fsw	ft0, 0(a2)
+  j	.LBB0_5
+
+- Edges:
+  JUMP -> 64
+
+============================================================
+BLOCK 104
+- Instructions:
+  lui	a2, 524288
+  addiw	a2, a2, 1
+  and	a2, a2, a1
+  li	a3, 1
+  bne	a2, a3, .LBB0_10
+
+- Edges:
+  NO_JUMP -> 124
+  JUMP -> 144
+
+============================================================
+BLOCK 124
+- Instructions:
+  srliw	a1, a1, 1
+  slli	a1, a1, 2
+  add	a0, a0, a1
+  flw	fa0, 0(a0)
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 144
+- Instructions:
+  srliw	a2, a1, 31
+  addw	a1, a1, a2
+  slli	a1, a1, 1
+  andi	a1, a1, -4
+  add	a0, a0, a1
+  flw	ft0, 0(a0)
+  flw	ft1, -4(a0)
+  auipc	a0, %pcrel_hi(.LCPI0_0)
+  addi	a0, a0, %pcrel_lo(.LBB0_11)
+  flw	ft2, 0(a0)
+  fadd.s	ft0, ft0, ft1
+  fmul.s	fa0, ft0, ft2
+  ret
+
+- Edges: (none)

@@ -1,0 +1,124 @@
+Function: func0
+Basic blocks: 10
+
+============================================================
+BLOCK 0
+- Instructions:
+  addi	sp, sp, -32
+  sd	ra, 24(sp)
+  sd	s0, 16(sp)
+  sd	s1, 8(sp)
+  sd	s2, 0(sp)
+  mv	s2, a0
+  li	a0, 8
+  call	malloc@plt
+  sw	zero, 0(a0)
+  sw	zero, 4(a0)
+  blez	s2, .LBB0_9
+
+- Edges:
+  NO_JUMP -> 44
+  JUMP -> 168
+
+============================================================
+BLOCK 44
+- Instructions:
+  li	a6, 0
+  li	a7, 0
+  li	a1, 1
+  li	a3, 10
+  lui	a2, 419430
+  addiw	a4, a2, 1639
+  li	t1, 18
+  j	.LBB0_4
+
+- Edges:
+  JUMP -> 92
+
+============================================================
+BLOCK 76
+- Instructions:
+  addiw	a7, a7, 1
+  sw	a7, 4(a0)
+
+- Edges:
+  NO_JUMP -> 84
+
+============================================================
+BLOCK 84
+- Instructions:
+  addiw	a1, t0, 1
+  bge	t0, s2, .LBB0_9
+
+- Edges:
+  NO_JUMP -> 92
+  JUMP -> 168
+
+============================================================
+BLOCK 92
+- Instructions:
+  li	s0, 0
+  mv	t0, a1
+
+- Edges:
+  NO_JUMP -> 100
+
+============================================================
+BLOCK 100
+- Instructions:
+  mulw	s0, s0, a3
+  mul	s1, a1, a4
+  srli	a2, s1, 63
+  srai	s1, s1, 34
+  addw	a2, a2, s1
+  mulw	s1, a2, a3
+  subw	s1, a1, s1
+  addiw	a5, a1, 9
+  addw	s0, s0, s1
+  mv	a1, a2
+  bltu	t1, a5, .LBB0_5
+
+- Edges:
+  NO_JUMP -> 144
+  JUMP -> 100
+
+============================================================
+BLOCK 144
+- Instructions:
+  bne	t0, s0, .LBB0_3
+
+- Edges:
+  NO_JUMP -> 148
+  JUMP -> 84
+
+============================================================
+BLOCK 148
+- Instructions:
+  andi	a1, t0, 1
+  bnez	a1, .LBB0_2
+
+- Edges:
+  NO_JUMP -> 156
+  JUMP -> 76
+
+============================================================
+BLOCK 156
+- Instructions:
+  addiw	a6, a6, 1
+  sw	a6, 0(a0)
+  j	.LBB0_3
+
+- Edges:
+  JUMP -> 84
+
+============================================================
+BLOCK 168
+- Instructions:
+  ld	ra, 24(sp)
+  ld	s0, 16(sp)
+  ld	s1, 8(sp)
+  ld	s2, 0(sp)
+  addi	sp, sp, 32
+  ret
+
+- Edges: (none)

@@ -1,0 +1,63 @@
+Function: _func0
+Basic blocks: 5
+
+============================================================
+BLOCK 4294968596
+- Instructions:
+  stp	x22, x21, [sp, #-0x30]!
+  stp	x20, x19, [sp, #0x10]
+  stp	x29, x30, [sp, #0x20]
+  add	x29, sp, #0x20
+  mov	x19, x0
+  bl	0x1000006ac <_strlen+0x1000006ac>
+  cbz	x0, 0x100000564 <_func0+0x50>
+  mov	x21, x0
+  mov	w20, #0x0               ; =0
+  adrp	x22, 0x100000000 <_strlen+0x100000000>
+  add	x22, x22, #0x7bb
+
+- Edges:
+  NO_JUMP -> 4294968640
+
+============================================================
+BLOCK 4294968640
+- Instructions:
+  ldrsb	w1, [x19], #0x1
+  mov	x0, x22
+  mov	w2, #0x7                ; =7
+  bl	0x1000006a0 <_strlen+0x1000006a0>
+  cmp	x0, #0x0
+  cinc	w20, w20, ne
+  subs	x21, x21, #0x1
+  b.ne	0x100000540 <_func0+0x2c>
+
+- Edges:
+  NO_JUMP -> 4294968672
+  JUMP -> 4294968640
+
+============================================================
+BLOCK 4294968672
+- Instructions:
+  b	0x100000568 <_func0+0x54>
+
+- Edges:
+  JUMP -> 4294968680
+
+============================================================
+BLOCK 4294968676
+- Instructions:
+  mov	w20, #0x0               ; =0
+
+- Edges:
+  NO_JUMP -> 4294968680
+
+============================================================
+BLOCK 4294968680
+- Instructions:
+  mov	x0, x20
+  ldp	x29, x30, [sp, #0x20]
+  ldp	x20, x19, [sp, #0x10]
+  ldp	x22, x21, [sp], #0x30
+  ret
+
+- Edges: (none)

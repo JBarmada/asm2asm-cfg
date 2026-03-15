@@ -1,0 +1,64 @@
+Function: _func0
+Basic blocks: 6
+
+============================================================
+BLOCK 0
+- Instructions:
+  str	wzr, [x3]
+  cmp	w1, w0
+  csel	w9, w1, w0, gt
+  csel	w8, w1, w0, lt
+  add	w9, w9, #1
+  b	LBB0_2
+
+- Edges:
+  JUMP -> 36
+
+============================================================
+BLOCK 24
+- Instructions:
+  add	w8, w8, #1
+  cmp	w9, w8
+  b.eq	LBB0_5
+
+- Edges:
+  NO_JUMP -> 36
+  JUMP -> 68
+
+============================================================
+BLOCK 36
+- Instructions:
+  cmp	w8, #9
+  b.gt	LBB0_1
+
+- Edges:
+  NO_JUMP -> 44
+  JUMP -> 24
+
+============================================================
+BLOCK 44
+- Instructions:
+  tbnz	w8, #0, LBB0_1
+
+- Edges:
+  NO_JUMP -> 48
+  JUMP -> 24
+
+============================================================
+BLOCK 48
+- Instructions:
+  ldrsw	x10, [x3]
+  add	w11, w10, #1
+  str	w11, [x3]
+  str	w8, [x2, x10, lsl #2]
+  b	LBB0_1
+
+- Edges:
+  JUMP -> 24
+
+============================================================
+BLOCK 68
+- Instructions:
+  ret
+
+- Edges: (none)

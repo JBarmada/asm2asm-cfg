@@ -1,0 +1,281 @@
+Function: func0
+Basic blocks: 18
+
+============================================================
+BLOCK 4656
+- Instructions:
+  push   %r14
+  push   %rbx
+  push   %rax
+  mov    %rsi,%r14
+  mov    %rdi,%rbx
+  call   1030 <strlen@plt>
+  test   %eax,%eax
+  jle    144c <func0+0x21c>
+
+- Edges:
+  NO_JUMP -> 4679
+  JUMP -> 5196
+
+============================================================
+BLOCK 4679
+- Instructions:
+  mov    %eax,%r8d
+  xor    %edx,%edx
+  cmp    $0x8,%r8
+  jb     1480 <func0+0x250>
+
+- Edges:
+  NO_JUMP -> 4694
+  JUMP -> 5248
+
+============================================================
+BLOCK 4694
+- Instructions:
+  mov    %r14,%rsi
+  sub    %rbx,%rsi
+  cmp    $0x20,%rsi
+  jb     1480 <func0+0x250>
+
+- Edges:
+  NO_JUMP -> 4710
+  JUMP -> 5248
+
+============================================================
+BLOCK 4710
+- Instructions:
+  cmp    $0x20,%r8d
+  jae    1273 <func0+0x43>
+
+- Edges:
+  NO_JUMP -> 4716
+  JUMP -> 4723
+
+============================================================
+BLOCK 4716
+- Instructions:
+  xor    %edx,%edx
+  jmp    139b <func0+0x16b>
+
+- Edges:
+  JUMP -> 5019
+
+============================================================
+BLOCK 4723
+- Instructions:
+  mov    %eax,%esi
+  and    $0x1f,%esi
+  mov    %r8,%rdx
+  sub    %rsi,%rdx
+  xor    %edi,%edi
+  movdqa 0xe77(%rip),%xmm8        # 2100 <_IO_stdin_used+0x100>
+  movdqa 0xe7e(%rip),%xmm9        # 2110 <_IO_stdin_used+0x110>
+  movdqa 0xe85(%rip),%xmm10        # 2120 <_IO_stdin_used+0x120>
+  movdqa 0xe8c(%rip),%xmm11        # 2130 <_IO_stdin_used+0x130>
+  movdqa 0xe93(%rip),%xmm12        # 2140 <_IO_stdin_used+0x140>
+  movdqa 0xe9a(%rip),%xmm13        # 2150 <_IO_stdin_used+0x150>
+  cs nopw 0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 4800
+
+============================================================
+BLOCK 4800
+- Instructions:
+  movdqu (%rbx,%rdi,1),%xmm1
+  movdqu 0x10(%rbx,%rdi,1),%xmm5
+  movdqa %xmm1,%xmm0
+  paddb  %xmm8,%xmm0
+  movdqa %xmm0,%xmm6
+  pminub %xmm9,%xmm6
+  pcmpeqb %xmm0,%xmm6
+  movdqa %xmm5,%xmm2
+  paddb  %xmm8,%xmm2
+  movdqa %xmm2,%xmm0
+  pminub %xmm9,%xmm0
+  pcmpeqb %xmm2,%xmm0
+  movdqa %xmm1,%xmm2
+  paddb  %xmm10,%xmm2
+  movdqa %xmm5,%xmm7
+  paddb  %xmm10,%xmm7
+  movdqa %xmm2,%xmm3
+  pminub %xmm11,%xmm3
+  pcmpeqb %xmm2,%xmm3
+  movdqa %xmm7,%xmm2
+  pminub %xmm11,%xmm2
+  pcmpeqb %xmm7,%xmm2
+  movdqa %xmm1,%xmm7
+  paddb  %xmm12,%xmm7
+  movdqa %xmm5,%xmm4
+  paddb  %xmm12,%xmm4
+  pand   %xmm3,%xmm7
+  pandn  %xmm1,%xmm3
+  por    %xmm7,%xmm3
+  pand   %xmm2,%xmm4
+  pandn  %xmm5,%xmm2
+  por    %xmm4,%xmm2
+  paddb  %xmm13,%xmm1
+  paddb  %xmm13,%xmm5
+  pand   %xmm6,%xmm3
+  pandn  %xmm1,%xmm6
+  por    %xmm3,%xmm6
+  pand   %xmm0,%xmm2
+  pandn  %xmm5,%xmm0
+  por    %xmm2,%xmm0
+  movdqu %xmm6,(%r14,%rdi,1)
+  movdqu %xmm0,0x10(%r14,%rdi,1)
+  add    $0x20,%rdi
+  cmp    %rdi,%rdx
+  jne    12c0 <func0+0x90>
+
+- Edges:
+  NO_JUMP -> 5001
+  JUMP -> 4800
+
+============================================================
+BLOCK 5001
+- Instructions:
+  test   %rsi,%rsi
+  je     144c <func0+0x21c>
+
+- Edges:
+  NO_JUMP -> 5010
+  JUMP -> 5196
+
+============================================================
+BLOCK 5010
+- Instructions:
+  cmp    $0x8,%esi
+  jb     1480 <func0+0x250>
+
+- Edges:
+  NO_JUMP -> 5019
+  JUMP -> 5248
+
+============================================================
+BLOCK 5019
+- Instructions:
+  mov    %rdx,%rsi
+  mov    %eax,%edi
+  and    $0x7,%edi
+  mov    %r8,%rdx
+  sub    %rdi,%rdx
+  movdqa 0xdae(%rip),%xmm8        # 2160 <_IO_stdin_used+0x160>
+  movdqa 0xdb5(%rip),%xmm9        # 2170 <_IO_stdin_used+0x170>
+  movdqa 0xdbc(%rip),%xmm10        # 2180 <_IO_stdin_used+0x180>
+  movdqa 0xdc4(%rip),%xmm3        # 2190 <_IO_stdin_used+0x190>
+  movdqa 0xdcc(%rip),%xmm4        # 21a0 <_IO_stdin_used+0x1a0>
+  movdqa 0xdd4(%rip),%xmm5        # 21b0 <_IO_stdin_used+0x1b0>
+  nopl   0x0(%rax)
+
+- Edges:
+  NO_JUMP -> 5088
+
+============================================================
+BLOCK 5088
+- Instructions:
+  movq   (%rbx,%rsi,1),%xmm6
+  movdqa %xmm6,%xmm7
+  paddb  %xmm8,%xmm7
+  movdqa %xmm7,%xmm0
+  pmaxub %xmm9,%xmm0
+  pcmpeqb %xmm7,%xmm0
+  movdqa %xmm6,%xmm1
+  paddb  %xmm10,%xmm1
+  movdqa %xmm1,%xmm7
+  pmaxub %xmm3,%xmm7
+  pcmpeqb %xmm1,%xmm7
+  movdqa %xmm6,%xmm1
+  paddb  %xmm4,%xmm1
+  movdqa %xmm7,%xmm2
+  pand   %xmm6,%xmm2
+  pandn  %xmm1,%xmm7
+  por    %xmm2,%xmm7
+  paddb  %xmm5,%xmm6
+  pand   %xmm0,%xmm6
+  pandn  %xmm7,%xmm0
+  por    %xmm0,%xmm6
+  movq   %xmm6,(%r14,%rsi,1)
+  add    $0x8,%rsi
+  cmp    %rsi,%rdx
+  jne    13e0 <func0+0x1b0>
+
+- Edges:
+  NO_JUMP -> 5191
+  JUMP -> 5088
+
+============================================================
+BLOCK 5191
+- Instructions:
+  test   %rdi,%rdi
+  jne    1480 <func0+0x250>
+
+- Edges:
+  NO_JUMP -> 5196
+  JUMP -> 5248
+
+============================================================
+BLOCK 5196
+- Instructions:
+  cltq
+  movb   $0x0,(%r14,%rax,1)
+  add    $0x8,%rsp
+  pop    %rbx
+  pop    %r14
+  ret
+
+- Edges: (none)
+
+============================================================
+BLOCK 5211
+- Instructions:
+  nopl   0x0(%rax,%rax,1)
+
+- Edges:
+  NO_JUMP -> 5216
+
+============================================================
+BLOCK 5216
+- Instructions:
+  lea    -0x41(%rsi),%edi
+  lea    0x20(%rsi),%ecx
+  cmp    $0x1a,%dil
+  movzbl %sil,%edi
+  movzbl %cl,%esi
+  cmovae %edi,%esi
+
+- Edges:
+  NO_JUMP -> 5236
+
+============================================================
+BLOCK 5236
+- Instructions:
+  mov    %sil,(%r14,%rdx,1)
+  inc    %rdx
+  cmp    %rdx,%r8
+  je     144c <func0+0x21c>
+
+- Edges:
+  NO_JUMP -> 5248
+  JUMP -> 5196
+
+============================================================
+BLOCK 5248
+- Instructions:
+  movzbl (%rbx,%rdx,1),%esi
+  lea    -0x61(%rsi),%edi
+  cmp    $0x19,%dil
+  ja     1460 <func0+0x230>
+
+- Edges:
+  NO_JUMP -> 5261
+  JUMP -> 5216
+
+============================================================
+BLOCK 5261
+- Instructions:
+  add    $0xe0,%sil
+  jmp    1474 <func0+0x244>
+
+- Edges:
+  JUMP -> 5236

@@ -1,0 +1,14 @@
+Function: func0
+Basic blocks: 1
+
+============================================================
+BLOCK 2004
+- Instructions:
+  auipc	a0,0x2
+  add	a0,a0,-1868 # 2088 <__SDATA_BEGIN__+0x38>
+  flw	ft0,0(a0)
+  fmul.s	ft1,fa0,fa1
+  fmul.s	fa0,ft1,ft0
+  ret
+
+- Edges: (none)
