@@ -7,9 +7,7 @@
 
 2. Run the docker image
     ```bash
-       docker run -it \
-       -v $(pwd)/<datasets_path>:/datasets \
-       NadineMostafa/crosscompile:latest \
+       docker run -it -v $(pwd)/<datasets_path>:/datasets NadineMostafa/crosscompile:latest \
        bash
     ```
     Replace `<datasets_path>` with the path to the datasets you want to use in your project. This will mount the datasets directory to the `/datasets` directory inside the docker container.

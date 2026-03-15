@@ -19,6 +19,10 @@ Usage:
     python x86_arm_translation_qemu_humaneval/exp02.2_batch_single_cfg.py \
       --resume-job batches/<job_id> \
       --metadata-path x86_arm_translation_qemu_humaneval/results/exp02.2/batch_jobs/metadata_<timestamp>.json
+
+3) Cancel an existing cloud batch job:
+        python x86_arm_translation_qemu_humaneval/exp02.2_batch_single_cfg.py \
+            --cancel-job batches/<job_id>
 """
 
 # --- Configuration ---
@@ -172,6 +176,11 @@ def parse_args():
         default=None,
         help="Path to metadata JSON file written during submission.",
     )
+    parser.add_argument(
+        "--cancel-job",
+        default=None,
+        help="Existing batch job name to cancel (example: batches/123456789).",
+    )
     return parser.parse_args()
 
 
@@ -297,8 +306,19 @@ def wait_and_collect_batch_results(client, batch_job_name, key_to_filename):
     return completed, failed, final_job.state.name
 
 
+def cancel_batch_job(client, batch_job_name):
+    """Cancel an existing cloud batch job."""
+    _log(f"Cancelling batch job: {batch_job_name}")
+    client.batches.cancel(name=batch_job_name)
+    cancelled_job = client.batches.get(name=batch_job_name)
+    _log(f"Batch job state after cancel request: {cancelled_job.state.name}")
+    return cancelled_job
+
+
 def process_problems_batch():
     args = parse_args()
+    if args.resume_job and args.cancel_job:
+        raise ValueError("Use either --resume-job or --cancel-job, not both.")
 
     s_files = sorted([f for f in os.listdir(input_s_dir) if f.endswith(".s")])
     total_files = len(s_files)
@@ -333,6 +353,12 @@ def process_problems_batch():
 
     start_time = time.time()
     client = genai.Client()
+
+    if args.cancel_job:
+        cancelled_job = cancel_batch_job(client, args.cancel_job)
+        elapsed = time.time() - start_time
+        print(f"Cancelled job {args.cancel_job}; current state={cancelled_job.state.name}; elapsed={elapsed:.1f}s")
+        return
 
     if args.resume_job:
         key_to_filename = {}

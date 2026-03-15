@@ -1,0 +1,52 @@
+Translate the following O2 optimized x86-64 assembly function to Linux ARMv8 AArch64 assembly.
+
+Goal:
+Produce a single AArch64 function that is behaviorally equivalent to the input function and compiles with:
+clang-17 -c <file>.s -target aarch64-linux-gnu
+
+Use both sources of truth:
+- x86 assembly is the primary semantic source.
+- CFG must be respected for block structure and branch behavior.
+
+Hard requirements:
+- Output only assembly text. No markdown fences. No prose.
+- Do not emit any architecture marker tokens as standalone instructions (forbidden examples: arm, armv8, aarch64).
+- Preserve exact semantics, including edge cases, signedness, overflow behavior, and return values.
+- Keep the translated function self-contained and callable by C test harnesses.
+- Use the same ABI contract as the source function.
+
+AArch64 legality constraints (must satisfy all):
+- Never emit illegal logical-immediate forms for and/eor/orr/tst.
+  - If an immediate is not encodable as a logical immediate, materialize it in a register and use register-register form.
+- Never emit large constants with a single mov when not encodable.
+  - Use movz/movk (or a legal equivalent) to construct full constants.
+- Ensure load/store indexed addressing scale matches access width.
+  - Example: for ldr wN, valid scaled register offset is #0 or #2, not #3.
+- Ensure every instruction mnemonic is valid AArch64 GNU/LLVM syntax for -target aarch64-linux-gnu.
+
+Register and control-flow safety constraints:
+- Do not clobber pointer/base argument registers before their last memory use.
+- If x0 is used as an input pointer later, keep it as a stable base or copy it to a dedicated base register first.
+- Keep accumulator/result registers separate from live pointer bases.
+- Preserve CFG-equivalent loop structure and branch predicates.
+
+Function/assembly hygiene:
+- Emit one function named func0 with a proper symbol export (.globl func0).
+- Include .text, alignment, and .type/.size directives in GNU-compatible style.
+- Keep stack usage and callee-saved register handling ABI-correct.
+- Do not call helper routines unless the source semantics requires those calls.
+
+Pre-output self-check (perform internally before finalizing):
+1) Assembler legality check for immediates, addressing modes, mnemonics, and directives.
+2) ABI/register-liveness check that no live pointer base is overwritten by arithmetic/result temporaries.
+3) CFG conformance check: translated branches/loops correspond to provided CFG edges.
+4) Semantic check that compare conditions and return paths match source intent.
+
+Output format:
+- Return only the final ARMv8 AArch64 assembly for func0.
+
+x86 Assembly:
+{asm}
+
+CFG:
+{cfg}
