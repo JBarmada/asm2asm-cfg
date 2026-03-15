@@ -263,6 +263,12 @@ def build_human_summary(
     lines.append("")
     lines.append("Failure-mode transitions:")
     nontrivial_transitions = [row for row in transition_rows if row[0] != row[1] and row[2] > 0]
+    regression_transition_total = sum(
+        row[2]
+        for row in nontrivial_transitions
+        if row[0] == "passed" and row[1] != "passed"
+    )
+    lines.append(f"- pass -> fail total: {regression_transition_total}")
     if not nontrivial_transitions:
         lines.append("- none")
     else:

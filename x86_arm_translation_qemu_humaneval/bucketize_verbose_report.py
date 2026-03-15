@@ -36,8 +36,19 @@ ORDERED_BUCKETS = [
     "Misc invalid instruction forms",
     "Runtime segfault (-11)",
     "Runtime assertion or abort (-6)",
+    "Runtime illegal instruction (-4)",
     "Timeout",
+    "Uncategorized failure signature",
 ]
+
+
+NON_BUCKETED_FAILURE_STATUSES = {
+    "build_error",
+    "runtime_error",
+    "timeout",
+    "missing_test",
+    "invalid_name",
+}
 
 
 @dataclass
@@ -104,7 +115,9 @@ def make_bucket_map() -> dict[str, re.Pattern[str]]:
             re.IGNORECASE,
         ),
         "Illegal immediates or register-immediate forms": re.compile(
-            r"expected compatible register or logical immediate|integer in range \[0, 4095\]",
+            r"expected compatible register or logical immediate|"
+            r"integer in range \[0, 4095\]|"
+            r"immediate must be an integer in range \[0, 31\]",
             re.IGNORECASE,
         ),
         "x86 or non-AArch64 mnemonic leaked": re.compile(
@@ -113,11 +126,12 @@ def make_bucket_map() -> dict[str, re.Pattern[str]]:
         ),
         "Directive or non-assembly text leakage": re.compile(
             r"expected end of directive|unexpected token at start of statement|"
-            r"invalid character in input|too few operands for instruction",
+            r"invalid character in input|too few operands for instruction|"
+            r"changed section flags|changed section entsize",
             re.IGNORECASE,
         ),
         "Invalid SIMD or vector operands": re.compile(
-            r"invalid operand for instruction",
+            r"invalid operand for instruction|registers must have the same sequential stride",
             re.IGNORECASE,
         ),
         "Misc invalid instruction forms": re.compile(
@@ -127,6 +141,10 @@ def make_bucket_map() -> dict[str, re.Pattern[str]]:
         "Runtime segfault (-11)": re.compile(r"qemu: uncaught target signal 11", re.IGNORECASE),
         "Runtime assertion or abort (-6)": re.compile(
             r"Assertion `|qemu: uncaught target signal 6",
+            re.IGNORECASE,
+        ),
+        "Runtime illegal instruction (-4)": re.compile(
+            r"qemu: uncaught target signal 4",
             re.IGNORECASE,
         ),
         "Timeout": re.compile(r"Command timed out|Status:\s+timeout", re.IGNORECASE),
@@ -175,13 +193,21 @@ def parse_verbose_report(path: Path) -> BucketSummary:
             if pattern.search(line):
                 bucket_to_problems[bucket_name].add(current_problem)
 
+    assigned_problems = set().union(*bucket_to_problems.values()) if bucket_to_problems else set()
+    uncategorized_problems = {
+        problem
+        for problem, status in problem_statuses.items()
+        if status in NON_BUCKETED_FAILURE_STATUSES and problem not in assigned_problems
+    }
+    bucket_to_problems["Uncategorized failure signature"] = uncategorized_problems
+
     # "invalid operand for instruction" is broad, so this refinement prevents the
     # SIMD bucket from swallowing many unrelated scalar instruction problems.
     simd_candidates = bucket_to_problems["Invalid SIMD or vector operands"]
     keep_simd = {
         p
         for p in simd_candidates
-        if p in {"problem28", "problem51", "problem58", "problem86", "problem134", "problem142", "problem148"}
+        if p in {"problem28", "problem51", "problem58", "problem86", "problem116", "problem134", "problem142", "problem148"}
     }
     bucket_to_problems["Invalid SIMD or vector operands"] = keep_simd
 

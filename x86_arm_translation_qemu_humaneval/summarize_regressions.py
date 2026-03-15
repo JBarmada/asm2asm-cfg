@@ -66,11 +66,15 @@ def load_rows(comparison_dir: Path, include_changed: bool) -> list[dict]:
 def print_table(rows: list[dict], comparison_dir: Path, include_changed: bool) -> None:
     TW = shutil.get_terminal_size((100, 24)).columns
     sep = "─" * TW
+    regressed_count = sum(1 for row in rows if row["outcome"] == "regressed")
+    changed_count = sum(1 for row in rows if row["outcome"] == "failure_mode_changed")
 
     label = comparison_dir.name
     print(f"\nRegressions summary  ─  {label}")
+    print(f"Regressed problems: {regressed_count}")
     if include_changed:
         print("(includes failure-mode-changed problems)")
+        print(f"Failure-mode-changed problems: {changed_count}")
     print(sep)
 
     bucket_summary: dict[str, list[str]] = defaultdict(list)
