@@ -6,7 +6,7 @@ import time
 from pathlib import Path
 
 """
-parallelized exp01
+parallelized exp01: advanced gemini model
 experiment 01.1: parallelized single prompt, no CFG, gemini on clang15 o2 optimized x86 humaneval asm code
 
 This version preserves the original per-problem translation logic but runs many

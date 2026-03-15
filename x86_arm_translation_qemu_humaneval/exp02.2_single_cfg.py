@@ -2,6 +2,7 @@ from google import genai
 import asyncio
 import os
 import random
+import re
 import time
 from pathlib import Path
 
@@ -46,11 +47,11 @@ CFG:
 
 MODEL_NAME="gemini-3.1-pro-preview"
 # Controls how many model calls can happen simultaneously.
-MAX_CONCURRENCY = 10
+MAX_CONCURRENCY = 1
 # Total attempts for transient failures (initial try + retries).
 MAX_RETRIES = 3
 # Base retry delay for exponential backoff.
-RETRY_BASE_SECONDS = 2.0
+RETRY_BASE_SECONDS = 3.0
 
 # -----------------------------
 # Directory setup
@@ -104,18 +105,62 @@ def _append_failure_log(problem, error):
         f.write(f"{problem}: {error}\n")
 
 
+class QuotaExhaustedError(RuntimeError):
+    """Raised when the API reports a hard daily quota exhaustion."""
+
+    def __init__(self, problem_name, retry_delay_seconds, raw_error):
+        self.problem_name = problem_name
+        self.retry_delay_seconds = retry_delay_seconds
+        self.raw_error = raw_error
+
+        if retry_delay_seconds is None:
+            message = (
+                f"Daily model quota exhausted while processing {problem_name}. "
+                "Stopping run now; retry after quota reset."
+            )
+        else:
+            hours = retry_delay_seconds // 3600
+            minutes = (retry_delay_seconds % 3600) // 60
+            seconds = retry_delay_seconds % 60
+            message = (
+                f"Daily model quota exhausted while processing {problem_name}. "
+                f"Stopping run now; retry in about {hours}h{minutes}m{seconds}s."
+            )
+
+        super().__init__(message)
+
+
+def _extract_retry_delay_seconds(error_text):
+    """Extract retryDelay seconds from API error text if present."""
+    match = re.search(r"retryDelay'\s*:\s*'(\d+)s'", error_text)
+    if match:
+        return int(match.group(1))
+    return None
+
+
+def _is_daily_quota_exhausted(error_text):
+    """Detect hard daily request quota exhaustion for a model."""
+    return (
+        "RESOURCE_EXHAUSTED" in error_text
+        and (
+            "generate_requests_per_model_per_day" in error_text
+            or "GenerateRequestsPerDayPerProjectPerModel" in error_text
+        )
+    )
+
+
 async def log_failure(log_lock, problem, error):
     """Serialize concurrent log writes so lines do not interleave."""
     async with log_lock:
         await asyncio.to_thread(_append_failure_log, problem, error)
 
 
-async def call_gemini_with_retry(aclient, semaphore, prompt, problem_name):
+async def call_gemini_with_retry(aclient, prompt, problem_name):
     """
-    Execute one model request with bounded concurrency and retry/backoff.
+    Execute one model request with retry/backoff.
 
-    The semaphore keeps request pressure within a configured limit. Retries with
-    exponential backoff absorb temporary API/network failures.
+    Concurrency is controlled by the outer worker pool, so this function only
+    handles retries and transient failures.
     """
 
     last_error = None
@@ -123,16 +168,24 @@ async def call_gemini_with_retry(aclient, semaphore, prompt, problem_name):
     for attempt in range(1, MAX_RETRIES + 1):
         try:
             _log(f"{problem_name}: sending request (attempt {attempt}/{MAX_RETRIES})")
-            async with semaphore:
-                response = await aclient.models.generate_content(
-                    model=MODEL_NAME,
-                    contents=prompt
-                )
+            response = await aclient.models.generate_content(
+                model=MODEL_NAME,
+                contents=prompt
+            )
 
             _log(f"{problem_name}: response received")
             return response.text if response.text else ""
 
         except Exception as e:
+            error_text = str(e)
+            if _is_daily_quota_exhausted(error_text):
+                retry_delay_seconds = _extract_retry_delay_seconds(error_text)
+                raise QuotaExhaustedError(
+                    problem_name=problem_name,
+                    retry_delay_seconds=retry_delay_seconds,
+                    raw_error=error_text,
+                ) from e
+
             last_error = e
             if attempt == MAX_RETRIES:
                 break
@@ -149,12 +202,10 @@ async def call_gemini_with_retry(aclient, semaphore, prompt, problem_name):
 
 
 async def process_one_problem(
-    index,
     total_files,
     filename,
     start_time,
     aclient,
-    semaphore,
     log_lock,
     progress_lock,
     progress,
@@ -202,7 +253,7 @@ async def process_one_problem(
         await asyncio.to_thread(_write_text, prompt_path, prompt)
         _log(f"{problem_name}: prompt saved")
 
-        raw_output = await call_gemini_with_retry(aclient, semaphore, prompt, problem_name)
+        raw_output = await call_gemini_with_retry(aclient, prompt, problem_name)
 
         # Save raw model output
         raw_path = raw_output_dir / f"{problem_name}.txt"
@@ -221,6 +272,10 @@ async def process_one_problem(
             elapsed = time.time() - start_time
             print(f"[{done}/{total_files}] OK   {filename} | elapsed: {elapsed:.1f}s")
 
+    except QuotaExhaustedError:
+        # Propagate so the orchestrator can stop the whole run immediately.
+        raise
+
     except Exception as e:
         # Persist failure details for later inspection.
         await log_failure(log_lock, problem_name, str(e))
@@ -230,6 +285,49 @@ async def process_one_problem(
             done = progress["completed"] + progress["failed"] + progress["skipped"]
             elapsed = time.time() - start_time
             print(f"[{done}/{total_files}] FAIL {filename}: {e} | elapsed: {elapsed:.1f}s")
+
+
+async def worker_loop(
+    worker_id,
+    total_files,
+    filenames,
+    start_time,
+    aclient,
+    stop_event,
+    log_lock,
+    progress_lock,
+    progress,
+):
+    """Consume filenames sequentially from a shared queue."""
+    _log(f"worker-{worker_id}: started")
+    while True:
+        if stop_event.is_set():
+            _log(f"worker-{worker_id}: stop requested")
+            return
+
+        try:
+            filename = filenames.get_nowait()
+        except asyncio.QueueEmpty:
+            _log(f"worker-{worker_id}: no more files")
+            return
+
+        try:
+            await process_one_problem(
+                total_files=total_files,
+                filename=filename,
+                start_time=start_time,
+                aclient=aclient,
+                log_lock=log_lock,
+                progress_lock=progress_lock,
+                progress=progress,
+            )
+        except QuotaExhaustedError as e:
+            stop_event.set()
+            await log_failure(log_lock, "GLOBAL", str(e))
+            _log(f"worker-{worker_id}: quota exhausted, stopping all workers")
+            raise
+        finally:
+            filenames.task_done()
 
 async def process_problems_async():
     """
@@ -257,35 +355,50 @@ async def process_problems_async():
         return
 
     # Shared synchronization primitives for the worker pool.
-    semaphore = asyncio.Semaphore(MAX_CONCURRENCY)
     log_lock = asyncio.Lock()
     progress_lock = asyncio.Lock()
     progress = {"completed": 0, "failed": 0, "skipped": 0}
+    worker_count = max(1, MAX_CONCURRENCY)
+    stop_event = asyncio.Event()
+
+    filenames = asyncio.Queue()
+    for filename in s_files:
+        filenames.put_nowait(filename)
 
     # One shared async client for all tasks; cleaned up automatically on exit.
     _log("Opening async Gemini client")
     async with genai.Client().aio as aclient:
-        _log("Scheduling worker tasks")
+        _log(f"Scheduling {worker_count} worker tasks")
         tasks = [
             asyncio.create_task(
-                process_one_problem(
-                    index=index,
+                worker_loop(
+                    worker_id=index,
                     total_files=total_files,
-                    filename=filename,
+                    filenames=filenames,
                     start_time=start_time,
                     aclient=aclient,
-                    semaphore=semaphore,
+                    stop_event=stop_event,
                     log_lock=log_lock,
                     progress_lock=progress_lock,
                     progress=progress,
                 )
             )
-            for index, filename in enumerate(s_files, start=1)
+            for index in range(1, worker_count + 1)
         ]
 
         # Wait for all scheduled problem tasks to finish.
         _log(f"Awaiting completion of {len(tasks)} tasks")
-        await asyncio.gather(*tasks)
+        quota_stop_error = None
+        try:
+            await asyncio.gather(*tasks)
+        except QuotaExhaustedError as e:
+            quota_stop_error = e
+            stop_event.set()
+            _log(str(e))
+            for task in tasks:
+                if not task.done():
+                    task.cancel()
+            await asyncio.gather(*tasks, return_exceptions=True)
 
     _log("Async Gemini client closed")
 
@@ -298,6 +411,8 @@ async def process_problems_async():
         f"total={total_files} "
         f"elapsed={elapsed:.1f}s"
     )
+    if quota_stop_error is not None:
+        print(f"Stopped early: {quota_stop_error}")
 
 
 # -----------------------------
