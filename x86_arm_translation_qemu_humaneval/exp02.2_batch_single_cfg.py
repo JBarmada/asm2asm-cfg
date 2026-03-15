@@ -10,6 +10,15 @@ Batch API version of exp02.2.
 
 experiment 02: single prompt + CFG on clang15 O2 optimized x86 HumanEval asm.
 This script uses Gemini Batch API (file input) rather than interactive calls.
+
+Usage:
+1) Submit a new batch job and wait for completion:
+    python x86_arm_translation_qemu_humaneval/exp02.2_batch_single_cfg.py
+
+2) Resume polling/collection for an existing cloud batch job:
+    python x86_arm_translation_qemu_humaneval/exp02.2_batch_single_cfg.py \
+      --resume-job batches/<job_id> \
+      --metadata-path x86_arm_translation_qemu_humaneval/results/exp02.2/batch_jobs/metadata_<timestamp>.json
 """
 
 # --- Configuration ---
