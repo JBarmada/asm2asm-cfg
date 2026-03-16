@@ -1,0 +1,8 @@
+{
+  "asm_dir": "Compiledown_HumanEval_O2/x86/asm",
+  "cfg_dir": "Compiledown_HumanEval_O2/x86/cfg",
+  "asm_pattern": "problem{n}_O2.s",
+  "cfg_pattern": "problem{n}_O2_cfg.txt",
+  "problem_start": 1,
+  "problem_end": 164
+}
