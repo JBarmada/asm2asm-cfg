@@ -1,0 +1,46 @@
+                                                           // +--------------------------------------+-------------------------------------+---------+
+                                                           // |                 GPR                  |                VECTOR               |  FLAGS  |
+                                                           // |                                      |                                     |         |
+                                                           // |    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXS |    VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV |    NZCV |
+                                                           // |    0123456789111111111122222222223ZP |    01234567891111111111222222222233 |         |
+                                                           // |  #           012345678901234567890R  |  #           0123456789012345678901 |  #      |
+                                                           // +--------------------------------------+-------------------------------------+---------+
+    .section    __TEXT,__text,regular,pure_instructions    // |                                      |                                     |         |
+    .build_version macos, 15, 0 sdk_version 26, 2          // |                                      |                                     |         |
+    .globl  _func0                                         // |                                      |                                     |         |
+    .p2align    2                                          // |                                      |                                     |         |
+_func0:                                                    // |                                      |                                     |         |
+    .cfi_startproc                                         // |                                      |                                     |         |
+    cbz w1, LBB0_5                                         // |  1  ^                                |  0                                  |  0      |
+    cmp w1, #1                                             // |  1  ^                                |  0                                  |  4 ^^^^ |
+    b.lt    LBB0_6                                         // |  1  :                                |  0                                  |  2 v  v |
+    mov w8, #0                                             // |  2  :      ^                         |  0                                  |  0      |
+    mov w9, w1                                             // |  2  v       ^                        |  0                                  |  0      |
+    mov w10, #1                                            // |  1           ^                       |  0                                  |  0      |
+LBB0_3:                                                    // |                                      |                                     |         |
+    ldr w11, [x0], #4                                      // |  2 v          ^                      |  0                                  |  0      |
+    cmp w11, #0                                            // |  1            ^                      |  0                                  |  4 ^^^^ |
+    csel    w10, wzr, w10, eq                              // |  2           ^                    v  |  0                                  |  1  v   |
+    cneg    w11, w11, mi                                   // |  1            ^                      |  0                                  |  0      |
+    add w8, w11, w8                                        // |  2         ^  v                      |  0                                  |  0      |
+    cneg    w10, w10, lt                                   // |  2         : ^                       |  0                                  |  0      |
+    subs    x9, x9, #1                                     // |  3         :^:                       |  0                                  |  4 ^^^^ |
+    b.ne    LBB0_3                                         // |  2         : :                       |  0                                  |  1  v   |
+    mul w0, w10, w8                                        // |  3 ^       v v                       |  0                                  |  0      |
+    ret                                                    // |  1                               v   |  0                                  |  0      |
+LBB0_5:                                                    // |                                      |                                     |         |
+    mov w0, #-32768                                        // |  1 ^                                 |  0                                  |  0      |
+    ret                                                    // |  1                               v   |  0                                  |  0      |
+LBB0_6:                                                    // |                                      |                                     |         |
+    mov w0, #0                                             // |  1 ^                                 |  0                                  |  0      |
+    ret                                                    // |  1                               v   |  0                                  |  0      |
+    .cfi_endproc                                           // |                                      |                                     |         |
+.subsections_via_symbols                                   // |                                      |                                     |         |
+                                                           // +......................................+.....................................+.........+
+                                                           // Legend:
+                                                           //     ^       : Register assignment (write)
+                                                           //     v       : Register usage (read)
+                                                           //     x       : Register usage and reassignment (R/W)
+                                                           //     :       : Register in use (live)
+                                                           //     <space> : Register not in use
+                                                           //     #       : Number of occupied registers

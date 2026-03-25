@@ -16,6 +16,8 @@ SUPPORTED_LANGUAGES = (
     "riscv",
 )
 DEFAULT_SOURCE_LANGUAGE = "arm"
+DEFAULT_CFG_LANGUAGE = "x86"
+DEFAULT_DFG_LANGUAGE = "x86"
 
 # Shared source directories used by translation/composer flows.
 INPUT_S_DIR = ASMWORK_DIR / "Compiledown_HumanEval_O2" / DEFAULT_SOURCE_LANGUAGE / "asm"

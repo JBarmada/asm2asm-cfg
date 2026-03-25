@@ -38,6 +38,10 @@ Accepted flags:
     Optional label for output folder naming. Default: input_dir folder name.
 - --source-language {arm,x86,riscv}
     Language/ISA of input assembly to repair. Default: arm.
+- --cfg-language {arm,x86,riscv}
+    Language used to locate CFG files under Compiledown_HumanEval_O2/<lang>/cfg. Default: x86.
+- --dfg-language {arm,x86,riscv}
+    Language used to locate DFG files under Compiledown_HumanEval_O2/<lang>/dfg. Default: x86.
 - --model {gemini-3-flash-preview,gemini-3.1-pro-preview}
     Gemini model name. Default: gemini-3-flash-preview.
 - --prompt-config {base,error_only,cfg_only,dfg_only,error_cfg,error_dfg,cfg_dfg,error_cfg_dfg}
@@ -103,6 +107,8 @@ from google import genai
 
 from composer_config import (
     ALLOWED_MODELS,
+    DEFAULT_CFG_LANGUAGE,
+    DEFAULT_DFG_LANGUAGE,
     DEFAULT_SOURCE_LANGUAGE,
     DEFAULT_MAX_CONCURRENCY,
     DEFAULT_MAX_RETRIES,
@@ -146,6 +152,8 @@ class ComposerRuntimePaths:
     compile_probe_dir: Path
     validation_json_dir: Path
     source_language: str
+    cfg_language: str
+    dfg_language: str
     cfg_dir: Path
     dfg_dir: Path
 
@@ -213,6 +221,18 @@ def parse_args() -> argparse.Namespace:
         default=DEFAULT_SOURCE_LANGUAGE,
         choices=SUPPORTED_LANGUAGES,
         help="Language/ISA of input assembly that composer repairs",
+    )
+    parser.add_argument(
+        "--cfg-language",
+        default=DEFAULT_CFG_LANGUAGE,
+        choices=SUPPORTED_LANGUAGES,
+        help="Language used to load CFG files",
+    )
+    parser.add_argument(
+        "--dfg-language",
+        default=DEFAULT_DFG_LANGUAGE,
+        choices=SUPPORTED_LANGUAGES,
+        help="Language used to load DFG files",
     )
     parser.add_argument(
         "--model",
@@ -294,8 +314,10 @@ def resolve_runtime_paths(args: argparse.Namespace) -> ComposerRuntimePaths:
         compile_probe_dir=run_output_dir / "compile_probe",
         validation_json_dir=run_output_dir / "validation_json",
         source_language=args.source_language,
-        cfg_dir=language_cfg_dir(args.source_language),
-        dfg_dir=language_dfg_dir(args.source_language),
+        cfg_language=args.cfg_language,
+        dfg_language=args.dfg_language,
+        cfg_dir=language_cfg_dir(args.cfg_language),
+        dfg_dir=language_dfg_dir(args.dfg_language),
     )
 
 
@@ -382,7 +404,7 @@ def _is_daily_quota_exhausted(error_text: str) -> bool:
 
 
 def resolve_source_asm(benchmark_arm_input_dir: Path, problem_name: str) -> Path:
-    matches = sorted(benchmark_arm_input_dir.glob(f"{problem_name}*.s"))
+    matches = sorted(benchmark_arm_input_dir.glob(f"{problem_name}_*.s"))
     if not matches:
         raise FileNotFoundError(
             f"Could not find source ASM for {problem_name} in {benchmark_arm_input_dir}"
@@ -390,15 +412,130 @@ def resolve_source_asm(benchmark_arm_input_dir: Path, problem_name: str) -> Path
     return matches[0]
 
 
-def load_problem_specs(paths: ComposerRuntimePaths) -> list[ProblemSpec]:
-    payload = json.loads(paths.error_json_path.read_text(encoding="utf-8"))
+def resolve_graph_path(graph_dir: Path, problem_name: str, graph_kind: str) -> Path | None:
+    """Resolve CFG/DFG files across common naming variants.
+
+    Supported examples include:
+    - problem105_cfg.txt
+    - problem105_O2_cfg.txt
+    - problem105_dfg.txt
+    - problem105_O2_dfg.s
+    """
+
+    normalized_kind = graph_kind.strip().lower()
+    patterns = [
+        f"{problem_name}_{normalized_kind}.txt",
+        f"{problem_name}_{normalized_kind}.s",
+        f"{problem_name}_*_{normalized_kind}.txt",
+        f"{problem_name}_*_{normalized_kind}.s",
+    ]
+
+    for pattern in patterns:
+        matches = sorted(graph_dir.glob(pattern))
+        if matches:
+            return matches[0]
+    return None
+
+
+def _is_readable_file(path: Path) -> bool:
+    if not path.exists() or not path.is_file():
+        return False
+    try:
+        with path.open("r", encoding="utf-8"):
+            return True
+    except OSError:
+        return False
+
+
+def _is_readable_dir(path: Path) -> bool:
+    if not path.exists() or not path.is_dir():
+        return False
+    try:
+        next(path.iterdir(), None)
+        return True
+    except OSError:
+        return False
+
+
+def load_problem_specs(paths: ComposerRuntimePaths, args: argparse.Namespace) -> list[ProblemSpec]:
+    issues: list[str] = []
+
+    if not _is_readable_file(paths.error_json_path):
+        raise FileNotFoundError(f"Cannot read error JSON: {paths.error_json_path}")
+
+    if not _is_readable_dir(paths.benchmark_arm_input_dir):
+        issues.append(f"source asm directory is not readable: {paths.benchmark_arm_input_dir}")
+
+    if not _is_readable_dir(paths.cfg_dir):
+        issues.append(f"CFG directory is not readable: {paths.cfg_dir}")
+
+    if not _is_readable_dir(paths.dfg_dir):
+        issues.append(f"DFG directory is not readable: {paths.dfg_dir}")
+
+    if not _is_readable_file(RUN_ERROR_JSON_SCRIPT):
+        issues.append(f"validation script is missing/unreadable: {RUN_ERROR_JSON_SCRIPT}")
+
+    if not _is_readable_dir(INPUT_TEST_DIR):
+        issues.append(f"test root directory is not readable: {INPUT_TEST_DIR}")
+
+    if shutil.which(args.clang) is None:
+        issues.append(f"clang executable not found on PATH: {args.clang}")
+
+    if shutil.which(args.qemu) is None:
+        issues.append(f"qemu executable not found on PATH: {args.qemu}")
+
+    if args.sysroot is not None and not _is_readable_dir(args.sysroot):
+        issues.append(f"sysroot directory is not readable: {args.sysroot}")
+
+    try:
+        payload = json.loads(paths.error_json_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        raise RuntimeError(f"Failed to parse error JSON {paths.error_json_path}: {exc}") from exc
+
     errored = payload.get("errored_problems", [])
+    if not isinstance(errored, list):
+        raise RuntimeError("Invalid error JSON format: 'errored_problems' must be a list")
+
+    require_cfg = args.prompt_config in {"cfg_only", "error_cfg", "cfg_dfg", "error_cfg_dfg"}
+    require_dfg = args.prompt_config in {"dfg_only", "error_dfg", "cfg_dfg", "error_cfg_dfg"}
+
     specs: list[ProblemSpec] = []
     for entry in errored:
         problem_name = str(entry.get("name", "")).strip()
         if not problem_name:
+            issues.append("Found errored_problems entry with empty 'name'")
             continue
-        source_asm = resolve_source_asm(paths.benchmark_arm_input_dir, problem_name)
+
+        source_matches = sorted(paths.benchmark_arm_input_dir.glob(f"{problem_name}_*.s"))
+        if not source_matches:
+            issues.append(
+                f"missing source asm for {problem_name}: expected {paths.benchmark_arm_input_dir / (problem_name + '_*.s')}"
+            )
+            continue
+        source_asm = source_matches[0]
+        if not _is_readable_file(source_asm):
+            issues.append(f"source asm is not readable for {problem_name}: {source_asm}")
+            continue
+
+        cfg_path = resolve_graph_path(paths.cfg_dir, problem_name, "cfg")
+        dfg_path = resolve_graph_path(paths.dfg_dir, problem_name, "dfg")
+
+        if require_cfg and (cfg_path is None or not _is_readable_file(cfg_path)):
+            issues.append(
+                f"missing/unreadable CFG for {problem_name}: expected {problem_name}_cfg.* or {problem_name}_*_cfg.* in {paths.cfg_dir}"
+            )
+
+        if require_dfg and (dfg_path is None or not _is_readable_file(dfg_path)):
+            issues.append(
+                f"missing/unreadable DFG for {problem_name}: expected {problem_name}_dfg.* or {problem_name}_*_dfg.* in {paths.dfg_dir}"
+            )
+
+        # Keep predictable fallback paths for reporting/prompt sections when optional files are absent.
+        if cfg_path is None:
+            cfg_path = paths.cfg_dir / f"{problem_name}_cfg.txt"
+        if dfg_path is None:
+            dfg_path = paths.dfg_dir / f"{problem_name}_dfg.txt"
+
         specs.append(
             ProblemSpec(
                 name=problem_name,
@@ -406,10 +543,18 @@ def load_problem_specs(paths: ComposerRuntimePaths) -> list[ProblemSpec]:
                 stderr=str(entry.get("stderr", "")),
                 source_asm_path=source_asm,
                 source_asm_name=source_asm.name,
-                cfg_path=paths.cfg_dir / f"{problem_name}_cfg.txt",
-                dfg_path=paths.dfg_dir / f"{problem_name}_dfg.txt",
+                cfg_path=cfg_path,
+                dfg_path=dfg_path,
             )
         )
+
+    if issues:
+        detail = "\n".join(f"- {item}" for item in issues)
+        raise RuntimeError(
+            "Preflight validation failed. Terminating before execution.\n"
+            f"{detail}"
+        )
+
     return specs
 
 
@@ -420,6 +565,8 @@ def build_prompt(
     cfg_text: str,
     dfg_text: str,
     source_language: str,
+    cfg_language: str,
+    dfg_language: str,
 ) -> str:
     sections: list[str] = [
         f"Repair the following translated {source_language} assembly function.",
@@ -434,6 +581,10 @@ def build_prompt(
         "- Keep function signature/name expectations used by the harness (func0 unless explicitly required otherwise).",
         "- Keep the same target ISA/language as input; do not translate to a different ISA.",
         "- Preserve exact semantics and edge cases.",
+        (
+            "- If CFG/DFG are provided, treat them as semantic guidance only; they may be from "
+            "a different language than the target assembly."
+        ),
         "",
     ]
 
@@ -452,10 +603,22 @@ def build_prompt(
     sections.extend([f"Input {source_language} Assembly:", source_asm, ""])
 
     if prompt_config in {"cfg_only", "error_cfg", "cfg_dfg", "error_cfg_dfg"}:
-        sections.extend(["CFG:", cfg_text or "(CFG file not found)", ""])
+        sections.extend(
+            [
+                f"CFG ({cfg_language} semantic graph; target output remains {source_language} assembly):",
+                cfg_text or "(CFG file not found)",
+                "",
+            ]
+        )
 
     if prompt_config in {"dfg_only", "error_dfg", "cfg_dfg", "error_cfg_dfg"}:
-        sections.extend(["DFG:", dfg_text or "(DFG file not found)", ""])
+        sections.extend(
+            [
+                f"DFG ({dfg_language} semantic graph; target output remains {source_language} assembly):",
+                dfg_text or "(DFG file not found)",
+                "",
+            ]
+        )
 
     sections.append("Return only the final corrected assembly text.")
     return "\n".join(sections)
@@ -553,7 +716,8 @@ def validate_single_problem(
 
     payload = json.loads(validation_json_path.read_text(encoding="utf-8"))
     errored_count = int(payload.get("errored_count", 0))
-    if errored_count == 0:
+    problems_processed = int(payload.get("problems_processed", 0))
+    if errored_count == 0 and problems_processed > 0:
         return True, "Passed validation"
 
     errored_problems = payload.get("errored_problems", [])
@@ -631,6 +795,8 @@ async def process_one_problem(
             cfg_text=cfg_text,
             dfg_text=dfg_text,
             source_language=paths.source_language,
+            cfg_language=paths.cfg_language,
+            dfg_language=paths.dfg_language,
         )
         prompt_path = paths.prompts_dir / f"{problem_name}_attempt{attempt}.txt"
         await asyncio.to_thread(_write_text, prompt_path, prompt)
@@ -641,8 +807,7 @@ async def process_one_problem(
                 prompt=prompt,
                 problem_name=problem_name,
                 model_name=args.model,
-                # Outer loop controls per-problem retries; keep request retries at 1 here.
-                max_retries=1,
+                max_retries=args.max_retries,
                 retry_base_seconds=args.retry_base_seconds,
             )
         except Exception as exc:
@@ -792,6 +957,11 @@ def write_reports(
     success_count = sum(1 for result in results if result.succeeded)
     fail_count = len(results) - success_count
 
+    # Calculate total problems and overall success rate
+    total_problems = len(list(paths.benchmark_arm_input_dir.glob("*.s")))
+    overall_successful = total_problems - final_validation_error_count
+    success_rate = (overall_successful / total_problems * 100) if total_problems > 0 else 0
+
     brief_lines = [
         f"Run started: {started_at.isoformat(timespec='seconds')}",
         f"Run finished: {finished_at.isoformat(timespec='seconds')}",
@@ -800,9 +970,11 @@ def write_reports(
         f"Source language: {paths.source_language}",
         f"Model: {args.model}",
         f"Prompt config: {args.prompt_config}",
+        f"Total problems in experiment: {total_problems}",
         f"Errored problems from input JSON: {len(problems)}",
         f"Composer succeeded: {success_count}",
         f"Composer failed: {fail_count}",
+        f"Global Total Overall problems successfully passed: {overall_successful}/{total_problems} ({success_rate:.1f}%)",
         f"Final validation JSON: {final_validation_path}",
         f"Final validation errored count: {final_validation_error_count}",
         "",
@@ -914,9 +1086,14 @@ async def run_async(args: argparse.Namespace, paths: ComposerRuntimePaths, probl
 
 def main() -> int:
     args = parse_args()
-    paths = resolve_runtime_paths(args)
+    try:
+        paths = resolve_runtime_paths(args)
+        problems = load_problem_specs(paths, args)
+    except Exception as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
 
-    # Create the folder layout used by the runtime.
+    # Create the folder layout used by the runtime only after preflight passes.
     paths.prompts_dir.mkdir(parents=True, exist_ok=True)
     paths.raw_output_dir.mkdir(parents=True, exist_ok=True)
     paths.original_error_asm_dir.mkdir(parents=True, exist_ok=True)
@@ -929,11 +1106,12 @@ def main() -> int:
     paths.validation_json_dir.mkdir(parents=True, exist_ok=True)
 
     started_at = datetime.now()
-    problems = load_problem_specs(paths)
 
     print(f"Benchmark ARM input: {paths.benchmark_arm_input_dir}")
     print(f"Input experiment dir: {paths.input_experiment_dir}")
     print(f"Source language: {paths.source_language}")
+    print(f"CFG language: {paths.cfg_language}")
+    print(f"DFG language: {paths.dfg_language}")
     print(f"Error JSON: {paths.error_json_path}")
     print(f"Run output dir: {paths.run_output_dir}")
     print(f"Config source script: {RUN_ERROR_JSON_SCRIPT}")
