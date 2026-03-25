@@ -8,6 +8,20 @@ SCRIPTS_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = SCRIPTS_DIR.parent
 ASMWORK_DIR = PROJECT_DIR.parent
 RESULTS_ROOT_DIR = PROJECT_DIR / "results"
+COMPOSER_RESULTS_ROOT_DIR = RESULTS_ROOT_DIR / "composer"
+
+SUPPORTED_LANGUAGES = (
+    "arm",
+    "x86",
+    "riscv",
+)
+DEFAULT_SOURCE_LANGUAGE = "arm"
+
+# Shared source directories used by translation/composer flows.
+INPUT_S_DIR = ASMWORK_DIR / "Compiledown_HumanEval_O2" / DEFAULT_SOURCE_LANGUAGE / "asm"
+INPUT_TEST_DIR = ASMWORK_DIR / "HumanEval_source"
+CFG_DIR = ASMWORK_DIR / "Compiledown_HumanEval_O2" / DEFAULT_SOURCE_LANGUAGE / "cfg"
+DFG_DIR = ASMWORK_DIR / "Compiledown_HumanEval_O2" / DEFAULT_SOURCE_LANGUAGE / "dfg"
 
 # Existing script that compiles/runs ARM and emits errored-problem JSON.
 RUN_ERROR_JSON_SCRIPT = SCRIPTS_DIR / "run_arm_translation_error_json.py"
@@ -19,6 +33,8 @@ ALLOWED_MODELS = (
 )
 DEFAULT_MODEL = "gemini-3-flash-preview"
 DEFAULT_MAX_RETRIES = 3
+DEFAULT_MAX_CONCURRENCY = 100
+DEFAULT_RETRY_BASE_SECONDS = 3.0
 DEFAULT_TIMEOUT_SECONDS = 30
 
 PROMPT_CONFIGS = (
@@ -43,6 +59,27 @@ def benchmark_arm_dir(benchmark_name: str) -> Path:
     """Return the ARM assembly input directory for a benchmark run."""
 
     return benchmark_dir(benchmark_name) / "arm_asm"
+
+
+def benchmark_source_asm_dir(benchmark_name: str, source_language: str) -> Path:
+    """Return benchmark assembly directory for the selected source language."""
+
+    language = source_language.strip().lower()
+    return benchmark_dir(benchmark_name) / f"{language}_asm"
+
+
+def language_cfg_dir(source_language: str) -> Path:
+    """Return language-specific CFG directory under Compiledown_HumanEval_O2."""
+
+    language = source_language.strip().lower()
+    return ASMWORK_DIR / "Compiledown_HumanEval_O2" / language / "cfg"
+
+
+def language_dfg_dir(source_language: str) -> Path:
+    """Return language-specific DFG directory under Compiledown_HumanEval_O2."""
+
+    language = source_language.strip().lower()
+    return ASMWORK_DIR / "Compiledown_HumanEval_O2" / language / "dfg"
 
 
 def benchmark_json_dir(benchmark_name: str) -> Path:
@@ -90,7 +127,7 @@ def composer_output_dir(
             _sanitize_fragment(ts),
         ]
     )
-    return RESULTS_ROOT_DIR / run_name
+    return COMPOSER_RESULTS_ROOT_DIR / run_name
 
 
 def composer_prompts_dir(run_dir: Path) -> Path:
@@ -101,9 +138,27 @@ def composer_raw_output_dir(run_dir: Path) -> Path:
     return run_dir / "raw_model_output"
 
 
-def composer_fixed_asm_dir(run_dir: Path) -> Path:
-    return run_dir / "fixed_arm_asm"
+def composer_fixed_asm_dir(run_dir: Path, source_language: str = DEFAULT_SOURCE_LANGUAGE) -> Path:
+    language = source_language.strip().lower()
+    return run_dir / f"fixed_{language}_asm"
 
 
 def composer_logs_dir(run_dir: Path) -> Path:
     return run_dir / "logs"
+
+
+def composer_original_error_asm_dir(run_dir: Path, source_language: str = DEFAULT_SOURCE_LANGUAGE) -> Path:
+    language = source_language.strip().lower()
+    return run_dir / f"original_error_{language}_asm"
+
+
+def composer_reports_dir(run_dir: Path) -> Path:
+    return run_dir / "txts"
+
+
+def composer_brief_report_path(run_dir: Path) -> Path:
+    return composer_reports_dir(run_dir) / "brief.txt"
+
+
+def composer_verbose_report_path(run_dir: Path) -> Path:
+    return composer_reports_dir(run_dir) / "verbose.txt"

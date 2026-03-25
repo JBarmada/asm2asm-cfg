@@ -16,7 +16,7 @@ Default output location:
 <experiment_root>/jsons/<timestamp>_error_problems.json
 Example call:
 
-python run_arm_translation_error_json.py ASMwork/x86arm_translation_qemu_humaneval/results/exp01.2/arm_asm
+python run_arm_translation_error_json.py ../results/exp01/arm_asm
 
 Useful flags:
 
@@ -40,6 +40,7 @@ from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = SCRIPT_DIR.parent
+DEFAULT_TEST_ROOT = PROJECT_DIR.parent / "HumanEval_source"
 if str(PROJECT_DIR) not in sys.path:
     sys.path.insert(0, str(PROJECT_DIR))
 
@@ -73,7 +74,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--test-root",
         type=Path,
-        default=PROJECT_DIR / "HumanEval_source",
+        default=DEFAULT_TEST_ROOT,
         help="Root directory containing HumanEval problem folders",
     )
     parser.add_argument(
