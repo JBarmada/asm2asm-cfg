@@ -17,7 +17,11 @@ env/
 Thumbs.db
 
 # Generated experiment artifacts (translation/eval outputs)
-x86_arm_translation_qemu_humaneval/results/
+x86arm_translation_qemu_humaneval/results/
+x86riscv-translation/gemini/results/
+x86riscv-translation/gemini/batchcmd.txt
+
+zips/
 
 # Generated logs
 *.log

@@ -2,6 +2,17 @@ import re
 import sys
 import argparse
 import os
+import json
+
+# Usage examples:
+#   python arm_cfg_validator.py <asm_file> <cfg_file>
+#   python arm_cfg_validator.py -n 2
+#   python arm_cfg_validator.py -n 2 -d
+#   python arm_cfg_validator.py --all
+#   python arm_cfg_validator.py --all -w
+#   python arm_cfg_validator.py --all --start 1 --end 20
+#   python arm_cfg_validator.py --all --config arm_cfg_validator_config.json
+#   python arm_cfg_validator.py --all --asm-dir path/to/asm --cfg-dir path/to/cfg
 
 
 # ---------------------------------------------------------
@@ -23,6 +34,57 @@ def debug(message, args):
 
 
 # ---------------------------------------------------------
+# CONFIG
+# ---------------------------------------------------------
+
+def resolve_path(path_value, script_dir):
+    if not path_value:
+        return None
+    if os.path.isabs(path_value):
+        return path_value
+    return os.path.normpath(os.path.join(script_dir, path_value))
+
+
+def load_config(config_path, script_dir, args):
+    defaults = {
+        "asm_dir": os.path.join(script_dir, "Compiledown_HumanEval_O2", "arm", "asm"),
+        "cfg_dir": os.path.join(script_dir, "Compiledown_HumanEval_O2", "arm", "cfg"),
+        "asm_pattern": "problem{n}_O2.s",
+        "cfg_pattern": "problem{n}_O2_cfg.txt",
+        "problem_start": 1,
+        "problem_end": 164,
+    }
+
+    if not config_path:
+        return defaults
+
+    resolved_config_path = resolve_path(config_path, script_dir)
+    if not resolved_config_path or not os.path.exists(resolved_config_path):
+        debug(f"Config file not found, using defaults: {resolved_config_path}", args)
+        return defaults
+
+    with open(resolved_config_path, "r", encoding="utf-8") as f:
+        loaded = json.load(f)
+
+    if not isinstance(loaded, dict):
+        raise ValueError("Config JSON must be an object")
+
+    merged = defaults.copy()
+    merged.update(loaded)
+
+    for key in ("asm_dir", "cfg_dir"):
+        merged[key] = resolve_path(merged.get(key), script_dir)
+
+    return merged
+
+
+def build_problem_paths(problem_number, cfg):
+    asm_file = os.path.join(cfg["asm_dir"], cfg["asm_pattern"].format(n=problem_number))
+    cfg_file = os.path.join(cfg["cfg_dir"], cfg["cfg_pattern"].format(n=problem_number))
+    return asm_file, cfg_file
+
+
+# ---------------------------------------------------------
 # ASM PARSER
 # ---------------------------------------------------------
 
@@ -32,7 +94,7 @@ def parse_asm(asm_text, args):
     asm_data = {}
     addresses = []
 
-    # ARM format: "addr: hexword  instruction"
+    # ARM objdump format: "addr: hexword  instruction"
     asm_regex = re.compile(r'^\s*([0-9a-f]+):\s+[0-9a-f]+\s+(.+)')
 
     for line in asm_text.strip().split('\n'):
@@ -68,9 +130,50 @@ def parse_asm(asm_text, args):
     for i in range(len(addresses) - 1):
         asm_data[addresses[i]]['next_addr'] = addresses[i + 1]
 
-    debug(f"Parsed {len(asm_data)} ASM instructions", args)
+    if asm_data:
+        debug(f"Parsed {len(asm_data)} ASM instructions (objdump format)", args)
+        return asm_data
 
-    return asm_data
+    # Fallback for compiler-generated .s source files (Apple ARM / clang output).
+    # Comments use ';' (not '#' as in x86).
+    instructions = []
+    labels = {}
+
+    for raw in asm_text.split('\n'):
+        line = raw.strip()
+        if not line:
+            continue
+
+        # Full-line ';' comments (e.g. "; %bb.0:", "; @func0")
+        if line.startswith(';'):
+            continue
+
+        # Labels map to the next instruction index.
+        label_match = re.match(r'^([\w.$@]+):', line)
+        if label_match:
+            labels[label_match.group(1)] = len(instructions)
+            continue
+
+        # Drop assembler directives.
+        if line.startswith('.'):
+            continue
+
+        # Remove inline ';' comments, then normalize spacing.
+        line = re.sub(r'\s+;.*$', '', line).strip()
+        if not line:
+            continue
+
+        # Strip Apple ARM relocation suffixes: @PAGE, @PAGEOFF, @GOTPAGE, etc.
+        line = re.sub(r'@\w+', '', line)
+        line = re.sub(r'\s+', ' ', line)
+        instructions.append(line)
+
+    debug(f"Parsed {len(instructions)} ASM instructions (.s source format)", args)
+    return {
+        '__mode': 'source',
+        'instructions': instructions,
+        'labels': labels,
+    }
 
 
 # ---------------------------------------------------------
@@ -148,10 +251,11 @@ def parse_cfg(cfg_text, args):
 # VALIDATION
 # ---------------------------------------------------------
 
-def validate_graphs(asm_data, cfg_blocks, args):
-    log("\n" + "=" * 50, "summary")
-    log("STARTING BLOCK-BY-BLOCK VALIDATION", "summary")
-    log("=" * 50, "summary")
+def validate_graphs(asm_data, cfg_blocks, args, show_summary=True):
+    if show_summary:
+        log("\n" + "=" * 50, "summary")
+        log("STARTING BLOCK-BY-BLOCK VALIDATION", "summary")
+        log("=" * 50, "summary")
 
     passed_edges = 0
     failed_edges = 0
@@ -255,13 +359,208 @@ def validate_graphs(asm_data, cfg_blocks, args):
 
                     failed_edges += 1
 
-    log("\n" + "=" * 50, "summary")
-    log(
-        f"SUMMARY: Edges Passed: {passed_edges}, "
-        f"Edges Failed: {failed_edges}, "
-        f"Block Failures: {failed_blocks}",
-        "summary"
-    )
+    if show_summary:
+        log("\n" + "=" * 50, "summary")
+        log(
+            f"SUMMARY: Edges Passed: {passed_edges}, "
+            f"Edges Failed: {failed_edges}, "
+            f"Block Failures: {failed_blocks}",
+            "summary"
+        )
+
+    return {
+        "passed_edges": passed_edges,
+        "failed_edges": failed_edges,
+        "failed_blocks": failed_blocks,
+        "ok": failed_edges == 0 and failed_blocks == 0,
+    }
+
+
+def validate_graphs_source(asm_source, cfg_blocks, args, show_summary=True):
+    if show_summary:
+        log("\n" + "=" * 50, "summary")
+        log("STARTING BLOCK-BY-BLOCK VALIDATION", "summary")
+        log("=" * 50, "summary")
+
+    asm_insts = asm_source['instructions']
+    labels = asm_source['labels']
+
+    block_ranges = {}
+    used_starts = set()
+    ordered_blocks = sorted(cfg_blocks.items(), key=lambda item: item[1]['decimal'])
+    passed_edges = 0
+    failed_edges = 0
+    failed_blocks = 0
+
+    def find_block_for_index(idx):
+        for baddr, (start, end) in block_ranges.items():
+            if start <= idx < end:
+                return baddr
+        return None
+
+    # Match each CFG block by exact instruction sequence in the .s instruction stream.
+    min_start = 0
+    for block_addr, data in ordered_blocks:
+        cfg_insts = data['instructions']
+        block_dec = data['decimal']
+        block_label = f"BLOCK {block_dec} (0x{block_addr})"
+
+        if not cfg_insts:
+            block_ranges[block_addr] = (-1, -1)
+            continue
+
+        n = len(cfg_insts)
+        candidates = []
+        for i in range(0, max(0, len(asm_insts) - n + 1)):
+            if asm_insts[i:i + n] == cfg_insts:
+                candidates.append(i)
+
+        if not candidates:
+            log(f"\n[X] {block_label} INSTRUCTION SEQUENCE NOT FOUND IN ASM", "error", args)
+
+            # Find the closest window and print only the non-matching lines.
+            best_start = None
+            best_mismatch_idxs = None
+
+            if len(asm_insts) >= n:
+                for start_idx in range(0, len(asm_insts) - n + 1):
+                    mismatch_idxs = []
+                    for j in range(n):
+                        if asm_insts[start_idx + j] != cfg_insts[j]:
+                            mismatch_idxs.append(j)
+
+                    if (
+                        best_mismatch_idxs is None
+                        or len(mismatch_idxs) < len(best_mismatch_idxs)
+                    ):
+                        best_start = start_idx
+                        best_mismatch_idxs = mismatch_idxs
+
+            if best_start is None:
+                log("    Unable to align block with ASM instruction stream.", "error", args)
+            else:
+                log(
+                    f"    Closest match has {len(best_mismatch_idxs)} differing line(s)",
+                    "error",
+                    args
+                )
+                for j in best_mismatch_idxs:
+                    log(f"    Line {j + 1} differs", "error", args)
+                    log(f"      CFG: {cfg_insts[j]}", "error", args)
+                    log(f"      ASM: {asm_insts[best_start + j]}", "error", args)
+
+            failed_blocks += 1
+            continue
+
+        chosen = None
+        for c in candidates:
+            if c not in used_starts and c >= min_start:
+                chosen = c
+                break
+        if chosen is None:
+            for c in candidates:
+                if c not in used_starts:
+                    chosen = c
+                    break
+        if chosen is None:
+            chosen = candidates[0]
+
+        used_starts.add(chosen)
+        block_ranges[block_addr] = (chosen, chosen + n)
+        min_start = chosen + n
+        log(f"[OK] {block_label} instructions match.", "info", args)
+
+    debug(f"Source block ranges: {block_ranges}", args)
+    debug(f"Source labels: {labels}", args)
+
+    # Validate edges using final instructions, jump labels, and fallthrough mapping.
+    for block_addr, data in cfg_blocks.items():
+        block_dec = data['decimal']
+        block_label = f"BLOCK {block_dec} (0x{block_addr})"
+
+        if block_addr not in block_ranges:
+            continue
+
+        start, end = block_ranges[block_addr]
+        if start < 0 or end <= start:
+            continue
+
+        end_inst = asm_insts[end - 1]
+        parts = end_inst.split(None, 1)
+        mnemonic = parts[0]
+        expected_jump = None
+        expected_no_jump = None
+
+        # ARM branches: b, b.<cond>, cbz, cbnz, tbz, tbnz
+        # Target label is always the last whitespace/comma-separated token.
+        branch_match = re.match(r'^(b|b\.\w+|cbz|cbnz|tbz|tbnz)\s+', end_inst)
+        if branch_match:
+            tgt_label = re.split(r'[\s,]+', end_inst.strip())[-1]
+            tgt_idx = labels.get(tgt_label)
+            if tgt_idx is not None:
+                expected_jump = find_block_for_index(tgt_idx)
+
+        is_unconditional_jump = bool(re.match(r'^b\s', end_inst))  # bare 'b' only
+        is_return = mnemonic == 'ret'
+
+        if not is_return and not is_unconditional_jump:
+            fallthrough_idx = end
+            expected_no_jump = find_block_for_index(fallthrough_idx)
+
+        debug(
+            f"{block_label}: "
+            f"expected_jump={expected_jump}, "
+            f"expected_no_jump={expected_no_jump}, "
+            f"CFG_JUMP={data['JUMP']}, "
+            f"CFG_NO_JUMP={data['NO_JUMP']}, "
+            f"end_inst={end_inst}",
+            args
+        )
+
+        for edge_type, actual, expected in [
+            ("JUMP", data['JUMP'], expected_jump),
+            ("NO_JUMP", data['NO_JUMP'], expected_no_jump)
+        ]:
+            if actual or expected:
+                if actual == expected:
+                    passed_edges += 1
+                else:
+                    exp_str = f"0x{expected}" if expected else "None"
+                    act_str = f"0x{actual}" if actual else "None"
+                    log(f"\n[X] {block_label} {edge_type} EDGE MISMATCH", "error", args)
+                    log(f"    Expected: {exp_str}", "error", args)
+                    log(f"    CFG says: {act_str}", "error", args)
+                    failed_edges += 1
+
+    if show_summary:
+        log("\n" + "=" * 50, "summary")
+        log(
+            f"SUMMARY: Edges Passed: {passed_edges}, "
+            f"Edges Failed: {failed_edges}, "
+            f"Block Failures: {failed_blocks}",
+            "summary"
+        )
+
+    return {
+        "passed_edges": passed_edges,
+        "failed_edges": failed_edges,
+        "failed_blocks": failed_blocks,
+        "ok": failed_edges == 0 and failed_blocks == 0,
+    }
+
+
+def run_single_problem(asm_file, cfg_file, args, show_summary=True):
+    with open(asm_file, 'r', encoding='utf-8') as f:
+        asm_text = f.read()
+
+    with open(cfg_file, 'r', encoding='utf-8') as f:
+        cfg_text = f.read()
+
+    asm_data = parse_asm(asm_text, args)
+    cfg_blocks = parse_cfg(cfg_text, args)
+    if isinstance(asm_data, dict) and asm_data.get('__mode') == 'source':
+        return validate_graphs_source(asm_data, cfg_blocks, args, show_summary=show_summary)
+    return validate_graphs(asm_data, cfg_blocks, args, show_summary=show_summary)
 
 
 # ---------------------------------------------------------
@@ -276,6 +575,18 @@ def main():
                         help="Path to CFG file")
     parser.add_argument("-n", "--number", type=int, default=None,
                         help="Problem number (uses default paths)")
+    parser.add_argument("--all", action="store_true",
+                        help="Validate all configured problems")
+    parser.add_argument("--start", type=int, default=None,
+                        help="Start problem number for --all")
+    parser.add_argument("--end", type=int, default=None,
+                        help="End problem number for --all")
+    parser.add_argument("--config", default="arm_cfg_validator_config.json",
+                        help="Path to JSON config file")
+    parser.add_argument("--asm-dir", default=None,
+                        help="Override ASM directory from config")
+    parser.add_argument("--cfg-dir", default=None,
+                        help="Override CFG directory from config")
     parser.add_argument("-w", "--wrong", action="store_true")
     parser.add_argument("-d", "--debug", action="store_true",
                         help="Enable debug output")
@@ -283,7 +594,15 @@ def main():
     args = parser.parse_args()
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    base = os.path.join(script_dir, "HEO2_asm_cfg", "HumanEval_O2", "arm")
+    cfg = load_config(args.config, script_dir, args)
+
+    if args.asm_dir:
+        cfg["asm_dir"] = resolve_path(args.asm_dir, script_dir)
+    if args.cfg_dir:
+        cfg["cfg_dir"] = resolve_path(args.cfg_dir, script_dir)
+
+    if not cfg.get("asm_dir") or not cfg.get("cfg_dir"):
+        parser.error("ASM/CFG directories are not configured")
 
     # Allow: arm_cfg_validator.py -n 2
     #    or: arm_cfg_validator.py 2       (positional shorthand)
@@ -291,24 +610,59 @@ def main():
     if prob is None and args.asm_file and args.asm_file.isdigit():
         prob = int(args.asm_file)
 
+    if args.all:
+        start = args.start if args.start is not None else int(cfg.get("problem_start", 1))
+        end = args.end if args.end is not None else int(cfg.get("problem_end", 164))
+
+        if start > end:
+            parser.error("--start cannot be greater than --end")
+
+        batch_args = argparse.Namespace(**vars(args))
+        if not batch_args.debug and not batch_args.wrong:
+            batch_args.wrong = True
+
+        total_pass = 0
+        total_fail = 0
+        failed_problems = []
+
+        print("\n########################################")
+        print(f"# arm - problems {start}..{end}")
+        print("########################################")
+
+        for p in range(start, end + 1):
+            asm_file, cfg_file = build_problem_paths(p, cfg)
+
+            try:
+                result = run_single_problem(asm_file, cfg_file, batch_args, show_summary=False)
+            except Exception as exc:
+                print(f"===== problem{p} ===== FAIL")
+                print(f"[X] Exception: {exc}")
+                total_fail += 1
+                failed_problems.append(p)
+                continue
+
+            if result["ok"]:
+                total_pass += 1
+            else:
+                print(f"===== problem{p} ===== FAIL")
+                total_fail += 1
+                failed_problems.append(p)
+
+        print("")
+        print(f"--- arm totals: {total_pass} passed, {total_fail} failed out of {end - start + 1} ---")
+        if failed_problems:
+            print("--- failing problems: " + ", ".join(str(n) for n in failed_problems) + " ---")
+        return
+
     if prob is not None:
-        asm_file = os.path.join(base, "dumped_asm", f"problem{prob}_func0.asm")
-        cfg_file = os.path.join(base, "cfg", f"problem{prob}_func0_cfg.txt")
+        asm_file, cfg_file = build_problem_paths(prob, cfg)
     elif args.asm_file and args.cfg_file:
         asm_file = args.asm_file
         cfg_file = args.cfg_file
     else:
-        parser.error("Provide both asm_file and cfg_file, or use -n <number>")
+        parser.error("Provide both asm_file and cfg_file, use -n <number>, or use --all")
 
-    with open(asm_file, 'r') as f:
-        asm_text = f.read()
-
-    with open(cfg_file, 'r') as f:
-        cfg_text = f.read()
-
-    asm_data = parse_asm(asm_text, args)
-    cfg_blocks = parse_cfg(cfg_text, args)
-    validate_graphs(asm_data, cfg_blocks, args)
+    run_single_problem(asm_file, cfg_file, args, show_summary=True)
 
 
 if __name__ == "__main__":

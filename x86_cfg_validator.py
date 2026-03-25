@@ -5,11 +5,14 @@ import os
 import json
 
 # Usage examples:
+#   python x86_cfg_validator.py <asm_file> <cfg_file>
 #   python x86_cfg_validator.py -n 2
+#   python x86_cfg_validator.py -n 2 -d
 #   python x86_cfg_validator.py --all
+#   python x86_cfg_validator.py --all -w
 #   python x86_cfg_validator.py --all --start 1 --end 20
 #   python x86_cfg_validator.py --all --config x86_cfg_validator_config.json
-#   python x86_cfg_validator.py <asm_file> <cfg_file>
+#   python x86_cfg_validator.py --all --asm-dir path/to/asm --cfg-dir path/to/cfg
 
 
 # ---------------------------------------------------------

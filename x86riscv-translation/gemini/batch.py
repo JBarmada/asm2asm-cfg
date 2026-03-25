@@ -10,7 +10,7 @@ Batch API translation runner.
 
 This script uses Gemini Batch API (file input) and supports:
 - no-CFG prompt mode (default)
-- CFG prompt mode via --use-cfg
+- CFG prompt mode via --cfg / --use-cfg
 - configurable output run directory via --output-dir
 - runtime JSON config loading like exp1/exp2 scripts
 
@@ -18,13 +18,13 @@ Quick usage:
 - Run all problems (default no-CFG, default run dir exp_batch):
     python x86riscv-translation/gemini/batch.py
 - Run all problems with CFG prompts:
-    python x86riscv-translation/gemini/batch.py --use-cfg
+    python x86riscv-translation/gemini/batch.py --cfg
 - Run all problems into results/my_run:
     python x86riscv-translation/gemini/batch.py --output-dir my_run
 - Use explicit runtime config file:
     python x86riscv-translation/gemini/batch.py --config asm_translation_config.json
 - Combine options:
-    python x86riscv-translation/gemini/batch.py --use-cfg --output-dir my_run --config asm_translation_config.json
+    python x86riscv-translation/gemini/batch.py --cfg --output-dir my_run --config asm_translation_config.json
 
 Usage:
 1) Submit a new batch job and wait for completion:
@@ -277,8 +277,10 @@ def parse_args():
         help="Output directory name under results/ (default: exp_batch)",
     )
     parser.add_argument(
+        "--cfg",
         "--use-cfg",
         action="store_true",
+        dest="use_cfg",
         help="Include CFG text in prompts (default: no CFG).",
     )
     parser.add_argument(
@@ -339,6 +341,23 @@ def confirm_batch_submission(
 def read_metadata(path):
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
+
+
+def find_metadata_for_batch_job(results_base_dir, batch_job_name):
+    """Search saved metadata files for a matching batch job name."""
+    if not results_base_dir.exists():
+        return None
+
+    for metadata_path in sorted(results_base_dir.glob("*/batch_jobs/metadata_*.json"), reverse=True):
+        try:
+            metadata = read_metadata(metadata_path)
+        except Exception:
+            continue
+
+        if metadata.get("batch_job_name") == batch_job_name:
+            return metadata_path, metadata
+
+    return None, None
 
 
 def load_key_to_filename_from_requests_jsonl(requests_jsonl_path):
@@ -486,7 +505,34 @@ def process_problems_batch():
     else:
         _log("No runtime config found; using built-in defaults")
 
-    output_dir = results_base_dir / args.output_dir
+    metadata = None
+    metadata_path = None
+    effective_use_cfg = args.use_cfg
+
+    if args.resume_job:
+        if args.metadata_path:
+            metadata_path = Path(args.metadata_path).expanduser().resolve()
+            metadata = read_metadata(metadata_path)
+        else:
+            metadata_path, metadata = find_metadata_for_batch_job(results_base_dir, args.resume_job)
+
+        if metadata is not None:
+            saved_output_dir = metadata.get("output_dir")
+            if saved_output_dir:
+                output_dir = Path(saved_output_dir).expanduser().resolve()
+            else:
+                output_dir = results_base_dir / args.output_dir
+
+            if "use_cfg" in metadata:
+                effective_use_cfg = bool(metadata["use_cfg"])
+
+            _log(f"Loaded batch metadata: {metadata_path}")
+        else:
+            output_dir = results_base_dir / args.output_dir
+            _log("No saved metadata found for resume job; using CLI/default output settings")
+    else:
+        output_dir = results_base_dir / args.output_dir
+
     prompt_dir = output_dir / "prompts"
     raw_output_dir = output_dir / "raw_model_output"
     riscv_output_dir = output_dir / "riscv_asm"
@@ -503,9 +549,9 @@ def process_problems_batch():
 
     _log("Starting batch experiment run")
     _log(f"Model: {MODEL_NAME}")
-    _log(f"Prompt mode: {'cfg' if args.use_cfg else 'no-cfg'}")
+    _log(f"Prompt mode: {'cfg' if effective_use_cfg else 'no-cfg'}")
     _log(f"Input asm dir: {input_s_dir}")
-    if args.use_cfg:
+    if effective_use_cfg:
         _log(f"Input cfg dir: {cfg_dir}")
     _log(f"Output dir: {output_dir}")
     _log(f"Discovered .s files: {total_files}")
@@ -542,8 +588,7 @@ def process_problems_batch():
 
     if args.resume_job:
         key_to_filename = {}
-        if args.metadata_path:
-            metadata = read_metadata(args.metadata_path)
+        if metadata is not None:
             requests_jsonl = metadata.get("requests_jsonl")
             if requests_jsonl:
                 key_to_filename = load_key_to_filename_from_requests_jsonl(requests_jsonl)
@@ -570,7 +615,7 @@ def process_problems_batch():
         requests, key_to_filename = build_batch_requests(
             pending_files=pending_files,
             prompt_dir=prompt_dir,
-            use_cfg=args.use_cfg,
+            use_cfg=effective_use_cfg,
         )
 
         if not args.yes:
@@ -578,7 +623,7 @@ def process_problems_batch():
                 output_dir=output_dir,
                 input_s_dir=input_s_dir,
                 cfg_dir=cfg_dir,
-                use_cfg=args.use_cfg,
+                use_cfg=effective_use_cfg,
                 model_name=MODEL_NAME,
                 total_files=total_files,
                 skipped=skipped,
@@ -594,7 +639,7 @@ def process_problems_batch():
 
         write_jsonl(requests_jsonl_path, requests)
 
-        _, created_batch_job = create_batch_job(client, requests_jsonl_path, args.use_cfg)
+        _, created_batch_job = create_batch_job(client, requests_jsonl_path, effective_use_cfg)
         _log(f"Created batch job: {created_batch_job.name}")
 
         _write_text(
@@ -602,7 +647,7 @@ def process_problems_batch():
             json.dumps(
                 {
                     "model": MODEL_NAME,
-                    "use_cfg": args.use_cfg,
+                    "use_cfg": effective_use_cfg,
                     "output_dir": str(output_dir),
                     "request_count": len(requests),
                     "requests_jsonl": str(requests_jsonl_path),
