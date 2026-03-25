@@ -349,6 +349,9 @@ def _is_asm_like_line(line: str) -> bool:
         return True
     if re.match(r"^[A-Za-z_.$][\w.$]*:\s*$", stripped):
         return True
+    # Single-letter branch mnemonics (for example: b, b.eq) are valid ARM/AArch64 instructions.
+    if re.match(r"^b(\.[A-Za-z0-9]+)?\b", stripped):
+        return True
     if re.match(r"^[a-z]{2,8}(\.[A-Za-z0-9]+)?\b", stripped):
         return True
     return False
@@ -459,6 +462,8 @@ def _is_readable_dir(path: Path) -> bool:
 
 def load_problem_specs(paths: ComposerRuntimePaths, args: argparse.Namespace) -> list[ProblemSpec]:
     issues: list[str] = []
+    require_cfg = args.prompt_config in {"cfg_only", "error_cfg", "cfg_dfg", "error_cfg_dfg"}
+    require_dfg = args.prompt_config in {"dfg_only", "error_dfg", "cfg_dfg", "error_cfg_dfg"}
 
     if not _is_readable_file(paths.error_json_path):
         raise FileNotFoundError(f"Cannot read error JSON: {paths.error_json_path}")
@@ -466,10 +471,10 @@ def load_problem_specs(paths: ComposerRuntimePaths, args: argparse.Namespace) ->
     if not _is_readable_dir(paths.benchmark_arm_input_dir):
         issues.append(f"source asm directory is not readable: {paths.benchmark_arm_input_dir}")
 
-    if not _is_readable_dir(paths.cfg_dir):
+    if require_cfg and not _is_readable_dir(paths.cfg_dir):
         issues.append(f"CFG directory is not readable: {paths.cfg_dir}")
 
-    if not _is_readable_dir(paths.dfg_dir):
+    if require_dfg and not _is_readable_dir(paths.dfg_dir):
         issues.append(f"DFG directory is not readable: {paths.dfg_dir}")
 
     if not _is_readable_file(RUN_ERROR_JSON_SCRIPT):
@@ -495,9 +500,6 @@ def load_problem_specs(paths: ComposerRuntimePaths, args: argparse.Namespace) ->
     errored = payload.get("errored_problems", [])
     if not isinstance(errored, list):
         raise RuntimeError("Invalid error JSON format: 'errored_problems' must be a list")
-
-    require_cfg = args.prompt_config in {"cfg_only", "error_cfg", "cfg_dfg", "error_cfg_dfg"}
-    require_dfg = args.prompt_config in {"dfg_only", "error_dfg", "cfg_dfg", "error_cfg_dfg"}
 
     specs: list[ProblemSpec] = []
     for entry in errored:
@@ -954,8 +956,10 @@ def write_reports(
 ) -> None:
     by_name = {result.name: result for result in results}
 
+    processed_count = len(results)
     success_count = sum(1 for result in results if result.succeeded)
-    fail_count = len(results) - success_count
+    fail_count = len(problems) - success_count
+    missing_count = len(problems) - processed_count
 
     # Calculate total problems and overall success rate
     total_problems = len(list(paths.benchmark_arm_input_dir.glob("*.s")))
@@ -972,8 +976,10 @@ def write_reports(
         f"Prompt config: {args.prompt_config}",
         f"Total problems in experiment: {total_problems}",
         f"Errored problems from input JSON: {len(problems)}",
+        f"Composer processed: {processed_count}",
         f"Composer succeeded: {success_count}",
         f"Composer failed: {fail_count}",
+        f"Composer missing/unprocessed: {missing_count}",
         f"Global Total Overall problems successfully passed: {overall_successful}/{total_problems} ({success_rate:.1f}%)",
         f"Final validation JSON: {final_validation_path}",
         f"Final validation errored count: {final_validation_error_count}",
@@ -1024,7 +1030,11 @@ def write_reports(
     _write_text(paths.verbose_report_path, "\n".join(verbose_lines) + "\n")
 
 
-async def run_async(args: argparse.Namespace, paths: ComposerRuntimePaths, problems: list[ProblemSpec]) -> list[ProblemResult]:
+async def run_async(
+    args: argparse.Namespace,
+    paths: ComposerRuntimePaths,
+    problems: list[ProblemSpec],
+) -> tuple[list[ProblemResult], QuotaExhaustedError | None]:
     queue: asyncio.Queue[ProblemSpec] = asyncio.Queue()
     for problem in problems:
         queue.put_nowait(problem)
@@ -1063,7 +1073,7 @@ async def run_async(args: argparse.Namespace, paths: ComposerRuntimePaths, probl
             )
             for index in range(1, worker_count + 1)
         ]
-        quota_error: Exception | None = None
+        quota_error: QuotaExhaustedError | None = None
         try:
             await asyncio.gather(*tasks)
         except QuotaExhaustedError as exc:
@@ -1078,10 +1088,8 @@ async def run_async(args: argparse.Namespace, paths: ComposerRuntimePaths, probl
             if not progress_task.done():
                 progress_task.cancel()
             await asyncio.gather(progress_task, return_exceptions=True)
-        if quota_error is not None:
-            raise quota_error
 
-    return results
+    return results, quota_error
 
 
 def main() -> int:
@@ -1141,26 +1149,7 @@ def main() -> int:
         print(f"Verbose report: {paths.verbose_report_path}")
         return 0
 
-    try:
-        results = asyncio.run(run_async(args, paths, problems))
-    except QuotaExhaustedError as exc:
-        _append_text(paths.logs_dir / "failures.log", f"GLOBAL: {exc}\n")
-        finished_at = datetime.now()
-        final_validation_path, final_validation_error_count = validate_all_fixed_outputs(paths, args)
-        write_reports(
-            args=args,
-            paths=paths,
-            problems=problems,
-            results=[],
-            started_at=started_at,
-            finished_at=finished_at,
-            final_validation_path=final_validation_path,
-            final_validation_error_count=final_validation_error_count,
-        )
-        print(str(exc))
-        print(f"Brief report: {paths.brief_report_path}")
-        print(f"Verbose report: {paths.verbose_report_path}")
-        return 2
+    results, quota_error = asyncio.run(run_async(args, paths, problems))
 
     finished_at = datetime.now()
     final_validation_path, final_validation_error_count = validate_all_fixed_outputs(paths, args)
@@ -1182,6 +1171,9 @@ def main() -> int:
     print(f"Final validation errored count: {final_validation_error_count}")
     print(f"Brief report: {paths.brief_report_path}")
     print(f"Verbose report: {paths.verbose_report_path}")
+    if quota_error is not None:
+        print(str(quota_error))
+        return 2
     return 0 if fail_count == 0 and final_validation_error_count == 0 else 1
 
 
