@@ -9,7 +9,12 @@ This workspace contains an end-to-end pipeline for:
 
 The core pipeline scripts live in the folder below:
 
-- `x86_arm_translation_qemu_humaneval`
+- `x86arm_translation_qemu_humaneval`
+
+Translation experiment scripts are organized under:
+
+- `x86arm_translation_qemu_humaneval/TranslatorExperimentScripts`
+- Shared path config for those experiment scripts: `x86arm_translation_qemu_humaneval/TranslatorExperimentScripts/shared_config.py`
 
 ## Quick Tutorial
 
@@ -18,14 +23,14 @@ Run commands from workspace root (`ASMwork`).
 1. Run one translation experiment (example: parallel with CFG).
 
 ```bash
-python x86_arm_translation_qemu_humaneval/exp02.1_gemini_single_prompt_cfg.py
+python x86arm_translation_qemu_humaneval/TranslatorExperimentScripts/exp02.1_gemini_single_prompt_cfg.py
 ```
 
 2. Run ARM compile+test evaluation on that experiment output. (Do in Docker)
 
 ```bash
-python x86_arm_translation_qemu_humaneval/run_arm_translation_results.py \
-  x86_arm_translation_qemu_humaneval/results/exp02.1/arm_asm
+python x86arm_translation_qemu_humaneval/run_arm_translation_results.py \
+  x86arm_translation_qemu_humaneval/results/exp02.1/arm_asm
 ```
 
 3. Choose one analysis path:
@@ -33,23 +38,23 @@ python x86_arm_translation_qemu_humaneval/run_arm_translation_results.py \
 - Bucketize a single verbose report:
 
 ```bash
-python x86_arm_translation_qemu_humaneval/bucketize_verbose_report.py \
-  x86_arm_translation_qemu_humaneval/results/exp02.1/txts/<timestamp>_verbose.txt
+python x86arm_translation_qemu_humaneval/bucketize_verbose_report.py \
+  x86arm_translation_qemu_humaneval/results/exp02.1/txts/<timestamp>_verbose.txt
 ```
 
 - Compare two experiment runs:
 
 ```bash
-python x86_arm_translation_qemu_humaneval/compare_bucket_runs.py \
-  x86_arm_translation_qemu_humaneval/results/exp01/txts/<old_timestamp>_verbose.txt \
-  x86_arm_translation_qemu_humaneval/results/exp02.1/txts/<new_timestamp>_verbose.txt \
+python x86arm_translation_qemu_humaneval/compare_bucket_runs.py \
+  x86arm_translation_qemu_humaneval/results/exp01/txts/<old_timestamp>_verbose.txt \
+  x86arm_translation_qemu_humaneval/results/exp02.1/txts/<new_timestamp>_verbose.txt \
   --label-old exp01 --label-new exp02.1
 ```
 
 Optional: summarize only the regressions from the latest comparison.
 
 ```bash
-python x86_arm_translation_qemu_humaneval/summarize_regressions.py
+python x86arm_translation_qemu_humaneval/summarize_regressions.py
 ```
 
 Note: `run_arm_translation_results.py` must run in Docker or on a host with working `clang`/`clang-17` and `qemu-aarch64` in PATH.
@@ -58,27 +63,27 @@ Note: `run_arm_translation_results.py` must run in Docker or on a host with work
 
 ### Translation experiments
 
-- `x86_arm_translation_qemu_humaneval/exp01_gemini_single_prompt_no_cfg.py`
+- `x86arm_translation_qemu_humaneval/TranslatorExperimentScripts/exp01_gemini_single_prompt_no_cfg.py`
   - Sequential translation.
   - Input: x86 assembly only.
   - Output: translated ARM files under `results/exp01/arm_asm`.
 
-- `x86_arm_translation_qemu_humaneval/exp01.1_gemini_single_prompt_no_cfg.py`
+- `x86arm_translation_qemu_humaneval/TranslatorExperimentScripts/exp01.1_gemini_single_prompt_no_cfg.py`
   - Parallel translation with retries/backoff.
   - Input: x86 assembly only.
   - Output: translated ARM files under `results/exp01.1/arm_asm`.
 
-- `x86_arm_translation_qemu_humaneval/exp02_gemini_single_prompt_cfg.py`
+- `x86arm_translation_qemu_humaneval/TranslatorExperimentScripts/exp02_gemini_single_prompt_cfg.py`
   - Sequential translation using x86 assembly + CFG.
   - Output: translated ARM files under `results/exp02/arm_asm`.
 
-- `x86_arm_translation_qemu_humaneval/exp02.1_gemini_single_prompt_cfg.py`
+- `x86arm_translation_qemu_humaneval/TranslatorExperimentScripts/exp02.1_gemini_single_prompt_cfg.py`
   - Parallel translation using x86 assembly + CFG.
   - Output: translated ARM files under `results/exp02.1/arm_asm`.
 
 ### Build/run evaluation
 
-- `x86_arm_translation_qemu_humaneval/run_arm_translation_results.py`
+- `x86arm_translation_qemu_humaneval/run_arm_translation_results.py`
   - Must be run either inside the configured Docker environment or on a machine where `clang`/`clang-17` and `qemu-aarch64` are installed and available on PATH.
   - Compiles each translated `.s` file for `aarch64-linux-gnu`.
   - Links with the corresponding HumanEval `test.c`.
@@ -87,24 +92,24 @@ Note: `run_arm_translation_results.py` must run in Docker or on a host with work
 
 ### Failure bucketing and comparison
 
-- `x86_arm_translation_qemu_humaneval/bucketize_verbose_report.py`
+- `x86arm_translation_qemu_humaneval/bucketize_verbose_report.py`
   - Parses one verbose evaluation report (`*_verbose.txt`).
   - Classifies failures into known buckets (invalid addressing, illegal immediates, segfault, etc.).
   - Saves a JSON summary (`bucketjson/*_buckets.json`).
 
-- `x86_arm_translation_qemu_humaneval/compare_bucket_runs.py`
+- `x86arm_translation_qemu_humaneval/compare_bucket_runs.py`
   - Compares two runs (either verbose reports or bucket JSONs).
   - Produces side-by-side status transitions and bucket deltas.
   - Writes artifacts in `results/comparisons/<timestamp>_<old>_vs_<new>`.
 
-- `x86_arm_translation_qemu_humaneval/summarize_regressions.py`
+- `x86arm_translation_qemu_humaneval/summarize_regressions.py`
   - Reads `problem_transitions.csv` from a comparison directory.
   - Prints a regression-focused summary table.
   - Optionally writes `regressions_summary.csv`.
 
 ### Utility patcher
 
-- `x86_arm_translation_qemu_humaneval/fix_missing_func0_export.py`
+- `x86arm_translation_qemu_humaneval/fix_missing_func0_export.py`
   - Adds missing `.globl func0` / `.type func0,@function` directives when needed.
   - Useful for a specific recurring assembler/linker failure mode.
 
@@ -118,7 +123,7 @@ Expected important folders in this workspace:
 
 Translation outputs are created under:
 
-- `x86_arm_translation_qemu_humaneval/results/<experiment-name>`
+- `x86arm_translation_qemu_humaneval/results/<experiment-name>`
 
 ## 3) Environment Setup
 
@@ -141,7 +146,7 @@ Evaluation requires:
 See details in:
 
 - `crosscompiling-manual.md`
-- `x86_arm_translation_qemu_humaneval/README_run_arm_translation_results.md`
+- `x86arm_translation_qemu_humaneval/README_run_arm_translation_results.md`
 
 Important: `run_arm_translation_results.py` requires a usable cross-compile/runtime toolchain. Use Docker as the default recommendation, or run natively only if `clang` (or `clang-17`) and `qemu-aarch64` are installed and discoverable.
 
@@ -154,13 +159,13 @@ Run commands from workspace root (`ASMwork`).
 Example (parallel, no CFG):
 
 ```bash
-python x86_arm_translation_qemu_humaneval/exp01.1_gemini_single_prompt_no_cfg.py
+python x86arm_translation_qemu_humaneval/TranslatorExperimentScripts/exp01.1_gemini_single_prompt_no_cfg.py
 ```
 
 Example (parallel, with CFG):
 
 ```bash
-python x86_arm_translation_qemu_humaneval/exp02.1_gemini_single_prompt_cfg.py
+python x86arm_translation_qemu_humaneval/TranslatorExperimentScripts/exp02.1_gemini_single_prompt_cfg.py
 ```
 
 ### Step B: Evaluate translated ARM against HumanEval tests
@@ -168,8 +173,8 @@ python x86_arm_translation_qemu_humaneval/exp02.1_gemini_single_prompt_cfg.py
 Example for exp01.1:
 
 ```bash
-python x86_arm_translation_qemu_humaneval/run_arm_translation_results.py \
-  x86_arm_translation_qemu_humaneval/results/exp01.1/arm_asm
+python x86arm_translation_qemu_humaneval/run_arm_translation_results.py \
+  x86arm_translation_qemu_humaneval/results/exp01.1/arm_asm
 ```
 
 This generates:
@@ -180,40 +185,41 @@ This generates:
 ### Step C: Bucketize one verbose report
 
 ```bash
-python x86_arm_translation_qemu_humaneval/bucketize_verbose_report.py \
-  x86_arm_translation_qemu_humaneval/results/exp01.1/txts/<timestamp>_verbose.txt
+python x86arm_translation_qemu_humaneval/bucketize_verbose_report.py \
+  x86arm_translation_qemu_humaneval/results/exp01.1/txts/<timestamp>_verbose.txt
 ```
 
 ### Step D: Compare two experiment runs
 
 ```bash
-python x86_arm_translation_qemu_humaneval/compare_bucket_runs.py \
-  x86_arm_translation_qemu_humaneval/results/exp01/txts/<old_timestamp>_verbose.txt \
-  x86_arm_translation_qemu_humaneval/results/exp02.1/txts/<new_timestamp>_verbose.txt \
+python x86arm_translation_qemu_humaneval/compare_bucket_runs.py \
+  x86arm_translation_qemu_humaneval/results/exp01/txts/<old_timestamp>_verbose.txt \
+  x86arm_translation_qemu_humaneval/results/exp02.1/txts/<new_timestamp>_verbose.txt \
   --label-old exp01 --label-new exp02.1
 ```
 
 This writes comparison artifacts under:
 
-- `x86_arm_translation_qemu_humaneval/results/comparisons/<timestamp>_exp01_vs_exp02.1/`
+- `x86arm_translation_qemu_humaneval/results/comparisons/<timestamp>_exp01_vs_exp02.1/`
+- `x86arm_translation_qemu_humaneval/results/comparisons/<timestamp>_exp01_vs_exp02.1/`
 
 ### Step E: Summarize regressions from the comparison
 
 ```bash
-python x86_arm_translation_qemu_humaneval/summarize_regressions.py \
-  x86_arm_translation_qemu_humaneval/results/comparisons/<comparison_dir>
+python x86arm_translation_qemu_humaneval/summarize_regressions.py \
+  x86arm_translation_qemu_humaneval/results/comparisons/<comparison_dir>
 ```
 
 Or auto-use latest comparison:
 
 ```bash
-python x86_arm_translation_qemu_humaneval/summarize_regressions.py
+python x86arm_translation_qemu_humaneval/summarize_regressions.py
 ```
 
 Write CSV instead of terminal table:
 
 ```bash
-python x86_arm_translation_qemu_humaneval/summarize_regressions.py --include-changed --csv
+python x86arm_translation_qemu_humaneval/summarize_regressions.py --include-changed --csv
 ```
 
 ## 5) How to Read the Main Outputs
@@ -251,13 +257,13 @@ Inside `results/comparisons/<comparison_dir>`:
 ### Patch missing func0 exports in translated assembly
 
 ```bash
-python x86_arm_translation_qemu_humaneval/fix_missing_func0_export.py \
-  x86_arm_translation_qemu_humaneval/results/exp01/arm_asm --dry-run
+python x86arm_translation_qemu_humaneval/fix_missing_func0_export.py \
+  x86arm_translation_qemu_humaneval/results/exp01/arm_asm --dry-run
 ```
 
 ```bash
-python x86_arm_translation_qemu_humaneval/fix_missing_func0_export.py \
-  x86_arm_translation_qemu_humaneval/results/exp01/arm_asm
+python x86arm_translation_qemu_humaneval/fix_missing_func0_export.py \
+  x86arm_translation_qemu_humaneval/results/exp01/arm_asm
 ```
 
 ### Run CFG validators across all problems (separate from translation pipeline)
@@ -277,3 +283,4 @@ For reliable experiment tracking:
 5. Use `summarize_regressions.py` to focus on newly broken problems first.
 
 This keeps each run reproducible and makes regressions easy to diagnose.
+

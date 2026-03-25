@@ -3,10 +3,10 @@ import asyncio
 import os
 import random
 import time
-from pathlib import Path
+from shared_config import INPUT_S_DIR, INPUT_TEST_DIR, experiment_output_dir
 
 """
-parallelized exp01: advanced gemini model
+parallelized exp01
 experiment 01.1: parallelized single prompt, no CFG, gemini on clang15 o2 optimized x86 humaneval asm code
 
 This version preserves the original per-problem translation logic but runs many
@@ -14,35 +14,66 @@ problems concurrently with a bounded number of in-flight model requests.
 """
 
 # --- Configuration ---
-BASE_DIR = Path(__file__).resolve().parent
-input_s_dir = BASE_DIR.parent / "Compiledown_HumanEval_O2" / "x86" / "asm"
-input_test_dir = BASE_DIR.parent / "HumanEval_source"
-# cfg_dir = BASE_DIR.parent / "Compiledown_HumanEval_O2" / "x86" / "cfg"
+input_s_dir = INPUT_S_DIR
+input_test_dir = INPUT_TEST_DIR
+# cfg_dir = CFG_DIR
 
-output_dir = BASE_DIR / "results" / "exp01.2"
+output_dir = experiment_output_dir("exp01.3")
 
 prompt_dir = output_dir / "prompts"
 raw_output_dir = output_dir / "raw_model_output"
 arm_output_dir = output_dir / "arm_asm"
 log_file = output_dir / "failures.log"
 
-prompt_template = """Translate the following O2 optimized x86 assembly code to ARMv8 AArch64 assembly code.
+prompt_template = """Translate the following O2 optimized x86-64 assembly function to Linux ARMv8 AArch64 assembly.
 
-The input assembly code represents a compiled function that solves a programming problem.
+Goal:
+Produce a single AArch64 function that is behaviorally equivalent to the input function and compiles with:
+clang-17 -c <file>.s -target aarch64-linux-gnu
 
-Requirements:
-- Preserve the function behavior exactly
-- Output only ARMv8 assembly
-- Do not include explanations or comments outside the assembly
-- Keep the function structure equivalent
+Hard requirements:
+- Output only assembly text. No markdown fences. No prose.
+- Do not emit any architecture marker tokens as standalone instructions (forbidden examples: arm, armv8, aarch64).
+- Preserve exact semantics, including edge cases, signedness, overflow behavior, and return values.
+- Keep the translated function self-contained and callable by C test harnesses.
+- Use the same ABI contract as the source function.
+
+AArch64 legality constraints (must satisfy all):
+- Never emit illegal logical-immediate forms for and/eor/orr/tst.
+  - If an immediate is not encodable as a logical immediate, materialize it in a register and use register-register form.
+- Never emit large constants with a single mov when not encodable.
+  - Use movz/movk (or a legal equivalent) to construct full constants.
+- Ensure load/store indexed addressing scale matches access width.
+  - Example: for ldr wN, valid scaled register offset is #0 or #2, not #3.
+- Ensure every instruction mnemonic is valid AArch64 GNU/LLVM syntax for -target aarch64-linux-gnu.
+
+Register and control-flow safety constraints:
+- Do not clobber pointer/base argument registers before their last memory use.
+- If x0 is used as an input pointer later, keep it as a stable base or copy it to a dedicated base register first.
+- Keep accumulator/result registers separate from live pointer bases.
+- Preserve loop structure and branch predicates so algorithmic behavior is unchanged.
+
+Function/assembly hygiene:
+- Emit one function named func0 with a proper symbol export (.globl func0).
+- Include .text, alignment, and .type/.size directives in GNU-compatible style.
+- Keep stack usage and callee-saved register handling ABI-correct.
+- Do not call helper routines unless the source semantics requires those calls.
+
+Pre-output self-check (perform internally before finalizing):
+1) Assembler legality check for immediates, addressing modes, mnemonics, and directives.
+2) ABI/register-liveness check that no live pointer base is overwritten by arithmetic/result temporaries.
+3) Semantic check that each branch/loop and compare condition matches source intent.
+
+Output format:
+- Return only the final ARMv8 AArch64 assembly for func0.
 
 x86 Assembly:
 {asm}
 """
 
-MODEL_NAME="gemini-3.1-pro-preview"
+MODEL_NAME="gemini-3-flash-preview"
 # Controls how many model calls can happen simultaneously.
-MAX_CONCURRENCY = 10
+MAX_CONCURRENCY = 80
 # Total attempts for transient failures (initial try + retries).
 MAX_RETRIES = 3
 # Base retry delay for exponential backoff.

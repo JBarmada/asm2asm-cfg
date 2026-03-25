@@ -1,7 +1,7 @@
 from google import genai
 import os
 import time
-from pathlib import Path
+from shared_config import CFG_DIR, INPUT_S_DIR, INPUT_TEST_DIR, experiment_output_dir
 
 """
 experiment 02: single prompt, CFG, gemini on clang15 o2 optimized x86 humaneval asm code
@@ -11,12 +11,11 @@ experiment 02: single prompt, CFG, gemini on clang15 o2 optimized x86 humaneval 
 client = genai.Client()
 
 # --- Configuration ---
-BASE_DIR = Path(__file__).resolve().parent
-input_s_dir = BASE_DIR.parent / "Compiledown_HumanEval_O2" / "x86" / "asm"
-input_test_dir = BASE_DIR.parent / "HumanEval_source"
-cfg_dir = BASE_DIR.parent / "Compiledown_HumanEval_O2" / "x86" / "cfg"
+input_s_dir = INPUT_S_DIR
+input_test_dir = INPUT_TEST_DIR
+cfg_dir = CFG_DIR
 
-output_dir = BASE_DIR / "results" / "exp02"
+output_dir = experiment_output_dir("exp02")
 
 prompt_dir = output_dir / "prompts"
 raw_output_dir = output_dir / "raw_model_output"

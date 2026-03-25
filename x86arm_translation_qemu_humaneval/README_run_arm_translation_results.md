@@ -6,7 +6,7 @@ This document explains how to use `run_arm_translation_results.py` to compile tr
 
 Given a directory of translated ARM `.s` files such as:
 
-`x86_arm_translation_qemu_humaneval/results/exp01/arm_asm`
+`x86arm_translation_qemu_humaneval/results/exp01/arm_asm`
 
 the script will:
 
@@ -28,7 +28,7 @@ The script assumes this workspace layout:
   HumanEval_source/
     problem100/
       test.c
-  x86_arm_translation_qemu_humaneval/
+  x86arm_translation_qemu_humaneval/
     run_arm_translation_results.py
     results/
       exp01/
@@ -62,7 +62,7 @@ Inside the Docker container:
 
 ```bash
 cd /datasets
-python3 x86_arm_translation_qemu_humaneval/run_arm_translation_results.py x86_arm_translation_qemu_humaneval/results/exp01/arm_asm
+python3 x86arm_translation_qemu_humaneval/run_arm_translation_results.py x86arm_translation_qemu_humaneval/results/exp01/arm_asm
 ```
 
 ## Run one filtered problem
@@ -70,19 +70,19 @@ python3 x86_arm_translation_qemu_humaneval/run_arm_translation_results.py x86_ar
 Example for `problem100`:
 
 ```bash
-cd /datasets && python3 x86_arm_translation_qemu_humaneval/run_arm_translation_results.py x86_arm_translation_qemu_humaneval/results/exp01/arm_asm --problems 100
+cd /datasets && python3 x86arm_translation_qemu_humaneval/run_arm_translation_results.py x86arm_translation_qemu_humaneval/results/exp01/arm_asm --problems 100
 ```
 
 You can also pass the full problem name:
 
 ```bash
-cd /datasets && python3 x86_arm_translation_qemu_humaneval/run_arm_translation_results.py x86_arm_translation_qemu_humaneval/results/exp01/arm_asm --problems problem100
+cd /datasets && python3 x86arm_translation_qemu_humaneval/run_arm_translation_results.py x86arm_translation_qemu_humaneval/results/exp01/arm_asm --problems problem100
 ```
 
 ## Run a small batch
 
 ```bash
-cd /datasets && python3 x86_arm_translation_qemu_humaneval/run_arm_translation_results.py x86_arm_translation_qemu_humaneval/results/exp01/arm_asm --problems 100 101 102 103 104
+cd /datasets && python3 x86arm_translation_qemu_humaneval/run_arm_translation_results.py x86arm_translation_qemu_humaneval/results/exp01/arm_asm --problems 100 101 102 103 104
 ```
 
 ## Command-line options
@@ -117,17 +117,17 @@ usage: run_arm_translation_results.py [-h]
 
 If the input directory is:
 
-`x86_arm_translation_qemu_humaneval/results/exp01/arm_asm`
+`x86arm_translation_qemu_humaneval/results/exp01/arm_asm`
 
 then the script writes outputs under:
 
-`x86_arm_translation_qemu_humaneval/results/exp01`
+`x86arm_translation_qemu_humaneval/results/exp01`
 
 ### Per-problem artifacts
 
 Executables and object files are written to:
 
-`x86_arm_translation_qemu_humaneval/results/exp01/HEproblems/problemN`
+`x86arm_translation_qemu_humaneval/results/exp01/HEproblems/problemN`
 
 Example:
 
@@ -142,7 +142,7 @@ results/exp01/HEproblems/problem100/
 
 Two timestamped reports are written to:
 
-`x86_arm_translation_qemu_humaneval/results/exp01/txts`
+`x86arm_translation_qemu_humaneval/results/exp01/txts`
 
 Example:
 
@@ -222,17 +222,17 @@ That usually indicates a translation correctness issue rather than a pure toolch
 Run all translated results for `exp01`:
 
 ```bash
-cd /datasets && python3 x86_arm_translation_qemu_humaneval/run_arm_translation_results.py x86_arm_translation_qemu_humaneval/results/exp01/arm_asm
+cd /datasets && python3 x86arm_translation_qemu_humaneval/run_arm_translation_results.py x86arm_translation_qemu_humaneval/results/exp01/arm_asm
 ```
 
 Run one problem:
 
 ```bash
-cd /datasets && python3 x86_arm_translation_qemu_humaneval/run_arm_translation_results.py x86_arm_translation_qemu_humaneval/results/exp01/arm_asm --problems 100
+cd /datasets && python3 x86arm_translation_qemu_humaneval/run_arm_translation_results.py x86arm_translation_qemu_humaneval/results/exp01/arm_asm --problems 100
 ```
 
 Run with a longer timeout:
 
 ```bash
-cd /datasets && python3 x86_arm_translation_qemu_humaneval/run_arm_translation_results.py x86_arm_translation_qemu_humaneval/results/exp01/arm_asm --timeout 120
+cd /datasets && python3 x86arm_translation_qemu_humaneval/run_arm_translation_results.py x86arm_translation_qemu_humaneval/results/exp01/arm_asm --timeout 120
 ```

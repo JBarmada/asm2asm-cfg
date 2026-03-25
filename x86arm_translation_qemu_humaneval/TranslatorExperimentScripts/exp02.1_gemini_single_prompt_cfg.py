@@ -2,9 +2,8 @@ from google import genai
 import asyncio
 import os
 import random
-import re
 import time
-from pathlib import Path
+from shared_config import CFG_DIR, INPUT_S_DIR, INPUT_TEST_DIR, experiment_output_dir
 
 """
 parallelized exp02
@@ -15,64 +14,27 @@ problems concurrently with a bounded number of in-flight model requests.
 """
 
 # --- Configuration ---
-BASE_DIR = Path(__file__).resolve().parent
-input_s_dir = BASE_DIR.parent / "Compiledown_HumanEval_O2" / "x86" / "asm"
-input_test_dir = BASE_DIR.parent / "HumanEval_source"
-cfg_dir = BASE_DIR.parent / "Compiledown_HumanEval_O2" / "x86" / "cfg"
+input_s_dir = INPUT_S_DIR
+input_test_dir = INPUT_TEST_DIR
+cfg_dir = CFG_DIR
 
-output_dir = BASE_DIR / "results" / "exp02.3"
+output_dir = experiment_output_dir("exp02.1")
 
 prompt_dir = output_dir / "prompts"
 raw_output_dir = output_dir / "raw_model_output"
 arm_output_dir = output_dir / "arm_asm"
 log_file = output_dir / "failures.log"
 
-prompt_template = """Translate the following O2 optimized x86-64 assembly function to Linux ARMv8 AArch64 assembly.
+prompt_template = """Translate the following O2 optimized x86 assembly code to ARMv8 AArch64 assembly code.
 
-Goal:
-Produce a single AArch64 function that is behaviorally equivalent to the input function and compiles with:
-clang-17 -c <file>.s -target aarch64-linux-gnu
+The input assembly code represents a compiled function that solves a programming problem.
+The provided CFG describes the function control flow and should be used to improve translation correctness.
 
-Use both sources of truth:
-- x86 assembly is the primary semantic source.
-- CFG must be respected for block structure and branch behavior.
-
-Hard requirements:
-- Output only assembly text. No markdown fences. No prose.
-- Do not emit any architecture marker tokens as standalone instructions (forbidden examples: arm, armv8, aarch64).
-- Preserve exact semantics, including edge cases, signedness, overflow behavior, and return values.
-- Keep the translated function self-contained and callable by C test harnesses.
-- Use the same ABI contract as the source function.
-
-AArch64 legality constraints (must satisfy all):
-- Never emit illegal logical-immediate forms for and/eor/orr/tst.
-  - If an immediate is not encodable as a logical immediate, materialize it in a register and use register-register form.
-- Never emit large constants with a single mov when not encodable.
-  - Use movz/movk (or a legal equivalent) to construct full constants.
-- Ensure load/store indexed addressing scale matches access width.
-  - Example: for ldr wN, valid scaled register offset is #0 or #2, not #3.
-- Ensure every instruction mnemonic is valid AArch64 GNU/LLVM syntax for -target aarch64-linux-gnu.
-
-Register and control-flow safety constraints:
-- Do not clobber pointer/base argument registers before their last memory use.
-- If x0 is used as an input pointer later, keep it as a stable base or copy it to a dedicated base register first.
-- Keep accumulator/result registers separate from live pointer bases.
-- Preserve CFG-equivalent loop structure and branch predicates.
-
-Function/assembly hygiene:
-- Emit one function named func0 with a proper symbol export (.globl func0).
-- Include .text, alignment, and .type/.size directives in GNU-compatible style.
-- Keep stack usage and callee-saved register handling ABI-correct.
-- Do not call helper routines unless the source semantics requires those calls.
-
-Pre-output self-check (perform internally before finalizing):
-1) Assembler legality check for immediates, addressing modes, mnemonics, and directives.
-2) ABI/register-liveness check that no live pointer base is overwritten by arithmetic/result temporaries.
-3) CFG conformance check: translated branches/loops correspond to provided CFG edges.
-4) Semantic check that compare conditions and return paths match source intent.
-
-Output format:
-- Return only the final ARMv8 AArch64 assembly for func0.
+Requirements:
+- Preserve the function behavior exactly
+- Output only ARMv8 assembly
+- Do not include explanations or comments outside the assembly
+- Keep the function structure equivalent
 
 x86 Assembly:
 {asm}
@@ -83,11 +45,11 @@ CFG:
 
 MODEL_NAME="gemini-3-flash-preview"
 # Controls how many model calls can happen simultaneously.
-MAX_CONCURRENCY = 100
+MAX_CONCURRENCY = 80
 # Total attempts for transient failures (initial try + retries).
 MAX_RETRIES = 3
 # Base retry delay for exponential backoff.
-RETRY_BASE_SECONDS = 3.0
+RETRY_BASE_SECONDS = 2.0
 
 # -----------------------------
 # Directory setup
@@ -141,62 +103,18 @@ def _append_failure_log(problem, error):
         f.write(f"{problem}: {error}\n")
 
 
-class QuotaExhaustedError(RuntimeError):
-    """Raised when the API reports a hard daily quota exhaustion."""
-
-    def __init__(self, problem_name, retry_delay_seconds, raw_error):
-        self.problem_name = problem_name
-        self.retry_delay_seconds = retry_delay_seconds
-        self.raw_error = raw_error
-
-        if retry_delay_seconds is None:
-            message = (
-                f"Daily model quota exhausted while processing {problem_name}. "
-                "Stopping run now; retry after quota reset."
-            )
-        else:
-            hours = retry_delay_seconds // 3600
-            minutes = (retry_delay_seconds % 3600) // 60
-            seconds = retry_delay_seconds % 60
-            message = (
-                f"Daily model quota exhausted while processing {problem_name}. "
-                f"Stopping run now; retry in about {hours}h{minutes}m{seconds}s."
-            )
-
-        super().__init__(message)
-
-
-def _extract_retry_delay_seconds(error_text):
-    """Extract retryDelay seconds from API error text if present."""
-    match = re.search(r"retryDelay'\s*:\s*'(\d+)s'", error_text)
-    if match:
-        return int(match.group(1))
-    return None
-
-
-def _is_daily_quota_exhausted(error_text):
-    """Detect hard daily request quota exhaustion for a model."""
-    return (
-        "RESOURCE_EXHAUSTED" in error_text
-        and (
-            "generate_requests_per_model_per_day" in error_text
-            or "GenerateRequestsPerDayPerProjectPerModel" in error_text
-        )
-    )
-
-
 async def log_failure(log_lock, problem, error):
     """Serialize concurrent log writes so lines do not interleave."""
     async with log_lock:
         await asyncio.to_thread(_append_failure_log, problem, error)
 
 
-async def call_gemini_with_retry(aclient, prompt, problem_name):
+async def call_gemini_with_retry(aclient, semaphore, prompt, problem_name):
     """
-    Execute one model request with retry/backoff.
+    Execute one model request with bounded concurrency and retry/backoff.
 
-    Concurrency is controlled by the outer worker pool, so this function only
-    handles retries and transient failures.
+    The semaphore keeps request pressure within a configured limit. Retries with
+    exponential backoff absorb temporary API/network failures.
     """
 
     last_error = None
@@ -204,24 +122,16 @@ async def call_gemini_with_retry(aclient, prompt, problem_name):
     for attempt in range(1, MAX_RETRIES + 1):
         try:
             _log(f"{problem_name}: sending request (attempt {attempt}/{MAX_RETRIES})")
-            response = await aclient.models.generate_content(
-                model=MODEL_NAME,
-                contents=prompt
-            )
+            async with semaphore:
+                response = await aclient.models.generate_content(
+                    model=MODEL_NAME,
+                    contents=prompt
+                )
 
             _log(f"{problem_name}: response received")
             return response.text if response.text else ""
 
         except Exception as e:
-            error_text = str(e)
-            if _is_daily_quota_exhausted(error_text):
-                retry_delay_seconds = _extract_retry_delay_seconds(error_text)
-                raise QuotaExhaustedError(
-                    problem_name=problem_name,
-                    retry_delay_seconds=retry_delay_seconds,
-                    raw_error=error_text,
-                ) from e
-
             last_error = e
             if attempt == MAX_RETRIES:
                 break
@@ -238,10 +148,12 @@ async def call_gemini_with_retry(aclient, prompt, problem_name):
 
 
 async def process_one_problem(
+    index,
     total_files,
     filename,
     start_time,
     aclient,
+    semaphore,
     log_lock,
     progress_lock,
     progress,
@@ -289,7 +201,7 @@ async def process_one_problem(
         await asyncio.to_thread(_write_text, prompt_path, prompt)
         _log(f"{problem_name}: prompt saved")
 
-        raw_output = await call_gemini_with_retry(aclient, prompt, problem_name)
+        raw_output = await call_gemini_with_retry(aclient, semaphore, prompt, problem_name)
 
         # Save raw model output
         raw_path = raw_output_dir / f"{problem_name}.txt"
@@ -308,10 +220,6 @@ async def process_one_problem(
             elapsed = time.time() - start_time
             print(f"[{done}/{total_files}] OK   {filename} | elapsed: {elapsed:.1f}s")
 
-    except QuotaExhaustedError:
-        # Propagate so the orchestrator can stop the whole run immediately.
-        raise
-
     except Exception as e:
         # Persist failure details for later inspection.
         await log_failure(log_lock, problem_name, str(e))
@@ -321,49 +229,6 @@ async def process_one_problem(
             done = progress["completed"] + progress["failed"] + progress["skipped"]
             elapsed = time.time() - start_time
             print(f"[{done}/{total_files}] FAIL {filename}: {e} | elapsed: {elapsed:.1f}s")
-
-
-async def worker_loop(
-    worker_id,
-    total_files,
-    filenames,
-    start_time,
-    aclient,
-    stop_event,
-    log_lock,
-    progress_lock,
-    progress,
-):
-    """Consume filenames sequentially from a shared queue."""
-    _log(f"worker-{worker_id}: started")
-    while True:
-        if stop_event.is_set():
-            _log(f"worker-{worker_id}: stop requested")
-            return
-
-        try:
-            filename = filenames.get_nowait()
-        except asyncio.QueueEmpty:
-            _log(f"worker-{worker_id}: no more files")
-            return
-
-        try:
-            await process_one_problem(
-                total_files=total_files,
-                filename=filename,
-                start_time=start_time,
-                aclient=aclient,
-                log_lock=log_lock,
-                progress_lock=progress_lock,
-                progress=progress,
-            )
-        except QuotaExhaustedError as e:
-            stop_event.set()
-            await log_failure(log_lock, "GLOBAL", str(e))
-            _log(f"worker-{worker_id}: quota exhausted, stopping all workers")
-            raise
-        finally:
-            filenames.task_done()
 
 async def process_problems_async():
     """
@@ -391,50 +256,35 @@ async def process_problems_async():
         return
 
     # Shared synchronization primitives for the worker pool.
+    semaphore = asyncio.Semaphore(MAX_CONCURRENCY)
     log_lock = asyncio.Lock()
     progress_lock = asyncio.Lock()
     progress = {"completed": 0, "failed": 0, "skipped": 0}
-    worker_count = max(1, MAX_CONCURRENCY)
-    stop_event = asyncio.Event()
-
-    filenames = asyncio.Queue()
-    for filename in s_files:
-        filenames.put_nowait(filename)
 
     # One shared async client for all tasks; cleaned up automatically on exit.
     _log("Opening async Gemini client")
     async with genai.Client().aio as aclient:
-        _log(f"Scheduling {worker_count} worker tasks")
+        _log("Scheduling worker tasks")
         tasks = [
             asyncio.create_task(
-                worker_loop(
-                    worker_id=index,
+                process_one_problem(
+                    index=index,
                     total_files=total_files,
-                    filenames=filenames,
+                    filename=filename,
                     start_time=start_time,
                     aclient=aclient,
-                    stop_event=stop_event,
+                    semaphore=semaphore,
                     log_lock=log_lock,
                     progress_lock=progress_lock,
                     progress=progress,
                 )
             )
-            for index in range(1, worker_count + 1)
+            for index, filename in enumerate(s_files, start=1)
         ]
 
         # Wait for all scheduled problem tasks to finish.
         _log(f"Awaiting completion of {len(tasks)} tasks")
-        quota_stop_error = None
-        try:
-            await asyncio.gather(*tasks)
-        except QuotaExhaustedError as e:
-            quota_stop_error = e
-            stop_event.set()
-            _log(str(e))
-            for task in tasks:
-                if not task.done():
-                    task.cancel()
-            await asyncio.gather(*tasks, return_exceptions=True)
+        await asyncio.gather(*tasks)
 
     _log("Async Gemini client closed")
 
@@ -447,8 +297,6 @@ async def process_problems_async():
         f"total={total_files} "
         f"elapsed={elapsed:.1f}s"
     )
-    if quota_stop_error is not None:
-        print(f"Stopped early: {quota_stop_error}")
 
 
 # -----------------------------

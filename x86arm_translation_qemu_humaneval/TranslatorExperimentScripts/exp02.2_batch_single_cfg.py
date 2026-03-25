@@ -3,7 +3,7 @@ import argparse
 import json
 import os
 import time
-from pathlib import Path
+from shared_config import CFG_DIR, INPUT_S_DIR, experiment_output_dir
 
 """
 Batch API version of exp02.2.
@@ -26,11 +26,10 @@ Usage:
 """
 
 # --- Configuration ---
-BASE_DIR = Path(__file__).resolve().parent
-input_s_dir = BASE_DIR.parent / "Compiledown_HumanEval_O2" / "x86" / "asm"
-cfg_dir = BASE_DIR.parent / "Compiledown_HumanEval_O2" / "x86" / "cfg"
+input_s_dir = INPUT_S_DIR
+cfg_dir = CFG_DIR
 
-output_dir = BASE_DIR / "results" / "exp02.2"
+output_dir = experiment_output_dir("exp02.2")
 prompt_dir = output_dir / "prompts"
 raw_output_dir = output_dir / "raw_model_output"
 arm_output_dir = output_dir / "arm_asm"

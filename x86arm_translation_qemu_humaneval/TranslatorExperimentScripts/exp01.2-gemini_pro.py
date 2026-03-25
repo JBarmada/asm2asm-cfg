@@ -3,10 +3,10 @@ import asyncio
 import os
 import random
 import time
-from pathlib import Path
+from shared_config import INPUT_S_DIR, INPUT_TEST_DIR, experiment_output_dir
 
 """
-parallelized exp01
+parallelized exp01: advanced gemini model
 experiment 01.1: parallelized single prompt, no CFG, gemini on clang15 o2 optimized x86 humaneval asm code
 
 This version preserves the original per-problem translation logic but runs many
@@ -14,12 +14,11 @@ problems concurrently with a bounded number of in-flight model requests.
 """
 
 # --- Configuration ---
-BASE_DIR = Path(__file__).resolve().parent
-input_s_dir = BASE_DIR.parent / "Compiledown_HumanEval_O2" / "x86" / "asm"
-input_test_dir = BASE_DIR.parent / "HumanEval_source"
-# cfg_dir = BASE_DIR.parent / "Compiledown_HumanEval_O2" / "x86" / "cfg"
+input_s_dir = INPUT_S_DIR
+input_test_dir = INPUT_TEST_DIR
+# cfg_dir = CFG_DIR
 
-output_dir = BASE_DIR / "results" / "exp01.1"
+output_dir = experiment_output_dir("exp01.2")
 
 prompt_dir = output_dir / "prompts"
 raw_output_dir = output_dir / "raw_model_output"
@@ -40,9 +39,9 @@ x86 Assembly:
 {asm}
 """
 
-MODEL_NAME="gemini-3-flash-preview"
+MODEL_NAME="gemini-3.1-pro-preview"
 # Controls how many model calls can happen simultaneously.
-MAX_CONCURRENCY = 80
+MAX_CONCURRENCY = 10
 # Total attempts for transient failures (initial try + retries).
 MAX_RETRIES = 3
 # Base retry delay for exponential backoff.
