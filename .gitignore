@@ -29,3 +29,5 @@ zips/
 # Temporary files
 *.tmp
 *.temp
+
+.docker.env
