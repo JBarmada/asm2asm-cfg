@@ -6,6 +6,11 @@
 docker build -t my-crosscompile .
 ```
 
+Make a .docker.env files with 
+'''text
+GOOGLE_API_KEY=Your API key
+'''
+
 ## Run docker
 
 ```bash
