@@ -31,3 +31,5 @@ zips/
 *.temp
 
 .docker.env
+*.zip
+*.7z
