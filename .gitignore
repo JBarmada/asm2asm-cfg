@@ -20,6 +20,10 @@ Thumbs.db
 x86arm_translation_qemu_humaneval/results/
 x86riscv-translation/gemini/results/
 x86riscv-translation/gemini/batchcmd.txt
+RISCV-Transpilation/results/
+ARMv8-Transpilation/results/
+ChatGPT-Transpilation/results/
+results/
 
 zips/
 

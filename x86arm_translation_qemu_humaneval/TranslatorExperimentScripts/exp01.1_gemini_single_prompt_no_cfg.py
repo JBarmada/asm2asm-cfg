@@ -18,20 +18,20 @@ input_s_dir = INPUT_S_DIR
 input_test_dir = INPUT_TEST_DIR
 # cfg_dir = CFG_DIR
 
-output_dir = experiment_output_dir("exp01.1")
+output_dir = experiment_output_dir("x86toMac_gemini_flash")
 
 prompt_dir = output_dir / "prompts"
 raw_output_dir = output_dir / "raw_model_output"
 arm_output_dir = output_dir / "arm_asm"
 log_file = output_dir / "failures.log"
 
-prompt_template = """Translate the following O2 optimized x86 assembly code to ARMv8 AArch64 assembly code.
+prompt_template = """Translate the following O2 optimized x86 assembly code to  Armv8.4a (Apple Silicon Mac) assembly code.
 
 The input assembly code represents a compiled function that solves a programming problem.
 
 Requirements:
 - Preserve the function behavior exactly
-- Output only ARMv8 assembly
+- Output only  Armv8.4a (Apple Silicon Mac) assembly
 - Do not include explanations or comments outside the assembly
 - Keep the function structure equivalent
 

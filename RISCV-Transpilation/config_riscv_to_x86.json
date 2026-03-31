@@ -1,0 +1,26 @@
+{
+  "benchmark": "HumanEval",
+  "action": "compile_and_run",
+  "model_name": "gemini-3-flash-preview",
+  "max_workers": 80,
+  "max_retries": 3,
+  "retry_base_seconds": 2.0,
+  "source_arch": "RISCV",
+  "source_dataset_field": "riscv64",
+  "target_arch": "x86_64",
+  "test_root": "../HumanEval_source",
+  "clang": "clang-17",
+  "compile_flags": [
+    "-target", 
+    "x86_64-unknown-linux-gnu"
+  ],
+  "link_flags": [
+    "-target", 
+    "x86_64-unknown-linux-gnu",
+    "-lm"
+  ],
+  "qemu": "qemu-x86_64",
+  "use_qemu": false,
+  "timeout_seconds": 30,
+  "prompt_template": "Translate the following assembly code from {source_arch} to {target_arch}. Return ONLY the translated assembly code with no explanations.\\n\\n{source_code}"
+}

@@ -1,0 +1,22 @@
+{
+  "benchmark": "HumanEval",
+  "action": "translate_only",
+  "model_name": "gpt-5-mini-2025-08-07",
+  "max_workers": 80,
+  "max_retries": 3,
+  "retry_base_seconds": 2.0,
+  "source_arch": "x86_64",
+  "source_dataset_field": "x86_64",
+  "target_arch": "Armv8.4a (Apple Silicon Mac)",
+  "test_root": "../HumanEval_source",
+  "clang": "clang",
+  "compile_flags": [
+    "-target", "arm64-apple-darwin"
+  ],
+  "link_flags": [
+    "-target", "arm64-apple-darwin"
+  ],
+  "qemu": "",
+  "timeout_seconds": 30,
+  "prompt_template": "Translate the following assembly code from {source_arch} to {target_arch}. Return ONLY the translated assembly code with no explanations.\\n\\n{source_code}"
+}

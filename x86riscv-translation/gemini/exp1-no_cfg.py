@@ -29,12 +29,13 @@ This version preserves the original per-problem translation logic but runs many
 problems concurrently with a bounded number of in-flight model requests.
 """
 
-# --- Configuration ---
+# --- Configuration --
+# models: gemini-3-flash-preview, gemini-3.1-pro-preview
 BASE_DIR = Path(__file__).resolve().parent
 DEFAULT_CONFIG_FILENAME = "asm_translation_config.json"
 DEFAULT_CONFIG = {
-    "model_name": "gemini-3.1-pro-preview",
-    "max_concurrency": 1,
+    "model_name": "gemini-3-flash-preview",
+    "max_concurrency": 100,
     "max_retries": 3,
     "retry_base_seconds": 3.0,
     "input_s_dir": "Compiledown_HumanEval_O2/x86/asm",
