@@ -8,6 +8,27 @@ Behavior:
 - Performs up to 3 attempts per (problem, strategy) track.
 - After each batch, validates each track locally.
 - Feeds validation stderr + prior candidate back into next attempt for that same track.
+
+Setup requirements before running:
+- Run from the ChatGPT-Transpilation working directory so relative paths resolve.
+- A valid config JSON must exist and include compile/link/runtime settings.
+- Input experiment directory must contain translated assembly and an *_error_problems.json.
+- Validation script run_translation_error_json.py must exist.
+- For real API mode (fake-batch-mode=none): OPENAI_API_KEY must be set.
+- For fake mode: no OpenAI API call is made, and CFG/DFG downloads are skipped.
+
+Examples:
+- Fake success smoke test with cap:
+    python BatchCompose.py <input_dir> --config <config_json> --fake-batch-mode success --max-problems 1 --yes
+- Fake quota abort test (graceful failure path):
+    python BatchCompose.py <input_dir> --config <config_json> --fake-batch-mode quota --max-problems 1 --yes
+- Real run with cap:
+    python BatchCompose.py <input_dir> --config <config_json> --max-problems 5 --yes
+
+Useful flags:
+- --fake-batch-mode: none | success | quota | failed_status
+- --max-problems: limit number of errored problems loaded for quick tests
+- --yes: skip interactive confirmation prompt
 """
 
 from __future__ import annotations
@@ -102,6 +123,14 @@ class TrackState:
     final_note: str
 
 
+class QuotaExhaustedError(RuntimeError):
+    pass
+
+
+class BatchRunAbortedError(RuntimeError):
+    pass
+
+
 def _log(message: str) -> None:
     now = time.strftime("%H:%M:%S")
     print(f"[{now}] {message}")
@@ -114,6 +143,42 @@ def _read_text(path: Path) -> str:
 def _write_text(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content, encoding="utf-8")
+
+
+def _append_text(path: Path, content: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write(content)
+
+
+def _is_insufficient_quota_error(exc: BaseException | None = None, text: str = "") -> bool:
+    code = ""
+    if exc is not None:
+        raw_code = getattr(exc, "code", None)
+        if raw_code is not None:
+            code = str(raw_code).strip().lower()
+
+    haystack = (text or "")
+    if exc is not None:
+        haystack = f"{haystack}\n{str(exc)}"
+    haystack = haystack.lower()
+
+    if code == "insufficient_quota":
+        return True
+    if "insufficient_quota" in haystack:
+        return True
+    if "quota" in haystack and "insufficient" in haystack:
+        return True
+    return False
+
+
+def _one_line_error_reason(exc: BaseException) -> str:
+    message = str(exc).replace("\n", " ").strip()
+    if not message:
+        message = exc.__class__.__name__
+    if _is_insufficient_quota_error(exc):
+        return f"Batch Composer aborted: insufficient_quota ({message})"
+    return f"Batch Composer aborted: {message}"
 
 
 def _is_readable_file(path: Path) -> bool:
@@ -151,6 +216,19 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--run-label", help="Optional label used in output naming")
     parser.add_argument("--error-json", type=Path, help="Optional explicit *_error_problems.json path")
     parser.add_argument("--completion-window", default="24h", help="Batch completion window (e.g., 24h)")
+    parser.add_argument("--yes", action="store_true", help="Skip interactive confirmation prompt")
+    parser.add_argument(
+        "--fake-batch-mode",
+        choices=["none", "success", "quota", "failed_status"],
+        default="none",
+        help=(
+            "Dry-run mode for fast testing without real Batch API calls. "
+            "success=synthetic batch responses, quota=simulate insufficient quota abort, "
+            "failed_status=simulate failed batch status."
+        ),
+    )
+    parser.add_argument("--fake-latency-seconds", type=int, default=1, help="Delay used by fake batch mode")
+    parser.add_argument("--max-problems", type=int, default=0, help="Cap number of errored problems loaded (0 means no cap)")
     return parser.parse_args()
 
 
@@ -263,10 +341,25 @@ def fetch_hf_graph_data(dataset_id: str, column: str, hf_token: str | None) -> d
     return graph_map
 
 
+def build_fake_graph_data_from_error_json(error_json_path: Path) -> tuple[dict[str, str], dict[str, str]]:
+    payload = json.loads(error_json_path.read_text(encoding="utf-8"))
+    errored = payload.get("errored_problems", [])
+    cfg_data: dict[str, str] = {}
+    dfg_data: dict[str, str] = {}
+    for entry in errored:
+        name = str(entry.get("name", "")).strip()
+        if not name:
+            continue
+        cfg_data[name] = "(fake cfg placeholder for dry-run mode)"
+        dfg_data[name] = "(fake dfg placeholder for dry-run mode)"
+    return cfg_data, dfg_data
+
+
 def load_problem_specs(
     paths: ComposerRuntimePaths,
     cfg_data: dict[str, str],
     dfg_data: dict[str, str],
+    max_problems: int = 0,
 ) -> list[ProblemSpec]:
     issues: list[str] = []
 
@@ -315,6 +408,9 @@ def load_problem_specs(
                 dfg_text=dfg_text,
             )
         )
+
+    if max_problems and max_problems > 0:
+        specs = specs[:max_problems]
 
     if issues:
         detail = "\n".join(f"- {item}" for item in issues)
@@ -559,6 +655,63 @@ class IndependentTrackBatchController:
         path.mkdir(parents=True, exist_ok=True)
         return path
 
+    def _serialize_tracker(self) -> list[dict[str, object]]:
+        rows: list[dict[str, object]] = []
+        for (problem, config), state in sorted(self.tracker.items(), key=lambda item: (item[0][0], item[0][1])):
+            rows.append(
+                {
+                    "problem": problem,
+                    "config": config,
+                    "solved": state.solved,
+                    "attempts_made": state.attempts_made,
+                    "last_validation_status": state.last_validation_status,
+                    "last_validation_summary": state.last_validation_summary,
+                    "last_stderr": state.last_stderr,
+                    "final_note": state.final_note,
+                    "source_asm_name": state.source_asm_name,
+                }
+            )
+        return rows
+
+    def write_partial_failure_checkpoint(self, started_at: datetime, failed_at: datetime, reason: str) -> Path:
+        timestamp = failed_at.strftime("%Y%m%d_%H%M%S")
+        checkpoint_path = self.paths.logs_dir / f"{timestamp}_partial_failure_checkpoint.json"
+        payload = {
+            "run_started": started_at.isoformat(timespec="seconds"),
+            "run_failed": failed_at.isoformat(timespec="seconds"),
+            "failure_reason": reason,
+            "prompt_configs": PROMPT_CONFIGS,
+            "max_attempts_per_track": MAX_ATTEMPTS,
+            "tracker": self._serialize_tracker(),
+            "history_records": self.history_records,
+        }
+        _write_text(checkpoint_path, json.dumps(payload, indent=2) + "\n")
+        return checkpoint_path
+
+    def write_partial_failure_report(self, started_at: datetime, failed_at: datetime, reason: str, checkpoint_path: Path) -> Path:
+        timestamp = failed_at.strftime("%Y%m%d_%H%M%S")
+        report_path = self.paths.reports_dir / f"{timestamp}_partial_failure_report.txt"
+
+        lines = [
+            f"Run started: {started_at.isoformat(timespec='seconds')}",
+            f"Run failed: {failed_at.isoformat(timespec='seconds')}",
+            f"Reason: {reason}",
+            f"Checkpoint JSON: {checkpoint_path}",
+            "",
+            "Progress summary by config:",
+        ]
+
+        total = len(self.problems)
+        for config in PROMPT_CONFIGS:
+            solved = sum(1 for (p, c), s in self.tracker.items() if c == config and s.solved)
+            attempted = sum(1 for (p, c), s in self.tracker.items() if c == config and s.attempts_made > 0)
+            lines.append(
+                f"- {config}: solved={solved}/{total} attempted={attempted}/{total}"
+            )
+
+        _write_text(report_path, "\n".join(lines) + "\n")
+        return report_path
+
     def prepare_batch_file(self, iteration: int) -> Path | None:
         batch_filename = self.paths.batch_inputs_dir / f"batch_iter_{iteration}.jsonl"
         pending_count = 0
@@ -617,16 +770,64 @@ class IndependentTrackBatchController:
 
         return batch_filename if pending_count > 0 else None
 
+    def _build_fake_batch_results(self, batch_file: Path) -> str:
+        output_lines: list[str] = []
+        with batch_file.open("r", encoding="utf-8") as handle:
+            for line in handle:
+                if not line.strip():
+                    continue
+                request_obj = json.loads(line)
+                custom_id = str(request_obj.get("custom_id", ""))
+                parts = custom_id.split("---")
+                if len(parts) != 3:
+                    continue
+
+                prob_name, _config, _iteration = parts
+                prob = self.problem_index.get(prob_name)
+                # Return source asm as synthetic candidate so the full pipeline can be exercised.
+                synthetic_output = _read_text(prob.source_asm_path) if prob is not None else ""
+
+                output_lines.append(
+                    json.dumps(
+                        {
+                            "custom_id": custom_id,
+                            "response": {
+                                "body": {
+                                    "choices": [
+                                        {
+                                            "message": {
+                                                "content": synthetic_output,
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                        }
+                    )
+                )
+        return "\n".join(output_lines)
+
     def poll_batch(self, batch_id: str) -> str:
         while True:
-            job = self.client.batches.retrieve(batch_id)
+            try:
+                job = self.client.batches.retrieve(batch_id)
+            except Exception as exc:
+                if _is_insufficient_quota_error(exc):
+                    raise QuotaExhaustedError(f"insufficient_quota while polling batch {batch_id}") from exc
+                raise BatchRunAbortedError(f"failed polling batch {batch_id}: {exc}") from exc
+
             if job.status == "completed":
                 if not job.output_file_id:
                     raise RuntimeError(f"Batch {batch_id} completed without output_file_id")
                 return self.client.files.content(job.output_file_id).text
             if job.status in {"failed", "cancelled", "expired"}:
                 errors = getattr(job, "errors", None)
-                raise RuntimeError(f"Batch {batch_id} ended with status={job.status}, errors={errors}")
+                errors_text = str(errors)
+                if _is_insufficient_quota_error(text=errors_text):
+                    raise QuotaExhaustedError(
+                        f"insufficient_quota from batch status={job.status} batch={batch_id}"
+                    )
+                raise BatchRunAbortedError(f"Batch {batch_id} ended with status={job.status}, errors={errors}")
 
             completed = getattr(job.request_counts, "completed", 0)
             total = getattr(job.request_counts, "total", 0)
@@ -796,14 +997,49 @@ class IndependentTrackBatchController:
                 _log("No pending tracks remain. Stopping iterations early.")
                 break
 
-            with batch_file.open("rb") as handle:
-                uploaded = self.client.files.create(file=handle, purpose="batch")
+            if self.args.fake_batch_mode == "quota":
+                raise QuotaExhaustedError(
+                    f"insufficient_quota (simulated) while uploading batch file for iteration {iteration + 1}"
+                )
+            if self.args.fake_batch_mode == "failed_status":
+                raise BatchRunAbortedError(
+                    f"Batch simulated failure status for iteration {iteration + 1}"
+                )
+            if self.args.fake_batch_mode == "success":
+                _log(f"Using fake batch mode 'success' for iteration {iteration + 1}")
+                time.sleep(max(0, self.args.fake_latency_seconds))
+                results_text = self._build_fake_batch_results(batch_file)
+                self.process_results(iteration, results_text)
+                self.print_metrics(iteration)
+                continue
 
-            job = self.client.batches.create(
-                input_file_id=uploaded.id,
-                endpoint="/v1/chat/completions",
-                completion_window=self.args.completion_window,
-            )
+            try:
+                with batch_file.open("rb") as handle:
+                    uploaded = self.client.files.create(file=handle, purpose="batch")
+            except Exception as exc:
+                if _is_insufficient_quota_error(exc):
+                    raise QuotaExhaustedError(
+                        f"insufficient_quota while uploading batch file for iteration {iteration + 1}"
+                    ) from exc
+                raise BatchRunAbortedError(
+                    f"batch file upload failed at iteration {iteration + 1}: {exc}"
+                ) from exc
+
+            try:
+                job = self.client.batches.create(
+                    input_file_id=uploaded.id,
+                    endpoint="/v1/chat/completions",
+                    completion_window=self.args.completion_window,
+                )
+            except Exception as exc:
+                if _is_insufficient_quota_error(exc):
+                    raise QuotaExhaustedError(
+                        f"insufficient_quota while creating batch for iteration {iteration + 1}"
+                    ) from exc
+                raise BatchRunAbortedError(
+                    f"batch create failed at iteration {iteration + 1}: {exc}"
+                ) from exc
+
             _log(f"Submitted batch job id={job.id} for iteration {iteration + 1}")
 
             results_text = self.poll_batch(job.id)
@@ -853,10 +1089,14 @@ def main() -> int:
 
         paths = resolve_runtime_paths(args)
 
-        hf_token = cfg.get("hf_token") or os.environ.get("HF_TOKEN") or os.environ.get("HUGGINGFACE_HUB_TOKEN")
-        cfg_data = fetch_hf_graph_data("ryaasabsar/humaneval_asm_cfg", args.cfg_language, hf_token)
-        dfg_data = fetch_hf_graph_data("ryaasabsar/humaneval_asm_dfg", args.dfg_language, hf_token)
-        problems = load_problem_specs(paths, cfg_data, dfg_data)
+        if args.fake_batch_mode != "none":
+            _log("Fake mode enabled: skipping HF CFG/DFG downloads and using local placeholders")
+            cfg_data, dfg_data = build_fake_graph_data_from_error_json(paths.error_json_path)
+        else:
+            hf_token = cfg.get("hf_token") or os.environ.get("HF_TOKEN") or os.environ.get("HUGGINGFACE_HUB_TOKEN")
+            cfg_data = fetch_hf_graph_data("ryaasabsar/humaneval_asm_cfg", args.cfg_language, hf_token)
+            dfg_data = fetch_hf_graph_data("ryaasabsar/humaneval_asm_dfg", args.dfg_language, hf_token)
+        problems = load_problem_specs(paths, cfg_data, dfg_data, max_problems=args.max_problems)
 
     except Exception as exc:
         print(str(exc), file=sys.stderr)
@@ -873,13 +1113,16 @@ def main() -> int:
     print(f"Model: {args.model}")
     print(f"Prompt configs: {', '.join(PROMPT_CONFIGS)}")
     print(f"Problems to repair: {len(problems)}")
+    print(f"Max problems cap: {args.max_problems if args.max_problems > 0 else 'none'}")
     print(f"Max attempts per track: {MAX_ATTEMPTS}")
+    print(f"Fake batch mode: {args.fake_batch_mode}")
     print("=" * 70 + "\n")
 
-    confirm = input("Directories and config verified. Do you want to proceed with this run? [y/N]: ").strip().lower()
-    if confirm not in ["y", "yes"]:
-        print("Run cancelled by user. Exiting.")
-        return 0
+    if not args.yes:
+        confirm = input("Directories and config verified. Do you want to proceed with this run? [y/N]: ").strip().lower()
+        if confirm not in ["y", "yes"]:
+            print("Run cancelled by user. Exiting.")
+            return 0
 
     paths.prompts_dir.mkdir(parents=True, exist_ok=True)
     paths.raw_output_dir.mkdir(parents=True, exist_ok=True)
@@ -911,22 +1154,34 @@ def main() -> int:
 
     client = OpenAI(api_key=api_key)
     controller = IndependentTrackBatchController(problems, paths, args, client)
-    _copied, unresolved = controller.run()
 
-    finished_at = datetime.now()
-    final_validation_path, final_validation_error_count = validate_all_fixed_outputs(paths, args)
-    controller.write_reports(started_at, finished_at, final_validation_path, final_validation_error_count)
+    try:
+        _copied, unresolved = controller.run()
 
-    total_tracks = len(problems) * len(PROMPT_CONFIGS)
-    solved_tracks = sum(1 for state in controller.tracker.values() if state.solved)
-    print(
-        "Batch Composer finished. "
-        f"solved_tracks={solved_tracks}/{total_tracks} "
-        f"unresolved_problems={unresolved} "
-        f"final_errored_count={final_validation_error_count}"
-    )
+        finished_at = datetime.now()
+        final_validation_path, final_validation_error_count = validate_all_fixed_outputs(paths, args)
+        controller.write_reports(started_at, finished_at, final_validation_path, final_validation_error_count)
 
-    return 0 if final_validation_error_count == 0 else 1
+        total_tracks = len(problems) * len(PROMPT_CONFIGS)
+        solved_tracks = sum(1 for state in controller.tracker.values() if state.solved)
+        print(
+            "Batch Composer finished. "
+            f"solved_tracks={solved_tracks}/{total_tracks} "
+            f"unresolved_problems={unresolved} "
+            f"final_errored_count={final_validation_error_count}"
+        )
+
+        return 0 if final_validation_error_count == 0 else 1
+    except Exception as exc:
+        failed_at = datetime.now()
+        reason = _one_line_error_reason(exc)
+        checkpoint_path = controller.write_partial_failure_checkpoint(started_at, failed_at, reason)
+        report_path = controller.write_partial_failure_report(started_at, failed_at, reason, checkpoint_path)
+        _append_text(paths.logs_dir / "failures.log", reason + "\n")
+        _log(f"Partial failure checkpoint written to {checkpoint_path}")
+        _log(f"Partial failure report written to {report_path}")
+        print(reason, file=sys.stderr)
+        return 2
 
 
 if __name__ == "__main__":
