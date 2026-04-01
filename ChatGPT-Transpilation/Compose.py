@@ -1,6 +1,28 @@
 """
 OpenAI Composer for repairing translated assembly that failed validation.
-Fully self-contained and Language-Agnostic via config.json.
+Fully self-contained and language-agnostic via config.json.
+
+Setup requirements before running:
+- Run from the ChatGPT-Transpilation working directory so relative paths resolve.
+- A valid config JSON must exist and include compile/link/runtime settings.
+- Input experiment directory must contain translated assembly and an *_error_problems.json.
+- Validation script run_translation_error_json.py must exist.
+- OPENAI_API_KEY must be set for real runs.
+
+Resume behavior:
+- On abort (including insufficient quota), a checkpoint JSON is saved under results/composer/<config>/logs.
+- Resume a single prompt config with --resume-checkpoint <path>.
+- When using --all-prompt-configs, use --resume-all to continue from the last saved prompt config index.
+
+Examples:
+- Single config:
+    python Compose.py <input_dir> --config <config_json> --prompt-config error_cfg
+- Run all prompt configs:
+    python Compose.py <input_dir> --config <config_json> --all-prompt-configs
+- Resume a single config:
+    python Compose.py <input_dir> --config <config_json> --prompt-config error_cfg --resume-checkpoint <checkpoint_path>
+- Resume run-all:
+    python Compose.py <input_dir> --config <config_json> --all-prompt-configs --resume-all
 """
 
 from __future__ import annotations
@@ -85,6 +107,14 @@ class ValidationFeedback:
     problems_processed: int
     validator_returncode: int
 
+
+class QuotaExhaustedError(RuntimeError):
+    pass
+
+
+class ComposerAbortError(RuntimeError):
+    pass
+
 def resolve_openai_api_key() -> tuple[str, str]:
     env_name = "OPENAI_API_KEY"
     value = os.environ.get(env_name)
@@ -98,6 +128,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--config", type=Path, required=True, help="Path to the config.json")
     parser.add_argument("--prompt-config", help="Override prompt config strategy")
     parser.add_argument("--run-label", help="Optional label used in output naming")
+    parser.add_argument("--all-prompt-configs", action="store_true", help="Run once per prompt config")
+    parser.add_argument("--resume-checkpoint", type=Path, help="Resume from a saved checkpoint JSON")
+    parser.add_argument("--resume-all", action="store_true", help="Resume run-all from checkpoint in results/composer")
+    parser.add_argument("--yes", action="store_true", help="Skip interactive confirmation prompt")
     return parser.parse_args()
 
 def resolve_runtime_paths(args: argparse.Namespace) -> ComposerRuntimePaths:
@@ -167,6 +201,15 @@ def _append_text(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as handle:
         handle.write(content)
+
+
+def _one_line_error_reason(exc: BaseException) -> str:
+    message = str(exc).replace("\n", " ").strip()
+    if not message:
+        message = exc.__class__.__name__
+    if isinstance(exc, QuotaExhaustedError) or "insufficient_quota" in message.lower():
+        return f"Composer aborted: insufficient_quota ({message})"
+    return f"Composer aborted: {message}"
 
 def _is_asm_like_line(line: str) -> bool:
     stripped = line.strip()
@@ -372,8 +415,7 @@ async def call_openai_with_retry(aclient: AsyncOpenAI, prompt: str, problem_name
             return resp.output_text or ""
         except openai.RateLimitError as e:
             if e.code == "insufficient_quota":
-                _log(f"CRITICAL: OpenAI API Quota Exhausted. Aborting.")
-                os._exit(1)
+                raise QuotaExhaustedError("insufficient_quota") from e
             if attempt == max_retries: raise
             sleep_time = retry_base_seconds * (2 ** (attempt - 1)) + random.uniform(0, 0.5)
             _log(f"{problem_name}: Rate limit hit, backing off for {sleep_time:.1f}s... (Attempt {attempt}/{max_retries})")
@@ -497,7 +539,8 @@ def validate_all_fixed_outputs(paths: ComposerRuntimePaths, args: argparse.Names
 
 async def process_one_problem(
     problem: ProblemSpec, paths: ComposerRuntimePaths, args: argparse.Namespace, aclient: AsyncOpenAI,
-    results: list[ProblemResult], result_lock: asyncio.Lock, progress: dict[str, int], progress_lock: asyncio.Lock
+    results: list[ProblemResult], result_lock: asyncio.Lock, progress: dict[str, int], progress_lock: asyncio.Lock,
+    resume_state: dict[str, dict[str, object]] | None = None
 ) -> None:
     problem_name = problem.name
     source_asm = await asyncio.to_thread(_read_text, problem.source_asm_path)
@@ -511,8 +554,37 @@ async def process_one_problem(
     final_note = "Unknown"
     succeeded = False
     retry_context: dict[str, str] | None = None
+    start_attempt = 1
 
-    for attempt in range(1, args.max_retries + 1):
+    if resume_state and problem_name in resume_state:
+        state = resume_state[problem_name]
+        previous_attempts = list(state.get("attempts", []))
+        attempt_records.extend(previous_attempts)
+        succeeded = bool(state.get("succeeded", False))
+        final_note = str(state.get("final_note", final_note))
+        attempts_used = int(state.get("attempts_used", len(previous_attempts)))
+
+        if succeeded or attempts_used >= args.max_retries:
+            async with result_lock:
+                results.append(ProblemResult(name=problem_name, source_asm_path=problem.source_asm_path, fixed_asm_path=fixed_asm_path, succeeded=succeeded, attempts_used=attempts_used, final_note=final_note, attempts=attempt_records))
+            async with progress_lock:
+                progress["done"] += 1
+                print(f"[{progress['done']}/{progress['total']}] {'OK' if succeeded else 'SKIP'} {problem_name} | {final_note}")
+            return
+
+        if previous_attempts:
+            last = previous_attempts[-1]
+            if last.get("status") != "passed":
+                retry_context = {
+                    "attempt": str(last.get("attempt", "")),
+                    "validation_status": str(last.get("validation_status", "")),
+                    "validation_summary": str(last.get("validation_summary", "")),
+                    "validation_stderr": str(last.get("validation_stderr", "")) or "(no stderr provided)",
+                    "previous_code": str(last.get("previous_code", "")),
+                }
+        start_attempt = attempts_used + 1
+
+    for attempt in range(start_attempt, args.max_retries + 1):
         prompt = build_prompt(
             problem=problem, source_asm=source_asm, prompt_config=args.prompt_config,
             source_language=paths.source_language, cfg_language=args.cfg_language, dfg_language=args.dfg_language,
@@ -551,6 +623,7 @@ async def process_one_problem(
             "validation_status": feedback.status,
             "validation_summary": feedback.summary,
             "validation_stderr": feedback.stderr,
+            "previous_code": cleaned,
         })
         final_note = note
 
@@ -574,13 +647,17 @@ async def process_one_problem(
 async def worker_loop(
     worker_id: int, queue: asyncio.Queue[ProblemSpec], paths: ComposerRuntimePaths, args: argparse.Namespace,
     aclient: AsyncOpenAI, results: list[ProblemResult], result_lock: asyncio.Lock,
-    progress: dict[str, int], progress_lock: asyncio.Lock, stop_event: asyncio.Event
+    progress: dict[str, int], progress_lock: asyncio.Lock, stop_event: asyncio.Event,
+    resume_state: dict[str, dict[str, object]] | None = None
 ) -> None:
     while not stop_event.is_set():
         try: problem = queue.get_nowait()
         except asyncio.QueueEmpty: return
         try:
-            await process_one_problem(problem, paths, args, aclient, results, result_lock, progress, progress_lock)
+            await process_one_problem(problem, paths, args, aclient, results, result_lock, progress, progress_lock, resume_state)
+        except QuotaExhaustedError as exc:
+            stop_event.set()
+            raise exc
         except Exception as exc:
             await asyncio.to_thread(_append_text, paths.logs_dir / "failures.log", f"{problem.name}: unhandled worker error: {exc}\n")
         finally:
@@ -653,7 +730,7 @@ def write_reports(
     _write_text(report_path, "\n".join(lines) + "\n")
     _log(f"Report written to {report_path}")
 
-async def run_async(args: argparse.Namespace, paths: ComposerRuntimePaths, problems: list[ProblemSpec], api_key: str) -> list[ProblemResult]:
+async def run_async(args: argparse.Namespace, paths: ComposerRuntimePaths, problems: list[ProblemSpec], api_key: str, resume_state: dict[str, dict[str, object]] | None = None) -> tuple[list[ProblemResult], Exception | None]:
     queue: asyncio.Queue[ProblemSpec] = asyncio.Queue()
     for p in problems: queue.put_nowait(p)
 
@@ -668,15 +745,92 @@ async def run_async(args: argparse.Namespace, paths: ComposerRuntimePaths, probl
     
     aclient = AsyncOpenAI(api_key=api_key)
     progress_task = asyncio.create_task(periodic_progress_updates(progress, progress_lock, stop_event))
-    tasks = [asyncio.create_task(worker_loop(i, queue, paths, args, aclient, results, result_lock, progress, progress_lock, stop_event)) for i in range(1, worker_count + 1)]
-    
-    try: await asyncio.gather(*tasks)
+    tasks = [asyncio.create_task(worker_loop(i, queue, paths, args, aclient, results, result_lock, progress, progress_lock, stop_event, resume_state)) for i in range(1, worker_count + 1)]
+
+    error: Exception | None = None
+    try:
+        await asyncio.gather(*tasks)
+    except Exception as exc:
+        error = exc
     finally:
         stop_event.set()
         if not progress_task.done(): progress_task.cancel()
         await asyncio.gather(progress_task, return_exceptions=True)
 
-    return results
+    return results, error
+
+
+def _checkpoint_path(paths: ComposerRuntimePaths, prompt_config: str) -> Path:
+    return paths.logs_dir / f"checkpoint_{prompt_config}.json"
+
+
+def _run_all_checkpoint_path() -> Path:
+    return Path("results/composer/run_all_checkpoint.json").resolve()
+
+
+def save_checkpoint(
+    paths: ComposerRuntimePaths,
+    args: argparse.Namespace,
+    prompt_config: str,
+    started_at: datetime,
+    status: str,
+    results: list[ProblemResult],
+    error_reason: str | None,
+    current_config_index: int | None = None,
+) -> Path:
+    payload = {
+        "status": status,
+        "run_started": started_at.isoformat(timespec="seconds"),
+        "run_updated": datetime.now().isoformat(timespec="seconds"),
+        "prompt_config": prompt_config,
+        "config_path": str(args.config.resolve()),
+        "input_dir": str(args.input_dir.resolve()),
+        "run_output_dir": str(paths.run_output_dir.resolve()),
+        "max_retries": args.max_retries,
+        "error_reason": error_reason,
+        "results": [
+            {
+                "name": r.name,
+                "source_asm_path": str(r.source_asm_path),
+                "fixed_asm_path": str(r.fixed_asm_path),
+                "succeeded": r.succeeded,
+                "attempts_used": r.attempts_used,
+                "final_note": r.final_note,
+                "attempts": r.attempts,
+            }
+            for r in results
+        ],
+    }
+    if current_config_index is not None:
+        payload["current_config_index"] = current_config_index
+        payload["prompt_configs"] = PROMPT_CONFIGS
+
+    checkpoint_path = _checkpoint_path(paths, prompt_config)
+    _write_text(checkpoint_path, json.dumps(payload, indent=2) + "\n")
+    return checkpoint_path
+
+
+def load_checkpoint(checkpoint_path: Path) -> dict[str, object]:
+    return json.loads(checkpoint_path.read_text(encoding="utf-8"))
+
+
+def build_resume_state_from_checkpoint(payload: dict[str, object]) -> dict[str, dict[str, object]]:
+    resume: dict[str, dict[str, object]] = {}
+    results = payload.get("results", [])
+    if isinstance(results, list):
+        for entry in results:
+            if not isinstance(entry, dict):
+                continue
+            name = str(entry.get("name", "")).strip()
+            if not name:
+                continue
+            resume[name] = {
+                "succeeded": bool(entry.get("succeeded", False)),
+                "attempts_used": int(entry.get("attempts_used", 0)),
+                "final_note": str(entry.get("final_note", "")),
+                "attempts": list(entry.get("attempts", [])),
+            }
+    return resume
 
 def main() -> int:
     args = parse_args()
@@ -684,88 +838,137 @@ def main() -> int:
         print("Install openai package: pip install openai", file=sys.stderr)
         return 2
 
-    try:
-        api_key_source, api_key = resolve_openai_api_key()
-        cfg = json.loads(args.config.read_text(encoding="utf-8"))
-        
-        args.source_language = cfg.get("target_arch", "Armv8")
-        args.cfg_language = cfg.get("cfg_dataset_column", cfg.get("source_dataset_column", "x86_64"))
-        args.dfg_language = cfg.get("dfg_dataset_column", cfg.get("source_dataset_column", "x86_64"))
-        
-        args.model = cfg.get("composer_model", cfg.get("model_name", "gpt-5-mini-2025-08-07"))
-        args.prompt_config = args.prompt_config or cfg.get("composer_prompt_config", "base")
-        
-        args.max_concurrency = cfg.get("max_workers", 20)
-        args.max_retries = cfg.get("max_retries", 3)
-        args.retry_base_seconds = cfg.get("retry_base_seconds", 2.0)
-        
-        args.error_json = getattr(args, "error_json", None)
+    def run_single_config(prompt_config: str) -> int:
+        try:
+            api_key_source, api_key = resolve_openai_api_key()
+            cfg = json.loads(args.config.read_text(encoding="utf-8"))
 
-        paths = resolve_runtime_paths(args)
-        
-        hf_token = cfg.get("hf_token") or os.environ.get("HF_TOKEN") or os.environ.get("HUGGINGFACE_HUB_TOKEN")
-        require_cfg = args.prompt_config in {"cfg_only", "error_cfg", "cfg_dfg", "error_cfg_dfg"}
-        require_dfg = args.prompt_config in {"dfg_only", "error_dfg", "cfg_dfg", "error_cfg_dfg"}
+            args.source_language = cfg.get("target_arch", "Armv8")
+            args.cfg_language = cfg.get("cfg_dataset_column", cfg.get("source_dataset_column", "x86_64"))
+            args.dfg_language = cfg.get("dfg_dataset_column", cfg.get("source_dataset_column", "x86_64"))
 
-        cfg_data = fetch_hf_graph_data("ryaasabsar/humaneval_asm_cfg", args.cfg_language, hf_token) if require_cfg else {}
-        dfg_data = fetch_hf_graph_data("ryaasabsar/humaneval_asm_dfg", args.dfg_language, hf_token) if require_dfg else {}
-            
-        problems = load_problem_specs(paths, args, cfg_data, dfg_data)
-        
-    except Exception as exc:
-        print(str(exc), file=sys.stderr)
-        return 2
+            args.model = cfg.get("composer_model", cfg.get("model_name", "gpt-5-mini-2025-08-07"))
+            args.prompt_config = prompt_config
 
-    print("\n" + "="*60)
-    print(" COMPOSER PIPELINE CONFIGURATION")
-    print("="*60)
-    print(f"Benchmark ASM input: {paths.benchmark_asm_input_dir}")
-    print(f"Config JSON: {args.config.absolute()}")
-    print(f"Error JSON: {paths.error_json_path}")
-    print(f"Validation Script: {RUN_ERROR_JSON_SCRIPT}")
-    print(f"Run output dir: {paths.run_output_dir}")
-    print(f"Model: {args.model}")
-    print(f"Prompt Config: {args.prompt_config}")
-    print(f"Problems to repair: {len(problems)}")
-    print("="*60 + "\n")
+            args.max_concurrency = cfg.get("max_workers", 20)
+            args.max_retries = cfg.get("max_retries", 3)
+            args.retry_base_seconds = cfg.get("retry_base_seconds", 2.0)
 
-    confirm = input("Directories and config verified. Do you want to proceed with this run? [y/N]: ").strip().lower()
-    if confirm not in ['y', 'yes']:
-        print("Run cancelled by user. Exiting.")
-        sys.exit(0)
+            args.error_json = getattr(args, "error_json", None)
 
-    print("\nStarting execution...")
+            paths = resolve_runtime_paths(args)
 
-    paths.prompts_dir.mkdir(parents=True, exist_ok=True)
-    paths.raw_output_dir.mkdir(parents=True, exist_ok=True)
-    paths.original_error_asm_dir.mkdir(parents=True, exist_ok=True)
-    paths.fixed_asm_dir.mkdir(parents=True, exist_ok=True)
-    paths.logs_dir.mkdir(parents=True, exist_ok=True)
-    paths.reports_dir.mkdir(parents=True, exist_ok=True)
-    paths.cleaned_output_dir.mkdir(parents=True, exist_ok=True)
-    paths.clean_diagnostics_dir.mkdir(parents=True, exist_ok=True)
-    paths.compile_probe_dir.mkdir(parents=True, exist_ok=True)
-    paths.validation_json_dir.mkdir(parents=True, exist_ok=True)
+            resume_state: dict[str, dict[str, object]] | None = None
+            if args.resume_checkpoint:
+                payload = load_checkpoint(args.resume_checkpoint)
+                resume_state = build_resume_state_from_checkpoint(payload)
+                if payload.get("prompt_config") and payload.get("prompt_config") != prompt_config:
+                    raise RuntimeError("Checkpoint prompt_config does not match requested prompt_config")
 
-    started_at = datetime.now()
+            hf_token = cfg.get("hf_token") or os.environ.get("HF_TOKEN") or os.environ.get("HUGGINGFACE_HUB_TOKEN")
+            require_cfg = args.prompt_config in {"cfg_only", "error_cfg", "cfg_dfg", "error_cfg_dfg"}
+            require_dfg = args.prompt_config in {"dfg_only", "error_dfg", "cfg_dfg", "error_cfg_dfg"}
 
-    if not problems:
+            cfg_data = fetch_hf_graph_data("ryaasabsar/humaneval_asm_cfg", args.cfg_language, hf_token) if require_cfg else {}
+            dfg_data = fetch_hf_graph_data("ryaasabsar/humaneval_asm_dfg", args.dfg_language, hf_token) if require_dfg else {}
+
+            problems = load_problem_specs(paths, args, cfg_data, dfg_data)
+
+            if resume_state:
+                problems = [
+                    p
+                    for p in problems
+                    if not (
+                        resume_state.get(p.name, {}).get("succeeded")
+                        or int(resume_state.get(p.name, {}).get("attempts_used", 0)) >= args.max_retries
+                    )
+                ]
+
+        except Exception as exc:
+            print(str(exc), file=sys.stderr)
+            return 2
+
+        print("\n" + "="*60)
+        print(" COMPOSER PIPELINE CONFIGURATION")
+        print("="*60)
+        print(f"Benchmark ASM input: {paths.benchmark_asm_input_dir}")
+        print(f"Config JSON: {args.config.absolute()}")
+        print(f"Error JSON: {paths.error_json_path}")
+        print(f"Validation Script: {RUN_ERROR_JSON_SCRIPT}")
+        print(f"Run output dir: {paths.run_output_dir}")
+        print(f"Model: {args.model}")
+        print(f"Prompt Config: {args.prompt_config}")
+        print(f"Problems to repair: {len(problems)}")
+        print("="*60 + "\n")
+
+        if not args.yes:
+            confirm = input("Directories and config verified. Do you want to proceed with this run? [y/N]: ").strip().lower()
+            if confirm not in ['y', 'yes']:
+                print("Run cancelled by user. Exiting.")
+                sys.exit(0)
+
+        print("\nStarting execution...")
+
+        paths.prompts_dir.mkdir(parents=True, exist_ok=True)
+        paths.raw_output_dir.mkdir(parents=True, exist_ok=True)
+        paths.original_error_asm_dir.mkdir(parents=True, exist_ok=True)
+        paths.fixed_asm_dir.mkdir(parents=True, exist_ok=True)
+        paths.logs_dir.mkdir(parents=True, exist_ok=True)
+        paths.reports_dir.mkdir(parents=True, exist_ok=True)
+        paths.cleaned_output_dir.mkdir(parents=True, exist_ok=True)
+        paths.clean_diagnostics_dir.mkdir(parents=True, exist_ok=True)
+        paths.compile_probe_dir.mkdir(parents=True, exist_ok=True)
+        paths.validation_json_dir.mkdir(parents=True, exist_ok=True)
+
+        started_at = datetime.now()
+
+        if not problems:
+            finished_at = datetime.now()
+            final_validation_path, final_validation_error_count = validate_all_fixed_outputs(paths, args)
+            write_reports(args, paths, problems, [], started_at, finished_at, final_validation_path, final_validation_error_count)
+            print("No errored problems found in input JSON.")
+            return 0
+
+        results, error = asyncio.run(run_async(args, paths, problems, api_key, resume_state))
+
         finished_at = datetime.now()
         final_validation_path, final_validation_error_count = validate_all_fixed_outputs(paths, args)
-        write_reports(args, paths, problems, [], started_at, finished_at, final_validation_path, final_validation_error_count)
-        print("No errored problems found in input JSON.")
-        return 0
+        write_reports(args, paths, problems, results, started_at, finished_at, final_validation_path, final_validation_error_count)
 
-    results = asyncio.run(run_async(args, paths, problems, api_key))
+        if error is not None:
+            reason = _one_line_error_reason(error)
+            checkpoint_path = save_checkpoint(paths, args, prompt_config, started_at, "aborted", results, reason)
+            _append_text(paths.logs_dir / "failures.log", reason + "\n")
+            print(reason, file=sys.stderr)
+            print(f"Checkpoint saved: {checkpoint_path}")
+            return 2
 
-    finished_at = datetime.now()
-    final_validation_path, final_validation_error_count = validate_all_fixed_outputs(paths, args)
-    write_reports(args, paths, problems, results, started_at, finished_at, final_validation_path, final_validation_error_count)
+        success_count = sum(1 for result in results if result.succeeded)
+        fail_count = len(results) - success_count
+        print(f"Composer finished. success={success_count} fail={fail_count}")
+        checkpoint_path = save_checkpoint(paths, args, prompt_config, started_at, "completed", results, None)
+        print(f"Checkpoint saved: {checkpoint_path}")
+        return 0 if fail_count == 0 and final_validation_error_count == 0 else 1
 
-    success_count = sum(1 for result in results if result.succeeded)
-    fail_count = len(results) - success_count
-    print(f"Composer finished. success={success_count} fail={fail_count}")
-    return 0 if fail_count == 0 and final_validation_error_count == 0 else 1
+    if args.all_prompt_configs:
+        exit_code = 0
+        start_index = 0
+        run_all_checkpoint = _run_all_checkpoint_path()
+        if args.resume_all and run_all_checkpoint.exists():
+            payload = load_checkpoint(run_all_checkpoint)
+            start_index = int(payload.get("current_config_index", 0))
+        for index, prompt_config in enumerate(PROMPT_CONFIGS):
+            if index < start_index:
+                continue
+            print("\n" + "="*60)
+            print(f" RUNNING PROMPT CONFIG: {prompt_config}")
+            print("="*60)
+            exit_code = max(exit_code, run_single_config(prompt_config))
+            _write_text(run_all_checkpoint, json.dumps({"current_config_index": index + 1, "prompt_configs": PROMPT_CONFIGS}, indent=2) + "\n")
+        return exit_code
+
+    prompt_config = args.prompt_config or "base"
+    return run_single_config(prompt_config)
 
 if __name__ == "__main__":
     raise SystemExit(main())

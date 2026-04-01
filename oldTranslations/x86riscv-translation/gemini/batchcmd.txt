@@ -1,0 +1,2 @@
+python batch.py --resume-job batches/j8gi5jj8z2fx4wds4oc7y2yxrxdplzi82zqi
+python batch.py --resume-job batches/ce5yaouzdkt9pjk6h0y2nbq6u3sbywai5o55
