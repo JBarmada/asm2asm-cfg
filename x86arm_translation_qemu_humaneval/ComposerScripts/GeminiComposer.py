@@ -181,6 +181,16 @@ class ProblemResult:
     attempts: list[dict[str, object]]
 
 
+@dataclass
+class ValidationFeedback:
+    status: str
+    summary: str
+    stderr: str
+    errors_count: int
+    problems_processed: int
+    validator_returncode: int
+
+
 class QuotaExhaustedError(RuntimeError):
     """Raised when the API reports a hard daily quota exhaustion."""
 
@@ -311,9 +321,13 @@ def resolve_runtime_paths(args: argparse.Namespace) -> ComposerRuntimePaths:
 
     benchmark_arm_input_dir = input_experiment_dir / f"{args.source_language}_asm"
     if not benchmark_arm_input_dir.exists() or not benchmark_arm_input_dir.is_dir():
-        raise FileNotFoundError(
-            f"Source asm directory does not exist: {benchmark_arm_input_dir}"
-        )
+        translated_dir = input_experiment_dir / "translated_asm"
+        if translated_dir.exists() and translated_dir.is_dir():
+            benchmark_arm_input_dir = translated_dir
+        else:
+            raise FileNotFoundError(
+                f"Source asm directory does not exist: {benchmark_arm_input_dir}"
+            )
 
     if args.error_json is not None:
         error_json_path = args.error_json.resolve()
@@ -611,6 +625,7 @@ def build_prompt(
     source_language: str,
     cfg_language: str,
     dfg_language: str,
+    retry_context: dict[str, str] | None = None,
 ) -> str:
     sections: list[str] = [
         f"Repair the following translated {source_language} assembly function.",
@@ -660,6 +675,26 @@ def build_prompt(
             [
                 f"DFG ({dfg_language} semantic graph; target output remains {source_language} assembly):",
                 dfg_text or "(DFG file not found)",
+                "",
+            ]
+        )
+
+    if retry_context and prompt_config.startswith("error_"):
+        sections.extend(
+            [
+                "Previous failed attempt feedback (use this to fix the next output):",
+                f"Attempt: {retry_context.get('attempt', '')}",
+                f"Validation status: {retry_context.get('validation_status', '')}",
+                "Validation summary:",
+                retry_context.get("validation_summary", "(no summary provided)"),
+                "",
+                "Validation stderr:",
+                retry_context.get("validation_stderr", "(no stderr provided)"),
+                "",
+                "Previous candidate assembly that failed:",
+                retry_context.get("previous_code", ""),
+                "",
+                "Repair the previous candidate using the feedback above.",
                 "",
             ]
         )
@@ -714,7 +749,7 @@ def validate_single_problem(
     args: argparse.Namespace,
     problem_name: str,
     attempt: int,
-) -> tuple[bool, str]:
+) -> tuple[bool, str, ValidationFeedback]:
     validation_json_path = paths.validation_json_dir / f"{problem_name}_attempt{attempt}.json"
     probe_log_path = paths.compile_probe_dir / f"{problem_name}_attempt{attempt}.log"
 
@@ -756,19 +791,76 @@ def validate_single_problem(
     )
 
     if not validation_json_path.exists():
-        return False, "Validation JSON was not generated"
+        note = "Validation JSON was not generated"
+        return False, note, ValidationFeedback(
+            status="validation_json_missing",
+            summary=note,
+            stderr=completed.stderr.strip(),
+            errors_count=-1,
+            problems_processed=0,
+            validator_returncode=completed.returncode,
+        )
 
     payload = json.loads(validation_json_path.read_text(encoding="utf-8"))
     errored_count = int(payload.get("errored_count", 0))
     problems_processed = int(payload.get("problems_processed", 0))
     if errored_count == 0 and problems_processed > 0:
-        return True, "Passed validation"
+        return True, "Passed validation", ValidationFeedback(
+            status="passed",
+            summary="Passed validation",
+            stderr="",
+            errors_count=0,
+            problems_processed=problems_processed,
+            validator_returncode=completed.returncode,
+        )
+
+    if problems_processed == 0:
+        available = ", ".join(sorted(path.stem for path in paths.fixed_asm_dir.glob("*.s"))[:8])
+        if not available:
+            available = "(none)"
+        note = (
+            "Validation processed 0 files. "
+            f"filter=[{problem_name}] "
+            f"validator_rc={completed.returncode} "
+            f"available_stems={available}"
+        )
+        return False, note, ValidationFeedback(
+            status="no_files_processed",
+            summary=note,
+            stderr=completed.stderr.strip(),
+            errors_count=errored_count,
+            problems_processed=problems_processed,
+            validator_returncode=completed.returncode,
+        )
 
     errored_problems = payload.get("errored_problems", [])
     if errored_problems:
         first = errored_problems[0]
-        return False, f"{first.get('status', 'error')}: {first.get('summary', '')}".strip()
-    return False, f"Validation reported {errored_count} errors"
+        status = str(first.get("status", "error"))
+        summary = str(first.get("summary", "")).strip()
+        stderr_text = str(first.get("stderr", "")).strip()
+        stderr_short = stderr_text.splitlines()[0] if stderr_text else ""
+        note = f"{status}: {summary}".strip()
+        if stderr_short:
+            note = f"{note} | stderr: {stderr_short}"
+        return False, note, ValidationFeedback(
+            status=status,
+            summary=summary,
+            stderr=stderr_text,
+            errors_count=errored_count,
+            problems_processed=problems_processed,
+            validator_returncode=completed.returncode,
+        )
+
+    note = f"Validation reported {errored_count} errors"
+    return False, note, ValidationFeedback(
+        status="inconclusive",
+        summary=note,
+        stderr=completed.stderr.strip(),
+        errors_count=errored_count,
+        problems_processed=problems_processed,
+        validator_returncode=completed.returncode,
+    )
 
 
 def validate_all_fixed_outputs(paths: ComposerRuntimePaths, args: argparse.Namespace) -> tuple[Path, int]:
@@ -829,6 +921,7 @@ async def process_one_problem(
     attempt_records: list[dict[str, object]] = []
     final_note = "Unknown"
     succeeded = False
+    retry_context: dict[str, str] | None = None
 
     for attempt in range(1, args.max_retries + 1):
         _log(f"{problem_name}: repair attempt {attempt}/{args.max_retries}")
@@ -841,6 +934,7 @@ async def process_one_problem(
             source_language=paths.source_language,
             cfg_language=paths.cfg_language,
             dfg_language=paths.dfg_language,
+            retry_context=retry_context,
         )
         prompt_path = paths.prompts_dir / f"{problem_name}_attempt{attempt}.txt"
         await asyncio.to_thread(_write_text, prompt_path, prompt)
@@ -864,7 +958,7 @@ async def process_one_problem(
             final_note = str(exc)
             if isinstance(exc, QuotaExhaustedError):
                 raise
-            continue
+            break
 
         raw_path = paths.raw_output_dir / f"{problem_name}_attempt{attempt}.txt"
         await asyncio.to_thread(_write_text, raw_path, raw_output)
@@ -876,7 +970,7 @@ async def process_one_problem(
         await asyncio.to_thread(_write_text, diag_path, json.dumps(diagnostics, indent=2) + "\n")
 
         await asyncio.to_thread(_write_text, fixed_asm_path, cleaned)
-        passed, note = await asyncio.to_thread(validate_single_problem, paths, args, problem_name, attempt)
+        passed, note, feedback = await asyncio.to_thread(validate_single_problem, paths, args, problem_name, attempt)
 
         record = {
             "attempt": attempt,
@@ -886,6 +980,9 @@ async def process_one_problem(
             "raw_output_path": str(raw_path),
             "cleaned_output_path": str(cleaned_path),
             "clean_diagnostics_path": str(diag_path),
+            "validation_status": feedback.status,
+            "validation_summary": feedback.summary,
+            "validation_stderr": feedback.stderr,
         }
         attempt_records.append(record)
         final_note = note
@@ -893,6 +990,14 @@ async def process_one_problem(
         if passed:
             succeeded = True
             break
+
+        retry_context = {
+            "attempt": str(attempt),
+            "validation_status": feedback.status,
+            "validation_summary": feedback.summary,
+            "validation_stderr": feedback.stderr or "(no stderr provided)",
+            "previous_code": cleaned,
+        }
 
     result = ProblemResult(
         name=problem_name,
