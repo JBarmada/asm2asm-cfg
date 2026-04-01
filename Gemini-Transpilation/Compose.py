@@ -2,13 +2,103 @@
 Gemini Composer for repairing translated assembly that failed validation.
 Config-driven and assembly-agnostic.
 
-Setup requirements before running:
-- Run from the Gemini-Transpilation working directory so relative paths resolve.
-- A valid config JSON must exist and include compile/link/runtime settings.
-- Input experiment directory must contain translated assembly and an *_error_problems.json
-  (or pass --error-json explicitly).
-- Validation script run_translation_error_json.py must exist.
-- GOOGLE_API_KEY or GEMINI_API_KEY must be set for real runs.
+Overview
+- Repairs only errored problems from the selected error JSON.
+- Supports 8 prompt configs:
+	base, error_only, cfg_only, dfg_only, error_cfg, error_dfg, cfg_dfg, error_cfg_dfg.
+- For each errored problem: prompt -> generate repair -> validate -> retry with feedback.
+- Retries are bounded by config max_retries (default 3).
+
+Input styles
+1) Directory + error JSON
+	 - Positional input is an experiment directory containing translated asm.
+	 - Error JSON is discovered automatically or passed via --error-json.
+
+2) JSON-only
+	 - Positional input is a JSON file itself.
+	 - Source .s files are synthesized from each entry's `pred` field into:
+		 results/composer/<run_label>/<config>/json_input_asm.
+
+Expected JSON formats
+- Standard validator JSON:
+	{"errored_problems": [{"name": "problem1", "summary": "...", "stderr": "..."}, ...]}
+- Flat list JSON (translation logs):
+	[{"file": "problem1", "pred": "...asm...", "run_output": "...", "error_stage": "execution"}, ...]
+
+Environment requirements
+- Run from Gemini-Transpilation so relative paths resolve as expected.
+- Config JSON must include compile/link/runtime fields used by run_translation_error_json.py.
+- run_translation_error_json.py must exist in this project.
+- Set one API key env var: GOOGLE_API_KEY (preferred) or GEMINI_API_KEY.
+- Install dependencies:
+	pip install google-genai
+	pip install datasets        # only needed if CFG/DFG prompts are enabled
+
+Command-line usage
+	python Compose.py <input_dir_or_json> --config <config_json> [options]
+
+Positional argument
+- input_dir
+	Input experiment directory OR input JSON path.
+
+Flags
+- --config <path>
+	Required. Path to config JSON for model/build/runtime settings.
+
+- --prompt-config <name>
+	Optional. Run a single prompt config.
+	Allowed: base, error_only, cfg_only, dfg_only, error_cfg, error_dfg, cfg_dfg, error_cfg_dfg.
+	Default when omitted: base.
+
+- --all-prompt-configs
+	Optional. Runs all 8 prompt configs sequentially.
+
+- --run-label <text>
+	Optional. Overrides output folder grouping name.
+
+- --error-json <path>
+	Optional. Explicit error JSON path. Useful in directory mode.
+
+- --resume-checkpoint <path>
+	Optional. Resume a single prompt-config run from checkpoint JSON.
+
+- --resume-all
+	Optional. Resume --all-prompt-configs using
+	results/composer/run_all_checkpoint.json.
+
+- --yes
+	Optional. Skip interactive confirmation prompt.
+
+Typical examples
+1) Directory mode, single prompt config
+	 python Compose.py ../Qwen-Translations/armv8/3b \
+		 --config configs_compose/config_qwen2.5-3b-x86-to-arm.json \
+		 --prompt-config error_cfg_dfg
+
+2) Directory mode, explicit error JSON
+	 python Compose.py ../Qwen-Translations/armv8/3b \
+		 --config configs_compose/config_qwen2.5-3b-x86-to-arm.json \
+		 --error-json ../Qwen-Translations/armv8/3b/<run>_error_problems.json
+
+3) JSON-only mode (uses `pred` to synthesize source asm)
+	 python Compose.py ../Qwen-Translations/armv8/3b/<run>.json \
+		 --config configs_compose/config_qwen2.5-3b-x86-to-arm.json
+
+4) Run all 8 prompt configs
+	 python Compose.py ../Qwen-Translations/armv8/3b/<run>.json \
+		 --config configs_compose/config_qwen2.5-3b-x86-to-arm.json \
+		 --all-prompt-configs --yes
+
+5) Resume single-config run
+	 python Compose.py ../Qwen-Translations/armv8/3b/<run>.json \
+		 --config configs_compose/config_qwen2.5-3b-x86-to-arm.json \
+		 --prompt-config error_cfg_dfg \
+		 --resume-checkpoint results/composer/.../logs/checkpoint_error_cfg_dfg.json
+
+6) Resume all-config run
+	 python Compose.py ../Qwen-Translations/armv8/3b/<run>.json \
+		 --config configs_compose/config_qwen2.5-3b-x86-to-arm.json \
+		 --all-prompt-configs --resume-all
 """
 
 from __future__ import annotations
@@ -165,6 +255,13 @@ def _read_config(config_path: Path) -> dict[str, object]:
 
 def resolve_runtime_paths(args: argparse.Namespace, cfg: dict[str, object]) -> ComposerRuntimePaths:
 	input_experiment_dir = args.input_dir.resolve()
+	if input_experiment_dir.exists() and input_experiment_dir.is_file():
+		if input_experiment_dir.suffix.lower() == ".json":
+			if args.error_json is None:
+				args.error_json = input_experiment_dir
+			input_experiment_dir = input_experiment_dir.parent
+		else:
+			raise FileNotFoundError(f"Input directory does not exist: {input_experiment_dir}")
 	if not input_experiment_dir.exists() or not input_experiment_dir.is_dir():
 		raise FileNotFoundError(f"Input directory does not exist: {input_experiment_dir}")
 
@@ -172,13 +269,22 @@ def resolve_runtime_paths(args: argparse.Namespace, cfg: dict[str, object]) -> C
 	cfg_language = str(cfg.get("cfg_dataset_column", cfg.get("source_dataset_column", "x86_64")))
 	dfg_language = str(cfg.get("dfg_dataset_column", cfg.get("source_dataset_column", "x86_64")))
 
+	config_base_name = args.config.stem
+	if config_base_name.startswith("config_"):
+		config_base_name = config_base_name[7:]
+
+	base_results_dir = Path("results/composer").resolve()
+	run_label = args.run_label or input_experiment_dir.name
+	run_output_dir = base_results_dir / run_label / config_base_name
+
 	benchmark_asm_input_dir = input_experiment_dir / "translated_asm"
 	if not benchmark_asm_input_dir.exists() or not benchmark_asm_input_dir.is_dir():
 		benchmark_asm_input_dir = input_experiment_dir / f"{source_language}_asm"
 		if not benchmark_asm_input_dir.exists() or not benchmark_asm_input_dir.is_dir():
 			benchmark_asm_input_dir = input_experiment_dir / "arm_asm"
 			if not benchmark_asm_input_dir.exists() or not benchmark_asm_input_dir.is_dir():
-				raise FileNotFoundError(f"Source asm directory not found in {input_experiment_dir}")
+				# JSON-only mode: source .s files can be synthesized from each entry's `pred` field.
+				benchmark_asm_input_dir = run_output_dir / "json_input_asm"
 
 	if args.error_json is not None and args.error_json.exists():
 		error_json_path = args.error_json.resolve()
@@ -198,14 +304,6 @@ def resolve_runtime_paths(args: argparse.Namespace, cfg: dict[str, object]) -> C
 				if not candidates:
 					raise FileNotFoundError(f"No *_error_problems.json found in {input_experiment_dir}")
 			error_json_path = candidates[-1].resolve()
-
-	config_base_name = args.config.stem
-	if config_base_name.startswith("config_"):
-		config_base_name = config_base_name[7:]
-
-	base_results_dir = Path("results/composer").resolve()
-	run_label = args.run_label or input_experiment_dir.name
-	run_output_dir = base_results_dir / run_label / config_base_name
 
 	return ComposerRuntimePaths(
 		benchmark_asm_input_dir=benchmark_asm_input_dir,
@@ -353,11 +451,38 @@ def _is_readable_dir(path: Path) -> bool:
 		return False
 
 
-def _extract_errored_entries(payload: dict[str, object]) -> list[dict[str, object]]:
-	if "errored_problems" in payload and isinstance(payload["errored_problems"], list):
-		return payload["errored_problems"]
-	if isinstance(payload.get("problems"), list):
-		return payload["problems"]
+def _entry_indicates_error(entry: dict[str, object]) -> bool:
+	error_stage = entry.get("error_stage")
+	if error_stage is not None:
+		return str(error_stage).strip().lower() not in {"", "none", "null"}
+
+	if "success" in entry:
+		try:
+			return int(entry.get("success", 0)) == 0
+		except Exception:
+			return not bool(entry.get("success"))
+
+	status = str(entry.get("status", "")).strip().lower()
+	if status:
+		return status in {"error", "failed", "fail", "assembly", "execution"}
+
+	# Default to true for legacy errored-only payloads.
+	return True
+
+
+def _extract_errored_entries(payload: object) -> list[dict[str, object]]:
+	if isinstance(payload, list):
+		return [entry for entry in payload if isinstance(entry, dict) and _entry_indicates_error(entry)]
+
+	if isinstance(payload, dict):
+		errored = payload.get("errored_problems")
+		if isinstance(errored, list):
+			return [entry for entry in errored if isinstance(entry, dict)]
+
+		problems = payload.get("problems")
+		if isinstance(problems, list):
+			return [entry for entry in problems if isinstance(entry, dict) and _entry_indicates_error(entry)]
+
 	return []
 
 
@@ -373,8 +498,6 @@ def load_problem_specs(
 
 	if not _is_readable_file(paths.error_json_path):
 		issues.append(f"Cannot read error JSON: {paths.error_json_path}")
-	if not _is_readable_dir(paths.benchmark_asm_input_dir):
-		issues.append(f"source asm directory is not readable: {paths.benchmark_asm_input_dir}")
 	if not _is_readable_file(RUN_ERROR_JSON_SCRIPT):
 		issues.append(f"validation script is missing/unreadable: {RUN_ERROR_JSON_SCRIPT}")
 
@@ -387,15 +510,29 @@ def load_problem_specs(
 	specs: list[ProblemSpec] = []
 
 	for entry in errored:
-		problem_name = str(entry.get("name", "")).strip()
+		problem_name = str(entry.get("name") or entry.get("file") or "").strip()
 		if not problem_name:
 			continue
 
-		source_matches = sorted(paths.benchmark_asm_input_dir.glob(f"{problem_name}_*.s"))
-		if not source_matches:
-			issues.append(f"missing source asm for {problem_name} in {paths.benchmark_asm_input_dir}")
-			continue
-		source_asm = source_matches[0]
+		source_asm: Path | None = None
+		if paths.benchmark_asm_input_dir and _is_readable_dir(paths.benchmark_asm_input_dir):
+			source_matches = sorted(paths.benchmark_asm_input_dir.glob(f"{problem_name}_*.s"))
+			if source_matches:
+				source_asm = source_matches[0]
+
+		if source_asm is None:
+			pred_text = str(entry.get("pred") or "").strip()
+			if pred_text:
+				synth_dir = paths.run_output_dir / "json_input_asm"
+				synth_dir.mkdir(parents=True, exist_ok=True)
+				source_asm = synth_dir / f"{problem_name}_from_json.s"
+				_write_text(source_asm, pred_text + "\n")
+			else:
+				if paths.benchmark_asm_input_dir:
+					issues.append(f"missing source asm for {problem_name} in {paths.benchmark_asm_input_dir} and JSON entry has no pred")
+				else:
+					issues.append(f"missing source asm for {problem_name}; JSON entry has no pred")
+				continue
 
 		cfg_text = cfg_data.get(problem_name, "")
 		if require_cfg and not cfg_text:
@@ -408,8 +545,8 @@ def load_problem_specs(
 		specs.append(
 			ProblemSpec(
 				name=problem_name,
-				summary=str(entry.get("summary", "")),
-				stderr=str(entry.get("stderr", "")),
+				summary=str(entry.get("summary") or entry.get("run_output") or ""),
+				stderr=str(entry.get("stderr") or entry.get("run_output") or ""),
 				source_asm_path=source_asm,
 				source_asm_name=source_asm.name,
 				cfg_text=cfg_text,
@@ -1172,10 +1309,12 @@ def main() -> int:
 		print("\n" + "=" * 60)
 		print(" COMPOSER PIPELINE CONFIGURATION")
 		print("=" * 60)
+		resolved_test_root = Path(str(cfg.get("test_root", "../HumanEval_source"))).resolve()
 		print(f"Benchmark ASM input: {paths.benchmark_asm_input_dir}")
 		print(f"Config JSON: {args.config.absolute()}")
 		print(f"Error JSON: {paths.error_json_path}")
 		print(f"Validation Script: {RUN_ERROR_JSON_SCRIPT}")
+		print(f"Test root: {resolved_test_root}")
 		print(f"Run output dir: {paths.run_output_dir}")
 		print(f"Model: {args.model}")
 		print(f"Prompt Config: {args.prompt_config}")
