@@ -151,6 +151,7 @@ class ComposerRuntimePaths:
 	input_experiment_dir: Path
 	error_json_path: Path
 	run_output_dir: Path
+	full_validation_input_dir: Path
 	prompts_dir: Path
 	raw_output_dir: Path
 	original_error_asm_dir: Path
@@ -275,7 +276,10 @@ def resolve_runtime_paths(args: argparse.Namespace, cfg: dict[str, object]) -> C
 
 	base_results_dir = Path("results/composer").resolve()
 	run_label = args.run_label or input_experiment_dir.name
-	run_output_dir = base_results_dir / run_label / config_base_name
+	# Keep a stable per-config root, then isolate each prompt strategy under it.
+	run_output_root = base_results_dir / run_label / config_base_name
+	prompt_config_dir = str(getattr(args, "prompt_config", "") or "base")
+	run_output_dir = run_output_root / prompt_config_dir
 
 	benchmark_asm_input_dir = input_experiment_dir / "translated_asm"
 	if not benchmark_asm_input_dir.exists() or not benchmark_asm_input_dir.is_dir():
@@ -310,6 +314,7 @@ def resolve_runtime_paths(args: argparse.Namespace, cfg: dict[str, object]) -> C
 		input_experiment_dir=input_experiment_dir,
 		error_json_path=error_json_path,
 		run_output_dir=run_output_dir,
+		full_validation_input_dir=run_output_dir / "full_validation_input_asm",
 		prompts_dir=run_output_dir / "prompts",
 		raw_output_dir=run_output_dir / "raw_model_output",
 		original_error_asm_dir=run_output_dir / f"original_error_{source_language}_asm",
@@ -806,12 +811,31 @@ def validate_single_problem(
 	)
 
 
-def validate_all_fixed_outputs(paths: ComposerRuntimePaths, args: argparse.Namespace) -> tuple[Path, int]:
+def validate_all_fixed_outputs(paths: ComposerRuntimePaths, args: argparse.Namespace) -> tuple[Path, int, int]:
+	# Build a full evaluation set so global pass metrics reflect the entire benchmark,
+	# with repaired files overriding their original counterparts by filename.
+	paths.full_validation_input_dir.mkdir(parents=True, exist_ok=True)
+	for stale in paths.full_validation_input_dir.glob("*.s"):
+		try:
+			stale.unlink()
+		except OSError:
+			pass
+
+	if _is_readable_dir(paths.benchmark_asm_input_dir):
+		for asm_file in sorted(paths.benchmark_asm_input_dir.glob("*.s")):
+			shutil.copy2(asm_file, paths.full_validation_input_dir / asm_file.name)
+
+	if _is_readable_dir(paths.fixed_asm_dir):
+		for asm_file in sorted(paths.fixed_asm_dir.glob("*.s")):
+			shutil.copy2(asm_file, paths.full_validation_input_dir / asm_file.name)
+
+	total_inputs = len(list(paths.full_validation_input_dir.glob("*.s")))
+
 	final_json_path = paths.validation_json_dir / "final_error_problems.json"
 	command = [
 		sys.executable,
 		str(RUN_ERROR_JSON_SCRIPT),
-		str(paths.fixed_asm_dir),
+		str(paths.full_validation_input_dir),
 		"--config",
 		str(args.config.resolve()),
 		"--output",
@@ -820,10 +844,10 @@ def validate_all_fixed_outputs(paths: ComposerRuntimePaths, args: argparse.Names
 
 	subprocess.run(command, capture_output=True, text=True, check=False)
 	if not final_json_path.exists():
-		return final_json_path, -1
+		return final_json_path, -1, total_inputs
 
 	payload = json.loads(final_json_path.read_text(encoding="utf-8"))
-	return final_json_path, int(payload.get("errored_count", 0))
+	return final_json_path, int(payload.get("errored_count", 0)), total_inputs
 
 
 async def process_one_problem(
@@ -1059,13 +1083,13 @@ def write_reports(
 	finished_at: datetime,
 	final_validation_path: Path,
 	final_validation_error_count: int,
+	total_problems: int,
 ) -> None:
 	by_name = {result.name: result for result in results}
 	processed_count = len(results)
 	success_count = sum(1 for result in results if result.succeeded)
 	fail_count = len(problems) - success_count
 
-	total_problems = len(list(paths.benchmark_asm_input_dir.glob("*.s")))
 	overall_successful = total_problems - final_validation_error_count
 	success_rate = (overall_successful / total_problems * 100) if total_problems > 0 else 0
 
@@ -1084,6 +1108,7 @@ def write_reports(
 		f"Composer succeeded: {success_count}",
 		f"Composer failed: {fail_count}",
 		f"Global Total Overall problems successfully passed: {overall_successful}/{total_problems} ({success_rate:.1f}%)",
+		f"Global validation asm input dir: {paths.full_validation_input_dir}",
 		f"Final validation JSON: {final_validation_path}",
 		"",
 		"Failed problems (Post-Composer):",
@@ -1263,6 +1288,27 @@ def _configure_args_from_config(args: argparse.Namespace, cfg: dict[str, object]
 	args.retry_base_seconds = float(cfg.get("retry_base_seconds", 2.0))
 
 
+def _prepare_run_directories(paths: ComposerRuntimePaths, resume_enabled: bool) -> None:
+	managed_dirs = [
+		paths.prompts_dir,
+		paths.raw_output_dir,
+		paths.original_error_asm_dir,
+		paths.fixed_asm_dir,
+		paths.logs_dir,
+		paths.reports_dir,
+		paths.cleaned_output_dir,
+		paths.clean_diagnostics_dir,
+		paths.compile_probe_dir,
+		paths.validation_json_dir,
+		paths.full_validation_input_dir,
+	]
+
+	for directory in managed_dirs:
+		if not resume_enabled and directory.exists():
+			shutil.rmtree(directory)
+		directory.mkdir(parents=True, exist_ok=True)
+
+
 def main() -> int:
 	args = parse_args()
 	if not HAS_GENAI:
@@ -1330,31 +1376,42 @@ def main() -> int:
 
 		print("\nStarting execution...")
 
-		paths.prompts_dir.mkdir(parents=True, exist_ok=True)
-		paths.raw_output_dir.mkdir(parents=True, exist_ok=True)
-		paths.original_error_asm_dir.mkdir(parents=True, exist_ok=True)
-		paths.fixed_asm_dir.mkdir(parents=True, exist_ok=True)
-		paths.logs_dir.mkdir(parents=True, exist_ok=True)
-		paths.reports_dir.mkdir(parents=True, exist_ok=True)
-		paths.cleaned_output_dir.mkdir(parents=True, exist_ok=True)
-		paths.clean_diagnostics_dir.mkdir(parents=True, exist_ok=True)
-		paths.compile_probe_dir.mkdir(parents=True, exist_ok=True)
-		paths.validation_json_dir.mkdir(parents=True, exist_ok=True)
+		_prepare_run_directories(paths, resume_enabled=bool(args.resume_checkpoint))
 
 		started_at = datetime.now()
 
 		if not problems:
 			finished_at = datetime.now()
-			final_validation_path, final_validation_error_count = validate_all_fixed_outputs(paths, args)
-			write_reports(args, paths, problems, [], started_at, finished_at, final_validation_path, final_validation_error_count)
+			final_validation_path, final_validation_error_count, total_problems = validate_all_fixed_outputs(paths, args)
+			write_reports(
+				args,
+				paths,
+				problems,
+				[],
+				started_at,
+				finished_at,
+				final_validation_path,
+				final_validation_error_count,
+				total_problems,
+			)
 			print("No errored problems found in input JSON.")
 			return 0
 
 		results, error = asyncio.run(run_async(args, paths, problems, api_key, resume_state))
 
 		finished_at = datetime.now()
-		final_validation_path, final_validation_error_count = validate_all_fixed_outputs(paths, args)
-		write_reports(args, paths, problems, results, started_at, finished_at, final_validation_path, final_validation_error_count)
+		final_validation_path, final_validation_error_count, total_problems = validate_all_fixed_outputs(paths, args)
+		write_reports(
+			args,
+			paths,
+			problems,
+			results,
+			started_at,
+			finished_at,
+			final_validation_path,
+			final_validation_error_count,
+			total_problems,
+		)
 
 		if error is not None:
 			reason = _one_line_error_reason(error)
