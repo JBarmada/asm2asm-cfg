@@ -29,7 +29,14 @@ def prompt_auto_confirm(lines: list[str], timeout_seconds: int = 60) -> bool:
         return True
 
     answer = response[0].strip().lower() if response else ""
-    return answer in {"", "y", "yes", "continue", "go"}
+    if answer in {"", "y", "yes", "continue", "go"}:
+        print(f"User input received: {response[0] if response else '<enter>'}")
+        print("Proceeding with run setup.")
+        return True
+
+    print(f"User input received: {response[0] if response else '<empty>'}")
+    print("Run cancelled by user input.")
+    return False
 
 
 def build_preflight_lines(

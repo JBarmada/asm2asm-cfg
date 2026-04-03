@@ -56,16 +56,27 @@ class ComposerEngine:
         self._progress = {"done": 0, "total": 0}
 
     async def run(self, problems: list[ProblemSpec], resume_checkpoint: Path | None = None) -> tuple[list[ProblemResult], Exception | None]:
+        _log(
+            f"Starting composer run for {len(problems)} problems "
+            f"(resume checkpoint: {resume_checkpoint if resume_checkpoint else 'none'})"
+        )
         self._prepare_run_directories(resume_enabled=resume_checkpoint is not None)
 
         if resume_checkpoint and resume_checkpoint.exists():
+            _log(f"Loading checkpoint: {resume_checkpoint}")
             resumed = load_checkpoint(resume_checkpoint)
             previous = resumed.get("results", [])
             if isinstance(previous, list):
                 self._results = [problem_result_from_dict(item) for item in previous if isinstance(item, dict)]
+            _log(f"Checkpoint restored with {len(self._results)} completed problems.")
 
         completed_names = {item.name for item in self._results}
         pending = [p for p in problems if p.name not in completed_names]
+
+        if pending:
+            _log(f"Resuming with {len(pending)} pending problems and {len(self._results)} already completed.")
+        else:
+            _log("All problems are already complete in the checkpoint. Skipping worker phase and moving to final validation.")
 
         self._progress = {"done": len(self._results), "total": len(problems)}
         queue: asyncio.Queue[ProblemSpec] = asyncio.Queue()
@@ -76,36 +87,40 @@ class ComposerEngine:
         progress_task = asyncio.create_task(self._periodic_progress_updates(stop_event))
         worker_count = max(1, min(self.max_concurrency, len(pending) if pending else 1))
         tasks = [asyncio.create_task(self._worker(queue, stop_event)) for _ in range(worker_count)]
-        queue_join_task = asyncio.create_task(queue.join())
 
         error: Exception | None = None
         try:
-            done, _ = await asyncio.wait(
+            queue_join_task = asyncio.create_task(queue.join())
+            done, pending_tasks = await asyncio.wait(
                 [queue_join_task, *tasks],
-                return_when=asyncio.FIRST_EXCEPTION,
+                return_when=asyncio.FIRST_COMPLETED,
             )
+
             if queue_join_task in done and queue_join_task.exception() is None:
-                pass
+                stop_event.set()
             else:
                 for task in done:
-                    if task is queue_join_task:
-                        continue
-                    if task.cancelled():
+                    if task is queue_join_task or task.cancelled():
                         continue
                     exc = task.exception()
                     if exc is not None:
                         error = exc
                         break
+
+                stop_event.set()
+                for task in pending_tasks:
+                    task.cancel()
+
+            await asyncio.gather(queue_join_task, return_exceptions=True)
         except Exception as exc:
             error = exc
         finally:
             stop_event.set()
-            queue_join_task.cancel()
             for task in tasks:
                 task.cancel()
-            await asyncio.gather(queue_join_task, return_exceptions=True)
             await asyncio.gather(*tasks, return_exceptions=True)
-            await progress_task
+            progress_task.cancel()
+            await asyncio.gather(progress_task, return_exceptions=True)
             close_fn = getattr(self.provider, "close", None)
             if callable(close_fn):
                 maybe_coro = close_fn()
@@ -133,6 +148,7 @@ class ComposerEngine:
                 queue.task_done()
 
     async def _process_one_problem(self, problem: ProblemSpec) -> None:
+        _log(f"{problem.name}: starting repair attempt loop")
         source_asm = await asyncio.to_thread(_read_text, problem.source_asm_path)
         original_copy_path = self.paths.original_error_asm_dir / problem.source_asm_name
         if not original_copy_path.exists():
@@ -145,6 +161,7 @@ class ComposerEngine:
         succeeded = False
 
         for attempt in range(1, self.max_retries + 1):
+            _log(f"{problem.name}: preparing attempt {attempt}/{self.max_retries}")
             prompt = build_prompt(
                 problem=problem,
                 source_asm=source_asm,
@@ -157,6 +174,7 @@ class ComposerEngine:
             prompt_path = self.paths.prompts_dir / f"{problem.name}_attempt{attempt}.txt"
             await asyncio.to_thread(_write_text, prompt_path, prompt)
 
+            _log(f"{problem.name}: requesting model output for attempt {attempt}")
             raw_output = await self.provider.generate_repair(prompt, problem.name)
             raw_path = self.paths.raw_output_dir / f"{problem.name}_attempt{attempt}.txt"
             await asyncio.to_thread(_write_text, raw_path, raw_output)
@@ -168,6 +186,7 @@ class ComposerEngine:
             await asyncio.to_thread(_write_text, diagnostics_path, json.dumps(diagnostics, indent=2) + "\n")
             await asyncio.to_thread(_write_text, fixed_asm_path, cleaned)
 
+            _log(f"{problem.name}: validating attempt {attempt}")
             feedback = await asyncio.to_thread(
                 self.evaluator.validate,
                 problem.name,

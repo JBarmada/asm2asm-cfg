@@ -1,0 +1,36 @@
+{
+  "benchmark": "HumanEval",
+  "composer_model": "gemini-3-flash-preview",
+  "composer_prompt_config": "error_cfg_dfg",
+  "model_name": "Qwen-1.5b",
+  "max_workers": 10,
+  "max_retries": 3,
+  "retry_base_seconds": 2.0,
+  "retry_jitter_seconds": 1.0,
+  "startup_jitter_seconds": 2.0,
+  "source_arch": "Armv8",
+  "source_dataset_column": "armv8",
+  "cfg_dataset_column": "armv8",
+  "dfg_dataset_column": "armv8",
+  "target_arch": "x86_64",
+  "test_root": "../HumanEval_source",
+  "clang": "clang-17",
+  "compile_flags": [
+    "-O2",
+    "-target",
+    "x86_64-linux-gnu"
+  ],
+  "link_flags": [
+    "-O2",
+    "-target",
+    "x86_64-linux-gnu",
+    "-static",
+    "-fuse-ld=lld",
+    "-lm"
+  ],
+  "qemu": null,
+  "use_qemu": false,
+  "timeout_seconds": 30,
+  "validator_script": "human_eval_evaluator.py",
+  "graph_source": "hf"
+}

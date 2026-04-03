@@ -1,3 +1,8 @@
+## Workspace Status
+
+This manual is kept for reference and historical setup guidance.
+The only directory currently maintained in this workspace is [ModularComposer](ModularComposer).
+
 ## Setup the environment
 
 1. Download the docker image

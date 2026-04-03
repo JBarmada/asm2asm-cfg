@@ -84,6 +84,16 @@ def execute_pipeline(
         print("Run cancelled by user.")
         return 1
 
+    print("Preflight confirmed. Preparing evaluator inputs...")
+    if require_cfg:
+        print("Loading CFG data...")
+    else:
+        print("CFG data not required for this prompt config.")
+    if require_dfg:
+        print("Loading DFG data...")
+    else:
+        print("DFG data not required for this prompt config.")
+
     cfg_data = load_graph_data(cfg, cfg_column, "cfg") if require_cfg else {}
     dfg_data = load_graph_data(cfg, dfg_column, "dfg") if require_dfg else {}
 
@@ -108,13 +118,20 @@ def execute_pipeline(
         startup_jitter_seconds=startup_jitter_seconds,
     )
 
+    print("Loading errored problem specs and resolving source assembly...")
     problems = evaluator.get_problem_specs(prompt_config)
+    print(f"Loaded {len(problems)} errored problems.")
+    print(
+        "Starting composition engine "
+        f"(resume checkpoint: {args.resume_checkpoint if args.resume_checkpoint else 'none'})..."
+    )
     started_at = datetime.now()
 
     results, error = asyncio.run(engine.run(problems, resume_checkpoint=args.resume_checkpoint))
     if error is not None:
         raise error
 
+    print("Composition phase complete. Running final validation over all outputs...")
     final_validation_path, final_error_count, total_problems = evaluator.validate_all_outputs()
 
     report_path = engine.write_reports(
