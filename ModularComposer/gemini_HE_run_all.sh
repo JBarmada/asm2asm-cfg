@@ -56,24 +56,56 @@ get_config() {
 get_run_label() {
   local file="$1"
 
-  if [[ "$file" == *"0p5b" ]]; then size="q05b"
-  elif [[ "$file" == *"1p5b" ]]; then size="q15b"
+  if [[ "$file" == *"0p5b"* ]]; then size="q05b"
+  elif [[ "$file" == *"1p5b"* ]]; then size="q15b"
   else size="q3b"
   fi
 
   # source → target
-  if [[ "$file" == *"x86_to_riscv"* ]]; then pair="x86-riscv"
-  elif [[ "$file" == *"x86_to_armv8"* ]]; then pair="x86-arm"
-  elif [[ "$file" == *"riscv_to_x86"* ]]; then pair="riscv-x86"
-  elif [[ "$file" == *"riscv_to_armv8"* ]]; then pair="riscv-arm"
-  elif [[ "$file" == *"armv8_to_x86"* ]]; then pair="arm-x86"
-  elif [[ "$file" == *"armv8_to_riscv"* ]]; then pair="arm-riscv"
+  if [[ "$file" == *"x86_to_riscv"* ]]; then pair="x86-to-riscv"
+  elif [[ "$file" == *"x86_to_armv8"* ]]; then pair="x86-to-arm"
+  elif [[ "$file" == *"riscv_to_x86"* ]]; then pair="riscv-to-x86"
+  elif [[ "$file" == *"riscv_to_armv8"* ]]; then pair="riscv-to-arm"
+  elif [[ "$file" == *"armv8_to_x86"* ]]; then pair="arm-to-x86"
+  elif [[ "$file" == *"armv8_to_riscv"* ]]; then pair="arm-to-riscv"
   else
     echo "Unknown mapping for $file"
     exit 1
   fi
 
-  echo "${size}-gem_${pair}"
+  if [[ "$size" == "q05b" ]]; then run_size="qwen0.5b"
+  elif [[ "$size" == "q15b" ]]; then run_size="qwen1.5b"
+  else run_size="qwen3b"
+  fi
+
+  echo "${run_size}-${pair}"
+}
+
+has_txt_report() {
+  local run_label="$1"
+  local config_path="$2"
+  local prompt_config="$3"
+  local config_base
+
+  config_base="$(basename "$config_path" .json)"
+  config_base="${config_base#config_}"
+
+  local report_dir="results/composer/${run_label}/${config_base}/${prompt_config}/txts"
+  local reports=("${report_dir}"/*.txt)
+  if [[ -e "${reports[0]}" ]]; then
+    return 0
+  fi
+
+  local legacy_run_label="${run_label/-to-/-}"
+  if [[ "$legacy_run_label" != "$run_label" ]]; then
+    report_dir="results/composer/${legacy_run_label}/${config_base}/${prompt_config}/txts"
+    reports=("${report_dir}"/*.txt)
+    if [[ -e "${reports[0]}" ]]; then
+      return 0
+    fi
+  fi
+
+  return 1
 }
 
 for file in "${FILES[@]}"; do
@@ -81,6 +113,11 @@ for file in "${FILES[@]}"; do
   run_label=$(get_run_label "$file")
 
   for cfg in "${CONFIGS[@]}"; do
+    if has_txt_report "$run_label" "$config" "$cfg"; then
+      echo "Skipping existing report: ${run_label}/${config}/${cfg}"
+      continue
+    fi
+
     python3 humaneval_compose_gemini.py "../$file" \
       --config "$config" \
       --run-label "$run_label" \
