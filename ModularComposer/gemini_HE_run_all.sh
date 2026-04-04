@@ -83,30 +83,44 @@ get_run_label() {
 
 has_txt_report() {
   local run_label="$1"
-  local config_path="$2"
-  local prompt_config="$3"
-  local config_base
+  local prompt_config="$2"
 
-  config_base="$(basename "$config_path" .json)"
-  config_base="${config_base#config_}"
-
-  local report_dir="results/composer/${run_label}/${config_base}/${prompt_config}/txts"
-  local reports=("${report_dir}"/*.txt)
-  if [[ -e "${reports[0]}" ]]; then
+  local report_dir="results/composer/${run_label}/${prompt_config}/txts"
+  
+  # Safely check if any .txt files exist in this directory
+  if ls "${report_dir}"/*.txt >/dev/null 2>&1; then
     return 0
   fi
 
+  # Check legacy label just in case
   local legacy_run_label="${run_label/-to-/-}"
   if [[ "$legacy_run_label" != "$run_label" ]]; then
-    report_dir="results/composer/${legacy_run_label}/${config_base}/${prompt_config}/txts"
-    reports=("${report_dir}"/*.txt)
-    if [[ -e "${reports[0]}" ]]; then
+    report_dir="results/composer/${legacy_run_label}/${prompt_config}/txts"
+    if ls "${report_dir}"/*.txt >/dev/null 2>&1; then
       return 0
     fi
   fi
 
   return 1
 }
+
+for file in "${FILES[@]}"; do
+  config=$(get_config "$file")
+  run_label=$(get_run_label "$file")
+
+  for cfg in "${CONFIGS[@]}"; do
+    # Only pass run_label and cfg, drop the config path!
+    if has_txt_report "$run_label" "$cfg"; then
+      echo "Skipping existing report: ${run_label}/${cfg}"
+      continue
+    fi
+
+    python3 humaneval_compose_gemini.py "../$file" \
+      --config "$config" \
+      --run-label "$run_label" \
+      --prompt-config "$cfg"
+  done
+done
 
 for file in "${FILES[@]}"; do
   config=$(get_config "$file")
