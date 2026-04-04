@@ -6,15 +6,29 @@ The only directory currently maintained in this workspace is [ModularComposer](M
 ## Setup the environment
 
 1. Download the docker image
+
     ```bash
     docker pull nadinemostafa/crosscompile:latest
     ```
 
+    ```bash
+    docker build -t my-crosscompile .
+    ```
+
+    Make a .docker.env files with
+    '''text
+    GOOGLE_API_KEY=Your API key
+    HF_TOKEN=
+    OPENAI_API_KEY=
+    '''
+
 2. Run the docker image
+
     ```bash
        docker run --rm -it --env-file .docker.env -v "${PWD}:/datasets" my-crosscompile bash
        bash
     ```
+
     Replace `<datasets_path>` with the path to the datasets you want to use in your project. This will mount the datasets directory to the `/datasets` directory inside the docker container.
 
 This Docker image is set up with all the necessary tools and libraries for cross-compiling your project. You can now navigate to the `/datasets` directory inside the container to access your datasets and start working on your project.
