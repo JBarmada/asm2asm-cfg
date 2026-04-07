@@ -76,6 +76,10 @@ def _base_problem_name(stem: str) -> str:
 def main() -> int:
     args = parse_args()
     asm_dir = args.asm_dir.resolve()
+    print(f"[info] Starting validation run")
+    print(f"[info] asm_dir={asm_dir}")
+    print(f"[info] config={args.config}")
+    print(f"[info] output={args.output}")
     
     if not asm_dir.exists() or not asm_dir.is_dir():
         print(f"Assembly directory does not exist: {asm_dir}", file=sys.stderr)
@@ -91,9 +95,17 @@ def main() -> int:
     link_flags = cfg.get("link_flags", [])
     timeout = cfg.get("timeout_seconds", 30)
 
+    print(
+        f"[info] toolchain: clang={clang_exe}, qemu={'enabled' if use_qemu else 'disabled'}, timeout={timeout}s"
+    )
+    if use_qemu:
+        print(f"[info] qemu executable={qemu_exe or '<empty>'}")
+    print(f"[info] test_root={test_root}")
+
     started_at = datetime.now()
     
     asm_files = sorted(asm_dir.glob("*.s"))
+    print(f"[info] discovered {len(asm_files)} assembly files before filtering")
     if args.problems:
         requested = {p.strip() for p in args.problems if p and p.strip()}
         asm_files = [
@@ -101,6 +113,8 @@ def main() -> int:
             for f in asm_files
             if f.stem in requested or _base_problem_name(f.stem) in requested
         ]
+        print(f"[info] applying filters: {sorted(requested)}")
+        print(f"[info] {len(asm_files)} assembly files remain after filtering")
         if not asm_files:
             print(
                 f"Warning: no assembly files matched filters {sorted(requested)} in {asm_dir}",
@@ -110,14 +124,18 @@ def main() -> int:
     results: List[ProblemRunResult] = []
     
     # Execution Loop
-    for asm_file in asm_files:
+    total = len(asm_files)
+    for idx, asm_file in enumerate(asm_files, start=1):
         asm_stem = asm_file.stem
         problem_name = _base_problem_name(asm_stem)
+        print(f"\n[problem {idx}/{total}] {problem_name} (asm stem: {asm_stem})")
         output_dir = asm_dir.parent / "eval_temp" / asm_stem
         output_dir.mkdir(parents=True, exist_ok=True)
+        print(f"[problem {idx}/{total}] output_dir={output_dir}")
         
         test_file = test_root / problem_name / "test.c"
         if not test_file.exists():
+            print(f"[problem {idx}/{total}] missing test: {test_file}")
             results.append(ProblemRunResult(problem_name, "missing_test", f"No test at {test_file} (asm stem: {asm_stem})"))
             continue
 
@@ -135,24 +153,36 @@ def main() -> int:
 
         try:
             for cmd in build_commands:
+                print(f"[problem {idx}/{total}] CMD: {shlex.join(cmd)}")
                 proc = subprocess.run(cmd, cwd=output_dir, capture_output=True, text=True, timeout=timeout)
                 result.command_results.append(CommandResult(cmd, proc.returncode, proc.stdout, proc.stderr))
+                print(f"[problem {idx}/{total}] -> return code: {proc.returncode}")
                 if proc.returncode != 0:
+                    if proc.stderr and proc.stderr.strip():
+                        print(f"[problem {idx}/{total}] stderr:\n{proc.stderr.strip()}")
                     result.status, result.summary = "build_error", "Compilation/Link failed"
                     break
             
             if result.status == "pending":
                 run_cmd = [qemu_exe, str(executable_path)] if qemu_exe else [str(executable_path)]
+                print(f"[problem {idx}/{total}] CMD: {shlex.join(run_cmd)}")
                 proc = subprocess.run(run_cmd, cwd=output_dir, capture_output=True, text=True, timeout=timeout)
                 result.command_results.append(CommandResult(run_cmd, proc.returncode, proc.stdout, proc.stderr))
                 result.stderr = proc.stderr
                 result.status = "passed" if proc.returncode == 0 else "runtime_error"
                 result.summary = f"Exited with code {proc.returncode}"
+                print(f"[problem {idx}/{total}] -> return code: {proc.returncode}")
+                if proc.stderr and proc.stderr.strip():
+                    print(f"[problem {idx}/{total}] stderr:\n{proc.stderr.strip()}")
                 
         except subprocess.TimeoutExpired:
             result.status, result.summary = "timeout", "Execution timed out"
+            print(f"[problem {idx}/{total}] timeout after {timeout}s")
         except Exception as e:
             result.status, result.summary = "execution_error", str(e)
+            print(f"[problem {idx}/{total}] execution error: {e}")
+        
+        print(f"[problem {idx}/{total}] status={result.status} summary={result.summary}")
             
         results.append(result)
 
@@ -171,6 +201,11 @@ def main() -> int:
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+
+    print("\n[summary] Validation complete")
+    print(f"[summary] problems_processed={len(results)}")
+    print(f"[summary] errored_count={len(errored)}")
+    print(f"[summary] output_json={args.output}")
 
     return 1 if len(errored) > 0 else 0
 

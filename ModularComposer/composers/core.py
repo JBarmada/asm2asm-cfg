@@ -115,6 +115,15 @@ class ComposerEngine:
         except Exception as exc:
             error = exc
         finally:
+            checkpoint_status = "completed" if error is None else "terminated"
+            if error is not None:
+                if isinstance(error, QuotaExhaustedError):
+                    checkpoint_status = "terminated_quota_exhausted"
+                elif isinstance(error, FatalProviderError):
+                    checkpoint_status = "terminated_fatal_provider_error"
+                _log(f"Run terminated due to error: {error}")
+
+            self._save_checkpoint(status=checkpoint_status)
             stop_event.set()
             for task in tasks:
                 task.cancel()

@@ -90,11 +90,15 @@ def _extract_retry_delay_seconds(error_text: str) -> int | None:
 
 
 def _is_daily_quota_exhausted(error_text: str) -> bool:
+    lowered = error_text.lower()
     return (
-        "RESOURCE_EXHAUSTED" in error_text
+        "resource_exhausted" in lowered
         and (
-            "generate_requests_per_model_per_day" in error_text
-            or "GenerateRequestsPerDayPerProjectPerModel" in error_text
+            "generate_requests_per_model_per_day" in lowered
+            or "generaterequestsperdayperprojectpermodel" in lowered
+            or "exceeded your current quota" in lowered
+            or "check your plan and billing details" in lowered
+            or "rate-limits" in lowered
         )
     )
 

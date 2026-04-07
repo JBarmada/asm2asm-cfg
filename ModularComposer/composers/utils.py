@@ -195,9 +195,9 @@ def resolve_runtime_paths(args, cfg: dict[str, object]) -> ComposerRuntimePaths:
 
     base_results_dir = Path("results/composer").resolve()
     run_label = args.run_label or (input_path.stem if is_json_input else input_experiment_dir.name)
-    run_output_root = base_results_dir / run_label / config_base_name
+    # run_output_root = base_results_dir / run_label / config_base_name
     prompt_config_dir = str(getattr(args, "prompt_config", "") or "base")
-    run_output_dir = run_output_root / prompt_config_dir
+    run_output_dir = base_results_dir / run_label / prompt_config_dir
 
     if is_json_input:
         benchmark_asm_input_dir = run_output_dir / "json_input_asm"
