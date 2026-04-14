@@ -1,8 +1,9 @@
+from .benchmarks import BringUpBenchmark, StandardCBenchmark, create_benchmark_adapter, load_graph_data
 from .core import ComposerEngine
-from .evaluators import BaseEvaluator, HumanEvalEvaluator, load_graph_data
-from .humaneval_runner import execute_pipeline, get_cfg_or_default, load_run_config, parse_shared_args
+from .evaluators import BaseEvaluator, HumanEvalEvaluator
 from .preflight import build_preflight_lines, prompt_auto_confirm
 from .providers import FatalProviderError, GeminiProvider, ModelProvider, OpenAIProvider
+from .runner import execute_pipeline, get_cfg_or_default, load_run_config, parse_shared_args
 from .utils import (
     ComposerRuntimePaths,
     ProblemResult,
@@ -14,6 +15,7 @@ from .utils import (
 
 __all__ = [
     "BaseEvaluator",
+    "BringUpBenchmark",
     "ComposerEngine",
     "ComposerRuntimePaths",
     "FatalProviderError",
@@ -23,8 +25,10 @@ __all__ = [
     "OpenAIProvider",
     "ProblemResult",
     "ProblemSpec",
+    "StandardCBenchmark",
     "ValidationFeedback",
     "build_preflight_lines",
+    "create_benchmark_adapter",
     "execute_pipeline",
     "get_cfg_or_default",
     "load_graph_data",

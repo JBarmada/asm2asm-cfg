@@ -1,5 +1,6 @@
 {
-  "benchmark": "HumanEval",
+  "benchmark": "humaneval",
+  "benchmark_root": "../cpu-transpiler-inference/benchmarks/humaneval-c",
   "composer_model": "gemini-3-flash-preview",
   "composer_prompt_config": "error_cfg_dfg",
   "model_name": "Qwen-3b",
@@ -8,12 +9,13 @@
   "retry_base_seconds": 2.0,
   "retry_jitter_seconds": 1.0,
   "startup_jitter_seconds": 2.0,
-  "source_arch": "x86_64",
+  "bootstrap_errors": true,
+  "source_isa": "x86",
+  "target_isa": "riscv",
   "source_dataset_column": "x86_64",
   "cfg_dataset_column": "x86_64",
   "dfg_dataset_column": "x86_64",
-  "target_arch": "riscv64",
-  "test_root": "../HumanEval_source",
+  "graph_split": "O2",
   "clang": "clang-17",
   "compile_flags": [
     "-O2",
@@ -35,6 +37,6 @@
   "qemu": "qemu-riscv64",
   "use_qemu": true,
   "timeout_seconds": 30,
-  "validator_script": "human_eval_evaluator.py",
+  "standard_timeout_seconds": 30,
   "graph_source": "hf"
 }

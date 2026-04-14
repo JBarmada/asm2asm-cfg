@@ -13,8 +13,8 @@ from .utils import (
     ComposerRuntimePaths,
     ProblemResult,
     ProblemSpec,
-    ValidationFeedback,
     _log,
+    _remove_path,
     _read_text,
     _write_text,
     clean_model_output,
@@ -175,7 +175,7 @@ class ComposerEngine:
                 problem=problem,
                 source_asm=source_asm,
                 prompt_config=self.prompt_config,
-                source_language=self.paths.source_language,
+                target_isa=self.paths.target_isa_display,
                 cfg_language=self.paths.cfg_language,
                 dfg_language=self.paths.dfg_language,
                 retry_context=retry_context,
@@ -198,10 +198,9 @@ class ComposerEngine:
             _log(f"{problem.name}: validating attempt {attempt}")
             feedback = await asyncio.to_thread(
                 self.evaluator.validate,
-                problem.name,
+                problem,
                 cleaned,
                 attempt,
-                problem.source_asm_name,
             )
 
             note = feedback.summary or feedback.status
@@ -294,7 +293,8 @@ class ComposerEngine:
             f"Run finished: {finished_at.isoformat(timespec='seconds')}",
             f"Input experiment dir: {self.paths.input_experiment_dir}",
             f"Run label: {self.run_label}",
-            f"Source language: {self.paths.source_language}",
+            f"Benchmark: {self.paths.benchmark_id}",
+            f"Target ISA: {self.paths.target_isa_display}",
             f"Model: {self.model_name}",
             f"Prompt config: {self.prompt_config}",
             f"Total problems in experiment: {total_problems}",
@@ -336,33 +336,37 @@ class ComposerEngine:
             if resume_enabled:
                 continue
             for stale in directory.glob("*"):
-                if stale.is_file():
-                    stale.unlink()
+                _remove_path(stale)
 
 
 def build_prompt(
     problem: ProblemSpec,
     source_asm: str,
     prompt_config: str,
-    source_language: str,
+    target_isa: str,
     cfg_language: str,
     dfg_language: str,
     retry_context: dict[str, str] | None = None,
 ) -> str:
+    artifact_label = "assembly function" if problem.artifact_kind == "single_function" else "assembly translation unit"
     sections: list[str] = [
-        f"Repair the following translated {source_language} assembly function.",
+        f"Repair the following translated {target_isa} {artifact_label}.",
         "",
         "Goal:",
-        f"Produce a corrected {source_language} assembly function that preserves behavior.",
+        f"Produce a corrected {target_isa} {artifact_label} that preserves behavior.",
         "",
         "Hard requirements:",
         "- Output only assembly text. No markdown fences. No prose.",
-        "- Keep function signature/name expectations used by the harness (func0 unless explicitly required otherwise).",
         "- Keep the same target ISA/language as input; do not translate to a different ISA.",
         "- Preserve exact semantics and edge cases.",
         "- If CFG/DFG are provided, treat them as semantic guidance only.",
-        "",
     ]
+
+    if problem.expected_symbols:
+        sections.append(f"- Preserve the benchmark-required symbol set exactly: {', '.join(problem.expected_symbols)}.")
+    if problem.prompt_constraints:
+        sections.extend(f"- {line}" for line in problem.prompt_constraints)
+    sections.append("")
 
     if prompt_config in {"error_only", "error_cfg", "error_dfg", "error_cfg_dfg"}:
         sections.extend(
@@ -376,12 +380,12 @@ def build_prompt(
             ]
         )
 
-    sections.extend([f"Input {source_language} Assembly:", source_asm, ""])
+    sections.extend([f"Input {target_isa} Assembly:", source_asm, ""])
 
     if prompt_config in {"cfg_only", "error_cfg", "cfg_dfg", "error_cfg_dfg"}:
         sections.extend(
             [
-                f"CFG ({cfg_language} semantic graph; output remains {source_language} assembly):",
+                f"CFG ({cfg_language} semantic graph; output remains {target_isa} assembly):",
                 problem.cfg_text or "(CFG data not found)",
                 "",
             ]
@@ -390,7 +394,7 @@ def build_prompt(
     if prompt_config in {"dfg_only", "error_dfg", "cfg_dfg", "error_cfg_dfg"}:
         sections.extend(
             [
-                f"DFG ({dfg_language} semantic graph; output remains {source_language} assembly):",
+                f"DFG ({dfg_language} semantic graph; output remains {target_isa} assembly):",
                 problem.dfg_text or "(DFG data not found)",
                 "",
             ]

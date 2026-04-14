@@ -67,8 +67,6 @@ ensure_output_tree() {
     "${base_dir}/full_validation_input_asm" \
     "${base_dir}/prompts" \
     "${base_dir}/raw_model_output" \
-    "${base_dir}/original_error_riscv_asm" \
-    "${base_dir}/fixed_riscv_asm" \
     "${base_dir}/logs" \
     "${base_dir}/txts" \
     "${base_dir}/cleaned_model_output" \
@@ -200,7 +198,7 @@ for file in "${FILES[@]}"; do
       continue
     fi
 
-    python3 humaneval_compose_gemini.py "$input_json" \
+    python3 compose_gemini.py "$input_json" \
       --config "$config" \
       --max-concurrency 5 \
       --run-label "$composer_run_label" \

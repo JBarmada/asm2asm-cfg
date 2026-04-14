@@ -3,16 +3,19 @@ from __future__ import annotations
 import asyncio
 import random
 import re
+from typing import Any
 
 from ..utils import _log, resolve_env_api_key
 from .base import FatalProviderError, ModelProvider, QuotaExhaustedError
 
 try:
     from google import genai
+    from google.genai import errors as genai_errors
 
     HAS_GENAI = True
 except ImportError:
     HAS_GENAI = False
+    genai_errors = None
 
 
 class GeminiProvider(ModelProvider):
@@ -57,60 +60,142 @@ class GeminiProvider(ModelProvider):
                     raise RuntimeError(f"Gemini returned empty text for {problem_name}")
                 return text
             except Exception as exc:
-                message = str(exc)
-                if _is_model_not_found_error(message):
+                error_summary = _format_error_summary(exc)
+                if _is_model_not_found_error(exc):
                     raise FatalProviderError(
-                        f"Gemini model configuration error for {problem_name}: {message}"
+                        f"Gemini model configuration error for {problem_name}: {error_summary}"
                     ) from exc
-                if _is_daily_quota_exhausted(message):
+                if _is_quota_exhausted_error(exc):
                     raise QuotaExhaustedError(
-                        f"Gemini daily quota exhausted for {problem_name}: {message}"
+                        f"Gemini quota/billing exhausted for {problem_name}: {error_summary}"
                     ) from exc
 
                 last_error = exc
                 if attempt < self.max_api_retries:
-                    delay = _extract_retry_delay_seconds(message)
+                    delay = _extract_retry_delay_seconds(exc)
                     backoff = float(delay) if delay is not None else self.retry_base_seconds * (2 ** (attempt - 1))
                     sleep_time = backoff + random.uniform(0.0, self.retry_jitter_seconds)
                     _log(
-                        f"{problem_name}: attempt {attempt}/{self.max_api_retries} failed ({exc}); retrying after {sleep_time:.2f}s"
+                        f"{problem_name}: API attempt {attempt}/{self.max_api_retries} failed "
+                        f"({error_summary}); retrying after {sleep_time:.2f}s"
                     )
                     await asyncio.sleep(sleep_time)
+                else:
+                    _log(
+                        f"{problem_name}: API attempt {attempt}/{self.max_api_retries} failed "
+                        f"({error_summary}); no retries remain"
+                    )
 
         if last_error is None:
             raise RuntimeError("Gemini provider failed without an exception")
         raise last_error
 
 
-def _extract_retry_delay_seconds(error_text: str) -> int | None:
-    match = re.search(r"retryDelay'\s*:\s*'(\d+)s'", error_text)
+def _extract_retry_delay_seconds(error: Exception | str) -> float | None:
+    error_text = _exception_text(error)
+    match = re.search(r"retryDelay[\"']?\s*:\s*[\"']?(\d+(?:\.\d+)?)s", error_text)
+    if match:
+        return float(match.group(1))
+    return None
+
+
+def _exception_text(error: Exception | str) -> str:
+    if isinstance(error, str):
+        return error
+    return str(error)
+
+
+def _exception_code(error: Exception | str) -> int | None:
+    if isinstance(error, Exception):
+        code = getattr(error, "code", None)
+        if isinstance(code, int):
+            return code
+        if isinstance(code, str) and code.isdigit():
+            return int(code)
+
+    match = re.search(r"'code':\s*(\d+)", _exception_text(error))
     if match:
         return int(match.group(1))
     return None
 
 
-def _is_daily_quota_exhausted(error_text: str) -> bool:
+def _exception_status(error: Exception | str) -> str:
+    if isinstance(error, Exception):
+        status = getattr(error, "status", None)
+        if isinstance(status, str) and status.strip():
+            return status.strip()
+
+    match = re.search(r"'status':\s*'([^']+)'", _exception_text(error))
+    if match:
+        return match.group(1).strip()
+    return ""
+
+
+def _exception_message(error: Exception | str) -> str:
+    if isinstance(error, Exception):
+        message = getattr(error, "message", None)
+        if isinstance(message, str) and message.strip():
+            return message.strip()
+    return _exception_text(error).strip()
+
+
+def _format_error_summary(error: Exception | str) -> str:
+    code = _exception_code(error)
+    status = _exception_status(error)
+    message = _exception_message(error)
+
+    prefix_parts: list[str] = []
+    if code is not None:
+        prefix_parts.append(str(code))
+    if status:
+        prefix_parts.append(status)
+
+    prefix = " ".join(prefix_parts)
+    if prefix and message:
+        return f"{prefix}: {message}"
+    if prefix:
+        return prefix
+    return message
+
+
+def _is_quota_exhausted_error(error: Exception | str) -> bool:
+    code = _exception_code(error)
+    status = _exception_status(error).lower()
+    lowered = _exception_message(error).lower()
+
+    quota_markers = (
+        "prepayment credits are depleted",
+        "manage your project and billing",
+        "exceeded your current quota",
+        "check your plan and billing details",
+        "generate_requests_per_model_per_day",
+        "generaterequestsperdayperprojectpermodel",
+        "rate limits are set lower",
+        "daily limit",
+        "daily quota",
+    )
+
+    if any(marker in lowered for marker in quota_markers):
+        return True
+
     lowered = error_text.lower()
     return (
-        "resource_exhausted" in lowered
-        and (
-            "generate_requests_per_model_per_day" in lowered
-            or "generaterequestsperdayperprojectpermodel" in lowered
-            or "exceeded your current quota" in lowered
-            or "check your plan and billing details" in lowered
-            or "rate-limits" in lowered
-        )
+        code == 429
+        and status == "resource_exhausted"
+        and any(marker in lowered for marker in ("quota", "billing", "credits"))
     )
 
 
-def _is_model_not_found_error(error_text: str) -> bool:
-    lowered = error_text.lower()
+def _is_model_not_found_error(error: Exception | str) -> bool:
+    code = _exception_code(error)
+    status = _exception_status(error).lower()
+    lowered = _exception_message(error).lower()
     return (
-        "404" in lowered
-        and "not_found" in lowered
-        and "models/" in lowered
+        code == 404
+        and status == "not_found"
         and (
             "is not found for api version" in lowered
             or "not supported for generatecontent" in lowered
+            or "models/" in lowered
         )
     )

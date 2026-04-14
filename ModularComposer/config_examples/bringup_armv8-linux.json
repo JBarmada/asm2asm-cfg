@@ -1,0 +1,38 @@
+{
+  "benchmark": "bringup",
+  "benchmark_root": "../cpu-transpiler-inference/benchmarks/bringup-bench",
+  "composer_prompt_config": "error_only",
+  "composer_model": "gemini-3-flash-preview",
+  "max_workers": 4,
+  "max_retries": 3,
+  "retry_base_seconds": 2.0,
+  "retry_jitter_seconds": 1.0,
+  "startup_jitter_seconds": 2.0,
+  "bootstrap_errors": true,
+  "source_isa": "x86",
+  "source_dataset_column": "x86_64",
+  "cfg_dataset_column": "x86_64",
+  "dfg_dataset_column": "x86_64",
+  "graph_split": "O2",
+  "clang": "clang-17",
+  "graph_source": "hf",
+  "target_isa": "armv8-linux",
+  "compile_flags": [
+    "-O2",
+    "-target",
+    "aarch64-linux-gnu"
+  ],
+  "link_flags": [
+    "-O2",
+    "-target",
+    "aarch64-linux-gnu",
+    "-static",
+    "-fuse-ld=lld",
+    "-lm"
+  ],
+  "qemu": "qemu-aarch64 -R 4G -L /usr/aarch64-linux-gnu",
+  "use_qemu": true,
+  "timeout_seconds": 120,
+  "make_target": "host",
+  "bringup_timeout_seconds": 120
+}

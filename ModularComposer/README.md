@@ -1,95 +1,223 @@
 # ModularComposer
 
-ModularComposer is a provider-agnostic assembly repair pipeline for HumanEval-style benchmarks.
-It repairs only failed translations, validates each candidate, retries with feedback, and writes full run artifacts.
+ModularComposer is a provider-agnostic assembly repair pipeline for benchmarked translation experiments.
+It now supports three benchmark families through one shared runner:
 
-This implementation is organized so model providers (Gemini/OpenAI), benchmark evaluators, and orchestration are isolated and easy to extend.
+- `humaneval`
+- `mceval`
+- `bringup`
 
-## What It Does
+The pipeline is organized around clean boundaries:
 
-1. Reads an input experiment directory or translation JSON.
-2. Selects errored problems from error metadata.
-3. Builds prompt variants (base/error/cfg/dfg combinations).
-4. Calls a model provider to generate repaired assembly.
-5. Validates each attempt with the HumanEval validator script.
-6. Retries with feedback up to configured limits.
-7. Produces final validation JSON, logs, diagnostics, checkpoints, and reports.
+- providers generate repair candidates,
+- benchmark adapters load failures and validate outputs,
+- the engine handles prompts, retries, checkpoints, and run artifacts.
 
-## Current Structure
+## Entry Points
+
+Primary entrypoints:
+
+- `compose_gemini.py`
+- `compose_openai.py`
+
+Backward-compatible HumanEval wrappers are still present:
 
 - `humaneval_compose_gemini.py`
-  - Thin entrypoint for Gemini provider.
 - `humaneval_compose_openai.py`
-  - Thin entrypoint for OpenAI provider.
-- `config.json`
-  - Shared runtime configuration.
-- `human_eval_evaluator.py`
-  - Validator script used by HumanEval evaluator.
-- `composers/core.py`
-  - `ComposerEngine` orchestration loop.
-- `composers/humaneval_runner.py`
-  - Shared argument parsing and shared run pipeline.
-- `composers/preflight.py`
-  - Preflight summary and 60s auto-confirm flow.
-- `composers/utils.py`
-  - Dataclasses, path resolution, cleanup helpers, checkpoint helpers.
-- `composers/providers/base.py`
-  - `ModelProvider`, `QuotaExhaustedError`, `FatalProviderError`.
-- `composers/providers/gemini.py`
-  - Gemini provider implementation with retries, jitter, fatal model-not-found detection.
-- `composers/providers/openai.py`
-  - OpenAI provider implementation with retries and jitter.
-- `composers/evaluators/base.py`
-  - `BaseEvaluator` interface.
-- `composers/evaluators/humaneval.py`
-  - HumanEval evaluator and graph dataset loader.
 
-## Provider/Evaluator/Engine Boundaries
+## Supported Targets
 
-### Provider Layer
+Canonical public ISA IDs:
 
-Responsible for:
+- `x86`
+- `armv8-linux`
+- `armv8.4a-apple`
+- `riscv`
 
-- API auth and client lifecycle.
-- Request retries and backoff.
-- Provider-specific fatal/quota error detection.
+Accepted compatibility aliases:
 
-Not responsible for:
+- `arm_linux`
+- `arm_apple`
+- `armv8`
+- `armv8.4a`
 
-- Benchmark parsing.
-- Filesystem orchestration.
-- Validation subprocess calls.
+The config loader also accepts legacy values such as `x86_64` and `riscv64` for backward compatibility.
 
-### Evaluator Layer
+## Benchmark Behavior
 
-Responsible for:
+### HumanEval
 
-- Parsing error payload and building problem specs.
-- Materializing source asm files for JSON input mode.
-- Running benchmark validation per attempt.
-- Running final validation over merged fixed outputs.
+- Standard C compile/link/run flow.
+- Default CFG/DFG dataset IDs are built in.
+- Prompt contract keeps the expected single benchmark symbol, typically `func0`.
 
-Not responsible for:
+### McEval
 
-- Model API calls.
-- Retry orchestration policy.
+- Standard C compile/link/run flow.
+- Expected function symbols are extracted from the local benchmark task files.
+- CFG/DFG prompt modes require explicit `cfg_dataset_id` and `dfg_dataset_id`.
 
-### Engine Layer
+### BringUpBench
 
-Responsible for:
+- Makefile-driven build and test flow.
+- Prompts treat the input as a translation-unit replacement, not a single function.
+- Validation concurrency is clamped to `1` for safety.
+- CFG/DFG prompt modes require explicit `cfg_dataset_id` and `dfg_dataset_id`.
 
-- Worker pool and concurrency.
-- Prompt construction and iterative retry flow.
-- Writing run artifacts (prompts/raw/cleaned/diagnostics).
-- Checkpointing and resume.
-- Final report generation.
+## Input Routes
 
-## Prompt Configs
+ModularComposer supports two first-class inputs.
 
-Supported prompt strategies:
+### 1. Evaluated JSON Input
 
-- `base`
-- `error_only`
+Pass a JSON produced by `cpu-transpiler-inference/eval.py`.
+
+Example:
+
+```bash
+python compose_gemini.py ../some_eval_results/humaneval_riscv.json --config config.json
+```
+
+In this mode the pipeline:
+
+- reads errored entries from the JSON,
+- materializes assembly into `json_input_asm/`,
+- repairs only the failing tasks.
+
+### 2. ASM Directory / Experiment Directory Input
+
+Pass either:
+
+- an experiment directory containing `translated_asm/`, or
+- a direct `*_asm/` directory.
+
+If an error JSON is available, use `--error-json`. If not, ModularComposer can bootstrap one automatically.
+
+Example using an existing error JSON:
+
+```bash
+python compose_gemini.py ../runs/mceval_x86_to_riscv --config config_examples/mceval_riscv.json --error-json ../runs/mceval_x86_to_riscv/jsons/O2_error_problems.json
+```
+
+Example with automatic bootstrap:
+
+```bash
+python compose_gemini.py ../runs/bringup_x86_to_arm/translated_asm --config config_examples/bringup_armv8-linux.json --bootstrap-errors
+```
+
+When bootstrap is enabled and no error JSON is found, the benchmark adapter first evaluates the input assembly and writes:
+
+- `validation_json/bootstrap_error_problems.json`
+
+The composition run then continues from that generated error list.
+
+## Running
+
+Run commands from the `ModularComposer` directory.
+
+### Gemini
+
+```bash
+python compose_gemini.py <input_path> --config <config.json>
+```
+
+### OpenAI
+
+```bash
+python compose_openai.py <input_path> --config <config.json>
+```
+
+Useful overrides:
+
+```bash
+--benchmark humaneval|mceval|bringup
+--benchmark-root ../cpu-transpiler-inference/benchmarks/mceval-c
+--target-isa x86|armv8-linux|armv8.4a-apple|riscv
+--input-mode auto|evaluated_json|asm_dir
+--bootstrap-errors
+--prompt-config base|error_only|cfg_only|dfg_only|error_cfg|error_dfg|cfg_dfg|error_cfg_dfg
+--run-label my_run
+--error-json path/to/error_problems.json
+--model gemini-3-flash-preview
+--max-concurrency 8
+--max-retries 3
+--resume-checkpoint results/composer/<run>/logs/checkpoint_<prompt>.json
+```
+
+### Target ISA Override Examples
+
+```bash
+python compose_gemini.py <input_path> --config config.json --target-isa x86
+python compose_gemini.py <input_path> --config config.json --target-isa armv8-linux
+python compose_gemini.py <input_path> --config config.json --target-isa armv8.4a-apple
+python compose_gemini.py <input_path> --config config.json --target-isa riscv
+```
+
+## Config Shape
+
+Primary config fields:
+
+- `benchmark`
+- `benchmark_root`
+- `target_isa`
+- `source_isa`
+- `composer_model`
+- `composer_prompt_config`
+- `max_workers`
+- `max_retries`
+- `bootstrap_errors`
+- `clang`
+- `compile_flags`
+- `link_flags`
+- `qemu`
+- `use_qemu`
+- `timeout_seconds`
+- `standard_timeout_seconds`
+- `bringup_timeout_seconds`
+- `make_target`
+- `graph_source`
+- `graph_split`
+- `cfg_dataset_id`
+- `dfg_dataset_id`
+- `source_dataset_column`
+- `cfg_dataset_column`
+- `dfg_dataset_column`
+
+Compatibility aliases are still accepted during transition:
+
+- `target_arch` -> `target_isa`
+- `test_root` -> `benchmark_root` for legacy HumanEval configs
+- `source_arch` -> `source_isa`
+
+`validator_script` is no longer part of the normal runner path.
+
+### Default Config
+
+The repository default is `config.json`.
+
+### Example Configs
+
+Canonical example configs live in `config_examples/`:
+
+- `humaneval_x86.json`
+- `humaneval_armv8-linux.json`
+- `humaneval_armv8.4a-apple.json`
+- `humaneval_riscv.json`
+- `mceval_x86.json`
+- `mceval_armv8-linux.json`
+- `mceval_armv8.4a-apple.json`
+- `mceval_riscv.json`
+- `bringup_x86.json`
+- `bringup_armv8-linux.json`
+- `bringup_armv8.4a-apple.json`
+- `bringup_riscv.json`
+
+The existing `configs_compose/` files were also migrated to the canonical key names for compatibility with older experiment naming.
+
+## Graph Data Rules
+
+Graph prompt configs are:
+
 - `cfg_only`
 - `dfg_only`
 - `error_cfg`
@@ -97,63 +225,16 @@ Supported prompt strategies:
 - `cfg_dfg`
 - `error_cfg_dfg`
 
-## Input Modes
+Dataset behavior:
 
-### 1) Directory Input
+- HumanEval can use built-in default dataset IDs.
+- McEval and BringUpBench fail fast unless you set `cfg_dataset_id` and/or `dfg_dataset_id` explicitly.
 
-Pass an experiment directory. The runner resolves source asm from:
+If you do not want graph inputs, use a non-graph prompt config such as `base` or `error_only`.
 
-- `translated_asm/`, or
-- `<target_arch_normalized>_asm/`
+## Preflight
 
-Error JSON is resolved from:
-
-- `--error-json` if provided, else
-- `error_json` in config, else
-- latest `jsons/*_error_problems.json`
-
-### 2) JSON Input
-
-Pass a translation JSON directly. The evaluator:
-
-- filters errored entries,
-- synthesizes asm files from each entry `pred`,
-- stores synthesized asm under the run output `json_input_asm` directory.
-
-## Running
-
-From the `ModularComposer` directory:
-
-### Gemini
-
-```bash
-python humaneval_compose_gemini.py <input_dir_or_json> --config config.json
-```
-
-### OpenAI
-
-```bash
-python humaneval_compose_openai.py <input_dir_or_json> --config config.json
-```
-
-### Useful Overrides
-
-```bash
---prompt-config error_cfg_dfg
---run-label my_run_name
---model gemini-3-flash-preview
---max-concurrency 8
---max-retries 3
---retry-base-seconds 2.0
---retry-jitter-seconds 1.0
---startup-jitter-seconds 2.0
---resume-checkpoint results/composer/.../logs/checkpoint_error_cfg_dfg.json
---validator-script human_eval_evaluator.py
-```
-
-## Preflight Confirmation
-
-Before model calls begin, the pipeline prints:
+Before model calls begin, the runner prints a preflight summary containing:
 
 - input path
 - config path
@@ -161,130 +242,73 @@ Before model calls begin, the pipeline prints:
 - prompt config
 - model
 - benchmark
-- error JSON path
-- validator script path
-- HF split (`O2`)
-- HF CFG/DFG dataset IDs and columns
-- output root
-- all directories to create/reuse
+- benchmark root
+- target ISA
+- input mode
+- resolved ASM input dir
+- resolved or bootstrapped error JSON path
+- graph split and dataset IDs
+- output directories
 
-Then it waits for confirmation. Behavior:
-
-- `y`->enter => continue immediately
-- no input for 60 seconds => auto-confirm
-- any other input => cancel run
+The run waits up to 60 seconds for confirmation and auto-continues if no input is received.
 
 ## Output Layout
 
-Outputs are grouped under:
+Outputs are written under:
 
-`results/composer/<run_label>/<config_base>/<prompt_config>/`
+`results/composer/<run_label>/<prompt_config>/`
 
-Main subfolders:
+Key directories:
 
-- `json_input_asm/` (JSON input mode synthesized source asm)
+- `json_input_asm/`
 - `prompts/`
 - `raw_model_output/`
 - `cleaned_model_output/`
 - `clean_diagnostics/`
-- `original_error_<arch>_asm/`
-- `fixed_<arch>_asm/`
+- `original_error_<target_isa>_asm/`
+- `fixed_<target_isa>_asm/`
 - `compile_probe/`
 - `validation_json/`
 - `full_validation_input_asm/`
 - `logs/`
-- `txts/` (final report)
+- `txts/`
 
-## Retry and Jitter
+## Example Workflows
 
-There are two independent jitter controls:
-
-- `startup_jitter_seconds`
-  - Random delay before each worker starts, reduces request burst at t=0.
-- `retry_jitter_seconds`
-  - Random delay added to retry backoff, reduces synchronized retries.
-
-Provider retry base is controlled by `retry_base_seconds`.
-
-## Fatal and Quota Errors
-
-### Gemini-details
-
-- Daily quota exhaustion is detected and raises `QuotaExhaustedError`.
-- Model-not-found / unsupported model errors (404 NOT_FOUND on model) raise `FatalProviderError`.
-
-Both are treated as stop-run conditions by the engine.
-
-### OpenAI-details
-
-- Quota exhaustion (`insufficient_quota`) is treated as fatal for the run.
-
-## Checkpoint and Resume
-
-- Checkpoint path is per prompt config:
-  - `logs/checkpoint_<prompt_config>.json`
-- Resume with `--resume-checkpoint <path>`.
-- Resume keeps previously completed problem results and continues pending ones.
-
-## Config Reference
-
-`config.json` fields commonly used:
-
-### Model and run settings
-
-- `composer_model`
-- `composer_prompt_config`
-- `max_workers`
-- `max_retries`
-- `retry_base_seconds`
-- `retry_jitter_seconds`
-- `startup_jitter_seconds`
-
-### Graph settings
-
-- `graph_source` (`hf` or disabled values)
-- `cfg_dataset_id` (optional, default provided)
-- `dfg_dataset_id` (optional, default provided)
-- `cfg_dataset_column`
-- `dfg_dataset_column`
-- `source_dataset_column`
-
-### Toolchain/runtime settings
-
-- `target_arch`
-- `test_root`
-- `clang`
-- `compile_flags`
-- `link_flags`
-- `qemu`
-- `use_qemu`
-- `timeout_seconds`
-- `validator_script`
-
-## Notes for Extending
-
-### Add a new provider
-
-1. Add module under `composers/providers/`.
-2. Implement `ModelProvider.generate_repair`.
-3. Wire a new thin entry script similar to current two compose entrypoints.
-
-### Add a new evaluator
-
-1. Add module under `composers/evaluators/` implementing `BaseEvaluator`.
-2. Update shared runner or add a benchmark-specific runner to instantiate the new evaluator.
-
-## Common Pitfalls
-
-- Wrong provider model name: Gemini will fail fast with `FatalProviderError` if model is unsupported.
-- Mismatched target toolchain: ensure `compile_flags`, `link_flags`, `qemu`, and `target_arch` are consistent.
-- Validator path mismatch: ensure `validator_script` points to an existing script in this folder.
-- Missing graph package: CFG/DFG prompt modes require `datasets` package.
-
-## Quick Start Example
+### HumanEval from `eval.py` JSON
 
 ```bash
-python humaneval_compose_gemini.py ../Qwen-Translations/riscv/3b/<run>.json --config config.json --run-label run0
+python compose_gemini.py ../results/humaneval_eval_riscv.json --config config_examples/humaneval_riscv.json
 ```
 
-This will run preflight confirmation, then process errored problems only, and write results under `results/composer/run0/...`.
+### McEval from an experiment directory
+
+```bash
+python compose_openai.py ../runs/mceval_riscv_experiment --config config_examples/mceval_riscv.json --error-json ../runs/mceval_riscv_experiment/jsons/O2_error_problems.json
+```
+
+### BringUpBench from raw translated assembly
+
+```bash
+python compose_gemini.py ../runs/bringup_arm/translated_asm --config config_examples/bringup_armv8-linux.json --bootstrap-errors
+```
+
+## Extending
+
+### Add a provider
+
+1. Add a module under `composers/providers/`.
+2. Implement `ModelProvider.generate_repair`.
+3. Add a thin entry script similar to `compose_gemini.py`.
+
+### Add a benchmark
+
+1. Add an adapter under `composers/benchmarks/`.
+2. Implement the `BenchmarkAdapter` interface.
+3. Register it in `composers/benchmarks/__init__.py`.
+
+## Notes
+
+- `source_isa` controls graph-column selection for the source program. Change it to match the original translation source in your experiment.
+- BringUpBench uses isolated scratch workspaces and still runs with one validator worker by design.
+- Direct ZIP ingestion is not part of this repo path. Pass the evaluated JSON or the extracted ASM directory instead.
