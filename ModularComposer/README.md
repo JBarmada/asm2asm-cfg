@@ -61,7 +61,7 @@ The config loader also accepts legacy values such as `x86_64` and `riscv64` for 
 
 - Makefile-driven build and test flow.
 - Prompts treat the input as a translation-unit replacement, not a single function.
-- Validation concurrency is clamped to `1` for safety.
+- Prompt concurrency can remain high, but validation concurrency is clamped to `1` for safety.
 - CFG/DFG prompt modes require explicit `cfg_dataset_id` and `dfg_dataset_id`.
 
 ## Input Routes
@@ -140,6 +140,8 @@ Useful overrides:
 --error-json path/to/error_problems.json
 --model gemini-3-flash-preview
 --max-concurrency 8
+--prompt-concurrency 8
+--validation-concurrency 1
 --max-retries 3
 --resume-checkpoint results/composer/<run>/logs/checkpoint_<prompt>.json
 ```
@@ -245,6 +247,8 @@ Before model calls begin, the runner prints a preflight summary containing:
 - benchmark root
 - target ISA
 - input mode
+- prompt concurrency
+- validation concurrency
 - resolved ASM input dir
 - resolved or bootstrapped error JSON path
 - graph split and dataset IDs
@@ -310,5 +314,5 @@ python compose_gemini.py ../runs/bringup_arm/translated_asm --config config_exam
 ## Notes
 
 - `source_isa` controls graph-column selection for the source program. Change it to match the original translation source in your experiment.
-- BringUpBench uses isolated scratch workspaces and still runs with one validator worker by design.
+- BringUpBench uses isolated scratch workspaces and runs with one validator worker by design, while prompt generation can still run in parallel.
 - Direct ZIP ingestion is not part of this repo path. Pass the evaluated JSON or the extracted ASM directory instead.

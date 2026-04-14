@@ -50,6 +50,8 @@ def parse_shared_args(description: str) -> argparse.Namespace:
     parser.add_argument("--error-json", type=Path, help="Explicit error JSON path in directory mode")
     parser.add_argument("--model", help="Provider model override")
     parser.add_argument("--max-concurrency", type=int, help="Max concurrent workers")
+    parser.add_argument("--prompt-concurrency", type=int, help="Max concurrent model-prompt workers")
+    parser.add_argument("--validation-concurrency", type=int, help="Max concurrent validation workers")
     parser.add_argument("--max-retries", type=int, help="Max composition attempts per problem")
     parser.add_argument("--retry-base-seconds", type=float, help="Provider API retry base seconds")
     parser.add_argument("--retry-jitter-seconds", type=float, help="Extra random retry delay")
@@ -99,7 +101,15 @@ def execute_pipeline(
     paths = resolve_runtime_paths(args, cfg)
     cfg = apply_default_toolchain(cfg, paths.target_isa)
 
-    max_concurrency = int(args.max_concurrency or get_cfg_or_default(cfg, "max_workers", 8))
+    prompt_concurrency = int(
+        getattr(args, "prompt_concurrency", None)
+        or getattr(args, "max_concurrency", None)
+        or get_cfg_or_default(cfg, "prompt_concurrency", get_cfg_or_default(cfg, "max_workers", 8))
+    )
+    validation_concurrency = int(
+        getattr(args, "validation_concurrency", None)
+        or get_cfg_or_default(cfg, "validation_concurrency", prompt_concurrency)
+    )
     max_retries = int(args.max_retries or get_cfg_or_default(cfg, "max_retries", 3))
     startup_jitter_seconds = float(
         args.startup_jitter_seconds
@@ -123,13 +133,23 @@ def execute_pipeline(
         dfg_data={},
     )
 
-    safe_limit = benchmark_for_limits.max_validation_concurrency()
-    if safe_limit is not None and max_concurrency > safe_limit:
+    safe_prompt_limit = benchmark_for_limits.max_prompt_concurrency()
+    if safe_prompt_limit is not None and prompt_concurrency > safe_prompt_limit:
         print(
-            f"Clamping max concurrency from {max_concurrency} to {safe_limit} for "
+            f"Clamping prompt concurrency from {prompt_concurrency} to {safe_prompt_limit} for "
+            f"{benchmark_display_name(paths.benchmark_id)} prompt safety."
+        )
+        prompt_concurrency = safe_prompt_limit
+
+    safe_validation_limit = benchmark_for_limits.max_validation_concurrency()
+    if safe_validation_limit is not None and validation_concurrency > safe_validation_limit:
+        print(
+            f"Clamping validation concurrency from {validation_concurrency} to {safe_validation_limit} for "
             f"{benchmark_display_name(paths.benchmark_id)} validation safety."
         )
-        max_concurrency = safe_limit
+        validation_concurrency = safe_validation_limit
+
+    validation_concurrency = max(1, min(validation_concurrency, prompt_concurrency))
 
     preflight_lines = build_preflight_lines(
         input_path=args.input_path,
@@ -149,7 +169,8 @@ def execute_pipeline(
         dfg_column=dfg_column,
         cfg_dataset_id=cfg_dataset_id,
         dfg_dataset_id=dfg_dataset_id,
-        max_concurrency=max_concurrency,
+        prompt_concurrency=prompt_concurrency,
+        validation_concurrency=validation_concurrency,
         paths=paths,
     )
 
@@ -202,7 +223,8 @@ def execute_pipeline(
         paths=paths,
         prompt_config=prompt_config,
         max_retries=max_retries,
-        max_concurrency=max_concurrency,
+        prompt_concurrency=prompt_concurrency,
+        validation_concurrency=validation_concurrency,
         model_name=model_name,
         run_label=args.run_label or (args.input_path.stem if args.input_path.is_file() else args.input_path.name),
         checkpoint_path=paths.logs_dir / f"checkpoint_{prompt_config}.json",

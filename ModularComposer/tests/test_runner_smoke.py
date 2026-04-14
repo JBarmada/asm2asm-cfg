@@ -266,22 +266,26 @@ class SmokeAndRunnerTests(unittest.TestCase):
                 input_mode="auto",
                 bootstrap_errors=None,
                 error_json=None,
+                source_isa=None,
                 prompt_config="cfg_only",
                 run_label="run0",
                 model=None,
                 max_concurrency=2,
+                prompt_concurrency=None,
+                validation_concurrency=None,
                 max_retries=1,
                 retry_base_seconds=None,
                 retry_jitter_seconds=None,
                 startup_jitter_seconds=0.0,
                 resume_checkpoint=None,
+                yes=False,
             )
             cfg = json.loads(config_path.read_text(encoding="utf-8"))
 
             with self.assertRaises(RuntimeError):
                 execute_pipeline(args, cfg, DummyProvider(), "dummy-model")
 
-    def test_bringup_concurrency_is_clamped_in_runner(self) -> None:
+    def test_bringup_concurrency_is_split_and_clamped_in_runner(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
             root = Path(tmp_dir)
             benchmark_root = root / "bringup-bench"
@@ -322,6 +326,7 @@ class SmokeAndRunnerTests(unittest.TestCase):
                 benchmark=None,
                 benchmark_root=None,
                 target_isa=None,
+                source_isa=None,
                 input_mode="auto",
                 bootstrap_errors=None,
                 error_json=None,
@@ -329,16 +334,22 @@ class SmokeAndRunnerTests(unittest.TestCase):
                 run_label="run0",
                 model=None,
                 max_concurrency=8,
+                prompt_concurrency=None,
+                validation_concurrency=None,
                 max_retries=1,
                 retry_base_seconds=None,
                 retry_jitter_seconds=None,
                 startup_jitter_seconds=0.0,
                 resume_checkpoint=None,
+                yes=False,
             )
             cfg = json.loads(config_path.read_text(encoding="utf-8"))
-            captured: dict[str, int] = {}
+            captured: dict[str, object] = {}
 
             class FakeBenchmark:
+                def max_prompt_concurrency(self):
+                    return None
+
                 def max_validation_concurrency(self) -> int:
                     return 1
 
@@ -354,8 +365,9 @@ class SmokeAndRunnerTests(unittest.TestCase):
                     return output_path
 
             class FakeEngine:
-                def __init__(self, *, max_concurrency: int, **kwargs):
-                    captured["max_concurrency"] = max_concurrency
+                def __init__(self, *, prompt_concurrency: int, validation_concurrency: int, **kwargs):
+                    captured["prompt_concurrency"] = prompt_concurrency
+                    captured["validation_concurrency"] = validation_concurrency
 
                 async def run(self, problems, resume_checkpoint=None):
                     return [], None
@@ -365,14 +377,229 @@ class SmokeAndRunnerTests(unittest.TestCase):
                     report_path.write_text("ok\n", encoding="utf-8")
                     return report_path
 
-            with mock.patch("composers.runner.prompt_auto_confirm", return_value=True), mock.patch(
+            def _capture_preflight(lines, auto_yes=False, timeout_seconds=60):
+                captured["preflight_lines"] = list(lines)
+                return True
+
+            with mock.patch("composers.runner.prompt_auto_confirm", side_effect=_capture_preflight), mock.patch(
                 "composers.runner.create_benchmark_adapter",
                 return_value=FakeBenchmark(),
             ), mock.patch("composers.runner.ComposerEngine", FakeEngine):
                 result = execute_pipeline(args, cfg, DummyProvider(), "dummy-model")
 
             self.assertEqual(result, 0)
-            self.assertEqual(captured["max_concurrency"], 1)
+            self.assertEqual(captured["prompt_concurrency"], 8)
+            self.assertEqual(captured["validation_concurrency"], 1)
+            self.assertIn("Prompt concurrency: 8", captured["preflight_lines"])
+            self.assertIn("Validation concurrency: 1", captured["preflight_lines"])
+
+    def test_humaneval_preflight_reports_split_concurrency(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root = Path(tmp_dir)
+            benchmark_root = root / "humaneval-c"
+            task_dir = benchmark_root / "problem1"
+            task_dir.mkdir(parents=True)
+            (task_dir / "code.c").write_text("int func0(void) { return 0; }\n", encoding="utf-8")
+            (task_dir / "test.c").write_text("int func0(void);\nint main(void) { return func0(); }\n", encoding="utf-8")
+            input_json = root / "results.json"
+            input_json.write_text(
+                json.dumps([{"file": "problem1", "pred": "ret", "success": 0, "error_stage": "execution"}]),
+                encoding="utf-8",
+            )
+            config_path = root / "config.json"
+            config_path.write_text(
+                json.dumps(
+                    {
+                        "benchmark": "humaneval",
+                        "benchmark_root": str(benchmark_root),
+                        "target_isa": "x86",
+                        "composer_prompt_config": "base",
+                        "prompt_concurrency": 50,
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            args = SimpleNamespace(
+                input_path=input_json,
+                config=config_path,
+                benchmark=None,
+                benchmark_root=None,
+                target_isa=None,
+                source_isa=None,
+                input_mode="auto",
+                bootstrap_errors=None,
+                error_json=None,
+                prompt_config="base",
+                run_label="run0",
+                model=None,
+                max_concurrency=None,
+                prompt_concurrency=None,
+                validation_concurrency=None,
+                max_retries=1,
+                retry_base_seconds=None,
+                retry_jitter_seconds=None,
+                startup_jitter_seconds=0.0,
+                resume_checkpoint=None,
+                yes=False,
+            )
+            cfg = json.loads(config_path.read_text(encoding="utf-8"))
+            captured: dict[str, object] = {}
+
+            class FakeBenchmark:
+                def max_prompt_concurrency(self):
+                    return None
+
+                def max_validation_concurrency(self):
+                    return None
+
+                def get_problem_specs(self, prompt_config: str):
+                    return []
+
+                def validate_all_outputs(self):
+                    return root / "final.json", 0, 0
+
+            class FakeEngine:
+                def __init__(self, *, prompt_concurrency: int, validation_concurrency: int, **kwargs):
+                    captured["prompt_concurrency"] = prompt_concurrency
+                    captured["validation_concurrency"] = validation_concurrency
+
+                async def run(self, problems, resume_checkpoint=None):
+                    return [], None
+
+                def write_reports(self, **kwargs):
+                    report_path = root / "report.txt"
+                    report_path.write_text("ok\n", encoding="utf-8")
+                    return report_path
+
+            def _capture_preflight(lines, auto_yes=False, timeout_seconds=60):
+                captured["preflight_lines"] = list(lines)
+                return True
+
+            with mock.patch("composers.runner.prompt_auto_confirm", side_effect=_capture_preflight), mock.patch(
+                "composers.runner.create_benchmark_adapter",
+                return_value=FakeBenchmark(),
+            ), mock.patch("composers.runner.ComposerEngine", FakeEngine):
+                result = execute_pipeline(args, cfg, DummyProvider(), "dummy-model")
+
+            self.assertEqual(result, 0)
+            self.assertEqual(captured["prompt_concurrency"], 50)
+            self.assertEqual(captured["validation_concurrency"], 50)
+            self.assertIn("Prompt concurrency: 50", captured["preflight_lines"])
+            self.assertIn("Validation concurrency: 50", captured["preflight_lines"])
+
+    def test_engine_allows_parallel_prompts_with_serial_validation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root = Path(tmp_dir)
+            benchmark_root = root / "bringup-bench"
+            benchmark_root.mkdir(parents=True)
+            asm_dir = root / "results" / "composer" / "run0" / "base" / "json_input_asm"
+            asm_dir.mkdir(parents=True, exist_ok=True)
+            error_json = root / "results.json"
+            error_json.write_text("[]", encoding="utf-8")
+            paths = make_paths(
+                root,
+                benchmark_id="bringup",
+                benchmark_root=benchmark_root,
+                asm_input_dir=asm_dir,
+                error_json_path=error_json,
+                input_mode="evaluated_json",
+            )
+            source_a = asm_dir / "ackermann.s"
+            source_b = asm_dir / "weekday.s"
+            source_a.write_text(".globl main\nmain:\n ret\n", encoding="utf-8")
+            source_b.write_text(".globl main\nmain:\n ret\n", encoding="utf-8")
+
+            problems = [
+                SimpleNamespace(
+                    name="ackermann",
+                    source_asm_path=source_a,
+                    source_asm_name=source_a.name,
+                    expected_symbols=("main",),
+                    prompt_constraints=(),
+                    artifact_kind="translation_unit",
+                    benchmark_id="bringup",
+                    cfg_text="",
+                    dfg_text="",
+                    summary="",
+                    stderr="",
+                ),
+                SimpleNamespace(
+                    name="weekday",
+                    source_asm_path=source_b,
+                    source_asm_name=source_b.name,
+                    expected_symbols=("main",),
+                    prompt_constraints=(),
+                    artifact_kind="translation_unit",
+                    benchmark_id="bringup",
+                    cfg_text="",
+                    dfg_text="",
+                    summary="",
+                    stderr="",
+                ),
+            ]
+
+            class TrackingProvider:
+                def __init__(self) -> None:
+                    self.inflight = 0
+                    self.max_inflight = 0
+
+                async def generate_repair(self, prompt: str, problem_name: str) -> str:
+                    self.inflight += 1
+                    self.max_inflight = max(self.max_inflight, self.inflight)
+                    await asyncio.sleep(0.05)
+                    self.inflight -= 1
+                    return ".globl main\nmain:\n ret\n"
+
+            class TrackingEvaluator:
+                def __init__(self) -> None:
+                    self.inflight = 0
+                    self.max_inflight = 0
+                    self.attempts: dict[str, list[int]] = {}
+
+                def validate(self, problem, candidate_asm: str, attempt: int):
+                    import time
+
+                    self.attempts.setdefault(problem.name, []).append(attempt)
+                    self.inflight += 1
+                    self.max_inflight = max(self.max_inflight, self.inflight)
+                    time.sleep(0.05)
+                    self.inflight -= 1
+                    passed = attempt >= 2
+                    from composers.utils import ValidationFeedback
+
+                    return ValidationFeedback(
+                        passed=passed,
+                        status="passed" if passed else "runtime_error",
+                        summary="PASS" if passed else "retry",
+                        stderr="",
+                        errors_count=0 if passed else 1,
+                        problems_processed=1,
+                        validator_returncode=0 if passed else 1,
+                    )
+
+            provider = TrackingProvider()
+            evaluator = TrackingEvaluator()
+            engine = ComposerEngine(
+                provider=provider,
+                evaluator=evaluator,
+                paths=paths,
+                prompt_config="base",
+                max_retries=2,
+                prompt_concurrency=2,
+                validation_concurrency=1,
+                model_name="dummy-model",
+                run_label="run0",
+                checkpoint_path=paths.logs_dir / "checkpoint_base.json",
+            )
+
+            results, error = asyncio.run(engine.run(problems))
+            self.assertIsNone(error)
+            self.assertEqual(provider.max_inflight, 2)
+            self.assertEqual(evaluator.max_inflight, 1)
+            self.assertEqual(evaluator.attempts["ackermann"], [1, 2])
+            self.assertEqual(evaluator.attempts["weekday"], [1, 2])
+            self.assertTrue(all(result.succeeded for result in results))
 
     def test_humaneval_wrapper_dispatches_to_unified_entrypoint(self) -> None:
         wrapper_path = Path(__file__).resolve().parents[1] / "humaneval_compose_gemini.py"
@@ -406,7 +633,8 @@ class SmokeAndRunnerTests(unittest.TestCase):
                 paths=paths,
                 prompt_config="base",
                 max_retries=1,
-                max_concurrency=1,
+                prompt_concurrency=1,
+                validation_concurrency=1,
                 model_name="dummy-model",
                 run_label="run0",
                 checkpoint_path=checkpoint_path,
@@ -424,7 +652,8 @@ class SmokeAndRunnerTests(unittest.TestCase):
                 paths=paths,
                 prompt_config="base",
                 max_retries=1,
-                max_concurrency=1,
+                prompt_concurrency=1,
+                validation_concurrency=1,
                 model_name="dummy-model",
                 run_label="run0",
                 checkpoint_path=checkpoint_path,

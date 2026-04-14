@@ -154,6 +154,7 @@ class BenchmarkAdapterTests(unittest.TestCase):
             specs = benchmark.get_problem_specs("base")
             self.assertEqual(specs[0].artifact_kind, "translation_unit")
             self.assertEqual(specs[0].expected_symbols, ("ack", "main"))
+            self.assertIsNone(benchmark.max_prompt_concurrency())
             self.assertEqual(benchmark.max_validation_concurrency(), 1)
 
 

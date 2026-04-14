@@ -39,7 +39,8 @@ class ComposerEngine:
         paths: ComposerRuntimePaths,
         prompt_config: str,
         max_retries: int,
-        max_concurrency: int,
+        prompt_concurrency: int,
+        validation_concurrency: int,
         model_name: str,
         run_label: str,
         checkpoint_path: Path,
@@ -50,7 +51,8 @@ class ComposerEngine:
         self.paths = paths
         self.prompt_config = prompt_config
         self.max_retries = max_retries
-        self.max_concurrency = max_concurrency
+        self.prompt_concurrency = max(1, prompt_concurrency)
+        self.validation_concurrency = max(1, validation_concurrency)
         self.model_name = model_name
         self.run_label = run_label
         self.checkpoint_path = checkpoint_path
@@ -60,6 +62,8 @@ class ComposerEngine:
         self._progress_lock = asyncio.Lock()
         self._results: list[ProblemResult] = []
         self._progress = {"done": 0, "total": 0}
+        self._prompt_semaphore = asyncio.Semaphore(self.prompt_concurrency)
+        self._validation_semaphore = asyncio.Semaphore(self.validation_concurrency)
 
     async def run(self, problems: list[ProblemSpec], resume_checkpoint: Path | None = None) -> tuple[list[ProblemResult], Exception | None]:
         _log(
@@ -95,7 +99,7 @@ class ComposerEngine:
 
         stop_event = asyncio.Event()
         progress_task = asyncio.create_task(self._periodic_progress_updates(stop_event))
-        worker_count = max(1, min(self.max_concurrency, len(pending) if pending else 1))
+        worker_count = max(1, min(self.prompt_concurrency, len(pending) if pending else 1))
         tasks = [asyncio.create_task(self._worker(queue, stop_event)) for _ in range(worker_count)]
 
         error: Exception | None = None
@@ -194,7 +198,8 @@ class ComposerEngine:
             await asyncio.to_thread(_write_text, prompt_path, prompt)
 
             _log(f"{problem.name}: requesting model output for attempt {attempt}")
-            raw_output = await self.provider.generate_repair(prompt, problem.name)
+            async with self._prompt_semaphore:
+                raw_output = await self.provider.generate_repair(prompt, problem.name)
             raw_path = self.paths.raw_output_dir / f"{problem.name}_attempt{attempt}.txt"
             await asyncio.to_thread(_write_text, raw_path, raw_output)
 
@@ -206,12 +211,13 @@ class ComposerEngine:
             await asyncio.to_thread(_write_text, fixed_asm_path, cleaned)
 
             _log(f"{problem.name}: validating attempt {attempt}")
-            feedback = await asyncio.to_thread(
-                self.evaluator.validate,
-                problem,
-                cleaned,
-                attempt,
-            )
+            async with self._validation_semaphore:
+                feedback = await asyncio.to_thread(
+                    self.evaluator.validate,
+                    problem,
+                    cleaned,
+                    attempt,
+                )
 
             note = feedback.summary or feedback.status
             if feedback.stderr:

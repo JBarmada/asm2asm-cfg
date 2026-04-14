@@ -52,6 +52,9 @@ class BringUpBenchmark(BenchmarkAdapter):
     def max_validation_concurrency(self) -> int | None:
         return 1
 
+    def max_prompt_concurrency(self) -> int | None:
+        return None
+
     def bootstrap_error_json(self, asm_dir: Path, output_path: Path) -> Path:
         results = self._evaluate_asm_dir(
             asm_dir=asm_dir,

@@ -29,5 +29,8 @@ class BenchmarkAdapter(abc.ABC):
     def prompt_constraints(self, problem: ProblemSpec) -> tuple[str, ...]:
         return problem.prompt_constraints
 
+    def max_prompt_concurrency(self) -> int | None:
+        return None
+
     def max_validation_concurrency(self) -> int | None:
         return None
