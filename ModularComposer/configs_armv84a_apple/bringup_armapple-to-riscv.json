@@ -1,0 +1,42 @@
+{
+  "benchmark": "bringup",
+  "benchmark_root": "../../cpu-transpiler-inference/benchmarks/bringup-bench",
+  "composer_prompt_config": "base",
+  "composer_model": "gemini-3-flash-preview",
+  "max_workers": 5,
+  "max_retries": 3,
+  "retry_base_seconds": 2.0,
+  "retry_jitter_seconds": 1.0,
+  "startup_jitter_seconds": 2.0,
+  "bootstrap_errors": true,
+  "source_isa": "armv8.4a-apple",
+  "target_isa": "riscv",
+  "source_dataset_column": "aarch64_apple",
+  "cfg_dataset_column": "aarch64_apple",
+  "dfg_dataset_column": "aarch64_apple",
+  "graph_split": "O2",
+  "clang": "clang-17",
+  "compile_flags": [
+    "-O2",
+    "-target",
+    "riscv64-linux-gnu",
+    "-march=rv64gc",
+    "-mabi=lp64d"
+  ],
+  "link_flags": [
+    "-O2",
+    "-target",
+    "riscv64-linux-gnu",
+    "-march=rv64gc",
+    "-mabi=lp64d",
+    "-static",
+    "--ld-path=riscv64-linux-gnu-ld",
+    "-lm"
+  ],
+  "qemu": "qemu-riscv64 -R 4G -L /usr/riscv64-linux-gnu",
+  "use_qemu": true,
+  "timeout_seconds": 120,
+  "make_target": "host",
+  "bringup_timeout_seconds": 120,
+  "graph_source": "hf"
+}

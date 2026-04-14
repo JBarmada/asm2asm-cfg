@@ -1,0 +1,36 @@
+{
+  "benchmark": "mceval",
+  "benchmark_root": "../../cpu-transpiler-inference/benchmarks/mceval-c",
+  "composer_prompt_config": "base",
+  "composer_model": "gemini-3-flash-preview",
+  "max_workers": 5,
+  "max_retries": 3,
+  "retry_base_seconds": 2.0,
+  "retry_jitter_seconds": 1.0,
+  "startup_jitter_seconds": 2.0,
+  "bootstrap_errors": true,
+  "source_isa": "armv8.4a-apple",
+  "target_isa": "x86",
+  "source_dataset_column": "aarch64_apple",
+  "cfg_dataset_column": "aarch64_apple",
+  "dfg_dataset_column": "aarch64_apple",
+  "graph_split": "O2",
+  "clang": "clang-17",
+  "compile_flags": [
+    "-O2",
+    "-target",
+    "x86_64-unknown-linux-gnu",
+    "-masm=intel"
+  ],
+  "link_flags": [
+    "-O2",
+    "-target",
+    "x86_64-unknown-linux-gnu",
+    "-lm"
+  ],
+  "qemu": null,
+  "use_qemu": false,
+  "timeout_seconds": 30,
+  "standard_timeout_seconds": 30,
+  "graph_source": "hf"
+}

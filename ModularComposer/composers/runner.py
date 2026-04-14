@@ -218,6 +218,17 @@ def execute_pipeline(
 
     print(f"Report written: {report_path}")
     print(f"Final validation errors: {final_error_count}/{total_problems}")
+    usage_getter = getattr(provider, "get_usage_summary", None)
+    usage_summary = usage_getter() if callable(usage_getter) else None
+    if usage_summary is not None:
+        print(
+            "Provider usage "
+            f"({usage_summary.provider_name}): "
+            f"requests={usage_summary.successful_requests}, "
+            f"prompt_tokens={usage_summary.prompt_token_count}, "
+            f"response_tokens={usage_summary.response_token_count}, "
+            f"total_tokens={usage_summary.total_token_count}"
+        )
     return 0
 
 

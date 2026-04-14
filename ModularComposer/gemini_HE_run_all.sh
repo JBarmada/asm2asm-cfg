@@ -191,6 +191,7 @@ for file in "${FILES[@]}"; do
 
   for cfg in "${CONFIGS[@]}"; do
     ensure_output_tree "$composer_run_label" "$cfg"
+    checkpoint_path="${RESULTS_ROOT}/${composer_run_label}/${cfg}/logs/checkpoint_${cfg}.json"
 
     # Only pass run_label and cfg, drop the config path!
     if has_txt_report "$composer_run_label" "$cfg"; then
@@ -198,11 +199,21 @@ for file in "${FILES[@]}"; do
       continue
     fi
 
-    python3 compose_gemini.py "$input_json" \
-      --config "$config" \
-      --max-concurrency 5 \
-      --run-label "$composer_run_label" \
+    cmd=(
+      python3 compose_gemini.py "$input_json"
+      --config "$config"
+      --max-concurrency 5
+      --run-label "$composer_run_label"
       --prompt-config "$cfg"
+    )
 
+    if [[ -f "$checkpoint_path" ]]; then
+      echo "Resuming from checkpoint: $checkpoint_path"
+      cmd+=(--resume-checkpoint "$checkpoint_path")
+    else
+      echo "Starting fresh run for ${composer_run_label}/${cfg}"
+    fi
+
+    "${cmd[@]}"
   done
 done

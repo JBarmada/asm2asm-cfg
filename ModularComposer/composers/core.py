@@ -2,13 +2,19 @@ from __future__ import annotations
 
 import asyncio
 import json
-import shutil
 import random
+import shutil
 from datetime import datetime
 from pathlib import Path
 
 from .evaluators import BaseEvaluator
-from .providers import FatalProviderError, ModelProvider, QuotaExhaustedError
+from .providers import (
+    FatalProviderError,
+    ModelProvider,
+    ProviderUsageSummary,
+    QuotaExhaustedError,
+    provider_usage_summary_to_dict,
+)
 from .utils import (
     ComposerRuntimePaths,
     ProblemResult,
@@ -68,6 +74,10 @@ class ComposerEngine:
             previous = resumed.get("results", [])
             if isinstance(previous, list):
                 self._results = [problem_result_from_dict(item) for item in previous if isinstance(item, dict)]
+            usage_loader = getattr(self.provider, "load_usage_summary", None)
+            usage_payload = resumed.get("provider_usage")
+            if callable(usage_loader) and isinstance(usage_payload, dict):
+                usage_loader(usage_payload)
             _log(f"Checkpoint restored with {len(self._results)} completed problems.")
 
         completed_names = {item.name for item in self._results}
@@ -271,6 +281,10 @@ class ComposerEngine:
             "model_name": self.model_name,
             "results": [problem_result_to_dict(item) for item in sorted(self._results, key=lambda r: r.name)],
         }
+        usage_getter = getattr(self.provider, "get_usage_summary", None)
+        usage_summary = usage_getter() if callable(usage_getter) else None
+        if usage_summary is not None:
+            payload["provider_usage"] = provider_usage_summary_to_dict(usage_summary)
         save_checkpoint(self.checkpoint_path, payload)
 
     def write_reports(
@@ -303,9 +317,19 @@ class ComposerEngine:
             f"Composer failed: {fail_count}",
             f"Global Total Overall problems successfully passed: {overall_successful}/{total_problems} ({success_rate:.1f}%)",
             f"Final validation JSON: {final_validation_path}",
-            "",
-            "Failed problems (Post-Composer):",
         ]
+
+        usage_getter = getattr(self.provider, "get_usage_summary", None)
+        usage_summary = usage_getter() if callable(usage_getter) else None
+        if usage_summary is not None:
+            lines.extend(self._usage_report_lines(usage_summary))
+
+        lines.extend(
+            [
+                "",
+                "Failed problems (Post-Composer):",
+            ]
+        )
 
         for result in sorted(results, key=lambda item: item.name):
             if not result.succeeded:
@@ -316,6 +340,17 @@ class ComposerEngine:
         report_path = self.paths.reports_dir / f"{finished_at.strftime('%Y%m%d_%H%M%S')}_report.txt"
         _write_text(report_path, "\n".join(lines) + "\n")
         return report_path
+
+    def _usage_report_lines(self, usage_summary: ProviderUsageSummary) -> list[str]:
+        return [
+            "",
+            f"Provider usage ({usage_summary.provider_name}):",
+            f"- Successful model requests: {usage_summary.successful_requests}",
+            f"- Requests with usage metadata: {usage_summary.usage_metadata_requests}",
+            f"- Prompt tokens: {usage_summary.prompt_token_count}",
+            f"- Response tokens: {usage_summary.response_token_count}",
+            f"- Total tokens: {usage_summary.total_token_count}",
+        ]
 
     def _prepare_run_directories(self, resume_enabled: bool) -> None:
         managed_dirs = [

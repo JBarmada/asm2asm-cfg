@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import json
 import runpy
 import sys
@@ -15,6 +16,8 @@ import compose_gemini
 from composers.benchmarks.bringup import BringUpBenchmark
 from composers.benchmarks.common import CommandResult
 from composers.benchmarks.standard_c import StandardCBenchmark
+from composers.core import ComposerEngine
+from composers.providers.base import ProviderUsageSummary
 from composers.runner import execute_pipeline
 from composers.utils import ComposerRuntimePaths
 
@@ -22,6 +25,31 @@ from composers.utils import ComposerRuntimePaths
 class DummyProvider:
     async def generate_repair(self, prompt: str, problem_name: str) -> str:
         return ".globl func0\nfunc0:\n ret\n"
+
+
+class DummyUsageProvider(DummyProvider):
+    def __init__(self) -> None:
+        self.summary = ProviderUsageSummary(
+            provider_name="gemini",
+            successful_requests=3,
+            prompt_token_count=300,
+            response_token_count=75,
+            total_token_count=375,
+            usage_metadata_requests=3,
+        )
+
+    def get_usage_summary(self):
+        return ProviderUsageSummary(**self.summary.__dict__)
+
+    def load_usage_summary(self, payload: dict[str, object]) -> None:
+        self.summary = ProviderUsageSummary(
+            provider_name=str(payload.get("provider_name", "gemini")),
+            successful_requests=int(payload.get("successful_requests", 0)),
+            prompt_token_count=int(payload.get("prompt_token_count", 0)),
+            response_token_count=int(payload.get("response_token_count", 0)),
+            total_token_count=int(payload.get("total_token_count", 0)),
+            usage_metadata_requests=int(payload.get("usage_metadata_requests", 0)),
+        )
 
 
 def make_paths(
@@ -352,6 +380,61 @@ class SmokeAndRunnerTests(unittest.TestCase):
             with self.assertRaises(SystemExit) as ctx:
                 runpy.run_path(str(wrapper_path), run_name="__main__")
         self.assertEqual(ctx.exception.code, 7)
+
+    def test_checkpoint_persists_and_restores_provider_usage(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root = Path(tmp_dir)
+            benchmark_root = root / "humaneval-c"
+            benchmark_root.mkdir(parents=True)
+            asm_dir = root / "results" / "composer" / "run0" / "base" / "json_input_asm"
+            error_json = root / "results.json"
+            error_json.write_text("[]", encoding="utf-8")
+            paths = make_paths(
+                root,
+                benchmark_id="humaneval",
+                benchmark_root=benchmark_root,
+                asm_input_dir=asm_dir,
+                error_json_path=error_json,
+                input_mode="evaluated_json",
+            )
+
+            provider = DummyUsageProvider()
+            checkpoint_path = paths.logs_dir / "checkpoint_base.json"
+            engine = ComposerEngine(
+                provider=provider,
+                evaluator=mock.Mock(),
+                paths=paths,
+                prompt_config="base",
+                max_retries=1,
+                max_concurrency=1,
+                model_name="dummy-model",
+                run_label="run0",
+                checkpoint_path=checkpoint_path,
+            )
+
+            engine._save_checkpoint(status="running")
+            payload = json.loads(checkpoint_path.read_text(encoding="utf-8"))
+            self.assertEqual(payload["provider_usage"]["total_token_count"], 375)
+
+            restored_provider = DummyUsageProvider()
+            restored_provider.summary = ProviderUsageSummary(provider_name="gemini")
+            restored_engine = ComposerEngine(
+                provider=restored_provider,
+                evaluator=mock.Mock(),
+                paths=paths,
+                prompt_config="base",
+                max_retries=1,
+                max_concurrency=1,
+                model_name="dummy-model",
+                run_label="run0",
+                checkpoint_path=checkpoint_path,
+            )
+
+            results, error = asyncio.run(restored_engine.run([], resume_checkpoint=checkpoint_path))
+            self.assertIsNone(error)
+            self.assertEqual(results, [])
+            self.assertEqual(restored_provider.summary.total_token_count, 375)
+            self.assertEqual(restored_provider.summary.prompt_token_count, 300)
 
 
 if __name__ == "__main__":
