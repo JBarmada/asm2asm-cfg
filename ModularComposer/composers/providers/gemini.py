@@ -3,19 +3,16 @@ from __future__ import annotations
 import asyncio
 import random
 import re
-from typing import Any
 
 from ..utils import _log, resolve_env_api_key
 from .base import FatalProviderError, ModelProvider, QuotaExhaustedError
 
 try:
     from google import genai
-    from google.genai import errors as genai_errors
 
     HAS_GENAI = True
 except ImportError:
     HAS_GENAI = False
-    genai_errors = None
 
 
 class GeminiProvider(ModelProvider):
@@ -178,7 +175,6 @@ def _is_quota_exhausted_error(error: Exception | str) -> bool:
     if any(marker in lowered for marker in quota_markers):
         return True
 
-    lowered = error_text.lower()
     return (
         code == 429
         and status == "resource_exhausted"
