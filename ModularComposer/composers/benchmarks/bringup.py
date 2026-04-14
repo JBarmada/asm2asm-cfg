@@ -300,7 +300,8 @@ class BringUpBenchmark(BenchmarkAdapter):
         compiler_cmd = self._compiler_command()
         runner_cmd = self._runner_command()
         target_libs = " ".join(str(item) for item in self.cfg.get("link_flags", []))
-        cflags = self._cflags()
+        opt_cflags = self._opt_cflags()
+        local_cflags = self._local_cflags()
 
         assignments = [
             f"TARGET={make_target}",
@@ -308,8 +309,10 @@ class BringUpBenchmark(BenchmarkAdapter):
             f"CC={compiler_cmd}",
             f"TARGET_SIM={runner_cmd}",
             f"TARGET_LIBS={target_libs}",
-            f"CFLAGS={cflags}",
+            f"OPT_CFLAGS={opt_cflags}",
         ]
+        if local_cflags:
+            assignments.append(f"LOCAL_CFLAGS={local_cflags}")
 
         return [
             ["make", *assignments, "clean"],
@@ -324,12 +327,12 @@ class BringUpBenchmark(BenchmarkAdapter):
         compiler_parts = clang_parts + [flag for flag in compile_flags if flag not in opt_flags]
         return " ".join(compiler_parts)
 
-    def _cflags(self) -> str:
+    def _opt_cflags(self) -> str:
         compile_flags = [str(item) for item in self.cfg.get("compile_flags", [])]
-        opt_flag = next((flag for flag in compile_flags if flag.startswith("-O")), f"-{self.cfg.get('opt_level', 'O2')}")
-        extra = str(self.cfg.get("bringup_extra_cflags", "")).strip()
-        base = f"-Wall {opt_flag} -Wno-strict-aliasing -DTARGET_HOST -I../common -I../target"
-        return f"{base} {extra}".strip()
+        return next((flag for flag in compile_flags if flag.startswith("-O")), f"-{self.cfg.get('opt_level', 'O2')}")
+
+    def _local_cflags(self) -> str:
+        return str(self.cfg.get("bringup_extra_cflags", "")).strip()
 
     def _runner_command(self) -> str:
         if not bool(self.cfg.get("use_qemu", True)):
