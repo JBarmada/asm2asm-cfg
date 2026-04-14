@@ -6,11 +6,14 @@ from pathlib import Path
 from .utils import ComposerRuntimePaths
 
 
-def prompt_auto_confirm(lines: list[str], timeout_seconds: int = 60) -> bool:
+def prompt_auto_confirm(lines: list[str], timeout_seconds: int = 60, auto_yes: bool = False) -> bool:
     print("Preflight summary:")
     for line in lines:
         print(line)
     print("")
+    if auto_yes:
+        print("Auto-confirm enabled via --yes. Proceeding without prompt.")
+        return True
     print(f"Continue? Press Enter/Y to proceed. Auto-continues in {timeout_seconds}s.")
 
     response: list[str] = []

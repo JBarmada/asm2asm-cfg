@@ -11,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from unittest import mock
 
-from composers.utils import normalize_isa, resolve_runtime_paths
+from composers.utils import apply_default_toolchain, normalize_isa, resolve_runtime_paths
 
 
 class RuntimePathTests(unittest.TestCase):
@@ -163,6 +163,46 @@ class RuntimePathTests(unittest.TestCase):
                 paths = resolve_runtime_paths(args, cfg)
 
             self.assertEqual(paths.benchmark_root, benchmark_root.resolve())
+
+    def test_source_isa_override_and_default_toolchain(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root = Path(tmp_dir)
+            config_path = root / "config.json"
+            input_json = root / "results.json"
+            benchmark_root = root / "humaneval-c"
+            (benchmark_root / "problem1").mkdir(parents=True)
+            config_path.write_text(
+                json.dumps(
+                    {
+                        "benchmark": "humaneval",
+                        "benchmark_root": str(benchmark_root),
+                        "target_isa": "riscv",
+                    }
+                ),
+                encoding="utf-8",
+            )
+            input_json.write_text("[]", encoding="utf-8")
+
+            args = SimpleNamespace(
+                input_path=input_json,
+                config=config_path,
+                benchmark=None,
+                benchmark_root=None,
+                target_isa=None,
+                source_isa="armv8.4a",
+                input_mode="auto",
+                bootstrap_errors=None,
+                error_json=None,
+                run_label="run0",
+                prompt_config="base",
+            )
+            cfg = json.loads(config_path.read_text(encoding="utf-8"))
+            paths = resolve_runtime_paths(args, cfg)
+            resolved_cfg = apply_default_toolchain(cfg, paths.target_isa)
+
+            self.assertEqual(paths.source_isa, "armv8.4a-apple")
+            self.assertIn("riscv64-linux-gnu", " ".join(resolved_cfg["compile_flags"]))
+            self.assertTrue(resolved_cfg["use_qemu"])
 
 
 if __name__ == "__main__":

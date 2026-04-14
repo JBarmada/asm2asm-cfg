@@ -11,6 +11,7 @@ from .preflight import build_preflight_lines, prompt_auto_confirm
 from .providers.base import ModelProvider
 from .utils import (
     PROMPT_CONFIGS,
+    apply_default_toolchain,
     benchmark_display_name,
     default_graph_dataset_id,
     isa_dataset_column,
@@ -32,6 +33,11 @@ def parse_shared_args(description: str) -> argparse.Namespace:
         choices=["x86", "armv8-linux", "armv8.4a-apple", "riscv", "arm_linux", "arm_apple", "armv8", "armv8.4a"],
         help="Target ISA override",
     )
+    parser.add_argument(
+        "--source-isa",
+        choices=["x86", "armv8-linux", "armv8.4a-apple", "riscv", "arm_linux", "arm_apple", "armv8", "armv8.4a"],
+        help="Source ISA override",
+    )
     parser.add_argument("--input-mode", choices=["auto", "evaluated_json", "asm_dir"], default="auto", help="Input mode override")
     parser.add_argument(
         "--bootstrap-errors",
@@ -49,6 +55,7 @@ def parse_shared_args(description: str) -> argparse.Namespace:
     parser.add_argument("--retry-jitter-seconds", type=float, help="Extra random retry delay")
     parser.add_argument("--startup-jitter-seconds", type=float, help="Random initial worker delay")
     parser.add_argument("--resume-checkpoint", type=Path, help="Resume from checkpoint path")
+    parser.add_argument("--yes", action="store_true", help="Skip interactive preflight confirmation")
     return parser.parse_args()
 
 
@@ -86,8 +93,11 @@ def execute_pipeline(
         cfg["benchmark"] = normalize_benchmark_id(args.benchmark)
     if args.target_isa:
         cfg["target_isa"] = normalize_isa(args.target_isa)
+    if getattr(args, "source_isa", None):
+        cfg["source_isa"] = normalize_isa(args.source_isa)
 
     paths = resolve_runtime_paths(args, cfg)
+    cfg = apply_default_toolchain(cfg, paths.target_isa)
 
     max_concurrency = int(args.max_concurrency or get_cfg_or_default(cfg, "max_workers", 8))
     max_retries = int(args.max_retries or get_cfg_or_default(cfg, "max_retries", 3))
@@ -126,7 +136,7 @@ def execute_pipeline(
         paths=paths,
     )
 
-    if not prompt_auto_confirm(preflight_lines):
+    if not prompt_auto_confirm(preflight_lines, auto_yes=bool(getattr(args, "yes", False))):
         print("Run cancelled by user.")
         return 1
 

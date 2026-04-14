@@ -1,0 +1,12 @@
+{
+  "model_name": "qwen2.5-1.5b",
+  "composer_model": "gemini-3-flash-preview",
+  "composer_prompt_config": "base",
+  "max_workers": 4,
+  "max_retries": 3,
+  "retry_base_seconds": 2.0,
+  "retry_jitter_seconds": 1.0,
+  "startup_jitter_seconds": 1.0,
+  "bootstrap_errors": true,
+  "graph_split": "O2"
+}

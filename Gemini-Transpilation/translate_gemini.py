@@ -5,6 +5,7 @@ import asyncio
 import json
 import random
 import re
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -29,16 +30,22 @@ from transpilation_runtime import (
 )
 
 try:
-    import openai
-    from openai import AsyncOpenAI
+    from google import genai
 
-    HAS_OPENAI = True
+    HAS_GENAI = True
 except ImportError:
-    HAS_OPENAI = False
+    HAS_GENAI = False
+
+
+@dataclass
+class GeminiErrorSummary:
+    code: int | None
+    status: str
+    message: str
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Translate benchmark ASM with ChatGPT and optionally evaluate it.")
+    parser = argparse.ArgumentParser(description="Translate benchmark ASM with Gemini and optionally evaluate it.")
     parser.add_argument("--config", type=Path, required=True, help="Path to config JSON.")
     parser.add_argument("--benchmark", required=True, choices=["humaneval", "bringup", "mceval"], help="Benchmark id.")
     parser.add_argument("--source-isa", required=True, help="Canonical or legacy source ISA.")
@@ -56,11 +63,60 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def _resolve_env_api_key() -> str:
+    for env_name in ("GOOGLE_API_KEY", "GEMINI_API_KEY"):
+        raw = __import__("os").environ.get(env_name)
+        if raw and raw.strip():
+            return raw.strip().strip("\"'")
+    raise RuntimeError("Missing Gemini API key. Set GOOGLE_API_KEY or GEMINI_API_KEY.")
+
+
+def _model_tag(cfg: dict[str, Any], config_path: Path) -> str:
+    explicit = str(cfg.get("model_tag") or "").strip()
+    if explicit:
+        return explicit
+    model_name = str(cfg.get("model_name", config_path.stem))
+    return re.sub(r"[^A-Za-z0-9._-]+", "-", model_name).strip("-")
+
+
 def _output_root(args: argparse.Namespace, cfg: dict[str, Any], benchmark_id: str, source_isa: str, target_isa: str) -> Path:
-    if args.run_label:
-        return args.results_root.resolve() / args.run_label
-    model_tag = str(cfg.get("model_tag") or re.sub(r"[^A-Za-z0-9._-]+", "-", str(cfg.get("model_name", "gpt-5-mini"))).strip("-"))
-    return args.results_root.resolve() / benchmark_id / model_tag / f"{source_isa}-to-{target_isa}" / args.opt_level
+    run_label = args.run_label
+    if run_label:
+        return args.results_root.resolve() / run_label
+    return (
+        args.results_root.resolve()
+        / benchmark_id
+        / _model_tag(cfg, args.config)
+        / f"{source_isa}-to-{target_isa}"
+        / args.opt_level
+    )
+
+
+def _print_preflight(
+    *,
+    config_path: Path,
+    benchmark_id: str,
+    benchmark_root: Path,
+    dataset_id: str,
+    source_isa: str,
+    target_isa: str,
+    output_root: Path,
+    unsupported_reason: str | None,
+    cfg: dict[str, Any],
+) -> None:
+    print("Preflight summary:")
+    print(f"Config: {config_path.resolve()}")
+    print(f"Benchmark: {benchmark_display_name(benchmark_id)}")
+    print(f"Benchmark root: {benchmark_root.resolve()}")
+    print(f"Dataset: {dataset_id}")
+    print(f"HF split: {cfg.get('opt_level', 'O2')}")
+    print(f"Source ISA: {isa_display_name(source_isa)} ({isa_dataset_column(source_isa)})")
+    print(f"Target ISA: {isa_display_name(target_isa)}")
+    print(f"Model: {cfg.get('model_name', 'gemini-3-flash-preview')}")
+    print(f"Action: {cfg.get('action', 'compile_and_run')}")
+    print(f"Output root: {output_root}")
+    if unsupported_reason:
+        print(f"Skip reason: {unsupported_reason}")
 
 
 def _confirm_or_exit(yes: bool) -> None:
@@ -71,8 +127,32 @@ def _confirm_or_exit(yes: bool) -> None:
         raise SystemExit(0)
 
 
+def _exception_summary(error: Exception) -> GeminiErrorSummary:
+    code = getattr(error, "code", None)
+    status = str(getattr(error, "status", "") or "")
+    message = str(getattr(error, "message", "") or str(error))
+    if code is None:
+        match = re.search(r"'code':\s*(\d+)", message)
+        if match:
+            code = int(match.group(1))
+    if not status:
+        match = re.search(r"'status':\s*'([^']+)'", message)
+        if match:
+            status = match.group(1)
+    return GeminiErrorSummary(code=code if isinstance(code, int) else None, status=status, message=message)
+
+
+def _is_quota_error(summary: GeminiErrorSummary) -> bool:
+    lowered = summary.message.lower()
+    return (
+        "prepayment credits are depleted" in lowered
+        or "billing" in lowered
+        or ("quota" in lowered and summary.code == 429)
+    )
+
+
 async def _generate_one(
-    client: AsyncOpenAI,
+    client: Any,
     *,
     model_name: str,
     prompt: str,
@@ -83,23 +163,26 @@ async def _generate_one(
     last_error: Exception | None = None
     for attempt in range(1, max_retries + 1):
         try:
-            response = await client.responses.create(model=model_name, input=prompt, timeout=120)
-            text = getattr(response, "output_text", None)
+            response = await asyncio.to_thread(client.models.generate_content, model=model_name, contents=prompt)
+            text = getattr(response, "text", None)
             if not text:
-                raise RuntimeError(f"OpenAI returned empty text for {task_name}")
+                raise RuntimeError(f"Gemini returned empty text for {task_name}")
             return text
         except Exception as exc:
+            summary = _exception_summary(exc)
+            if _is_quota_error(summary):
+                raise RuntimeError(f"Gemini quota exhausted: {summary.message}") from exc
             last_error = exc
-            lowered = str(exc).lower()
-            if "insufficient_quota" in lowered:
-                raise RuntimeError(f"OpenAI quota exhausted: {exc}") from exc
             if attempt == max_retries:
                 break
             delay = retry_base_seconds * (2 ** (attempt - 1)) + random.uniform(0.0, 0.5)
-            print(f"[{datetime.now().strftime('%H:%M:%S')}] {task_name}: attempt {attempt}/{max_retries} failed ({exc}); retrying after {delay:.2f}s")
+            print(
+                f"[{datetime.now().strftime('%H:%M:%S')}] {task_name}: attempt {attempt}/{max_retries} failed "
+                f"({summary.code or ''} {summary.status} {summary.message}); retrying after {delay:.2f}s"
+            )
             await asyncio.sleep(delay)
     if last_error is None:
-        raise RuntimeError(f"OpenAI failed without an exception for {task_name}")
+        raise RuntimeError(f"Gemini failed without an exception for {task_name}")
     raise last_error
 
 
@@ -110,15 +193,12 @@ async def _translate_all(
     dirs: dict[str, Path],
     resume: bool,
 ) -> list[dict[str, str]]:
-    if not HAS_OPENAI:
-        raise RuntimeError("openai is not installed. Install with: pip install openai")
-    api_key = __import__("os").environ.get("OPENAI_API_KEY", "").strip()
-    if not api_key:
-        raise RuntimeError("Missing OPENAI_API_KEY.")
+    if not HAS_GENAI:
+        raise RuntimeError("google-genai is not installed. Install with: pip install google-genai")
 
-    client = AsyncOpenAI(api_key=api_key)
+    client = genai.Client(api_key=_resolve_env_api_key())
     semaphore = asyncio.Semaphore(int(cfg.get("max_workers", 4)))
-    model_name = str(cfg.get("model_name", "gpt-5-mini-2025-08-07"))
+    model_name = str(cfg.get("model_name", "gemini-3-flash-preview"))
     prompt_template = str(
         cfg.get(
             "prompt_template",
@@ -127,6 +207,7 @@ async def _translate_all(
     )
     max_retries = int(cfg.get("max_retries", 3))
     retry_base_seconds = float(cfg.get("retry_base_seconds", 2.0))
+    translated: list[dict[str, str]] = []
     translated_map: dict[str, dict[str, str]] = {}
 
     async def _work(record: dict[str, str]) -> None:
@@ -135,12 +216,14 @@ async def _translate_all(
         if resume and target_path.exists():
             translated_map[task_name] = {"task_name": task_name, "pred": target_path.read_text(encoding="utf-8")}
             return
+
         prompt = prompt_template.format(
             source_isa=cfg["source_isa"],
             target_isa=cfg["target_isa"],
             source_code=record["source_asm"],
         )
         (dirs["prompts"] / f"{task_name}.txt").write_text(prompt, encoding="utf-8")
+
         async with semaphore:
             raw = await _generate_one(
                 client,
@@ -156,12 +239,9 @@ async def _translate_all(
         translated_map[task_name] = {"task_name": task_name, "pred": cleaned}
 
     await asyncio.gather(*[_work(record) for record in records])
-    close_fn = getattr(client, "close", None)
-    if callable(close_fn):
-        maybe_coro = close_fn()
-        if asyncio.iscoroutine(maybe_coro):
-            await maybe_coro
-    return [translated_map[record["task_name"]] for record in records]
+    for record in records:
+        translated.append(translated_map[record["task_name"]])
+    return translated
 
 
 def main() -> int:
@@ -170,6 +250,7 @@ def main() -> int:
     benchmark_id = normalize_benchmark_id(args.benchmark)
     source_isa = normalize_isa(args.source_isa)
     target_isa = normalize_isa(args.target_isa)
+
     cfg["benchmark"] = benchmark_id
     cfg["source_isa"] = source_isa
     cfg["target_isa"] = target_isa
@@ -187,19 +268,17 @@ def main() -> int:
     dirs = build_output_dirs(output_root)
     unsupported_reason = detect_unsupported_target(target_isa) if cfg.get("action", "compile_and_run") == "compile_and_run" else None
 
-    print("Preflight summary:")
-    print(f"Config: {args.config.resolve()}")
-    print(f"Benchmark: {benchmark_display_name(benchmark_id)}")
-    print(f"Benchmark root: {benchmark_root.resolve()}")
-    print(f"Dataset: {dataset_id}")
-    print(f"HF split: {cfg.get('opt_level', 'O2')}")
-    print(f"Source ISA: {isa_display_name(source_isa)} ({isa_dataset_column(source_isa)})")
-    print(f"Target ISA: {isa_display_name(target_isa)}")
-    print(f"Model: {cfg.get('model_name', 'gpt-5-mini-2025-08-07')}")
-    print(f"Action: {cfg.get('action', 'compile_and_run')}")
-    print(f"Output root: {output_root}")
-    if unsupported_reason:
-        print(f"Skip reason: {unsupported_reason}")
+    _print_preflight(
+        config_path=args.config,
+        benchmark_id=benchmark_id,
+        benchmark_root=benchmark_root,
+        dataset_id=dataset_id,
+        source_isa=source_isa,
+        target_isa=target_isa,
+        output_root=output_root,
+        unsupported_reason=unsupported_reason,
+        cfg=cfg,
+    )
     _confirm_or_exit(args.yes)
 
     if unsupported_reason:
@@ -249,7 +328,7 @@ def main() -> int:
             benchmark_id=benchmark_id,
             source_isa=source_isa,
             target_isa=target_isa,
-            model_name=str(cfg.get("model_name", "gpt-5-mini-2025-08-07")),
+            model_name=str(cfg.get("model_name", "gemini-3-flash-preview")),
             results=eval_results,
             started_at=started_at,
         )

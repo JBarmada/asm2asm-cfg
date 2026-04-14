@@ -34,6 +34,45 @@ ISA_DISPLAY_NAMES = {
     "riscv": "RISC-V RV64",
 }
 
+DEFAULT_TOOLCHAINS = {
+    "x86": {
+        "clang": "clang-17",
+        "compile_flags": ["-target", "x86_64-unknown-linux-gnu", "-masm=intel"],
+        "link_flags": ["-target", "x86_64-unknown-linux-gnu", "-masm=intel", "-lm"],
+        "qemu": "",
+        "use_qemu": False,
+    },
+    "armv8-linux": {
+        "clang": "clang-17",
+        "compile_flags": ["-target", "aarch64-linux-gnu"],
+        "link_flags": ["-target", "aarch64-linux-gnu", "-static", "-fuse-ld=lld", "-lm"],
+        "qemu": "qemu-aarch64 -R 4G -L /usr/aarch64-linux-gnu",
+        "use_qemu": True,
+    },
+    "armv8.4a-apple": {
+        "clang": "clang-17",
+        "compile_flags": ["-target", "arm64-apple-darwin"],
+        "link_flags": ["-target", "arm64-apple-darwin", "-lm"],
+        "qemu": "",
+        "use_qemu": False,
+    },
+    "riscv": {
+        "clang": "clang-17",
+        "compile_flags": ["-target", "riscv64-linux-gnu", "-march=rv64gc", "-mabi=lp64d"],
+        "link_flags": [
+            "-target",
+            "riscv64-linux-gnu",
+            "-march=rv64gc",
+            "-mabi=lp64d",
+            "-static",
+            "--ld-path=riscv64-linux-gnu-ld",
+            "-lm",
+        ],
+        "qemu": "qemu-riscv64 -R 4G -L /usr/riscv64-linux-gnu",
+        "use_qemu": True,
+    },
+}
+
 ISA_ALIASES = {
     "x86": "x86",
     "x86_64": "x86",
@@ -268,6 +307,18 @@ def default_graph_dataset_id(benchmark_id: str, graph_kind: str) -> str | None:
     return ids.get(graph_kind)
 
 
+def apply_default_toolchain(cfg: dict[str, object], target_isa: str) -> dict[str, object]:
+    canonical = normalize_isa(target_isa)
+    defaults = DEFAULT_TOOLCHAINS[canonical]
+    resolved = dict(cfg)
+    resolved.setdefault("clang", defaults["clang"])
+    resolved.setdefault("compile_flags", list(defaults["compile_flags"]))
+    resolved.setdefault("link_flags", list(defaults["link_flags"]))
+    resolved.setdefault("qemu", defaults["qemu"])
+    resolved.setdefault("use_qemu", defaults["use_qemu"])
+    return resolved
+
+
 def workspace_root() -> Path:
     return Path(__file__).resolve().parents[1]
 
@@ -479,7 +530,8 @@ def resolve_runtime_paths(args, cfg: dict[str, object]) -> ComposerRuntimePaths:
     target_isa = normalize_isa(str(target_isa_value))
 
     source_isa_value = (
-        cfg.get("source_isa")
+        getattr(args, "source_isa", None)
+        or cfg.get("source_isa")
         or cfg.get("source_arch")
         or cfg.get("source_language")
         or cfg.get("source_dataset_column")

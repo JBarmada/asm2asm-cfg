@@ -1,0 +1,10 @@
+{
+  "model_name": "gemini-3-flash-preview",
+  "model_tag": "flash",
+  "action": "compile_and_run",
+  "max_workers": 4,
+  "max_retries": 3,
+  "retry_base_seconds": 2.0,
+  "opt_level": "O2",
+  "prompt_template": "Translate the following assembly code from {source_isa} to {target_isa}. Return ONLY the translated assembly code with no explanations.\n\n{source_code}"
+}
