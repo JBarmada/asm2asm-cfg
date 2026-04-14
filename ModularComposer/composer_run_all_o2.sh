@@ -2,7 +2,11 @@
 set -euo pipefail
 
 # Required outside a plain git pull:
-# - Translation/eval JSONs. Default discovery targets ../Qwen-Translations, but --input-root can point elsewhere.
+# - Translation/eval JSONs. Defaults:
+#   qwen0.5b/qwen1.5b/qwen3b -> ../Qwen-Translations
+#   gemini -> ../Gemini-Transpilation/results
+#   chatgpt -> ../ChatGPT-Transpilation/results
+#   You can override all discovery with --input-root.
 # - Local benchmark roots under ../cpu-transpiler-inference/benchmarks/{humaneval-c,bringup-bench,mceval-c}
 # - For Gemini runs: GOOGLE_API_KEY or GEMINI_API_KEY
 # - For OpenAI runs: OPENAI_API_KEY
@@ -15,9 +19,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
 PROVIDER="gemini"
-INPUT_ROOT="../Qwen-Translations"
+INPUT_ROOT=""
 BENCHMARK_FILTER="all"
-MODEL_FILTER="all"
+TRANSLATION_MODEL_FILTER="all"
 SOURCE_FILTER="all"
 TARGET_FILTER="all"
 PROMPT_FILTER="all"
@@ -32,7 +36,9 @@ while [[ $# -gt 0 ]]; do
     --provider) PROVIDER="$2"; shift 2 ;;
     --input-root) INPUT_ROOT="$2"; shift 2 ;;
     --benchmark) BENCHMARK_FILTER="$2"; shift 2 ;;
-    --model-size) MODEL_FILTER="$2"; shift 2 ;;
+    --translation-model) TRANSLATION_MODEL_FILTER="$2"; shift 2 ;;
+    --translation-source) TRANSLATION_MODEL_FILTER="$2"; shift 2 ;;
+    --model-size) TRANSLATION_MODEL_FILTER="$2"; shift 2 ;;
     --source-isa) SOURCE_FILTER="$2"; shift 2 ;;
     --target-isa) TARGET_FILTER="$2"; shift 2 ;;
     --prompt-config) PROMPT_FILTER="$2"; shift 2 ;;
@@ -75,6 +81,18 @@ matches() {
   [[ "$filter" == "all" || "$filter" == "$value" ]]
 }
 
+canon_translation_model() {
+  case "$1" in
+    0.5b|qwen0.5b|qwen-0.5b|qwen_0.5b) echo "qwen0.5b" ;;
+    1.5b|qwen1.5b|qwen-1.5b|qwen_1.5b) echo "qwen1.5b" ;;
+    3b|qwen3b|qwen-3b|qwen_3b) echo "qwen3b" ;;
+    gemini|gemini-translations) echo "gemini" ;;
+    chatgpt|chatgpt-translations) echo "chatgpt" ;;
+    all) echo "all" ;;
+    *) echo "$1" ;;
+  esac
+}
+
 skip_reason_for_target() {
   local target="$1"
   if [[ "$target" == "armv8.4a-apple" && "$(uname -s)" != "Darwin" ]]; then
@@ -110,51 +128,82 @@ filename_isa_tag() {
   esac
 }
 
-size_tag() {
+qwen_size_dir() {
   case "$1" in
-    0.5b) echo "0p5b" ;;
-    1.5b) echo "1p5b" ;;
-    3b) echo "3p0b" ;;
+    qwen0.5b) echo "0.5b" ;;
+    qwen1.5b) echo "1.5b" ;;
+    qwen3b) echo "3b" ;;
   esac
 }
 
-config_for_size() {
+qwen_size_tag() {
   case "$1" in
-    0.5b) echo "configs_runs/qwen0.5b.json" ;;
-    1.5b) echo "configs_runs/qwen1.5b.json" ;;
-    3b) echo "configs_runs/qwen3b.json" ;;
+    qwen0.5b) echo "0p5b" ;;
+    qwen1.5b) echo "1p5b" ;;
+    qwen3b) echo "3p0b" ;;
+  esac
+}
+
+config_for_translation_model() {
+  case "$1" in
+    qwen0.5b) echo "configs_runs/qwen0.5b.json" ;;
+    qwen1.5b) echo "configs_runs/qwen1.5b.json" ;;
+    qwen3b) echo "configs_runs/qwen3b.json" ;;
+    gemini) echo "configs_runs/gemini.json" ;;
+    chatgpt) echo "configs_runs/chatgpt.json" ;;
     *) return 1 ;;
   esac
 }
 
+default_input_root_for_model() {
+  case "$1" in
+    qwen0.5b|qwen1.5b|qwen3b) echo "../Qwen-Translations" ;;
+    gemini) echo "../Gemini-Transpilation/results" ;;
+    chatgpt) echo "../ChatGPT-Transpilation/results" ;;
+    *) echo "../Qwen-Translations" ;;
+  esac
+}
+
 resolve_input_json() {
-  local root="$1"
-  local benchmark="$2"
-  local size="$3"
+  local translation_model="$1"
+  local root="$2"
+  local benchmark="$3"
   local source="$4"
   local target="$5"
-  local source_tag target_tag target_dir size_qwen pattern repo_path
+  local source_tag target_tag target_dir qwen_dir qwen_tag pattern
 
-  repo_path="$(find "$root" -type f -path "*/${benchmark}/${size}/${source}-to-${target}/O2/jsons/eval_results.json" 2>/dev/null | sort | tail -n 1 || true)"
-  if [[ -n "$repo_path" ]]; then
-    echo "$repo_path"
-    return
-  fi
+  case "$translation_model" in
+    gemini)
+      find "$root" -type f -path "*/${benchmark}/flash/${source}-to-${target}/O2/jsons/eval_results.json" 2>/dev/null | sort | tail -n 1 || true
+      return
+      ;;
+    chatgpt)
+      find "$root" -type f -path "*/${benchmark}/gpt5mini/${source}-to-${target}/O2/jsons/eval_results.json" 2>/dev/null | sort | tail -n 1 || true
+      return
+      ;;
+  esac
 
   source_tag="$(filename_isa_tag "$source")"
   target_tag="$(filename_isa_tag "$target")"
-  size_qwen="$(size_tag "$size")"
+  qwen_dir="$(qwen_size_dir "$translation_model")"
+  qwen_tag="$(qwen_size_tag "$translation_model")"
+  if [[ -z "$qwen_dir" || -z "$qwen_tag" ]]; then
+    echo ""
+    return
+  fi
+
   if [[ "$benchmark" == "humaneval" ]]; then
     target_dir="$(target_dir_name "$target")"
     pattern="*_${benchmark}_${source_tag}_${target_tag}_O2_*.json"
-    find "$root/$target_dir/$size" -maxdepth 1 -type f -name "$pattern" 2>/dev/null | sort | tail -n 1 || true
+    find "$root/$target_dir/$qwen_dir" -maxdepth 1 -type f -name "$pattern" 2>/dev/null | sort | tail -n 1 || true
     return
   fi
-  pattern="*_${size_qwen}_full_${benchmark}_${source_tag}_${target_tag}_O2_*.json"
+  pattern="*_${qwen_tag}_full_${benchmark}_${source_tag}_${target_tag}_O2_*.json"
   find "$root/$benchmark" -maxdepth 1 -type f -name "$pattern" 2>/dev/null | sort | tail -n 1 || true
 }
 
 BENCHMARK_FILTER="$(canon_benchmark "$BENCHMARK_FILTER")"
+TRANSLATION_MODEL_FILTER="$(canon_translation_model "$TRANSLATION_MODEL_FILTER")"
 SOURCE_FILTER="$(canon_isa "$SOURCE_FILTER")"
 TARGET_FILTER="$(canon_isa "$TARGET_FILTER")"
 
@@ -167,8 +216,8 @@ else
   exit 2
 fi
 
-printf "%-10s %-6s %-15s %-15s %-14s %-8s %s\n" "benchmark" "size" "source" "target" "prompt" "status" "detail"
-printf "%-10s %-6s %-15s %-15s %-14s %-8s %s\n" "---------" "----" "------" "------" "------" "------" "------"
+printf "%-10s %-12s %-15s %-15s %-14s %-8s %s\n" "benchmark" "translation" "source" "target" "prompt" "status" "detail"
+printf "%-10s %-12s %-15s %-15s %-14s %-8s %s\n" "---------" "-----------" "------" "------" "------" "------" "------"
 
 for benchmark in humaneval bringup mceval; do
   matches "$BENCHMARK_FILTER" "$benchmark" || continue
@@ -178,9 +227,10 @@ for benchmark in humaneval bringup mceval; do
     prompt_list=(base)
   fi
 
-  for size in 0.5b 1.5b 3b; do
-    matches "$MODEL_FILTER" "$size" || continue
-    config_path="$(config_for_size "$size")"
+  for translation_model in qwen0.5b qwen1.5b qwen3b gemini chatgpt; do
+    matches "$TRANSLATION_MODEL_FILTER" "$translation_model" || continue
+    config_path="$(config_for_translation_model "$translation_model")"
+    input_root="${INPUT_ROOT:-$(default_input_root_for_model "$translation_model")}"
     for pair in \
       "x86:riscv" \
       "x86:armv8-linux" \
@@ -197,10 +247,10 @@ for benchmark in humaneval bringup mceval; do
       target="${pair##*:}"
       matches "$SOURCE_FILTER" "$source" || continue
       matches "$TARGET_FILTER" "$target" || continue
-      input_json="$(resolve_input_json "$INPUT_ROOT" "$benchmark" "$size" "$source" "$target")"
+      input_json="$(resolve_input_json "$translation_model" "$input_root" "$benchmark" "$source" "$target")"
       skip_reason="$(skip_reason_for_target "$target")"
       if [[ -z "$skip_reason" && -z "$input_json" ]]; then
-        skip_reason="input JSON not found under $INPUT_ROOT"
+        skip_reason="input JSON not found under $input_root"
       fi
       for prompt in "${prompt_list[@]}"; do
         matches "$PROMPT_FILTER" "$prompt" || continue
@@ -212,12 +262,12 @@ for benchmark in humaneval bringup mceval; do
         else
           detail="$input_json"
         fi
-        printf "%-10s %-6s %-15s %-15s %-14s %-8s %s\n" "$benchmark" "$size" "$source" "$target" "$prompt" "$status" "$detail"
+        printf "%-10s %-12s %-15s %-15s %-14s %-8s %s\n" "$benchmark" "$translation_model" "$source" "$target" "$prompt" "$status" "$detail"
 
         [[ $LIST_ONLY -eq 1 ]] && continue
         [[ -n "$skip_reason" ]] && continue
 
-        run_label="${PROVIDER}Composer/${size}/${benchmark}/${source}-to-${target}"
+        run_label="${PROVIDER}Composer/${translation_model}/${benchmark}/${source}-to-${target}"
         cmd=("${RUNNER[@]}" "$input_json" --config "$config_path" --benchmark "$benchmark" --source-isa "$source" --target-isa "$target" --prompt-config "$prompt" --run-label "$run_label")
         [[ -n "$YES_FLAG" ]] && cmd+=("$YES_FLAG")
         [[ -n "$COMPOSER_MODEL" ]] && cmd+=(--model "$COMPOSER_MODEL")

@@ -115,6 +115,22 @@ def execute_pipeline(
     cfg_dataset_id = _resolve_graph_dataset_id(cfg, paths.benchmark_id, "cfg") if require_cfg else "(not used)"
     dfg_dataset_id = _resolve_graph_dataset_id(cfg, paths.benchmark_id, "dfg") if require_dfg else "(not used)"
 
+    benchmark_for_limits = create_benchmark_adapter(
+        paths.benchmark_id,
+        paths=paths,
+        cfg=cfg,
+        cfg_data={},
+        dfg_data={},
+    )
+
+    safe_limit = benchmark_for_limits.max_validation_concurrency()
+    if safe_limit is not None and max_concurrency > safe_limit:
+        print(
+            f"Clamping max concurrency from {max_concurrency} to {safe_limit} for "
+            f"{benchmark_display_name(paths.benchmark_id)} validation safety."
+        )
+        max_concurrency = safe_limit
+
     preflight_lines = build_preflight_lines(
         input_path=args.input_path,
         config_path=args.config,
@@ -133,6 +149,7 @@ def execute_pipeline(
         dfg_column=dfg_column,
         cfg_dataset_id=cfg_dataset_id,
         dfg_dataset_id=dfg_dataset_id,
+        max_concurrency=max_concurrency,
         paths=paths,
     )
 
@@ -173,14 +190,6 @@ def execute_pipeline(
         cfg_data=cfg_data,
         dfg_data=dfg_data,
     )
-
-    safe_limit = benchmark.max_validation_concurrency()
-    if safe_limit is not None and max_concurrency > safe_limit:
-        print(
-            f"Clamping max concurrency from {max_concurrency} to {safe_limit} for "
-            f"{benchmark_display_name(paths.benchmark_id)} validation safety."
-        )
-        max_concurrency = safe_limit
 
     if paths.error_json_will_be_bootstrapped:
         print(f"Bootstrapping error JSON from asm input dir: {paths.asm_input_dir}")

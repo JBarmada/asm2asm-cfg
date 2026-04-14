@@ -28,7 +28,7 @@ FILES=(
 CONFIGS=(
   # Requested prompt configs only.
   base
-  error_cfg_dfg
+  # error_cfg_dfg
 
   # Unused for this run (kept for quick re-enable)
   # error_only
@@ -202,7 +202,7 @@ for file in "${FILES[@]}"; do
     cmd=(
       python3 compose_gemini.py "$input_json"
       --config "$config"
-      --max-concurrency 5
+      --max-concurrency 100
       --run-label "$composer_run_label"
       --prompt-config "$cfg"
     )

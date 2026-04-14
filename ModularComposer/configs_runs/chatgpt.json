@@ -1,5 +1,5 @@
 {
-  "model_name": "qwen2.5-3b",
+  "model_name": "chatgpt-translations",
   "composer_model": "gemini-3-flash-preview",
   "composer_prompt_config": "base",
   "max_workers": 50,
