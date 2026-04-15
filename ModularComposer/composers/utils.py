@@ -179,6 +179,10 @@ class ProblemSpec:
     dfg_text: str
     cfg_available: bool
     dfg_available: bool
+    clean_summary: str = ""
+    clean_details: tuple[str, ...] = ()
+    failing_command: str = ""
+    failure_stage: str = ""
     metadata: dict[str, str] = field(default_factory=dict)
 
 
@@ -191,6 +195,10 @@ class ValidationFeedback:
     errors_count: int
     problems_processed: int
     validator_returncode: int
+    clean_summary: str = ""
+    clean_details: tuple[str, ...] = ()
+    failing_command: str = ""
+    failure_stage: str = ""
 
 
 @dataclass

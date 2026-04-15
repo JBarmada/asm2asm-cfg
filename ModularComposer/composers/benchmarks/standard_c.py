@@ -28,6 +28,8 @@ from .common import (
     load_json_payload,
     resolve_problem_name_from_asm_stem,
     resolve_source_asm,
+    summarize_error_entry,
+    summarize_run_result,
     to_error_entry,
     write_attempt_log,
     write_error_payload,
@@ -102,6 +104,7 @@ class StandardCBenchmark(BenchmarkAdapter):
             expected_symbols = self._expected_symbols(task_dir)
             cfg_text = self.cfg_data.get(problem_name, "")
             dfg_text = self.dfg_data.get(problem_name, "")
+            diagnostics = summarize_error_entry(entry)
 
             if require_cfg and not cfg_text:
                 issues.append(f"Missing CFG for {problem_name}")
@@ -124,6 +127,10 @@ class StandardCBenchmark(BenchmarkAdapter):
                     dfg_text=dfg_text,
                     cfg_available=bool(cfg_text),
                     dfg_available=bool(dfg_text),
+                    clean_summary=diagnostics.clean_summary,
+                    clean_details=diagnostics.clean_details,
+                    failing_command=diagnostics.failing_command,
+                    failure_stage=diagnostics.failure_stage,
                     metadata={"test_file": str(task_dir / "test.c")},
                 )
             )
@@ -144,6 +151,7 @@ class StandardCBenchmark(BenchmarkAdapter):
             problem_name=problem.name,
             work_dir=work_dir,
         )
+        diagnostics = summarize_run_result(result)
 
         validation_json_path = self.paths.validation_json_dir / f"{problem.name}_attempt{attempt}.json"
         _write_json(
@@ -156,6 +164,10 @@ class StandardCBenchmark(BenchmarkAdapter):
                 "status": result.status,
                 "summary": result.summary,
                 "stderr": extract_stderr(result),
+                "failure_stage": diagnostics.failure_stage,
+                "failing_command": diagnostics.failing_command,
+                "clean_summary": diagnostics.clean_summary,
+                "clean_details": list(diagnostics.clean_details),
                 "commands": [
                     {
                         "command": command_to_string(command_result.command),
@@ -174,6 +186,10 @@ class StandardCBenchmark(BenchmarkAdapter):
                 f"problem: {problem.name}",
                 f"status: {result.status}",
                 f"summary: {result.summary}",
+                f"clean_summary: {diagnostics.clean_summary}",
+                f"failure_stage: {diagnostics.failure_stage}",
+                f"failing_command: {diagnostics.failing_command}",
+                f"clean_details: {' | '.join(diagnostics.clean_details)}",
                 f"stderr: {extract_stderr(result)}",
             ],
         )
@@ -251,8 +267,9 @@ class StandardCBenchmark(BenchmarkAdapter):
                 result.command_results.append(command_result)
                 if command_result.returncode != 0:
                     result.status = "build_error"
-                    result.summary = "Compilation/Link failed"
-                    result.stderr = command_result.stderr
+                    result.stderr = command_result.stderr or command_result.stdout
+                    diagnostics = summarize_run_result(result)
+                    result.summary = diagnostics.clean_summary or "Compilation/Link failed"
                     return result
 
             run_command = self._run_command(executable_path)
@@ -260,7 +277,11 @@ class StandardCBenchmark(BenchmarkAdapter):
             result.command_results.append(command_result)
             result.stderr = command_result.stderr
             result.status = "passed" if command_result.returncode == 0 else "runtime_error"
-            result.summary = "PASS" if result.status == "passed" else f"Exited with code {command_result.returncode}"
+            if result.status == "passed":
+                result.summary = "PASS"
+            else:
+                diagnostics = summarize_run_result(result)
+                result.summary = diagnostics.clean_summary or f"Exited with code {command_result.returncode}"
             return result
         except subprocess.TimeoutExpired:
             result.status = "timeout"
@@ -325,6 +346,7 @@ class StandardCBenchmark(BenchmarkAdapter):
     def _validation_feedback_from_result(self, result: BenchmarkRunResult) -> ValidationFeedback:
         validator_returncode = result.command_results[-1].returncode if result.command_results else -1
         stderr_text = extract_stderr(result)
+        diagnostics = summarize_run_result(result)
         return ValidationFeedback(
             passed=result.passed,
             status=result.status,
@@ -333,4 +355,8 @@ class StandardCBenchmark(BenchmarkAdapter):
             errors_count=0 if result.passed else 1,
             problems_processed=1,
             validator_returncode=validator_returncode,
+            clean_summary=diagnostics.clean_summary,
+            clean_details=diagnostics.clean_details,
+            failing_command=diagnostics.failing_command,
+            failure_stage=diagnostics.failure_stage,
         )

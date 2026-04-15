@@ -19,7 +19,7 @@ from composers.benchmarks.standard_c import StandardCBenchmark
 from composers.core import ComposerEngine
 from composers.providers.base import ProviderUsageSummary
 from composers.runner import execute_pipeline
-from composers.utils import ComposerRuntimePaths
+from composers.utils import ComposerRuntimePaths, ProblemResult
 
 
 class DummyProvider:
@@ -146,6 +146,52 @@ class SmokeAndRunnerTests(unittest.TestCase):
             with mock.patch("composers.benchmarks.standard_c.execute_command", side_effect=command_results):
                 feedback = benchmark.validate(specs[0], ".globl func0\nfunc0:\n ret\n", 1)
             self.assertTrue(feedback.passed)
+
+    def test_standard_c_feedback_includes_clean_summary_and_raw_stderr(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root = Path(tmp_dir)
+            benchmark_root = root / "humaneval-c"
+            task_dir = benchmark_root / "problem1"
+            task_dir.mkdir(parents=True)
+            (task_dir / "code.c").write_text("int func0(void) { return 0; }\n", encoding="utf-8")
+            (task_dir / "test.c").write_text("int func0(void);\nint main(void) { return func0(); }\n", encoding="utf-8")
+
+            eval_json = root / "results.json"
+            eval_json.write_text(
+                json.dumps([{"file": "problem1", "pred": ".globl func0\nfunc0:\n ret\n", "success": 0, "error_stage": "execution"}]),
+                encoding="utf-8",
+            )
+
+            paths = make_paths(
+                root,
+                benchmark_id="humaneval",
+                benchmark_root=benchmark_root,
+                asm_input_dir=root / "results" / "composer" / "run0" / "base" / "json_input_asm",
+                error_json_path=eval_json,
+                input_mode="evaluated_json",
+            )
+            benchmark = StandardCBenchmark(
+                benchmark_id="humaneval",
+                benchmark_display_name="HumanEval",
+                paths=paths,
+                cfg={"clang": "clang-17", "compile_flags": [], "link_flags": [], "use_qemu": False, "timeout_seconds": 5},
+            )
+            spec = benchmark.get_problem_specs("base")[0]
+
+            command_results = [
+                CommandResult(
+                    ["clang-17", "-c", "problem1.s", "-o", "problem1.o"],
+                    1,
+                    "",
+                    "clang-17: warning: argument unused during compilation: '-lm'\nproblem1.s:12:7: error: invalid operand for instruction\n",
+                )
+            ]
+            with mock.patch("composers.benchmarks.standard_c.execute_command", side_effect=command_results):
+                feedback = benchmark.validate(spec, ".globl func0\nfunc0:\n ret\n", 1)
+
+            self.assertFalse(feedback.passed)
+            self.assertIn("invalid operand for instruction", feedback.clean_summary)
+            self.assertIn("argument unused during compilation", feedback.stderr)
 
     def test_mceval_asm_dir_existing_error_json_smoke(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
@@ -664,6 +710,35 @@ class SmokeAndRunnerTests(unittest.TestCase):
             self.assertEqual(results, [])
             self.assertEqual(restored_provider.summary.total_token_count, 375)
             self.assertEqual(restored_provider.summary.prompt_token_count, 300)
+
+    def test_problem_result_round_trip_preserves_clean_diagnostic_attempt_fields(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root = Path(tmp_dir)
+            result = ProblemResult(
+                name="problem1",
+                source_asm_path=root / "problem1.s",
+                fixed_asm_path=root / "fixed_problem1.s",
+                succeeded=False,
+                attempts_used=1,
+                final_note="Build failed: invalid operand for instruction",
+                attempts=[
+                    {
+                        "attempt": 1,
+                        "status": "failed",
+                        "clean_summary": "Build failed: invalid operand for instruction",
+                        "clean_details": ["problem1.s:12:7: error: invalid operand for instruction"],
+                        "failing_command": "clang-17 -c problem1.s -o problem1.o",
+                        "failure_stage": "build",
+                    }
+                ],
+            )
+
+            from composers.utils import problem_result_from_dict, problem_result_to_dict
+
+            payload = problem_result_to_dict(result)
+            restored = problem_result_from_dict(payload)
+            self.assertEqual(restored.attempts[0]["clean_summary"], "Build failed: invalid operand for instruction")
+            self.assertEqual(restored.attempts[0]["failure_stage"], "build")
 
 
 if __name__ == "__main__":

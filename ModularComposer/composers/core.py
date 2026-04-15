@@ -219,8 +219,8 @@ class ComposerEngine:
                     attempt,
                 )
 
-            note = feedback.summary or feedback.status
-            if feedback.stderr:
+            note = feedback.clean_summary or feedback.summary or feedback.status
+            if not feedback.clean_summary and feedback.stderr:
                 first_line = feedback.stderr.splitlines()[0].strip()
                 if first_line:
                     note = f"{note} | {first_line}"
@@ -237,6 +237,10 @@ class ComposerEngine:
                     "validation_status": feedback.status,
                     "validation_summary": feedback.summary,
                     "validation_stderr": feedback.stderr,
+                    "clean_summary": feedback.clean_summary,
+                    "clean_details": list(feedback.clean_details),
+                    "failing_command": feedback.failing_command,
+                    "failure_stage": feedback.failure_stage,
                     "previous_code": cleaned,
                 }
             )
@@ -251,6 +255,10 @@ class ComposerEngine:
                 "validation_status": feedback.status,
                 "validation_summary": feedback.summary,
                 "validation_stderr": feedback.stderr or "(no stderr provided)",
+                "clean_summary": feedback.clean_summary or feedback.summary or "(no summary provided)",
+                "clean_details": "\n".join(feedback.clean_details) if feedback.clean_details else "(no cleaned details provided)",
+                "failing_command": feedback.failing_command or "(no failing command identified)",
+                "failure_stage": feedback.failure_stage or feedback.status,
                 "previous_code": cleaned,
             }
 
@@ -410,13 +418,17 @@ def build_prompt(
     sections.append("")
 
     if prompt_config in {"error_only", "error_cfg", "error_dfg", "error_cfg_dfg"}:
+        detail_block = "\n".join(problem.clean_details) if problem.clean_details else "(no cleaned details provided)"
         sections.extend(
             [
-                "Known failure summary from prior validation:",
-                problem.summary or "(no summary provided)",
+                "Known toolchain/runtime failure summary from prior validation:",
+                problem.clean_summary or problem.summary or "(no summary provided)",
                 "",
-                "Known stderr from prior validation:",
-                problem.stderr or "(no stderr provided)",
+                f"Failure stage: {problem.failure_stage or '(unknown)'}",
+                f"Failing command: {problem.failing_command or '(not available)'}",
+                "",
+                "Key diagnostic lines from prior validation:",
+                detail_block,
                 "",
             ]
         )
@@ -444,14 +456,16 @@ def build_prompt(
     if retry_context and prompt_config.startswith("error_"):
         sections.extend(
             [
-                "Previous failed attempt feedback:",
+                "Previous failed attempt feedback (toolchain/runtime only):",
                 f"Attempt: {retry_context.get('attempt', '')}",
+                f"Failure stage: {retry_context.get('failure_stage', '')}",
                 f"Validation status: {retry_context.get('validation_status', '')}",
-                "Validation summary:",
-                retry_context.get("validation_summary", "(no summary provided)"),
+                f"Failing command: {retry_context.get('failing_command', '(not available)')}",
+                "Cleaned validation summary:",
+                retry_context.get("clean_summary", "(no summary provided)"),
                 "",
-                "Validation stderr:",
-                retry_context.get("validation_stderr", "(no stderr provided)"),
+                "Key diagnostic lines:",
+                retry_context.get("clean_details", "(no cleaned details provided)"),
                 "",
                 "Previous candidate assembly that failed:",
                 retry_context.get("previous_code", ""),

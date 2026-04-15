@@ -28,6 +28,8 @@ from .common import (
     load_json_payload,
     resolve_problem_name_from_asm_stem,
     resolve_source_asm,
+    summarize_error_entry,
+    summarize_run_result,
     write_attempt_log,
     write_error_payload,
 )
@@ -109,6 +111,7 @@ class BringUpBenchmark(BenchmarkAdapter):
 
             cfg_text = self.cfg_data.get(problem_name, "")
             dfg_text = self.dfg_data.get(problem_name, "")
+            diagnostics = summarize_error_entry(entry)
             if require_cfg and not cfg_text:
                 issues.append(f"Missing CFG for {problem_name}")
             if require_dfg and not dfg_text:
@@ -130,6 +133,10 @@ class BringUpBenchmark(BenchmarkAdapter):
                     dfg_text=dfg_text,
                     cfg_available=bool(cfg_text),
                     dfg_available=bool(dfg_text),
+                    clean_summary=diagnostics.clean_summary,
+                    clean_details=diagnostics.clean_details,
+                    failing_command=diagnostics.failing_command,
+                    failure_stage=diagnostics.failure_stage,
                     metadata={"primary_source": str(primary_source)},
                 )
             )
@@ -150,6 +157,7 @@ class BringUpBenchmark(BenchmarkAdapter):
             problem_name=problem.name,
             work_root=work_root,
         )
+        diagnostics = summarize_run_result(result)
 
         validation_json_path = self.paths.validation_json_dir / f"{problem.name}_attempt{attempt}.json"
         _write_json(
@@ -162,6 +170,10 @@ class BringUpBenchmark(BenchmarkAdapter):
                 "status": result.status,
                 "summary": result.summary,
                 "stderr": extract_stderr(result),
+                "failure_stage": diagnostics.failure_stage,
+                "failing_command": diagnostics.failing_command,
+                "clean_summary": diagnostics.clean_summary,
+                "clean_details": list(diagnostics.clean_details),
                 "commands": [
                     {
                         "command": command_to_string(command_result.command),
@@ -180,6 +192,10 @@ class BringUpBenchmark(BenchmarkAdapter):
                 f"problem: {problem.name}",
                 f"status: {result.status}",
                 f"summary: {result.summary}",
+                f"clean_summary: {diagnostics.clean_summary}",
+                f"failure_stage: {diagnostics.failure_stage}",
+                f"failing_command: {diagnostics.failing_command}",
+                f"clean_details: {' | '.join(diagnostics.clean_details)}",
                 f"stderr: {extract_stderr(result)}",
             ],
         )
@@ -192,6 +208,10 @@ class BringUpBenchmark(BenchmarkAdapter):
             errors_count=0 if result.passed else 1,
             problems_processed=1,
             validator_returncode=result.command_results[-1].returncode if result.command_results else -1,
+            clean_summary=diagnostics.clean_summary,
+            clean_details=diagnostics.clean_details,
+            failing_command=diagnostics.failing_command,
+            failure_stage=diagnostics.failure_stage,
         )
 
     def validate_all_outputs(self) -> tuple[Path, int, int]:
@@ -263,8 +283,10 @@ class BringUpBenchmark(BenchmarkAdapter):
                 result.command_results.append(command_result)
                 if command_result.returncode != 0:
                     result.status = "runtime_error" if command[-1] == "test" else "build_error"
-                    result.summary = "BringUpBench test failed" if result.status == "runtime_error" else "BringUpBench build failed"
                     result.stderr = command_result.stderr or command_result.stdout
+                    diagnostics = summarize_run_result(result)
+                    default_summary = "BringUpBench test failed" if result.status == "runtime_error" else "BringUpBench build failed"
+                    result.summary = diagnostics.clean_summary or default_summary
                     return result
 
             result.status = "passed"

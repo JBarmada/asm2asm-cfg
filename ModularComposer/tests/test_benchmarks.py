@@ -9,9 +9,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from composers.benchmarks.bringup import BringUpBenchmark
+from composers.benchmarks.common import BenchmarkRunResult, CommandResult, summarize_error_entry, summarize_run_result
 from composers.benchmarks.standard_c import StandardCBenchmark
 from composers.core import build_prompt
-from composers.utils import ComposerRuntimePaths
+from composers.utils import ComposerRuntimePaths, ProblemSpec
 
 
 def make_paths(root: Path, *, benchmark_id: str, benchmark_root: Path, asm_input_dir: Path, error_json_path: Path, input_mode: str) -> ComposerRuntimePaths:
@@ -48,6 +49,95 @@ def make_paths(root: Path, *, benchmark_id: str, benchmark_root: Path, asm_input
 
 
 class BenchmarkAdapterTests(unittest.TestCase):
+    def test_summarize_run_result_extracts_assembler_error(self) -> None:
+        result = BenchmarkRunResult(
+            problem_name="problem1",
+            status="build_error",
+            summary="Compilation/Link failed",
+            command_results=[
+                CommandResult(
+                    ["clang-17", "-c", "problem1.s", "-o", "problem1.o"],
+                    1,
+                    "",
+                    "clang-17: warning: argument unused during compilation: '-lm'\nproblem1.s:12:7: error: invalid operand for instruction\n",
+                )
+            ],
+            stderr="clang-17: warning: argument unused during compilation: '-lm'\nproblem1.s:12:7: error: invalid operand for instruction\n",
+        )
+
+        diagnostics = summarize_run_result(result)
+        self.assertEqual(diagnostics.failure_stage, "build")
+        self.assertIn("invalid operand for instruction", diagnostics.clean_summary)
+        self.assertNotIn("argument unused", "\n".join(diagnostics.clean_details))
+
+    def test_summarize_run_result_extracts_link_failure(self) -> None:
+        result = BenchmarkRunResult(
+            problem_name="problem1",
+            status="build_error",
+            summary="Compilation/Link failed",
+            command_results=[
+                CommandResult(["clang-17", "-c", "problem1.s", "-o", "problem1.o"], 0, "", ""),
+                CommandResult(
+                    ["clang-17", "problem1.o", "test.o", "-o", "problem1_exe"],
+                    1,
+                    "",
+                    "/usr/bin/ld: problem1.o: in function `func0': undefined reference to `helper'\nclang-17: error: linker command failed with exit code 1\n",
+                ),
+            ],
+            stderr="/usr/bin/ld: problem1.o: in function `func0': undefined reference to `helper'\n",
+        )
+
+        diagnostics = summarize_run_result(result)
+        self.assertEqual(diagnostics.failure_stage, "link")
+        self.assertIn("undefined reference", diagnostics.clean_summary)
+        self.assertTrue(diagnostics.failing_command.startswith("clang-17"))
+
+    def test_summarize_run_result_extracts_runtime_failure(self) -> None:
+        result = BenchmarkRunResult(
+            problem_name="problem1",
+            status="runtime_error",
+            summary="Exited with code 139",
+            command_results=[
+                CommandResult(["qemu-riscv64", "./problem1_exe"], 139, "", "qemu-riscv64: Segmentation fault (core dumped)\n"),
+            ],
+            stderr="qemu-riscv64: Segmentation fault (core dumped)\n",
+        )
+
+        diagnostics = summarize_run_result(result)
+        self.assertEqual(diagnostics.failure_stage, "runtime")
+        self.assertIn("Segmentation fault", diagnostics.clean_summary)
+
+    def test_summarize_error_entry_filters_make_noise(self) -> None:
+        diagnostics = summarize_error_entry(
+            {
+                "name": "ackermann",
+                "status": "runtime_error",
+                "summary": "BringUpBench test failed",
+                "stderr": (
+                    "make: Warning: File 'host' has modification time in the future\n"
+                    "make: warning: Clock skew detected. Your build may be incomplete.\n"
+                    "FAIL: expected 7 got 8\n"
+                    "make: *** [Makefile:12: test] Error 1\n"
+                ),
+                "commands": [{"command": "make TARGET=host test", "returncode": 2}],
+            }
+        )
+
+        self.assertEqual(diagnostics.failure_stage, "runtime")
+        self.assertIn("FAIL: expected 7 got 8", diagnostics.clean_summary)
+        self.assertNotIn("Clock skew", "\n".join(diagnostics.clean_details))
+
+    def test_summarize_run_result_timeout_keeps_summary(self) -> None:
+        diagnostics = summarize_run_result(
+            BenchmarkRunResult(
+                problem_name="problem1",
+                status="timeout",
+                summary="Execution timed out after 30 seconds",
+            )
+        )
+        self.assertEqual(diagnostics.failure_stage, "timeout")
+        self.assertEqual(diagnostics.clean_summary, "Execution timed out after 30 seconds")
+
     def test_mceval_symbol_extraction_and_prompt(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
             root = Path(tmp_dir)
@@ -109,6 +199,88 @@ class BenchmarkAdapterTests(unittest.TestCase):
             self.assertIn("hello_mmcodeeval", prompt)
             self.assertNotIn("func0 unless explicitly required otherwise", prompt)
 
+    def test_error_prompt_uses_cleaned_diagnostics_only(self) -> None:
+        problem = ProblemSpec(
+            name="problem1",
+            benchmark_id="humaneval",
+            artifact_kind="single_function",
+            summary="Compilation/Link failed",
+            stderr="raw stderr that should not appear",
+            source_asm_path=Path("problem1.s"),
+            source_asm_name="problem1.s",
+            benchmark_task_path=Path("problem1"),
+            expected_symbols=("func0",),
+            prompt_constraints=(),
+            cfg_text="",
+            dfg_text="",
+            cfg_available=False,
+            dfg_available=False,
+            clean_summary="Build failed: problem1.s:12:7: error: invalid operand for instruction",
+            clean_details=("problem1.s:12:7: error: invalid operand for instruction",),
+            failing_command="clang-17 -c problem1.s -o problem1.o",
+            failure_stage="build",
+        )
+
+        prompt = build_prompt(
+            problem=problem,
+            source_asm=".globl func0\nfunc0:\n ret\n",
+            prompt_config="error_only",
+            target_isa="x86-64",
+            cfg_language="x86_64",
+            dfg_language="x86_64",
+            retry_context={
+                "attempt": "1",
+                "validation_status": "build_error",
+                "validation_summary": "Compilation/Link failed",
+                "validation_stderr": "raw retry stderr",
+                "clean_summary": "Build failed: invalid operand for instruction",
+                "clean_details": "problem1.s:12:7: error: invalid operand for instruction",
+                "failing_command": "clang-17 -c problem1.s -o problem1.o",
+                "failure_stage": "build",
+                "previous_code": ".globl func0\nfunc0:\n ret\n",
+            },
+        )
+
+        self.assertIn("Known toolchain/runtime failure summary from prior validation", prompt)
+        self.assertIn("Build failed: problem1.s:12:7: error: invalid operand for instruction", prompt)
+        self.assertIn("Failing command: clang-17 -c problem1.s -o problem1.o", prompt)
+        self.assertNotIn("raw stderr that should not appear", prompt)
+        self.assertNotIn("raw retry stderr", prompt)
+
+    def test_base_prompt_remains_pure_without_error_feedback(self) -> None:
+        problem = ProblemSpec(
+            name="problem1",
+            benchmark_id="humaneval",
+            artifact_kind="single_function",
+            summary="Compilation/Link failed",
+            stderr="raw stderr",
+            source_asm_path=Path("problem1.s"),
+            source_asm_name="problem1.s",
+            benchmark_task_path=Path("problem1"),
+            expected_symbols=("func0",),
+            prompt_constraints=(),
+            cfg_text="",
+            dfg_text="",
+            cfg_available=False,
+            dfg_available=False,
+            clean_summary="Build failed: invalid operand",
+            clean_details=("invalid operand",),
+            failing_command="clang-17 -c problem1.s -o problem1.o",
+            failure_stage="build",
+        )
+
+        prompt = build_prompt(
+            problem=problem,
+            source_asm=".globl func0\nfunc0:\n ret\n",
+            prompt_config="base",
+            target_isa="x86-64",
+            cfg_language="x86_64",
+            dfg_language="x86_64",
+        )
+
+        self.assertNotIn("Known toolchain/runtime failure summary from prior validation", prompt)
+        self.assertNotIn("Previous failed attempt feedback", prompt)
+
     def test_bringup_translation_unit_metadata(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
             root = Path(tmp_dir)
@@ -132,7 +304,16 @@ class BenchmarkAdapterTests(unittest.TestCase):
                 json.dumps(
                     {
                         "errored_problems": [
-                            {"name": "ackermann", "status": "build_error", "summary": "failed", "stderr": "bad"}
+                            {
+                                "name": "ackermann",
+                                "status": "build_error",
+                                "summary": "failed",
+                                "stderr": (
+                                    "make: Warning: File 'host' has modification time in the future\n"
+                                    "ackermann.s:12:7: error: invalid operand for instruction\n"
+                                ),
+                                "commands": [{"command": "make TARGET=host build", "returncode": 2}],
+                            }
                         ]
                     }
                 ),
@@ -154,6 +335,8 @@ class BenchmarkAdapterTests(unittest.TestCase):
             specs = benchmark.get_problem_specs("base")
             self.assertEqual(specs[0].artifact_kind, "translation_unit")
             self.assertEqual(specs[0].expected_symbols, ("ack", "main"))
+            self.assertIn("invalid operand", specs[0].clean_summary)
+            self.assertNotIn("modification time", "\n".join(specs[0].clean_details))
             self.assertIsNone(benchmark.max_prompt_concurrency())
             self.assertEqual(benchmark.max_validation_concurrency(), 1)
 

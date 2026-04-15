@@ -234,6 +234,14 @@ Dataset behavior:
 
 If you do not want graph inputs, use a non-graph prompt config such as `base` or `error_only`.
 
+Retry feedback behavior:
+
+- `base` does not receive prior validation feedback.
+- `error_*` prompt configs receive cleaned toolchain/runtime diagnostics only.
+- Those diagnostics are derived from build, link, qemu, and benchmark test artifacts already produced by validation.
+- Raw stderr/stdout and command logs remain on disk for auditability.
+- Retries do not use source code, source-level semantics, expected outputs, or benchmark-specific oracle hints.
+
 ## Preflight
 
 Before model calls begin, the runner prints a preflight summary containing:
