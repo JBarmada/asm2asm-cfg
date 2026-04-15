@@ -27,7 +27,7 @@ set -euo pipefail
 #   --benchmark mceval
 # - The generic runner applies benchmark-specific concurrency overrides:
 #   Humaneval/McEval -> 100 prompt / 100 validation
-#   BringUp -> 64 prompt / 16 validation (then BringUp validation safety may clamp lower)
+#   BringUp -> 64 prompt / 16 validation
 # - HumanEval qwen0.5b error_cfg_dfg is intentionally skipped for the Gemini composer campaign
 # - Legacy HumanEval qwen result dirs can be migrated into the canonical
 #   qwenX/humaneval/<source>-to-<target> layout with:
@@ -245,6 +245,7 @@ if benchmark == "bringup":
     cfg["max_workers"] = 64
     cfg["prompt_concurrency"] = 64
     cfg["validation_concurrency"] = 16
+    cfg["bringup_validation_concurrency_limit"] = 16
 else:
     cfg["max_workers"] = 100
     cfg["prompt_concurrency"] = 100

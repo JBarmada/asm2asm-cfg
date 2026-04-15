@@ -182,9 +182,9 @@ Useful overrides:
   - HumanEval: `100/100`
   - McEval: `100/100`
   - BringUpBench: `64/16`
-- BringUp preflight should still clamp to:
+- BringUp preflight should show:
   - `Prompt concurrency: 64`
-  - `Validation concurrency: 1`
+  - `Validation concurrency: 16`
 - Generic run labels are kept under:
   - `results/composer/<provider>Composer/<translation-model>/<benchmark>/<source>-to-<target>`
 - Legacy HumanEval qwen run directories are migrated into that canonical layout automatically before real HumanEval runs.
