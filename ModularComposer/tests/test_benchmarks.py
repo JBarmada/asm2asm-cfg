@@ -340,6 +340,19 @@ class BenchmarkAdapterTests(unittest.TestCase):
             self.assertIsNone(benchmark.max_prompt_concurrency())
             self.assertEqual(benchmark.max_validation_concurrency(), 1)
 
+            tuned = BringUpBenchmark(
+                paths=paths,
+                cfg={
+                    "clang": "clang-17",
+                    "compile_flags": ["-O2"],
+                    "link_flags": ["-lm"],
+                    "use_qemu": False,
+                    "timeout_seconds": 5,
+                    "bringup_validation_concurrency_limit": 4,
+                },
+            )
+            self.assertEqual(tuned.max_validation_concurrency(), 4)
+
     def test_bringup_make_commands_preserve_target_cflags(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
             root = Path(tmp_dir)
@@ -377,6 +390,45 @@ class BenchmarkAdapterTests(unittest.TestCase):
             self.assertIn("OPT_CFLAGS=-O2", build_command)
             self.assertIn("LOCAL_CFLAGS=-fno-pie", build_command)
             self.assertFalse(any(item.startswith("CFLAGS=") for item in build_command))
+
+    def test_bringup_make_commands_allow_experimental_speed_flags(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root = Path(tmp_dir)
+            benchmark_root = root / "bringup-bench"
+            benchmark_root.mkdir(parents=True)
+            asm_dir = root / "experiment" / "translated_asm"
+            asm_dir.mkdir(parents=True)
+            error_json = root / "experiment" / "jsons" / "errors.json"
+            error_json.parent.mkdir(parents=True)
+            error_json.write_text(json.dumps({"errored_problems": []}), encoding="utf-8")
+
+            paths = make_paths(
+                root,
+                benchmark_id="bringup",
+                benchmark_root=benchmark_root,
+                asm_input_dir=asm_dir,
+                error_json_path=error_json,
+                input_mode="asm_dir",
+            )
+            benchmark = BringUpBenchmark(
+                paths=paths,
+                cfg={
+                    "clang": "clang-17",
+                    "compile_flags": ["-target", "x86_64-unknown-linux-gnu", "-O2"],
+                    "link_flags": ["-lm"],
+                    "use_qemu": False,
+                    "timeout_seconds": 5,
+                    "bringup_skip_clean": True,
+                    "bringup_force_rebuild": False,
+                },
+            )
+
+            commands = benchmark._make_commands()
+            self.assertEqual(len(commands), 2)
+            self.assertEqual(commands[0][0], "make")
+            self.assertNotIn("-B", commands[0])
+            self.assertEqual(commands[0][-1], "build")
+            self.assertEqual(commands[1][-1], "test")
 
 
 if __name__ == "__main__":

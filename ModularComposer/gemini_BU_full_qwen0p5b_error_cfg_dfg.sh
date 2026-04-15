@@ -68,6 +68,10 @@ YES_FLAG="--yes"
 RESULTS_ROOT="${RESULTS_ROOT:-$WORK_ROOT/results/composer}"
 CFG_DATASET_ID="${BRINGUP_CFG_DATASET_ID:-ryaasabsar/bringup_asm_cfg}"
 DFG_DATASET_ID="${BRINGUP_DFG_DATASET_ID:-ryaasabsar/bringup_asm_dfg}"
+VALIDATION_CONCURRENCY_LIMIT="${BRINGUP_VALIDATION_CONCURRENCY_LIMIT:-1}"
+SKIP_CLEAN="${BRINGUP_SKIP_CLEAN:-0}"
+FORCE_REBUILD="${BRINGUP_FORCE_REBUILD:-1}"
+RUN_LABEL_SUFFIX="${BRINGUP_RUN_LABEL_SUFFIX:-}"
 TEMP_CONFIG=""
 
 cleanup() {
@@ -84,6 +88,10 @@ while [[ $# -gt 0 ]]; do
     --no-yes) YES_FLAG=""; shift ;;
     --cfg-dataset-id) CFG_DATASET_ID="$2"; shift 2 ;;
     --dfg-dataset-id) DFG_DATASET_ID="$2"; shift 2 ;;
+    --validation-concurrency-limit) VALIDATION_CONCURRENCY_LIMIT="$2"; shift 2 ;;
+    --skip-clean) SKIP_CLEAN=1; shift ;;
+    --no-force-rebuild) FORCE_REBUILD=0; shift ;;
+    --run-label-suffix) RUN_LABEL_SUFFIX="$2"; shift 2 ;;
     *)
       echo "Unknown argument: $1" >&2
       exit 2
@@ -141,7 +149,7 @@ ensure_temp_config() {
   fi
 
   TEMP_CONFIG="$(mktemp "${TMPDIR:-/tmp}/bringup-qwen0.5b-errorcfgdfg-XXXXXX.json")"
-  BASE_CONFIG="$WORK_ROOT/configs_runs/qwen0.5b.json" CFG_DATASET_ID="$CFG_DATASET_ID" DFG_DATASET_ID="$DFG_DATASET_ID" OUTPUT_CONFIG="$TEMP_CONFIG" "$PYTHON_BIN" - <<'PY'
+  BASE_CONFIG="$WORK_ROOT/configs_runs/qwen0.5b.json" CFG_DATASET_ID="$CFG_DATASET_ID" DFG_DATASET_ID="$DFG_DATASET_ID" OUTPUT_CONFIG="$TEMP_CONFIG" VALIDATION_CONCURRENCY_LIMIT="$VALIDATION_CONCURRENCY_LIMIT" SKIP_CLEAN="$SKIP_CLEAN" FORCE_REBUILD="$FORCE_REBUILD" "$PYTHON_BIN" - <<'PY'
 import json
 import os
 from pathlib import Path
@@ -151,6 +159,10 @@ out = Path(os.environ["OUTPUT_CONFIG"])
 cfg = json.loads(base.read_text(encoding="utf-8"))
 cfg["cfg_dataset_id"] = os.environ["CFG_DATASET_ID"]
 cfg["dfg_dataset_id"] = os.environ["DFG_DATASET_ID"]
+cfg["bringup_validation_concurrency_limit"] = int(os.environ["VALIDATION_CONCURRENCY_LIMIT"])
+cfg["bringup_skip_clean"] = os.environ["SKIP_CLEAN"] == "1"
+cfg["bringup_force_rebuild"] = os.environ["FORCE_REBUILD"] == "1"
+cfg["validation_concurrency"] = int(os.environ["VALIDATION_CONCURRENCY_LIMIT"])
 out.write_text(json.dumps(cfg, indent=2) + "\n", encoding="utf-8")
 PY
 }
@@ -175,6 +187,9 @@ run_one() {
   local input_json
   local skip_reason
   local run_label="geminiComposer/qwen0.5b/bringup/${source_isa}-to-${target_isa}"
+  if [[ -n "$RUN_LABEL_SUFFIX" ]]; then
+    run_label="${run_label}-${RUN_LABEL_SUFFIX}"
+  fi
   local checkpoint_path="${RESULTS_ROOT}/${run_label}/error_cfg_dfg/logs/checkpoint_error_cfg_dfg.json"
 
   input_json="$(find_latest_json "$source_isa" "$target_isa")"

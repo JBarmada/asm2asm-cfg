@@ -25,6 +25,15 @@ Backward-compatible HumanEval wrappers are still present:
 - `humaneval_compose_gemini.py`
 - `humaneval_compose_openai.py`
 
+Repository helper scripts are also available for common full-run workflows:
+
+- `composer_run_all_o2.sh`
+- `gemini_HE_run_all.sh`
+- `gemini_MC_full_qwen0p5b_base.sh`
+- `gemini_MC_full_qwen0p5b_error_cfg_dfg.sh`
+- `gemini_BU_full_qwen0p5b_base.sh`
+- `gemini_BU_full_qwen0p5b_error_cfg_dfg.sh`
+
 ## Supported Targets
 
 Canonical public ISA IDs:
@@ -61,7 +70,11 @@ The config loader also accepts legacy values such as `x86_64` and `riscv64` for 
 
 - Makefile-driven build and test flow.
 - Prompts treat the input as a translation-unit replacement, not a single function.
-- Prompt concurrency can remain high, but validation concurrency is clamped to `1` for safety.
+- Prompt concurrency can remain high, but validation concurrency defaults to `1`.
+- BringUp can opt into controlled speed experiments with:
+  - `bringup_validation_concurrency_limit`
+  - `bringup_skip_clean`
+  - `bringup_force_rebuild`
 - CFG/DFG prompt modes require explicit `cfg_dataset_id` and `dfg_dataset_id`.
 
 ## Input Routes
@@ -177,6 +190,9 @@ Primary config fields:
 - `standard_timeout_seconds`
 - `bringup_timeout_seconds`
 - `make_target`
+- `bringup_validation_concurrency_limit`
+- `bringup_skip_clean`
+- `bringup_force_rebuild`
 - `graph_source`
 - `graph_split`
 - `cfg_dataset_id`
@@ -313,6 +329,48 @@ python compose_openai.py ../runs/mceval_riscv_experiment --config config_example
 python compose_gemini.py ../runs/bringup_arm/translated_asm --config config_examples/bringup_armv8-linux.json --bootstrap-errors
 ```
 
+### BringUpBench full qwen0.5b base run
+
+```bash
+bash gemini_BU_full_qwen0p5b_base.sh
+```
+
+### BringUpBench full qwen0.5b `error_cfg_dfg` run
+
+This helper defaults to:
+
+- `cfg_dataset_id=ryaasabsar/bringup_asm_cfg`
+- `dfg_dataset_id=ryaasabsar/bringup_asm_dfg`
+
+```bash
+bash gemini_BU_full_qwen0p5b_error_cfg_dfg.sh
+```
+
+### BringUpBench speed experiment
+
+Use a run-label suffix so the experimental outputs do not collide with the baseline directories.
+
+Safer first experiment:
+
+```bash
+bash gemini_BU_full_qwen0p5b_error_cfg_dfg.sh \
+  --run-label-suffix exp-vc2-skipclean \
+  --validation-concurrency-limit 2 \
+  --skip-clean
+```
+
+More aggressive variant:
+
+```bash
+bash gemini_BU_full_qwen0p5b_error_cfg_dfg.sh \
+  --run-label-suffix exp-vc2-skipclean-nob \
+  --validation-concurrency-limit 2 \
+  --skip-clean \
+  --no-force-rebuild
+```
+
+The same speed flags are also supported by `gemini_BU_full_qwen0p5b_base.sh`.
+
 ## Extending
 
 ### Add a provider
@@ -330,5 +388,5 @@ python compose_gemini.py ../runs/bringup_arm/translated_asm --config config_exam
 ## Notes
 
 - `source_isa` controls graph-column selection for the source program. Change it to match the original translation source in your experiment.
-- BringUpBench uses isolated scratch workspaces and runs with one validator worker by design, while prompt generation can still run in parallel.
+- BringUpBench uses isolated scratch workspaces. Validation defaults to one worker, but controlled experiments can raise the cap with `bringup_validation_concurrency_limit`.
 - Direct ZIP ingestion is not part of this repo path. Pass the evaluated JSON or the extracted ASM directory instead.

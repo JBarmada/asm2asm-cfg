@@ -52,7 +52,7 @@ class BringUpBenchmark(BenchmarkAdapter):
         self.dfg_data = dfg_data or {}
 
     def max_validation_concurrency(self) -> int | None:
-        return 1
+        return max(1, int(self.cfg.get("bringup_validation_concurrency_limit", 1)))
 
     def max_prompt_concurrency(self) -> int | None:
         return None
@@ -324,6 +324,8 @@ class BringUpBenchmark(BenchmarkAdapter):
         target_libs = " ".join(str(item) for item in self.cfg.get("link_flags", []))
         opt_cflags = self._opt_cflags()
         local_cflags = self._local_cflags()
+        skip_clean = bool(self.cfg.get("bringup_skip_clean", False))
+        force_rebuild = bool(self.cfg.get("bringup_force_rebuild", True))
 
         assignments = [
             f"TARGET={make_target}",
@@ -336,11 +338,17 @@ class BringUpBenchmark(BenchmarkAdapter):
         if local_cflags:
             assignments.append(f"LOCAL_CFLAGS={local_cflags}")
 
-        return [
-            ["make", *assignments, "clean"],
-            ["make", "-B", *assignments, "build"],
-            ["make", *assignments, "test"],
-        ]
+        commands: list[list[str]] = []
+        if not skip_clean:
+            commands.append(["make", *assignments, "clean"])
+
+        build_command = ["make"]
+        if force_rebuild:
+            build_command.append("-B")
+        build_command.extend([*assignments, "build"])
+        commands.append(build_command)
+        commands.append(["make", *assignments, "test"])
+        return commands
 
     def _compiler_command(self) -> str:
         clang_parts = shlex.split(str(self.cfg.get("clang", "clang-17")))

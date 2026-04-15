@@ -43,17 +43,42 @@ else
   QWEN_ROOT="$(cd "$WORK_ROOT/.." && pwd)/Qwen-Translations"
 fi
 
+if command -v python3 >/dev/null 2>&1; then
+  PYTHON_BIN="python3"
+elif command -v python >/dev/null 2>&1; then
+  PYTHON_BIN="python"
+else
+  echo "Missing python3/python in PATH" >&2
+  exit 1
+fi
+
 cd "$WORK_ROOT"
 
 DRY_RUN=0
 LIST_ONLY=0
 YES_FLAG="--yes"
+VALIDATION_CONCURRENCY_LIMIT="${BRINGUP_VALIDATION_CONCURRENCY_LIMIT:-1}"
+SKIP_CLEAN="${BRINGUP_SKIP_CLEAN:-0}"
+FORCE_REBUILD="${BRINGUP_FORCE_REBUILD:-1}"
+RUN_LABEL_SUFFIX="${BRINGUP_RUN_LABEL_SUFFIX:-}"
+TEMP_CONFIG=""
+
+cleanup() {
+  if [[ -n "$TEMP_CONFIG" && -f "$TEMP_CONFIG" ]]; then
+    rm -f "$TEMP_CONFIG"
+  fi
+}
+trap cleanup EXIT
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --dry-run) DRY_RUN=1; shift ;;
     --list) LIST_ONLY=1; shift ;;
     --no-yes) YES_FLAG=""; shift ;;
+    --validation-concurrency-limit) VALIDATION_CONCURRENCY_LIMIT="$2"; shift 2 ;;
+    --skip-clean) SKIP_CLEAN=1; shift ;;
+    --no-force-rebuild) FORCE_REBUILD=0; shift ;;
+    --run-label-suffix) RUN_LABEL_SUFFIX="$2"; shift 2 ;;
     *)
       echo "Unknown argument: $1" >&2
       exit 2
@@ -77,11 +102,41 @@ has_txt_report() {
   return 1
 }
 
+ensure_config() {
+  if [[ -n "$TEMP_CONFIG" ]]; then
+    return
+  fi
+
+  if [[ "$VALIDATION_CONCURRENCY_LIMIT" == "1" && "$SKIP_CLEAN" == "0" && "$FORCE_REBUILD" == "1" ]]; then
+    TEMP_CONFIG="configs_runs/qwen0.5b.json"
+    return
+  fi
+
+  TEMP_CONFIG="$(mktemp "${TMPDIR:-/tmp}/bringup-qwen0.5b-base-speed-XXXXXX.json")"
+  BASE_CONFIG="$WORK_ROOT/configs_runs/qwen0.5b.json" OUTPUT_CONFIG="$TEMP_CONFIG" VALIDATION_CONCURRENCY_LIMIT="$VALIDATION_CONCURRENCY_LIMIT" SKIP_CLEAN="$SKIP_CLEAN" FORCE_REBUILD="$FORCE_REBUILD" "$PYTHON_BIN" - <<'PY'
+import json
+import os
+from pathlib import Path
+
+base = Path(os.environ["BASE_CONFIG"])
+out = Path(os.environ["OUTPUT_CONFIG"])
+cfg = json.loads(base.read_text(encoding="utf-8"))
+cfg["bringup_validation_concurrency_limit"] = int(os.environ["VALIDATION_CONCURRENCY_LIMIT"])
+cfg["bringup_skip_clean"] = os.environ["SKIP_CLEAN"] == "1"
+cfg["bringup_force_rebuild"] = os.environ["FORCE_REBUILD"] == "1"
+cfg["validation_concurrency"] = int(os.environ["VALIDATION_CONCURRENCY_LIMIT"])
+out.write_text(json.dumps(cfg, indent=2) + "\n", encoding="utf-8")
+PY
+}
+
 run_one() {
   local source_isa="$1"
   local target_isa="$2"
   local input_json="$3"
   local run_label="geminiComposer/qwen0.5b/bringup/${source_isa}-to-${target_isa}"
+  if [[ -n "$RUN_LABEL_SUFFIX" ]]; then
+    run_label="${run_label}-${RUN_LABEL_SUFFIX}"
+  fi
   local checkpoint_path="${RESULTS_ROOT}/${run_label}/base/logs/checkpoint_base.json"
 
   echo "Pair: ${source_isa} -> ${target_isa}"
@@ -98,6 +153,8 @@ run_one() {
     exit 1
   fi
 
+  ensure_config
+
   if has_txt_report "$run_label" "base"; then
     echo "Skipping existing report: ${run_label}/base"
     echo ""
@@ -105,8 +162,8 @@ run_one() {
   fi
 
   cmd=(
-    python3 compose_gemini.py "$input_json"
-    --config configs_runs/qwen0.5b.json
+    "$PYTHON_BIN" compose_gemini.py "$input_json"
+    --config "$TEMP_CONFIG"
     --benchmark bringup
     --source-isa "$source_isa"
     --target-isa "$target_isa"

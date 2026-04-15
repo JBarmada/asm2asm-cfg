@@ -33,6 +33,44 @@ The only directory currently maintained in this workspace is [ModularComposer](M
 
 This Docker image is set up with all the necessary tools and libraries for cross-compiling your project. You can now navigate to the `/datasets` directory inside the container to access your datasets and start working on your project.
 
+### ModularComposer quick start inside Docker
+
+Current maintained workflow:
+
+```bash
+cd /datasets/ModularComposer
+```
+
+BringUpBench qwen0.5b `error_cfg_dfg` full run:
+
+```bash
+bash gemini_BU_full_qwen0p5b_error_cfg_dfg.sh
+```
+
+The helper defaults to these Hugging Face graph datasets:
+
+- `ryaasabsar/bringup_asm_cfg`
+- `ryaasabsar/bringup_asm_dfg`
+
+Controlled BringUp speed experiment:
+
+```bash
+bash gemini_BU_full_qwen0p5b_error_cfg_dfg.sh \
+  --run-label-suffix exp-vc2-skipclean \
+  --validation-concurrency-limit 2 \
+  --skip-clean
+```
+
+More aggressive BringUp experiment:
+
+```bash
+bash gemini_BU_full_qwen0p5b_error_cfg_dfg.sh \
+  --run-label-suffix exp-vc2-skipclean-nob \
+  --validation-concurrency-limit 2 \
+  --skip-clean \
+  --no-force-rebuild
+```
+
 ### Tools included in the Docker image:
 - clang-17
 - LLVM-17
