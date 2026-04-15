@@ -18,7 +18,12 @@ ModularComposer is the active codebase in this workspace. It provides a modular 
 - writing run artifacts, checkpoints, and reports.
 
 If you want the current implementation details, start with [ModularComposer/README.md](ModularComposer/README.md).
-That README now also documents the current BringUpBench helper scripts, including the `error_cfg_dfg` runner and the opt-in speed experiment flags for validation concurrency, skipping `make clean`, and disabling forced rebuilds.
+That README now also documents:
+
+- the current BringUpBench helper scripts, including the `error_cfg_dfg` runner,
+- the opt-in speed experiment flags for validation concurrency, skipping `make clean`, and disabling forced rebuilds,
+- the results inventory generator (`inventory_composer_results.py`),
+- the trimmed result-sharing packager (`package_results_for_collab.ps1`).
 
 ## Workspace Layout
 

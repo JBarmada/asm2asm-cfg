@@ -33,6 +33,8 @@ Repository helper scripts are also available for common full-run workflows:
 - `gemini_MC_full_qwen0p5b_error_cfg_dfg.sh`
 - `gemini_BU_full_qwen0p5b_base.sh`
 - `gemini_BU_full_qwen0p5b_error_cfg_dfg.sh`
+- `inventory_composer_results.py`
+- `package_results_for_collab.ps1`
 
 ## Supported Targets
 
@@ -351,6 +353,98 @@ Key directories:
 - `logs/`
 - `txts/`
 
+## Result Inventory And Sharing
+
+Two helper utilities are available for post-run result management.
+
+### Readable Results Inventory
+
+`inventory_composer_results.py` scans all `*_report.txt` files under `results/composer/` and writes:
+
+- a readable Markdown inventory
+- a CSV inventory for sorting or filtering in Excel or pandas
+
+Default outputs:
+
+- `../share/results_inventory.md`
+- `../share/results_inventory.csv`
+
+Fields included in the inventory:
+
+- composer
+- benchmark
+- model
+- source-to-target ISA pair
+- prompt config
+- run start and finish timestamps
+- report filename and full report path
+
+Example:
+
+```bash
+python inventory_composer_results.py
+```
+
+Optional overrides:
+
+```bash
+python inventory_composer_results.py \
+  --root results/composer \
+  --markdown-out ../share/results_inventory.md \
+  --csv-out ../share/results_inventory.csv
+```
+
+### Trimmed Result Share Package
+
+`package_results_for_collab.ps1` builds a curated share tree from `results/composer/` and zips it for collaboration.
+
+Default outputs:
+
+- `../share/results_for_collab/`
+- `../share/results_for_collab.zip`
+- `../share/results_for_collab/PACKAGE_INFO.txt`
+
+Default included content:
+
+- `txts/`
+- `validation_json/`
+- `logs/checkpoint_*.json`
+- `fixed_*_asm/`
+
+Optional included content:
+
+- `clean_diagnostics/` via `-IncludeCleanDiagnostics`
+
+Default excluded content:
+
+- `compile_probe/`
+- `raw_model_output/`
+- `cleaned_model_output/`
+- `prompts/`
+
+The script deletes and rebuilds the share folder on each run, writes a package manifest, and verifies the final zip by opening it and counting entries.
+
+Example:
+
+```powershell
+& ".\package_results_for_collab.ps1"
+```
+
+Include cleaned failure summaries:
+
+```powershell
+& ".\package_results_for_collab.ps1" -IncludeCleanDiagnostics
+```
+
+Optional overrides:
+
+```powershell
+& ".\package_results_for_collab.ps1" `
+  -SourceRoot "C:\path\to\ModularComposer\results\composer" `
+  -ShareRoot "C:\path\to\share\results_for_collab" `
+  -ZipPath "C:\path\to\share\results_for_collab.zip"
+```
+
 ## Example Workflows
 
 ### HumanEval from `eval.py` JSON
@@ -412,6 +506,24 @@ bash gemini_BU_full_qwen0p5b_error_cfg_dfg.sh \
 ```
 
 The same speed flags are also supported by `gemini_BU_full_qwen0p5b_base.sh`.
+
+### Build a readable result index
+
+```bash
+python inventory_composer_results.py
+```
+
+### Build a trimmed collaboration zip
+
+```powershell
+& ".\package_results_for_collab.ps1"
+```
+
+### Build a trimmed collaboration zip with cleaned diagnostics
+
+```powershell
+& ".\package_results_for_collab.ps1" -IncludeCleanDiagnostics
+```
 
 ## Extending
 

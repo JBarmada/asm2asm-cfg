@@ -71,6 +71,29 @@ bash gemini_BU_full_qwen0p5b_error_cfg_dfg.sh \
   --no-force-rebuild
 ```
 
+Build a readable results inventory:
+
+```bash
+python inventory_composer_results.py
+```
+
+This writes:
+
+- `../share/results_inventory.md`
+- `../share/results_inventory.csv`
+
+Build a trimmed collaboration package:
+
+```powershell
+& ".\package_results_for_collab.ps1"
+```
+
+Include cleaned diagnostics in the package:
+
+```powershell
+& ".\package_results_for_collab.ps1" -IncludeCleanDiagnostics
+```
+
 ### Tools included in the Docker image:
 - clang-17
 - LLVM-17
