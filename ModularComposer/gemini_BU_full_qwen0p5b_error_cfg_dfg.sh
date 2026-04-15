@@ -51,6 +51,15 @@ else
   QWEN_ROOT="$(cd "$WORK_ROOT/.." && pwd)/Qwen-Translations"
 fi
 
+if command -v python3 >/dev/null 2>&1; then
+  PYTHON_BIN="python3"
+elif command -v python >/dev/null 2>&1; then
+  PYTHON_BIN="python"
+else
+  echo "Missing python3/python in PATH" >&2
+  exit 1
+fi
+
 cd "$WORK_ROOT"
 
 DRY_RUN=0
@@ -132,7 +141,7 @@ ensure_temp_config() {
   fi
 
   TEMP_CONFIG="$(mktemp "${TMPDIR:-/tmp}/bringup-qwen0.5b-errorcfgdfg-XXXXXX.json")"
-  BASE_CONFIG="$WORK_ROOT/configs_runs/qwen0.5b.json" CFG_DATASET_ID="$CFG_DATASET_ID" DFG_DATASET_ID="$DFG_DATASET_ID" OUTPUT_CONFIG="$TEMP_CONFIG" python3 - <<'PY'
+  BASE_CONFIG="$WORK_ROOT/configs_runs/qwen0.5b.json" CFG_DATASET_ID="$CFG_DATASET_ID" DFG_DATASET_ID="$DFG_DATASET_ID" OUTPUT_CONFIG="$TEMP_CONFIG" "$PYTHON_BIN" - <<'PY'
 import json
 import os
 from pathlib import Path
@@ -203,7 +212,7 @@ run_one() {
   fi
 
   cmd=(
-    python3 compose_gemini.py "$input_json"
+    "$PYTHON_BIN" compose_gemini.py "$input_json"
     --config "$TEMP_CONFIG"
     --benchmark bringup
     --source-isa "$source_isa"
