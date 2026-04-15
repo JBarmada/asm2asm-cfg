@@ -242,6 +242,14 @@ Retry feedback behavior:
 - Raw stderr/stdout and command logs remain on disk for auditability.
 - Retries do not use source code, source-level semantics, expected outputs, or benchmark-specific oracle hints.
 
+McEval graph note:
+
+- The generic runner still expects explicit McEval graph dataset ids in config for `error_cfg_dfg`.
+- The dedicated qwen0.5b McEval Gemini script can default to:
+  - `ryaasabsar/mceval_asm_cfg`
+  - `ryaasabsar/mceval_asm_dfg`
+  and still allows overrides.
+
 ## Preflight
 
 Before model calls begin, the runner prints a preflight summary containing:
