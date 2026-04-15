@@ -57,7 +57,8 @@ class GeminiProvider(ModelProvider):
                 self._record_usage(response)
                 text = getattr(response, "text", None)
                 if not text:
-                    raise RuntimeError(f"Gemini returned empty text for {problem_name}")
+                    detail = _describe_empty_response(response)
+                    raise RuntimeError(f"Gemini returned empty text for {problem_name} ({detail})")
                 return text
             except Exception as exc:
                 error_summary = _format_error_summary(exc)
@@ -227,3 +228,91 @@ def _is_model_not_found_error(error: Exception | str) -> bool:
             or "models/" in lowered
         )
     )
+
+
+def _describe_empty_response(response: object) -> str:
+    details: list[str] = []
+
+    candidates = getattr(response, "candidates", None)
+    if candidates is None:
+        details.append("candidates=unknown")
+    else:
+        details.append(f"candidates={len(candidates)}")
+        if candidates:
+            details.extend(_describe_candidate(candidates[0]))
+
+    prompt_feedback = getattr(response, "prompt_feedback", None)
+    if prompt_feedback is not None:
+        details.extend(_describe_prompt_feedback(prompt_feedback))
+
+    usage = getattr(response, "usage_metadata", None)
+    if usage is not None:
+        prompt_tokens = int(getattr(usage, "prompt_token_count", 0) or 0)
+        total_tokens = int(getattr(usage, "total_token_count", 0) or 0)
+        details.append(f"prompt_tokens={prompt_tokens}")
+        details.append(f"total_tokens={total_tokens}")
+
+    filtered = [item for item in details if item]
+    return ", ".join(filtered) if filtered else "no response metadata"
+
+
+def _describe_candidate(candidate: object) -> list[str]:
+    details: list[str] = []
+
+    finish_reason = getattr(candidate, "finish_reason", None)
+    if finish_reason not in (None, "", "FINISH_REASON_UNSPECIFIED"):
+        details.append(f"finish_reason={finish_reason}")
+
+    finish_message = getattr(candidate, "finish_message", None)
+    if isinstance(finish_message, str) and finish_message.strip():
+        details.append(f"finish_message={finish_message.strip()}")
+
+    content = getattr(candidate, "content", None)
+    if content is not None:
+        parts = getattr(content, "parts", None)
+        if parts is None:
+            details.append("parts=unknown")
+        else:
+            details.append(f"parts={len(parts)}")
+            if parts:
+                details.append(f"part_kinds={_describe_part_kinds(parts)}")
+
+    safety_ratings = getattr(candidate, "safety_ratings", None)
+    if safety_ratings:
+        details.append(f"candidate_safety={len(safety_ratings)}")
+
+    return details
+
+
+def _describe_prompt_feedback(prompt_feedback: object) -> list[str]:
+    details: list[str] = []
+
+    block_reason = getattr(prompt_feedback, "block_reason", None)
+    if block_reason not in (None, "", "BLOCK_REASON_UNSPECIFIED"):
+        details.append(f"prompt_block_reason={block_reason}")
+
+    block_reason_message = getattr(prompt_feedback, "block_reason_message", None)
+    if isinstance(block_reason_message, str) and block_reason_message.strip():
+        details.append(f"prompt_block_reason_message={block_reason_message.strip()}")
+
+    safety_ratings = getattr(prompt_feedback, "safety_ratings", None)
+    if safety_ratings:
+        details.append(f"prompt_safety={len(safety_ratings)}")
+
+    return details
+
+
+def _describe_part_kinds(parts: object) -> str:
+    kinds: list[str] = []
+    for part in list(parts)[:3]:
+        if getattr(part, "text", None):
+            kinds.append("text")
+        elif getattr(part, "inline_data", None) is not None:
+            kinds.append("inline_data")
+        elif getattr(part, "function_call", None) is not None:
+            kinds.append("function_call")
+        elif getattr(part, "function_response", None) is not None:
+            kinds.append("function_response")
+        else:
+            kinds.append(type(part).__name__)
+    return "|".join(kinds) if kinds else "none"

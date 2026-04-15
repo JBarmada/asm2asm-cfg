@@ -11,6 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from composers.providers.base import FatalProviderError, ProviderUsageSummary, QuotaExhaustedError
 from composers.providers.gemini import (
     GeminiProvider,
+    _describe_empty_response,
     _format_error_summary,
     _is_model_not_found_error,
     _is_quota_exhausted_error,
@@ -181,6 +182,46 @@ class GeminiProviderTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(usage.response_token_count, 140)
         self.assertEqual(usage.total_token_count, 840)
         self.assertEqual(usage.usage_metadata_requests, 6)
+
+    async def test_generate_repair_reports_empty_response_details(self) -> None:
+        provider, models = self._provider(
+            [
+                SimpleNamespace(
+                    text="",
+                    candidates=[
+                        SimpleNamespace(
+                            finish_reason="SAFETY",
+                            finish_message="Blocked by safety filters",
+                            content=SimpleNamespace(parts=[]),
+                        )
+                    ],
+                    prompt_feedback=SimpleNamespace(
+                        block_reason="SAFETY",
+                        block_reason_message="Prompt triggered a safety policy.",
+                    ),
+                    usage_metadata=SimpleNamespace(
+                        prompt_token_count=111,
+                        total_token_count=111,
+                    ),
+                )
+            ],
+            retries=1,
+        )
+
+        with self.assertRaises(RuntimeError) as ctx:
+            await provider.generate_repair("repair this", "natlog")
+
+        message = str(ctx.exception)
+        self.assertIn("Gemini returned empty text for natlog", message)
+        self.assertIn("candidates=1", message)
+        self.assertIn("finish_reason=SAFETY", message)
+        self.assertIn("prompt_block_reason=SAFETY", message)
+        self.assertIn("prompt_tokens=111", message)
+        self.assertEqual(models.calls, 1)
+
+    def test_describe_empty_response_without_candidates(self) -> None:
+        detail = _describe_empty_response(SimpleNamespace(text=""))
+        self.assertEqual(detail, "candidates=unknown")
 
 
 if __name__ == "__main__":
