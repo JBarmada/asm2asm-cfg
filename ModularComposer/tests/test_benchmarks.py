@@ -107,6 +107,61 @@ class BenchmarkAdapterTests(unittest.TestCase):
         self.assertEqual(diagnostics.failure_stage, "runtime")
         self.assertIn("Segmentation fault", diagnostics.clean_summary)
 
+    def test_summarize_run_result_ignores_separator_only_lines(self) -> None:
+        diagnostics = summarize_run_result(
+            BenchmarkRunResult(
+                problem_name="problem1",
+                status="runtime_error",
+                summary="BringUpBench test failed",
+                command_results=[
+                    CommandResult(
+                        ["make", "test"],
+                        2,
+                        "",
+                        "---\n===\n***\nFAIL: expected 7 got 8\n",
+                    )
+                ],
+                stderr="---\n===\n***\nFAIL: expected 7 got 8\n",
+            )
+        )
+
+        self.assertEqual(diagnostics.failure_stage, "runtime")
+        self.assertEqual(diagnostics.clean_summary, "Runtime failed: FAIL: expected 7 got 8")
+        self.assertNotIn("---", "\n".join(diagnostics.clean_details))
+        self.assertNotIn("===", "\n".join(diagnostics.clean_details))
+        self.assertNotIn("***", "\n".join(diagnostics.clean_details))
+
+    def test_summarize_run_result_diff_output_reports_expected_and_got(self) -> None:
+        diagnostics = summarize_run_result(
+            BenchmarkRunResult(
+                problem_name="simple-grep",
+                status="runtime_error",
+                summary="BringUpBench test failed",
+                command_results=[
+                    CommandResult(
+                        ["make", "test"],
+                        2,
+                        "",
+                        (
+                            "1c1\n"
+                            "< INFO: found (at least) 21 occurrences of the word `the'.\n"
+                            "---\n"
+                            "> INFO: found (at least) 20 occurrences of the word `the'.\n"
+                        ),
+                    )
+                ],
+                stderr=(
+                    "1c1\n"
+                    "< INFO: found (at least) 21 occurrences of the word `the'.\n"
+                    "---\n"
+                    "> INFO: found (at least) 20 occurrences of the word `the'.\n"
+                ),
+            )
+        )
+
+        self.assertEqual(diagnostics.failure_stage, "runtime")
+        self.assertEqual(diagnostics.clean_summary, "Runtime failed: output mismatch (expected 20, got 21)")
+
     def test_summarize_error_entry_filters_make_noise(self) -> None:
         diagnostics = summarize_error_entry(
             {

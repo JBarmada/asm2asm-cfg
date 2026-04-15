@@ -75,7 +75,7 @@ The config loader also accepts legacy values such as `x86_64` and `riscv64` for 
   - `bringup_validation_concurrency_limit`
   - `bringup_skip_clean`
   - `bringup_force_rebuild`
-- CFG/DFG prompt modes require explicit `cfg_dataset_id` and `dfg_dataset_id`.
+- Direct `compose_*.py` runs require explicit `cfg_dataset_id` and `dfg_dataset_id` for CFG/DFG prompt modes.
 
 ## Input Routes
 
@@ -159,6 +159,39 @@ Useful overrides:
 --resume-checkpoint results/composer/<run>/logs/checkpoint_<prompt>.json
 ```
 
+### Generic Campaign Runner
+
+`composer_run_all_o2.sh` is the generic campaign helper.
+
+- The default unfiltered sweep is qwen-only and ordered as:
+  - `qwen0.5b`
+  - `qwen3b`
+  - `qwen1.5b`
+- The intended operator pattern is one terminal per benchmark:
+  - `./composer_run_all_o2.sh --benchmark humaneval ...`
+  - `./composer_run_all_o2.sh --benchmark bringup ...`
+  - `./composer_run_all_o2.sh --benchmark mceval ...`
+- Default prompt coverage in the generic runner is:
+  - `base`
+  - `error_cfg_dfg`
+- HumanEval `qwen0.5b` `error_cfg_dfg` is intentionally skipped for the Gemini composer campaign.
+- The shared qwen config defaults are:
+  - `Prompt concurrency: 100`
+  - `Validation concurrency: 100`
+- The generic runner applies benchmark-specific campaign overrides:
+  - HumanEval: `100/100`
+  - McEval: `100/100`
+  - BringUpBench: `64/16`
+- BringUp preflight should still clamp to:
+  - `Prompt concurrency: 64`
+  - `Validation concurrency: 1`
+- Generic run labels are kept under:
+  - `results/composer/<provider>Composer/<translation-model>/<benchmark>/<source>-to-<target>`
+- Legacy HumanEval qwen run directories are migrated into that canonical layout automatically before real HumanEval runs.
+- If you want to tidy the HumanEval layout without launching jobs, use:
+  - `./composer_run_all_o2.sh --benchmark humaneval --migrate-humaneval-legacy --list`
+- Plain `--list` and `--dry-run` remain non-mutating unless you explicitly add `--migrate-humaneval-legacy`.
+
 ### Target ISA Override Examples
 
 ```bash
@@ -179,6 +212,8 @@ Primary config fields:
 - `composer_model`
 - `composer_prompt_config`
 - `max_workers`
+- `prompt_concurrency`
+- `validation_concurrency`
 - `max_retries`
 - `bootstrap_errors`
 - `clang`
@@ -246,7 +281,12 @@ Graph prompt configs are:
 Dataset behavior:
 
 - HumanEval can use built-in default dataset IDs.
-- McEval and BringUpBench fail fast unless you set `cfg_dataset_id` and/or `dfg_dataset_id` explicitly.
+- Direct `compose_*.py` runs for McEval and BringUpBench fail fast unless you set `cfg_dataset_id` and/or `dfg_dataset_id` explicitly.
+- `composer_run_all_o2.sh` auto-fills graph dataset defaults for `error_cfg_dfg`:
+  - McEval CFG: `ryaasabsar/mceval_asm_cfg`
+  - McEval DFG: `ryaasabsar/mceval_asm_dfg`
+  - BringUp CFG: `ryaasabsar/bringup_asm_cfg`
+  - BringUp DFG: `ryaasabsar/bringup_asm_dfg`
 
 If you do not want graph inputs, use a non-graph prompt config such as `base` or `error_only`.
 
@@ -260,8 +300,10 @@ Retry feedback behavior:
 
 McEval graph note:
 
-- The generic runner still expects explicit McEval graph dataset ids in config for `error_cfg_dfg`.
-- The dedicated qwen0.5b McEval Gemini script can default to:
+- The generic runner can now auto-inject these McEval graph defaults for McEval graph prompts:
+  - `ryaasabsar/mceval_asm_cfg`
+  - `ryaasabsar/mceval_asm_dfg`
+- The dedicated qwen0.5b McEval Gemini script also defaults to:
   - `ryaasabsar/mceval_asm_cfg`
   - `ryaasabsar/mceval_asm_dfg`
   and still allows overrides.

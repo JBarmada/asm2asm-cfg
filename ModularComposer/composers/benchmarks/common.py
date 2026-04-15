@@ -113,6 +113,7 @@ def summarize_run_result(result: BenchmarkRunResult) -> FailureDiagnostics:
         summary=result.summary,
         clean_details=clean_details,
         failing_result=failing_result,
+        raw_text=raw_text,
     )
     return FailureDiagnostics(
         failure_stage=failure_stage,
@@ -164,6 +165,7 @@ def summarize_error_entry(entry: dict[str, object]) -> FailureDiagnostics:
         summary=summary,
         clean_details=clean_details,
         failing_result=failing_result,
+        raw_text=raw_text,
     )
     return FailureDiagnostics(
         failure_stage=failure_stage,
@@ -319,6 +321,8 @@ def _fallback_details(raw_text: str) -> tuple[str, ...]:
         line = raw_line.strip()
         if not line:
             continue
+        if _is_ignorable_diagnostic_line(line):
+            continue
         normalized = _normalize_detail_line(line)
         if normalized:
             lines.append(normalized)
@@ -335,6 +339,8 @@ def _normalize_detail_line(line: str) -> str:
 
 def _is_ignorable_diagnostic_line(line: str) -> bool:
     lowered = line.lower()
+    if re.fullmatch(r"[-=*]{3,}", line.strip()):
+        return True
     ignored_prefixes = (
         "make: entering directory",
         "make: leaving directory",
@@ -387,7 +393,13 @@ def _build_clean_summary(
     summary: str,
     clean_details: tuple[str, ...],
     failing_result: CommandResult | None,
+    raw_text: str,
 ) -> str:
+    if failure_stage == "runtime":
+        diff_summary = _summarize_diff_runtime_failure(raw_text)
+        if diff_summary:
+            return diff_summary
+
     detail = clean_details[0] if clean_details else ""
     if failure_stage == "timeout":
         return summary or "Validation timed out"
@@ -409,6 +421,52 @@ def _build_clean_summary(
     if failing_result is not None:
         return f"{prefix}: command exited with code {failing_result.returncode}"
     return prefix
+
+
+def _summarize_diff_runtime_failure(raw_text: str) -> str:
+    actual_line = ""
+    expected_line = ""
+    for raw_line in raw_text.splitlines():
+        line = raw_line.strip()
+        if line.startswith("< "):
+            actual_line = _normalize_detail_line(line[2:].strip())
+        elif line.startswith("> "):
+            expected_line = _normalize_detail_line(line[2:].strip())
+        if actual_line and expected_line:
+            break
+
+    if not actual_line or not expected_line:
+        return ""
+
+    actual_value, expected_value = _extract_numeric_mismatch(actual_line, expected_line)
+    if actual_value and expected_value:
+        return f"Runtime failed: output mismatch (expected {expected_value}, got {actual_value})"
+
+    return (
+        "Runtime failed: output mismatch "
+        f"(expected {_quote_summary_fragment(expected_line)}, got {_quote_summary_fragment(actual_line)})"
+    )
+
+
+def _extract_numeric_mismatch(actual_line: str, expected_line: str) -> tuple[str, str]:
+    actual_numbers = re.findall(r"-?\d+(?:\.\d+)?", actual_line)
+    expected_numbers = re.findall(r"-?\d+(?:\.\d+)?", expected_line)
+    if len(actual_numbers) != 1 or len(expected_numbers) != 1:
+        return "", ""
+
+    actual_masked = re.sub(r"-?\d+(?:\.\d+)?", "{n}", actual_line)
+    expected_masked = re.sub(r"-?\d+(?:\.\d+)?", "{n}", expected_line)
+    if actual_masked != expected_masked:
+        return "", ""
+
+    return actual_numbers[0], expected_numbers[0]
+
+
+def _quote_summary_fragment(line: str, *, max_len: int = 60) -> str:
+    text = line.strip()
+    if len(text) > max_len:
+        text = text[: max_len - 3].rstrip() + "..."
+    return repr(text)
 
 
 def load_json_payload(path: Path) -> object:
