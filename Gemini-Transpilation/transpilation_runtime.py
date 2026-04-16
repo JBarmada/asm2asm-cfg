@@ -3,16 +3,17 @@ from __future__ import annotations
 import json
 import os
 import platform
+import re
 import shlex
 import shutil
 import signal
 import subprocess
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 try:
     from datasets import load_dataset
@@ -153,8 +154,54 @@ class EvalResult:
     stderr: str = ""
 
 
+@dataclass
+class ProviderUsageSummary:
+    provider_name: str
+    successful_requests: int = 0
+    prompt_token_count: int = 0
+    response_token_count: int = 0
+    total_token_count: int = 0
+    usage_metadata_requests: int = 0
+
+
 def _log(message: str) -> None:
     print(f"[{time.strftime('%H:%M:%S')}] {message}")
+
+
+def _write_text(path: Path, content: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content, encoding="utf-8")
+
+
+def _write_json(path: Path, payload: object) -> Path:
+    _write_text(path, json.dumps(payload, indent=2) + "\n")
+    return path
+
+
+def command_result_to_dict(command_result: CommandResult) -> dict[str, object]:
+    return {
+        "command": shlex.join(command_result.command),
+        "returncode": command_result.returncode,
+        "stdout": command_result.stdout,
+        "stderr": command_result.stderr,
+    }
+
+
+def provider_usage_summary_to_dict(summary: ProviderUsageSummary | None) -> dict[str, object] | None:
+    return asdict(summary) if summary is not None else None
+
+
+def provider_usage_summary_from_dict(payload: dict[str, object] | None) -> ProviderUsageSummary | None:
+    if not payload:
+        return None
+    return ProviderUsageSummary(
+        provider_name=str(payload.get("provider_name", "")),
+        successful_requests=int(payload.get("successful_requests", 0)),
+        prompt_token_count=int(payload.get("prompt_token_count", 0)),
+        response_token_count=int(payload.get("response_token_count", 0)),
+        total_token_count=int(payload.get("total_token_count", 0)),
+        usage_metadata_requests=int(payload.get("usage_metadata_requests", 0)),
+    )
 
 
 def normalize_benchmark_id(value: str) -> str:
@@ -228,13 +275,46 @@ def detect_unsupported_target(target_isa: str) -> str | None:
     return None
 
 
-def clean_model_output(text: str | None) -> str:
-    if text is None:
-        return ""
-    cleaned = text
-    for token in ("```asm", "```assembly", "```x86asm", "```"):
-        cleaned = cleaned.replace(token, "")
-    return cleaned.strip()
+def _is_asm_like_line(line: str) -> bool:
+    stripped = line.strip()
+    if not stripped:
+        return True
+    if stripped.startswith((".", "//", "/*", "*", "#")):
+        return True
+    if re.match(r"^[A-Za-z_.$][\w.$]*:\s*$", stripped):
+        return True
+    if re.match(r"^b(\.[A-Za-z0-9]+)?\b", stripped):
+        return True
+    if re.match(r"^[a-z]{2,12}(\.[A-Za-z0-9_]+)?\b", stripped):
+        return True
+    return False
+
+
+def clean_model_output(text: str | None) -> tuple[str, dict[str, object]]:
+    raw = text or ""
+    lines = raw.splitlines()
+    without_fences = [line for line in lines if not line.strip().startswith("```")]
+
+    first_idx = 0
+    while first_idx < len(without_fences) and not _is_asm_like_line(without_fences[first_idx]):
+        first_idx += 1
+
+    last_idx = len(without_fences) - 1
+    while last_idx >= first_idx and not _is_asm_like_line(without_fences[last_idx]):
+        last_idx -= 1
+
+    cleaned_lines = without_fences[first_idx:last_idx + 1] if first_idx <= last_idx else []
+    cleaned = "\n".join(cleaned_lines).strip()
+    diagnostics = {
+        "raw_line_count": len(lines),
+        "fence_lines_removed": len(lines) - len(without_fences),
+        "leading_non_asm_lines_removed": first_idx,
+        "trailing_non_asm_lines_removed": max(0, len(without_fences) - last_idx - 1) if without_fences else 0,
+        "cleaned_line_count": len(cleaned_lines),
+        "is_empty_after_clean": cleaned == "",
+        "changed_from_raw": cleaned != raw.strip(),
+    }
+    return cleaned, diagnostics
 
 
 def ensure_dir(path: Path) -> Path:
@@ -246,13 +326,59 @@ def build_output_dirs(base_dir: Path) -> dict[str, Path]:
     names = [
         "prompts",
         "raw_model_output",
+        "cleaned_model_output",
+        "clean_diagnostics",
         "translated_asm",
+        "validation_json",
         "eval_temp",
         "txts",
         "jsons",
         "logs",
     ]
     return {name: ensure_dir(base_dir / name) for name in names}
+
+
+def save_checkpoint(path: Path, payload: dict[str, object]) -> None:
+    materialized = dict(payload)
+    materialized["updated_at"] = datetime.now().isoformat(timespec="seconds")
+    _write_json(path, materialized)
+
+
+def load_checkpoint(path: Path) -> dict[str, object]:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def resolve_concurrency_settings(
+    *,
+    cfg: dict[str, Any],
+    benchmark_id: str,
+    prompt_override: int | None = None,
+    validation_override: int | None = None,
+    max_workers_override: int | None = None,
+) -> tuple[int, int]:
+    cfg_has_prompt = cfg.get("prompt_concurrency") is not None
+    cfg_has_validation = cfg.get("validation_concurrency") is not None
+
+    fallback = max_workers_override if max_workers_override is not None else int(cfg.get("max_workers", 4))
+    prompt_concurrency = int(
+        prompt_override
+        if prompt_override is not None
+        else (cfg.get("prompt_concurrency") if cfg_has_prompt else fallback)
+    )
+    validation_seed = (
+        validation_override
+        if validation_override is not None
+        else (cfg.get("validation_concurrency") if cfg_has_validation else prompt_concurrency)
+    )
+    validation_concurrency = int(validation_seed)
+    prompt_concurrency = max(1, prompt_concurrency)
+    validation_concurrency = max(1, validation_concurrency)
+
+    if normalize_benchmark_id(benchmark_id) == "bringup":
+        validation_concurrency = min(validation_concurrency, 16)
+
+    validation_concurrency = min(validation_concurrency, prompt_concurrency)
+    return prompt_concurrency, validation_concurrency
 
 
 def load_hf_records(
@@ -281,100 +407,14 @@ def load_hf_records(
 
 
 def write_eval_results_json(path: Path, payload: list[dict[str, Any]]) -> Path:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
-    return path
+    return _write_json(path, payload)
 
 
-def write_error_json(
-    path: Path,
-    *,
-    benchmark_id: str,
-    benchmark_root: Path,
-    asm_input_dir: Path,
-    results: list[EvalResult],
-) -> Path:
-    errored = [result for result in results if not result.succeeded]
-    payload = {
-        "run_started": datetime.now().isoformat(timespec="seconds"),
-        "run_finished": datetime.now().isoformat(timespec="seconds"),
-        "asm_input_dir": str(asm_input_dir.resolve()),
-        "benchmark_root": str(benchmark_root.resolve()),
-        "benchmark": normalize_benchmark_id(benchmark_id),
-        "problems_processed": len(results),
-        "errored_count": len(errored),
-        "errored_problems": [
-            {
-                "name": result.problem_name,
-                "status": result.status,
-                "summary": result.summary,
-                "stderr": extract_stderr(result),
-                "commands": [
-                    {
-                        "command": shlex.join(command_result.command),
-                        "returncode": command_result.returncode,
-                    }
-                    for command_result in result.command_results
-                ],
-            }
-            for result in errored
-        ],
-    }
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
-    return path
-
-
-def write_report(
-    path: Path,
-    *,
-    benchmark_id: str,
-    source_isa: str,
-    target_isa: str,
-    model_name: str,
-    results: list[EvalResult],
-    started_at: datetime,
-) -> Path:
-    finished_at = datetime.now()
-    counts: dict[str, int] = {}
-    for result in results:
-        counts[result.status] = counts.get(result.status, 0) + 1
-    total = len(results)
-    succeeded = sum(1 for result in results if result.succeeded)
-    lines = [
-        f"Run started: {started_at.isoformat(timespec='seconds')}",
-        f"Run finished: {finished_at.isoformat(timespec='seconds')}",
-        f"Benchmark: {benchmark_display_name(benchmark_id)}",
-        f"Source ISA: {isa_display_name(source_isa)}",
-        f"Target ISA: {isa_display_name(target_isa)}",
-        f"Model: {model_name}",
-        f"Total problems: {total}",
-        f"Succeeded: {succeeded}",
-        f"Failed: {total - succeeded}",
-        f"Success rate: {succeeded}/{total} ({(succeeded / total * 100.0) if total else 0.0:.1f}%)",
-        "",
-        "Status counts:",
-    ]
-    for status in sorted(counts):
-        lines.append(f"- {status}: {counts[status]}")
-    lines.extend(["", "Per Problem Details:"])
-    for result in results:
-        lines.extend(
-            [
-                "",
-                f"Problem: {result.problem_name}",
-                f"Status: {result.status}",
-                f"Summary: {result.summary}",
-            ]
-        )
-        for command_result in result.command_results:
-            lines.append(f"CMD: {shlex.join(command_result.command)}")
-            lines.append(f"Code: {command_result.returncode}")
-            if command_result.stderr.strip():
-                lines.append(f"Stderr: {command_result.stderr.strip()}")
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    return path
+def get_failing_command(result: EvalResult) -> str:
+    for command_result in result.command_results:
+        if command_result.returncode != 0:
+            return shlex.join(command_result.command)
+    return ""
 
 
 def extract_stderr(result: EvalResult) -> str:
@@ -393,20 +433,182 @@ def extract_stderr(result: EvalResult) -> str:
     return "\n\n".join(deduped)
 
 
-def eval_record_payload(problem_name: str, pred: str, result: EvalResult) -> dict[str, Any]:
+def extract_stdout(result: EvalResult) -> str:
+    chunks: list[str] = []
+    if result.stdout.strip():
+        chunks.append(result.stdout.strip())
+    for command_result in result.command_results:
+        if command_result.stdout.strip():
+            chunks.append(command_result.stdout.strip())
+    deduped: list[str] = []
+    seen: set[str] = set()
+    for chunk in chunks:
+        if chunk not in seen:
+            seen.add(chunk)
+            deduped.append(chunk)
+    return "\n\n".join(deduped)
+
+
+def validation_payload(problem_name: str, pred: str, result: EvalResult) -> dict[str, Any]:
     return {
         "file": problem_name,
         "pred": pred,
         "success": 1 if result.succeeded else 0,
+        "success_bool": result.succeeded,
         "runtime_seconds": round(result.runtime_seconds, 4),
         "run_output": result.summary if result.succeeded and not result.stdout else (result.stdout or result.summary),
         "error_stage": result.error_stage,
         "status": result.status,
+        "summary": result.summary,
+        "stdout": extract_stdout(result),
         "stderr": extract_stderr(result),
+        "failing_command": get_failing_command(result),
+        "asm_path": str(result.asm_path) if result.asm_path else "",
+        "output_dir": str(result.output_dir) if result.output_dir else "",
+        "commands": [command_result_to_dict(command_result) for command_result in result.command_results],
     }
 
 
-def run_command(command: str, *, cwd: Path, timeout: int) -> tuple[bool, str, float]:
+def write_validation_json(path: Path, payload: dict[str, Any]) -> Path:
+    return _write_json(path, payload)
+
+
+def eval_record_payload(problem_name: str, pred: str, result: EvalResult) -> dict[str, Any]:
+    return validation_payload(problem_name, pred, result)
+
+
+def write_error_json(
+    path: Path,
+    *,
+    benchmark_id: str,
+    benchmark_root: Path,
+    asm_input_dir: Path,
+    results: list[EvalResult],
+    started_at: datetime | None = None,
+    finished_at: datetime | None = None,
+    usage_summary: ProviderUsageSummary | None = None,
+    run_status: str = "completed",
+    counts: dict[str, int] | None = None,
+) -> Path:
+    errored = [result for result in results if not result.succeeded]
+    payload: dict[str, object] = {
+        "run_started": (started_at or datetime.now()).isoformat(timespec="seconds"),
+        "run_finished": (finished_at or datetime.now()).isoformat(timespec="seconds"),
+        "run_status": run_status,
+        "asm_input_dir": str(asm_input_dir.resolve()),
+        "benchmark_root": str(benchmark_root.resolve()),
+        "benchmark": normalize_benchmark_id(benchmark_id),
+        "problems_processed": len(results),
+        "errored_count": len(errored),
+        "errored_problems": [
+            {
+                "name": result.problem_name,
+                "status": result.status,
+                "summary": result.summary,
+                "stderr": extract_stderr(result),
+                "error_stage": result.error_stage,
+                "failing_command": get_failing_command(result),
+                "asm_path": str(result.asm_path) if result.asm_path else "",
+                "commands": [command_result_to_dict(command_result) for command_result in result.command_results],
+            }
+            for result in errored
+        ],
+    }
+    if counts:
+        payload["counts"] = dict(counts)
+    usage_payload = provider_usage_summary_to_dict(usage_summary)
+    if usage_payload is not None:
+        payload["provider_usage"] = usage_payload
+    return _write_json(path, payload)
+
+
+def write_run_summary_json(path: Path, payload: dict[str, object]) -> Path:
+    return _write_json(path, payload)
+
+
+def write_report(
+    path: Path,
+    *,
+    benchmark_id: str,
+    source_isa: str,
+    target_isa: str,
+    model_name: str,
+    results: list[EvalResult],
+    started_at: datetime,
+    finished_at: datetime | None = None,
+    run_status: str = "completed",
+    counts: dict[str, int] | None = None,
+    usage_summary: ProviderUsageSummary | None = None,
+    prompt_concurrency: int | None = None,
+    validation_concurrency: int | None = None,
+) -> Path:
+    finished = finished_at or datetime.now()
+    status_counts: dict[str, int] = {}
+    for result in results:
+        status_counts[result.status] = status_counts.get(result.status, 0) + 1
+    total = len(results)
+    succeeded = sum(1 for result in results if result.succeeded)
+    lines = [
+        f"Run started: {started_at.isoformat(timespec='seconds')}",
+        f"Run finished: {finished.isoformat(timespec='seconds')}",
+        f"Run status: {run_status}",
+        f"Benchmark: {benchmark_display_name(benchmark_id)}",
+        f"Source ISA: {isa_display_name(source_isa)}",
+        f"Target ISA: {isa_display_name(target_isa)}",
+        f"Model: {model_name}",
+        f"Total evaluated problems: {total}",
+        f"Succeeded: {succeeded}",
+        f"Failed: {total - succeeded}",
+        f"Success rate: {succeeded}/{total} ({(succeeded / total * 100.0) if total else 0.0:.1f}%)",
+    ]
+    if prompt_concurrency is not None:
+        lines.append(f"Prompt concurrency: {prompt_concurrency}")
+    if validation_concurrency is not None:
+        lines.append(f"Validation concurrency: {validation_concurrency}")
+    if counts:
+        lines.extend(["", "Run counters:"])
+        for key in sorted(counts):
+            lines.append(f"- {key}: {counts[key]}")
+    usage_payload = provider_usage_summary_to_dict(usage_summary)
+    if usage_payload:
+        lines.extend(
+            [
+                "",
+                "Provider usage:",
+                f"- successful_requests: {usage_payload['successful_requests']}",
+                f"- prompt_token_count: {usage_payload['prompt_token_count']}",
+                f"- response_token_count: {usage_payload['response_token_count']}",
+                f"- total_token_count: {usage_payload['total_token_count']}",
+                f"- usage_metadata_requests: {usage_payload['usage_metadata_requests']}",
+            ]
+        )
+    lines.extend(["", "Status counts:"])
+    for status in sorted(status_counts):
+        lines.append(f"- {status}: {status_counts[status]}")
+    lines.extend(["", "Per Problem Details:"])
+    for result in results:
+        lines.extend(
+            [
+                "",
+                f"Problem: {result.problem_name}",
+                f"Status: {result.status}",
+                f"Error stage: {result.error_stage or '(none)'}",
+                f"Failing command: {get_failing_command(result) or '(none)'}",
+                f"Summary: {result.summary}",
+            ]
+        )
+        for command_result in result.command_results:
+            lines.append(f"CMD: {shlex.join(command_result.command)}")
+            lines.append(f"Code: {command_result.returncode}")
+            if command_result.stdout.strip():
+                lines.append(f"Stdout: {command_result.stdout.strip()}")
+            if command_result.stderr.strip():
+                lines.append(f"Stderr: {command_result.stderr.strip()}")
+    _write_text(path, "\n".join(lines) + "\n")
+    return path
+
+
+def run_command(command: str, *, cwd: Path, timeout: int) -> tuple[CommandResult, float]:
     start = time.perf_counter()
     proc = subprocess.Popen(
         command,
@@ -425,12 +627,8 @@ def run_command(command: str, *, cwd: Path, timeout: int) -> tuple[bool, str, fl
         else:
             proc.kill()
         proc.wait()
-        return False, f"Timeout expired ({timeout}s)", time.perf_counter() - start
-    return proc.returncode == 0, stdout + stderr, time.perf_counter() - start
-
-
-def _command_result(shell_command: str, output: str, success: bool) -> CommandResult:
-    return CommandResult(command=["sh", "-lc", shell_command], returncode=0 if success else 1, stdout=output, stderr="" if success else output)
+        return CommandResult(["sh", "-lc", command], 124, "", f"Timeout expired ({timeout}s)"), time.perf_counter() - start
+    return CommandResult(["sh", "-lc", command], proc.returncode, stdout, stderr), time.perf_counter() - start
 
 
 def _prepare_standard_workspace(task_dir: Path, work_dir: Path) -> None:
@@ -483,14 +681,15 @@ def _evaluate_standard_task(
     result = EvalResult(task_name, "pending", "", False, None, 0.0, asm_path=pred_s, output_dir=work_dir)
     total_runtime = 0.0
     for shell_command, stage in commands:
-        success, output, runtime = run_command(shell_command, cwd=work_dir, timeout=timeout)
+        command_result, runtime = run_command(shell_command, cwd=work_dir, timeout=timeout)
         total_runtime += runtime
-        result.command_results.append(_command_result(shell_command, output, success))
-        if not success:
+        result.command_results.append(command_result)
+        if command_result.returncode != 0:
             result.status = "build_error"
-            result.summary = output
+            result.summary = (command_result.stderr or command_result.stdout).strip() or f"{stage} failed"
             result.error_stage = stage
-            result.stderr = output
+            result.stdout = command_result.stdout
+            result.stderr = command_result.stderr or command_result.stdout
             result.runtime_seconds = total_runtime
             return result
 
@@ -499,16 +698,16 @@ def _evaluate_standard_task(
     if toolchain["use_qemu"] and qemu:
         run_command_text = f"{qemu} {run_command_text}"
 
-    success, output, runtime = run_command(run_command_text, cwd=work_dir, timeout=timeout)
+    command_result, runtime = run_command(run_command_text, cwd=work_dir, timeout=timeout)
     total_runtime += runtime
-    result.command_results.append(_command_result(run_command_text, output, success))
+    result.command_results.append(command_result)
     result.runtime_seconds = total_runtime
-    result.stdout = output
-    result.stderr = output if not success else ""
-    result.succeeded = success
-    result.status = "passed" if success else "runtime_error"
-    result.summary = "PASS" if success else output
-    result.error_stage = None if success else "execution"
+    result.stdout = command_result.stdout
+    result.stderr = command_result.stderr
+    result.succeeded = command_result.returncode == 0
+    result.status = "passed" if result.succeeded else "runtime_error"
+    result.summary = "PASS" if result.succeeded else ((command_result.stderr or command_result.stdout).strip() or "runtime failed")
+    result.error_stage = None if result.succeeded else "execution"
     return result
 
 
@@ -542,7 +741,8 @@ def _evaluate_bringup_task(
     _copytree(task_src_dir, work_dir / task_name)
 
     task_work_dir = work_dir / task_name
-    (task_work_dir / f"{task_name}.s").write_text(predicted_asm, encoding="utf-8")
+    asm_path = task_work_dir / f"{task_name}.s"
+    asm_path.write_text(predicted_asm, encoding="utf-8")
 
     clang = shlex.quote(toolchain["clang"])
     compile_flags = [flag for flag in toolchain["compile_flags"] if not flag.startswith("-O")]
@@ -564,18 +764,19 @@ def _evaluate_bringup_task(
         (" ".join(["make", *assignments, "test"]), "runtime"),
     ]
 
-    result = EvalResult(task_name, "pending", "", False, None, 0.0, output_dir=task_work_dir)
+    result = EvalResult(task_name, "pending", "", False, None, 0.0, asm_path=asm_path, output_dir=task_work_dir)
     timeout = int(toolchain["bringup_timeout_seconds"])
     total_runtime = 0.0
     for shell_command, stage in commands:
-        success, output, runtime = run_command(shell_command, cwd=task_work_dir, timeout=timeout)
+        command_result, runtime = run_command(shell_command, cwd=task_work_dir, timeout=timeout)
         total_runtime += runtime
-        result.command_results.append(_command_result(shell_command, output, success))
-        if not success:
+        result.command_results.append(command_result)
+        if command_result.returncode != 0:
             result.status = "build_error" if stage == "build" else "runtime_error"
-            result.summary = output
+            result.summary = (command_result.stderr or command_result.stdout).strip() or f"{stage} failed"
             result.error_stage = stage
-            result.stderr = output
+            result.stdout = command_result.stdout
+            result.stderr = command_result.stderr or command_result.stdout
             result.runtime_seconds = total_runtime
             return result
 
@@ -626,10 +827,11 @@ def evaluate_records(
     target_isa: str,
     work_root: Path,
     num_workers: int,
+    on_result: Callable[[dict[str, str], EvalResult], None] | None = None,
 ) -> list[tuple[dict[str, str], EvalResult]]:
     canonical_benchmark = normalize_benchmark_id(benchmark_id)
     if canonical_benchmark == "bringup":
-        num_workers = 1
+        num_workers = min(max(1, num_workers), 16)
 
     def _one(record: dict[str, str]) -> tuple[dict[str, str], EvalResult]:
         task_name = str(record["task_name"])
@@ -649,7 +851,10 @@ def evaluate_records(
     with ThreadPoolExecutor(max_workers=max(1, num_workers)) as executor:
         futures = [executor.submit(_one, record) for record in records]
         for future in as_completed(futures):
-            results.append(future.result())
+            record, result = future.result()
+            results.append((record, result))
+            if on_result is not None:
+                on_result(record, result)
     results.sort(key=lambda item: item[0]["task_name"])
     return results
 

@@ -20,6 +20,8 @@ LIST_ONLY=0
 DRY_RUN=0
 RESUME=0
 YES_FLAG=""
+PROMPT_CONCURRENCY=""
+VALIDATION_CONCURRENCY=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -31,6 +33,8 @@ while [[ $# -gt 0 ]]; do
     --dry-run) DRY_RUN=1; shift ;;
     --resume) RESUME=1; shift ;;
     --yes) YES_FLAG="--yes"; shift ;;
+    --prompt-concurrency) PROMPT_CONCURRENCY="$2"; shift 2 ;;
+    --validation-concurrency) VALIDATION_CONCURRENCY="$2"; shift 2 ;;
     *)
       echo "Unknown argument: $1" >&2
       exit 2
@@ -143,6 +147,25 @@ while IFS='|' read -r benchmark model source target config_path; do
   cmd=(python3 translate_gemini.py --config "$config_path" --benchmark "$benchmark" --source-isa "$source" --target-isa "$target" --opt-level O2)
   [[ -n "$YES_FLAG" ]] && cmd+=("$YES_FLAG")
   [[ $RESUME -eq 1 ]] && cmd+=(--resume)
+  cmd+=(--resume-checkpoint logs/checkpoint.json)
+
+  prompt_workers="$PROMPT_CONCURRENCY"
+  validation_workers="$VALIDATION_CONCURRENCY"
+  if [[ -z "$prompt_workers" ]]; then
+    if [[ "$benchmark" == "bringup" ]]; then
+      prompt_workers="64"
+    else
+      prompt_workers="100"
+    fi
+  fi
+  if [[ -z "$validation_workers" ]]; then
+    if [[ "$benchmark" == "bringup" ]]; then
+      validation_workers="16"
+    else
+      validation_workers="100"
+    fi
+  fi
+  cmd+=(--prompt-concurrency "$prompt_workers" --validation-concurrency "$validation_workers")
 
   if [[ $DRY_RUN -eq 1 ]]; then
     printf 'DRY RUN:'

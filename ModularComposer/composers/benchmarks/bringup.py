@@ -36,6 +36,9 @@ from .common import (
 
 
 class BringUpBenchmark(BenchmarkAdapter):
+    _OUTPUT_SINK_NAME = ".bringup_stdout"
+    _LEGACY_OUTPUT_SINK_NAME = "FOO"
+
     def __init__(
         self,
         *,
@@ -281,6 +284,7 @@ class BringUpBenchmark(BenchmarkAdapter):
             for command in self._make_commands():
                 command_result = execute_command(command, cwd=task_workspace, timeout=timeout)
                 result.command_results.append(command_result)
+                self._cleanup_workspace_output_files(work_root)
                 if command_result.returncode != 0:
                     result.status = "runtime_error" if command[-1] == "test" else "build_error"
                     result.stderr = command_result.stderr or command_result.stdout
@@ -293,13 +297,17 @@ class BringUpBenchmark(BenchmarkAdapter):
             result.summary = "PASS"
             return result
         except subprocess.TimeoutExpired:
+            self._cleanup_workspace_output_files(work_root)
             result.status = "timeout"
             result.summary = f"Execution timed out after {timeout} seconds"
             return result
         except Exception as exc:
+            self._cleanup_workspace_output_files(work_root)
             result.status = "execution_error"
             result.summary = str(exc)
             return result
+        finally:
+            self._cleanup_workspace_output_files(work_root)
 
     def _prepare_workspace(self, *, task_source_dir: Path, work_root: Path) -> None:
         _remove_path(work_root)
@@ -316,6 +324,8 @@ class BringUpBenchmark(BenchmarkAdapter):
                 shutil.copy2(src, dst)
 
         shutil.copytree(task_source_dir, work_root / task_source_dir.name, dirs_exist_ok=True)
+        self._rewrite_workspace_makefiles(work_root)
+        self._cleanup_workspace_output_files(work_root)
 
     def _make_commands(self) -> list[list[str]]:
         make_target = str(self.cfg.get("make_target", "host"))
@@ -378,3 +388,22 @@ class BringUpBenchmark(BenchmarkAdapter):
         if expected_symbols:
             lines.append(f"Preserve the symbol set defined by the original C source: {', '.join(expected_symbols)}.")
         return tuple(lines)
+
+    def _rewrite_workspace_makefiles(self, work_root: Path) -> None:
+        for makefile_path in work_root.rglob("Makefile"):
+            text = makefile_path.read_text(encoding="utf-8")
+            updated = (
+                text.replace("> FOO", f"> {self._OUTPUT_SINK_NAME}")
+                .replace(" FOO ", f" {self._OUTPUT_SINK_NAME} ")
+                .replace(" FOO;", f" {self._OUTPUT_SINK_NAME};")
+                .replace(" FOO\n", f" {self._OUTPUT_SINK_NAME}\n")
+                .replace(" FOO\r\n", f" {self._OUTPUT_SINK_NAME}\r\n")
+            )
+            if updated != text:
+                makefile_path.write_text(updated, encoding="utf-8")
+
+    def _cleanup_workspace_output_files(self, work_root: Path) -> None:
+        for sink_name in (self._OUTPUT_SINK_NAME, self._LEGACY_OUTPUT_SINK_NAME):
+            for output_path in work_root.rglob(sink_name):
+                if output_path.is_file():
+                    output_path.unlink(missing_ok=True)

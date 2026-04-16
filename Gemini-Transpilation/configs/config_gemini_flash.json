@@ -3,8 +3,10 @@
   "model_tag": "flash",
   "action": "compile_and_run",
   "max_workers": 4,
+  "prompt_concurrency": 4,
+  "validation_concurrency": 4,
   "max_retries": 3,
   "retry_base_seconds": 2.0,
   "opt_level": "O2",
-  "prompt_template": "Translate the following assembly code from {source_isa} to {target_isa}. Return ONLY the translated assembly code with no explanations.\n\n{source_code}"
+  "prompt_template": "Translate the following assembly code from {source_isa} to {target_isa}.\n\nHard requirements:\n- Output only the translated assembly text.\n- Do not include markdown fences, comments to the user, or any prose.\n- Preserve semantics, including edge cases and calling-convention behavior.\n- Keep the result in {target_isa}; do not emit a different ISA or language.\n\nSource assembly:\n{source_code}\n"
 }

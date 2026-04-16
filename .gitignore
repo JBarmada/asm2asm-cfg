@@ -38,5 +38,5 @@ zips/
 .docker.env
 *.zip
 *.7z
-
+slackfiles/
 cpu-transpiler-inference/

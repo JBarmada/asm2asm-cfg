@@ -485,6 +485,67 @@ class BenchmarkAdapterTests(unittest.TestCase):
             self.assertEqual(commands[0][-1], "build")
             self.assertEqual(commands[1][-1], "test")
 
+    def test_bringup_workspace_rewrites_and_cleans_output_sink_files(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root = Path(tmp_dir)
+            benchmark_root = root / "bringup-bench"
+            task_dir = benchmark_root / "ackermann"
+            task_dir.mkdir(parents=True)
+            (benchmark_root / "common").mkdir()
+            (benchmark_root / "target").mkdir()
+            (benchmark_root / "Makefile").write_text(
+                "TARGET_DIFF = mv ibex_simple_system.log FOO; diff\nall:\n\t@echo ok\n",
+                encoding="utf-8",
+            )
+            (task_dir / "Makefile").write_text(
+                "test:\n\t-$(TARGET_SIM) ./$(TARGET_EXE) > FOO \n\t$(TARGET_DIFF) FOO ackermann.host\n\trm -f FOO\n",
+                encoding="utf-8",
+            )
+            asm_dir = root / "experiment" / "translated_asm"
+            asm_dir.mkdir(parents=True)
+            error_json = root / "experiment" / "jsons" / "errors.json"
+            error_json.parent.mkdir(parents=True)
+            error_json.write_text(json.dumps({"errored_problems": []}), encoding="utf-8")
+
+            paths = make_paths(
+                root,
+                benchmark_id="bringup",
+                benchmark_root=benchmark_root,
+                asm_input_dir=asm_dir,
+                error_json_path=error_json,
+                input_mode="asm_dir",
+            )
+            benchmark = BringUpBenchmark(
+                paths=paths,
+                cfg={
+                    "clang": "clang-17",
+                    "compile_flags": ["-O2"],
+                    "link_flags": [],
+                    "use_qemu": False,
+                    "timeout_seconds": 5,
+                },
+            )
+
+            work_root = paths.compile_probe_dir / "ackermann_attempt1"
+            benchmark._prepare_workspace(task_source_dir=task_dir, work_root=work_root)
+
+            root_makefile = (work_root / "Makefile").read_text(encoding="utf-8")
+            task_makefile = (work_root / "ackermann" / "Makefile").read_text(encoding="utf-8")
+            self.assertIn(".bringup_stdout", root_makefile)
+            self.assertIn(".bringup_stdout", task_makefile)
+            self.assertNotIn("FOO", root_makefile)
+            self.assertNotIn("FOO", task_makefile)
+
+            modern_sink = work_root / "ackermann" / ".bringup_stdout"
+            legacy_sink = work_root / "ackermann" / "FOO"
+            modern_sink.write_text("output", encoding="utf-8")
+            legacy_sink.write_text("legacy", encoding="utf-8")
+
+            benchmark._cleanup_workspace_output_files(work_root)
+
+            self.assertFalse(modern_sink.exists())
+            self.assertFalse(legacy_sink.exists())
+
 
 if __name__ == "__main__":
     unittest.main()
